@@ -1,0 +1,31 @@
+id_ordine,data,prodotto,categoria,prezzo,quantita,citta,metodo_pagamento
+1001,2024-01-05,Cuffie Bluetooth,Elettronica,49.99,2,Milano,Carta di Credito
+1002,2024-01-05,T-Shirt Nera,Abbigliamento,19.99,3,Roma,PayPal
+1003,2024-01-06,Mouse Wireless,Elettronica,29.99,1,Napoli,Carta di Credito
+1004,2024-01-06,Libro Python,Libri,35.00,1,Milano,PayPal
+1005,2024-01-07,Cuffie Bluetooth,Elettronica,49.99,1,Torino,Carta di Credito
+1006,2024-01-07,Zaino Laptop,Accessori,65.00,1,Roma,Bonifico
+1007,2024-01-08,T-Shirt Bianca,Abbigliamento,19.99,2,Firenze,PayPal
+1008,2024-01-08,Tastiera Meccanica,Elettronica,89.99,1,Milano,Carta di Credito
+1009,2024-01-09,Libro JavaScript,Libri,30.00,2,Bologna,PayPal
+1010,2024-01-09,Cuffie Bluetooth,Elettronica,49.99,1,Napoli,Carta di Credito
+1011,2024-01-10,Felpa Grigia,Abbigliamento,39.99,1,Torino,Bonifico
+1012,2024-01-10,Monitor 27 pollici,Elettronica,299.99,1,Milano,Carta di Credito
+1013,2024-01-11,Libro AI,Libri,42.00,1,Roma,PayPal
+1014,2024-01-11,Mouse Wireless,Elettronica,29.99,2,Firenze,Carta di Credito
+1015,2024-01-12,T-Shirt Nera,Abbigliamento,19.99,4,Napoli,PayPal
+1016,2024-01-12,Zaino Laptop,Accessori,65.00,1,Bologna,Carta di Credito
+1017,2024-01-13,Cuffie Bluetooth,Elettronica,49.99,3,Milano,PayPal
+1018,2024-01-13,Libro Python,Libri,35.00,2,Torino,Bonifico
+1019,2024-01-14,Tastiera Meccanica,Elettronica,89.99,1,Roma,Carta di Credito
+1020,2024-01-14,Felpa Grigia,Abbigliamento,39.99,2,Firenze,PayPal
+1021,2024-01-15,Monitor 27 pollici,Elettronica,299.99,1,Napoli,Carta di Credito
+1022,2024-01-15,T-Shirt Bianca,Abbigliamento,19.99,3,Milano,PayPal
+1023,2024-01-16,Libro AI,Libri,42.00,1,Bologna,Bonifico
+1024,2024-01-16,Mouse Wireless,Elettronica,29.99,1,Torino,Carta di Credito
+1025,2024-01-17,Cuffie Bluetooth,Elettronica,49.99,2,Roma,PayPal
+1026,2024-01-17,Zaino Laptop,Accessori,65.00,2,Milano,Carta di Credito
+1027,2024-01-18,T-Shirt Nera,Abbigliamento,19.99,1,Firenze,Bonifico
+1028,2024-01-18,Tastiera Meccanica,Elettronica,89.99,2,Napoli,Carta di Credito
+1029,2024-01-19,Libro JavaScript,Libri,30.00,1,Bologna,PayPal
+1030,2024-01-19,Felpa Grigia,Abbigliamento,39.99,3,Torino,Carta di Credito

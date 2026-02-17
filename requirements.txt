@@ -1,0 +1,20 @@
+# =============================================
+# CORSO AI — Dipendenze Python
+# =============================================
+# Installa tutto con: pip install -r requirements.txt
+#
+# CONSIGLIO: crea prima un ambiente virtuale:
+#   python -m venv venv
+#   venv\Scripts\activate     (Windows)
+#   source venv/bin/activate  (Mac/Linux)
+#   pip install -r requirements.txt
+# =============================================
+
+# --- MODULO 1: Python & Dati ---
+numpy>=2.0
+pandas>=2.2
+matplotlib>=3.9
+fastapi>=0.115
+uvicorn>=0.30
+
+# (I moduli successivi aggiungeranno le loro librerie qui)
