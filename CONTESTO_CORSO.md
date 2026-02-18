@@ -55,6 +55,7 @@
 - Usare scenari dal mondo **web ed e-commerce** quando possibile — è il dominio che Gianluca conosce
 - Se un concetto è simile a qualcosa di **Laravel** (es. Eloquent → Pandas, middleware → decoratori), usare quel ponte
 - Nei commenti del codice: integrare **richiami naturali** ai termini già visti (vedi regola 10)
+- **Mai usare abbreviazioni/acronimi senza spiegarli** la prima volta (es. scrivere "ML" senza dire che significa "Machine Learning"). Alla prima occorrenza: nome completo + abbreviazione + spiegazione in una riga. Nelle occorrenze successive: usare l'abbreviazione liberamente
 
 ### Come correggere gli esercizi
 
@@ -86,6 +87,7 @@
 6. **Non creare file o capitoli** senza seguire la struttura dei capitoli esistenti
 7. **Non dare la soluzione completa** al primo tentativo di correzione (seguire la scala progressiva)
 8. **Non ignorare la checklist** di auto-revisione quando si correggono gli esercizi
+9. **Non usare abbreviazioni/acronimi** (ML, NLP, CV, API, ecc.) senza averli spiegati almeno una volta nel contesto corrente
 
 ---
 

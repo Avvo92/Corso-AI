@@ -398,7 +398,19 @@ for p in con_iva:
 #   e) I mesi alterni (Gen, Mar, Mag, Jul, Set, Nov)
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+mesi = ["Gen","Feb","Mar","Apr","Mag","Giu","Jul","Ago","Set","Ott","Nov","Dic"]
+
+print("\n\nEsercizio uno")
+primi_tre_mesi = mesi[:3]
+print(f"\nI primi 3 mesi sono: {primi_tre_mesi}")
+mesi_estivi = mesi[5:8]
+print(f"I mesi estivi sono: {mesi_estivi}")
+ultimo_trimestre = mesi[9:]
+print(f"Ultimo trimestre: {ultimo_trimestre}")
+mesi_al_contrario = mesi[::-1]
+print(f"Mesi al contrario: {mesi_al_contrario}")
+mesi_alterni = mesi[1::2]
+print(f"Mesi alterni: {mesi_alterni}")
 
 
 # ESERCIZIO 2 (Medio — List Comprehension):
@@ -410,7 +422,18 @@ for p in con_iva:
 # c) Crea una lista di stringhe tipo: ["32°F = 0.0°C", "50°F = 10.0°C", ...]
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+temperature_f = [32, 50, 68, 77, 86, 95, 104]
+
+print("\n\nEsercizio due")
+celsius = [round(((t - 32) * 5/9), 1) for t in temperature_f]
+celsius_filtrati = [c for c in celsius if c > 25]
+celsius_stringa = [f"{c}°C" for c in celsius]
+
+print(f"\nLista Celsius: {celsius}")
+print(f"Celsius sopra i 25°C: {celsius_filtrati}")
+print(f"Celsius stringhe: {celsius_stringa}")
+
+
 
 
 # 🎯 [COLLOQUIO] — ESERCIZIO 3 (Medio — Rimuovi Duplicati):
@@ -429,8 +452,14 @@ for p in con_iva:
 # Suggerimento: usa una lista di appoggio e 'if elemento not in ...'
 #
 # Scrivi il tuo codice qui sotto:
-# ...
-
+lista_numeri = [3, 1, 2, 3, 1, 4]
+lista_senza_duplicati = []
+for n in lista_numeri:
+  if n not in lista_senza_duplicati:
+    lista_senza_duplicati.append(n)
+    
+print("\n\nEsercizio tre")    
+print(f"Lista senza duplicati: {lista_senza_duplicati}")
 
 # ESERCIZIO 4 (Medio — Lambda con sorted):
 # Hai questa lista di studenti:
@@ -451,8 +480,39 @@ for p in con_iva:
 #      tipo: ["Marco: 72", "Laura: 95", ...]
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+studenti = [
+  {"nome": "Marco", "voto": 72, "eta": 22},
+  {"nome": "Laura", "voto": 95, "eta": 20},
+  {"nome": "Giulia", "voto": 88, "eta": 23},
+  {"nome": "Luca", "voto": 65, "eta": 21},
+  {"nome": "Anna", "voto": 91, "eta": 22},
+]
 
+print("\n\nEsercizio quattro") 
+print("\nStudenti ordinati per voto\n") 
+per_voto = sorted(studenti, key=lambda s: s["voto"], reverse=True)
+for s in per_voto:
+  print(f"{s["nome"]}: voto => {s["voto"]}")
+  
+print(f"\nStudenti per età crescente\n")
+per_eta = sorted(studenti, key=lambda s: s["eta"])
+for s in per_eta:
+  print(f"{s["nome"]}: età => {s["eta"]}")
+
+print(f"\nStudenti per ordine alfabetico\n")
+per_alfabeto = sorted(studenti, key=lambda s: s["nome"])
+for s in per_alfabeto:
+  print(f"{s["nome"]}")
+  
+print(f"\nStudenti con voto maggiore di 80\n")
+voto_maggiore_ottanta = sorted(filter(lambda s: s["voto"] > 80, studenti), key=lambda s: s["voto"], reverse=True)
+for s in voto_maggiore_ottanta:
+  print(f"{s["nome"]}: voto => {s["voto"]}")
+  
+print(f"\nLista studenti di sole stringhe\n")
+lista_stringhe = map(lambda s: f"{s["nome"]}: {s["voto"]}", studenti)
+for s in lista_stringhe:
+  print(f"{s}")
 
 # ESERCIZIO 5 (Medio — Lambda con filter e map):
 # Hai questa lista di prodotti del tuo e-commerce:
@@ -472,8 +532,40 @@ for p in con_iva:
 # e) Combina: prendi solo i disponibili, ordinali per prezzo, e stampa
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+catalogo = [
+    {"nome": "T-shirt", "prezzo": 19.99, "disponibile": True},
+    {"nome": "Jeans", "prezzo": 59.99, "disponibile": False},
+    {"nome": "Sneakers", "prezzo": 89.99, "disponibile": True},
+    {"nome": "Cappello", "prezzo": 14.99, "disponibile": True},
+    {"nome": "Giacca", "prezzo": 129.99, "disponibile": False},
+]
 
+print("\n\nEsercizio cinque")
+ 
+print("\nProdotti disponibili\n") 
+disponibili = list(filter(lambda p: p["disponibile"], catalogo))
+for p in disponibili:
+  print(f"{p["nome"]}")
+  
+print("\nProdotti sotto 50 €\n")  
+sotto_cinquanta = list(filter(lambda p: p["prezzo"] < 50, catalogo))
+for p in sotto_cinquanta:
+  print(f"{p["nome"]}: Prezzo => {p["prezzo"]} €")
+  
+print("\nLista di stringhe\n") 
+stringhe = map(lambda p: f"{p["nome"]} - {p["prezzo"]} € - {"disponibile" if p["disponibile"] else "esaurito"}", catalogo)
+for p in stringhe:
+  print(f"{p}")
+  
+print("\nLista prodotti ordinati per prezzo\n")
+prodotti_per_prezzo = sorted(catalogo, key=lambda p: p["prezzo"])
+for p in prodotti_per_prezzo:
+  print(f"{p}")
+  
+print("\nLista prodotti disponibili ordinati per prezzo\n")
+prodotti_disponibili_per_prezzo = list(filter(lambda p: p["disponibile"], prodotti_per_prezzo))
+for p in prodotti_disponibili_per_prezzo:
+  print(f"{p}")
 
 # 🎯 [COLLOQUIO] — ESERCIZIO 6 (Sfida — Inverti senza .reverse()):
 # Questo è un altro classico da colloquio tecnico.
