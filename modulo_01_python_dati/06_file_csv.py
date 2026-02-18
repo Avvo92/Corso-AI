@@ -36,6 +36,18 @@
  puoi usare Eloquent senza sapere SQL, ma quando qualcosa non funziona,
  sapere SQL ti salva la vita.
 
+ IN PHP: probabilmente hai usato fgetcsv() per leggere CSV riga per riga,
+ oppure librerie come League\Csv. Il concetto è identico a quello che
+ faremo qui in Python.
+
+ In PHP:
+   $file = fopen('dati.csv', 'r');
+   $header = fgetcsv($file);          // legge la prima riga (intestazioni)
+   while ($riga = fgetcsv($file)) {   // legge una riga alla volta
+       // $riga è un array: ["1001", "2024-01-05", "Cuffie", ...]
+   }
+   fclose($file);
+
 ============================================================================
 """
 
@@ -49,16 +61,27 @@ percorso_csv = os.path.join(percorso_dati, "vendite_ecommerce.csv")
 # PARTE 1: Leggere un File di Testo
 # ==========================================================================
 
+# In PHP:
+#   $contenuto = file_get_contents('file.txt');
+#   // file_get_contents() legge l'intero file in una stringa.
+#   // È la funzione più semplice per leggere un file in PHP.
+#   // Alternativa: fopen() + fread() + fclose() per più controllo.
+#
 # In JavaScript (Node.js):
 #   const fs = require('fs');
 #   const contenuto = fs.readFileSync('file.txt', 'utf8');
+#   // require('fs') importa il modulo "File System" di Node.js
+#   // readFileSync() legge il file in modo sincrono (blocca l'esecuzione)
+#   // 'utf8' specifica la codifica dei caratteri
 #
 # In Python:
 #   with open('file.txt', 'r') as f:
 #       contenuto = f.read()
 #
 # 'with' è come un "try-finally" automatico: chiude il file quando hai finito.
+# È come se facessi fopen() + fclose() automaticamente in PHP.
 # 'r' sta per "read" (lettura). Altre modalità: 'w' (write), 'a' (append).
+# Stesse modalità di fopen() in PHP: 'r', 'w', 'a', ecc.
 
 print("=== Leggere il file intero come testo ===")
 with open(percorso_csv, "r", encoding="utf-8") as file:

@@ -29,7 +29,7 @@
  │  JOIN               → pd.merge(df1, df2)   │
  └────────────────────────────────────────────┘
 
- ANALOGIA CON LARAVEL ELOQUENT:
+ ANALOGIA CON LARAVEL ELOQUENT (che conosci bene!):
  ┌──────────────────────────────────────────────────┐
  │  Eloquent                → Pandas                │
  │  ────────────────────────────────────────────── │
@@ -41,7 +41,26 @@
  │  ->pluck('nome')         → df["nome"]            │
  │  ->count()               → len(df)               │
  │  ->avg('prezzo')         → df["prezzo"].mean()   │
+ │  ->toArray()             → df.to_dict()          │
+ │  ->first()               → df.iloc[0]            │
+ │  ->get()                 → df (è già caricato!)  │
  └──────────────────────────────────────────────────┘
+
+ SPIEGAZIONE DEI METODI ELOQUENT (ripasso):
+   Order::all()       → prende TUTTE le righe dalla tabella "orders"
+   Order::find(1)     → trova la riga con id=1
+   ->where('col','=',val)  → filtra le righe dove 'col' è uguale a val
+   ->orderBy('col')   → ordina per la colonna specificata
+   ->groupBy('col')   → raggruppa le righe per valore della colonna
+   ->pluck('nome')    → estrae solo i valori di una colonna (come un array)
+   ->count()          → conta il numero di righe
+   ->avg('col')       → calcola la media di una colonna numerica
+   ->first()          → prende solo la prima riga del risultato
+   ->toArray()        → converte il risultato in un array PHP
+
+ In Pandas fai le stesse operazioni, ma tutto avviene in RAM (memoria)
+ invece che con query al database. I dati sono già "qui", non devi
+ aspettare una risposta dal server MySQL.
 
 ============================================================================
 """

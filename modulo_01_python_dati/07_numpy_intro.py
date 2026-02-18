@@ -25,12 +25,24 @@
  Python (comodo), ma i calcoli vengono fatti in C (veloce).
  È come usare Eloquent (comodo) mentre sotto il cofano gira SQL ottimizzato.
 
- CONCETTO CHIAVE: Operazioni "Vettorizzate"
- In JavaScript, per raddoppiare ogni numero di un array devi fare un loop:
-     numeri.map(n => n * 2)
- In NumPy, lo fai direttamente sull'array intero, SENZA loop:
-     numeri * 2
+ NIENTE DI SIMILE ESISTE IN PHP O JAVASCRIPT:
+ PHP e JavaScript non hanno un equivalente di NumPy. In PHP faresti:
+   $numeri = [1, 2, 3, 4, 5];
+   $doppi = array_map(fn($n) => $n * 2, $numeri);  // serve array_map + funzione
+   // array_map() applica la funzione a ogni elemento e crea un nuovo array.
+
+ In JavaScript:
+   const numeri = [1, 2, 3, 4, 5];
+   const doppi = numeri.map(n => n * 2);  // serve .map() + funzione
+   // .map() crea un nuovo array applicando la funzione ad ogni elemento.
+
+ In NumPy, lo fai DIRETTAMENTE sull'array, SENZA funzioni wrapper:
+   numeri = np.array([1, 2, 3, 4, 5])
+   doppi = numeri * 2    # Basta moltiplicare! Niente map, niente loop.
+
  Questo si chiama "operazione vettorizzata" ed è il segreto della velocità.
+ Immagina di avere 1 milione di numeri: in PHP/JS faresti 1 milione di
+ giri di loop. NumPy li processa tutti in un colpo solo, in C.
 
 ============================================================================
 """

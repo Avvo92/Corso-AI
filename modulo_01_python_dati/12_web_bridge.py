@@ -12,7 +12,7 @@
  Come si fa? Con un'API! E in Python, la libreria più moderna e veloce
  per creare API è FastAPI.
 
- ANALOGIA CON LARAVEL:
+ ANALOGIA CON LARAVEL (dettagliata):
  ┌────────────────────────────────────────────────────────────────┐
  │  Laravel                       →  FastAPI                     │
  │  ────────────────────────────────────────────────────────────│
@@ -24,12 +24,33 @@
  │  Porta 8000                    →  Porta 8000 (uguale!)        │
  │  Middleware                    →  Middleware / Depends         │
  │  Request $request              →  Parametri della funzione    │
+ │  $request->query('citta')      →  Query(None, ...)            │
+ │  $request->validate([...])     →  Validazione automatica!     │
+ │  routes/api.php                →  Tutto nello stesso file     │
+ │  .env                          →  .env (uguale!)              │
  └────────────────────────────────────────────────────────────────┘
 
- FastAPI ha anche la DOCUMENTAZIONE AUTOMATICA delle API:
+ SPIEGAZIONE DEI CONCETTI LARAVEL (ripasso):
+   Route::get('/api/...')    → Definisce una rotta GET nel file routes/api.php
+   Controller                → Classe PHP che gestisce la logica di una rotta
+   response()->json(...)     → Restituisce una risposta in formato JSON
+   php artisan serve         → Avvia il server di sviluppo Laravel sulla porta 8000
+   Middleware                → Codice che "filtra" le richieste prima del controller
+   Request $request          → L'oggetto che contiene tutti i dati della richiesta
+   $request->query('citta')  → Prende il parametro 'citta' dalla query string (?citta=Roma)
+   $request->validate(...)   → Valida i dati in ingresso secondo regole specifiche
+
+ In FastAPI tutto questo si fa con MENO codice:
+   - Non serve creare file separati per rotte e controller
+   - La validazione è automatica (se dici che un parametro è int, FastAPI
+     controlla da solo e restituisce errore 422 se non lo è)
+   - La documentazione è GENERATA AUTOMATICAMENTE
+
+ FastAPI ha la DOCUMENTAZIONE AUTOMATICA delle API:
  dopo aver avviato il server, vai su http://localhost:8000/docs
  e trovi una pagina interattiva dove testare ogni endpoint
- (come Postman, ma integrato!).
+ (come Postman, ma integrato!). In Laravel dovresti installare
+ un pacchetto come Swagger/L5-Swagger per ottenere la stessa cosa.
 
  COME AVVIARE IL SERVER:
  Nel terminale, dalla cartella del corso:
@@ -51,8 +72,12 @@ import os
 # SETUP: Creare l'App FastAPI
 # ==========================================================================
 
-# In Laravel crei un'app con: laravel new progetto
-# In FastAPI crei un'app con una riga:
+# In Laravel crei un'app con:
+#   laravel new progetto          → crea un'intera struttura di cartelle
+#   // app/, routes/, config/, database/, resources/, public/...
+#   // Decine di file generati automaticamente
+#
+# In FastAPI crei un'app con UNA riga — niente struttura, niente cartelle:
 
 app = FastAPI(
     title="Modulo 1 — API Dati",
@@ -60,8 +85,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS: permette al frontend React di chiamare questa API
-# In Laravel useresti il pacchetto fruitcake/laravel-cors.
+# CORS: permette al frontend React di chiamare questa API.
+# Cos'è CORS? Quando il tuo frontend React (es. localhost:3000) chiama
+# un'API su un dominio diverso (es. localhost:8000), il browser BLOCCA
+# la richiesta per sicurezza. CORS dice al browser: "va bene, lascia passare".
+#
+# In Laravel useresti il pacchetto fruitcake/laravel-cors, oppure da Laravel 7+
+# il file config/cors.php è già incluso.
 # In FastAPI aggiungi un middleware:
 app.add_middleware(
     CORSMiddleware,
@@ -84,8 +114,17 @@ vendite["fatturato"] = vendite["prezzo"] * vendite["quantita"]
 # ENDPOINT 1: Home — Benvenuto
 # ==========================================================================
 
-# In Laravel: Route::get('/', function () { return response()->json([...]); });
-# In FastAPI:
+# In Laravel (file routes/api.php):
+#   Route::get('/', function () {
+#       return response()->json([
+#           'messaggio' => 'Benvenuto nella tua prima API!',
+#       ]);
+#   });
+#   // Route::get() definisce una rotta GET
+#   // La closure (function() {...}) è il "controller inline"
+#   // response()->json() converte l'array PHP in JSON
+#
+# In FastAPI (tutto nello stesso file):
 
 @app.get("/")
 def home():

@@ -4,20 +4,36 @@
  Dizionari, Iterazione, Nesting, Metodi Utili
 ============================================================================
 
- TEORIA: Dizionari Python = Oggetti JavaScript
+ TEORIA: Dizionari Python = Array Associativi PHP = Oggetti JavaScript
 
- Se conosci gli oggetti JavaScript, i dizionari Python sono lo stesso
- concetto. Sono contenitori "chiave-valore":
+ Se conosci gli array associativi PHP o gli oggetti JavaScript,
+ i dizionari Python sono lo stesso concetto: contenitori "chiave-valore".
 
-   JavaScript:  const utente = { nome: "Luca", eta: 30 };
-   Python:      utente = {"nome": "Luca", "eta": 30}
+ Confronto a tre:
 
- DIFFERENZA IMPORTANTE:
- In JavaScript le chiavi dell'oggetto possono essere senza virgolette.
- In Python le chiavi del dizionario DEVONO essere tra virgolette (se stringhe).
+   PHP (array associativo):
+     $utente = ["nome" => "Luca", "eta" => 30];
+     // Le chiavi sono stringhe tra virgolette
+     // Si usa => (freccia grossa) per associare chiave e valore
+     // Accesso: $utente["nome"]
 
-   JavaScript:  { nome: "Luca" }      ← senza virgolette sulla chiave
-   Python:      {"nome": "Luca"}      ← virgolette obbligatorie sulla chiave
+   JavaScript (oggetto):
+     const utente = { nome: "Luca", eta: 30 };
+     // Le chiavi possono essere SENZA virgolette
+     // Si usa : (due punti) per associare chiave e valore
+     // Accesso: utente.nome  oppure  utente["nome"]
+
+   Python (dizionario):
+     utente = {"nome": "Luca", "eta": 30}
+     // Le chiavi DEVONO avere le virgolette (se sono stringhe)
+     // Si usa : (due punti) come JS
+     // Accesso: utente["nome"]  oppure  utente.get("nome")
+     // NON puoi fare utente.nome (quello è per gli oggetti/classi)
+
+ RIASSUNTO SINTASSI:
+   PHP:        ["chiave" => "valore"]    accesso: $arr["chiave"]
+   JavaScript: { chiave: "valore" }      accesso: obj.chiave
+   Python:     {"chiave": "valore"}      accesso: dict["chiave"]
 
  Perché servono per l'AI?
    - Un dataset è spesso una lista di dizionari (come un array di oggetti JSON)
@@ -46,16 +62,28 @@ print("=== Dizionario utente ===")
 print(utente)
 
 # Accedere ai valori:
-# JavaScript:  utente.nome     oppure  utente["nome"]
-# Python:      utente["nome"]  oppure  utente.get("nome")
+# PHP:         $utente["nome"]                — sempre con le parentesi quadre
+# JavaScript:  utente.nome  o  utente["nome"] — col punto O con le parentesi
+# Python:      utente["nome"]  o  utente.get("nome")
 
 print(f"\nNome: {utente['nome']}")
 print(f"Lingue: {utente['lingue']}")
 print(f"Prima lingua: {utente['lingue'][0]}")  # Lista dentro dizionario!
 
-# .get() — L'equivalente dell'Optional Chaining (?.) di JavaScript:
-# JavaScript:  utente?.indirizzo ?? "Non specificato"
-# Python:      utente.get("indirizzo", "Non specificato")
+# .get() — Accedere a una chiave che potrebbe NON esistere:
+#
+# PHP:  $utente["indirizzo"] ?? "Non specificato"
+#       // L'operatore ?? (null coalescing) restituisce il valore a destra
+#       // se la chiave non esiste o è null. Introdotto in PHP 7.
+#       // Senza ??, accedere a una chiave inesistente dà un Warning.
+#
+# JS:   utente?.indirizzo ?? "Non specificato"
+#       // ?. è l'optional chaining: se indirizzo non esiste, restituisce undefined
+#       // ?? è il nullish coalescing: se il valore è null/undefined, usa il default
+#
+# Python: utente.get("indirizzo", "Non specificato")
+#       // .get(chiave, default) restituisce il default se la chiave non esiste
+#       // Se usi utente["indirizzo"] e la chiave non esiste → KeyError! (crash)
 
 print(f"\nIndirizzo: {utente.get('indirizzo', 'Non specificato')}")
 # Se usi utente["indirizzo"] e la chiave non esiste → KeyError! (crash)
@@ -75,9 +103,12 @@ telefono = utente.pop("email", None)  # Rimuove e restituisce (come pop nelle li
 print(f"Email rimossa: {telefono}")
 
 # Aggiornare con più valori contemporaneamente:
-# Come Object.assign() o spread in JavaScript:
-#   utente = { ...utente, citta: "Roma", ruolo: "senior" }
-
+# PHP:  $utente = array_merge($utente, ["citta" => "Roma", "ruolo" => "senior"]);
+#       // array_merge() unisce due array. Se le chiavi esistono, le sovrascrive.
+# JS:   utente = { ...utente, citta: "Roma", ruolo: "senior" }
+#       // Lo spread ... copia tutte le chiavi e poi le nuove sovrascrivono
+#       // Alternativa: Object.assign(utente, {citta: "Roma", ruolo: "senior"})
+# Python:
 utente.update({"citta": "Roma", "ruolo": "senior developer"})
 print(f"Dopo update: {utente}")
 
@@ -104,8 +135,15 @@ for valore in prodotto.values():
     print(f"  {valore}")
 
 # Iterare su CHIAVI E VALORI (il più comune):
-# È come Object.entries() in JavaScript:
-#   Object.entries(prodotto).forEach(([k, v]) => console.log(k, v));
+# PHP:  foreach($prodotto as $chiave => $valore) { echo "$chiave: $valore"; }
+#       // La sintassi $chiave => $valore nello foreach è il modo PHP per
+#       // accedere sia alla chiave sia al valore durante l'iterazione.
+#
+# JS:   Object.entries(prodotto).forEach(([k, v]) => console.log(k, v));
+#       // Object.entries() trasforma l'oggetto in un array di coppie:
+#       //   {nome:"Mouse", prezzo:29.99} → [["nome","Mouse"], ["prezzo",29.99]]
+#       // .forEach() scorre ogni coppia
+#       // ([k, v]) è il destructuring: scompone ["nome","Mouse"] in k e v
 
 print("\n=== Chiavi e valori ===")
 for chiave, valore in prodotto.items():
@@ -193,7 +231,11 @@ config.setdefault("tema", "light")  # NON sovrascrive perché "tema" esiste già
 print(f"Dopo setdefault: {config}")
 
 # Copiare un dizionario (attenzione! = non copia, crea un riferimento):
-config_copia = config.copy()  # Come {...config} in JS (spread)
+# PHP:  $copia = $config;   — in PHP gli array vengono COPIATI automaticamente!
+# JS:   const copia = {...config};  — lo spread ... crea una copia "superficiale"
+# Python: = NON copia! Crea solo un secondo nome per lo STESSO dizionario.
+#         Devi usare .copy() per fare una copia vera:
+config_copia = config.copy()  # Come {...config} in JS
 config_copia["tema"] = "light"
 print(f"Originale: {config['tema']}")   # Rimane "dark"
 print(f"Copia: {config_copia['tema']}")  # "light"

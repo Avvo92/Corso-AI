@@ -4,26 +4,45 @@
  Liste, Slicing, List Comprehension
 ============================================================================
 
- TEORIA: Le Liste Python = Gli Array JavaScript
+ TEORIA: Le Liste Python = Gli Array PHP e JavaScript
 
- Se conosci gli Array JavaScript, le Liste Python sono lo stesso concetto
- con qualche superpotere in più.
+ Se conosci gli array PHP e JavaScript, le Liste Python sono lo stesso
+ concetto con qualche superpotere in più.
 
- Confronto rapido:
+ Confronto a tre — Le operazioni più comuni:
 
-   JavaScript:                    Python:
-   let frutti = ["mela","pera"];  frutti = ["mela", "pera"]
-   frutti.push("banana");         frutti.append("banana")
-   frutti.length;                 len(frutti)
-   frutti[0];                     frutti[0]
-   frutti.splice(1, 1);           frutti.pop(1)
-   frutti.includes("mela");       "mela" in frutti
+   Operazione          PHP                        JavaScript                  Python
+   ─────────────────────────────────────────────────────────────────────────────────
+   Creare              $frutti = ["mela","pera"];  let frutti = ["mela"];      frutti = ["mela", "pera"]
+   Aggiungere          array_push($f, "banana");  frutti.push("banana");      frutti.append("banana")
+   Lunghezza           count($frutti);            frutti.length;              len(frutti)
+   Accedere            $frutti[0];                frutti[0];                  frutti[0]
+   Ultimo elemento     end($frutti);              frutti[frutti.length-1];    frutti[-1]
+   Rimuovere (pos.)    array_splice($f, 1, 1);   frutti.splice(1, 1);       frutti.pop(1)
+   Cercare             in_array("mela", $f);      frutti.includes("mela");   "mela" in frutti
+   Porzione            array_slice($f, 1, 3);     frutti.slice(1, 3);        frutti[1:3]
+
+ Note sui metodi PHP:
+   array_push()   → aggiunge uno o più elementi in fondo all'array
+   count()        → restituisce il numero di elementi (come .length in JS)
+   end()          → sposta il puntatore all'ultimo elemento e lo restituisce
+   array_splice() → rimuove (e opzionalmente sostituisce) elementi dall'array
+   in_array()     → controlla se un valore esiste nell'array (restituisce true/false)
+   array_slice()  → estrae una porzione dell'array (senza modificare l'originale)
+
+ Note sui metodi JavaScript:
+   .push()        → aggiunge un elemento in fondo all'array
+   .length        → proprietà (non metodo!) che dà il numero di elementi
+   .splice(i, n)  → rimuove n elementi dalla posizione i (MODIFICA l'array)
+   .includes()    → controlla se un valore esiste (restituisce true/false)
+   .slice(i, j)   → estrae una porzione dall'indice i a j (SENZA modificare)
 
  IL SUPERPOTERE: lo Slicing
- In JavaScript, per prendere una porzione di array usi .slice(start, end).
+ In PHP usi array_slice($arr, inizio, lunghezza).
+ In JavaScript usi arr.slice(inizio, fine).
  In Python puoi farlo direttamente con le parentesi quadre:
-   lista[inizio:fine]           → come .slice(inizio, fine)
-   lista[inizio:fine:passo]     → non esiste in JS! Puoi saltare elementi.
+   lista[inizio:fine]           → come .slice() in JS / array_slice() in PHP
+   lista[inizio:fine:passo]     → non esiste in JS o PHP! Puoi saltare elementi.
 
  Perché ti serve per l'AI?
  Quando lavorerai con dataset e immagini, lo slicing ti servirà OGNI GIORNO:
@@ -38,34 +57,49 @@
 # PARTE 1: Creare e Manipolare Liste
 # ==========================================================================
 
-# Creare una lista (come un array JS):
+# Creare una lista:
+# PHP:        $frutti = ["mela", "banana", "arancia"];
+# JavaScript: let frutti = ["mela", "banana", "arancia"];
+# Python:
 frutti = ["mela", "banana", "arancia", "kiwi", "pera"]
 print(f"Lista frutti: {frutti}")
-print(f"Numero di elementi: {len(frutti)}")   # len() = .length in JS
+print(f"Numero di elementi: {len(frutti)}")   # len() = count() in PHP, .length in JS
 
-# Accedere agli elementi:
-print(f"\nPrimo elemento: {frutti[0]}")        # Come JS
+# Accedere agli elementi (identico in tutti e tre i linguaggi):
+print(f"\nPrimo elemento: {frutti[0]}")        # Uguale in PHP, JS e Python
 print(f"Ultimo elemento: {frutti[-1]}")         # NOVITÀ! -1 = ultimo elemento
 print(f"Penultimo: {frutti[-2]}")               # -2 = penultimo, ecc.
 
-# In JavaScript per l'ultimo elemento devi fare: frutti[frutti.length - 1]
+# In PHP per l'ultimo: end($frutti) oppure $frutti[count($frutti) - 1]
+# In JS per l'ultimo: frutti[frutti.length - 1] oppure frutti.at(-1)
 # In Python basta: frutti[-1]   ← Molto più comodo!
 
 # Aggiungere elementi:
-frutti.append("mango")            # Come .push() in JS — aggiunge in fondo
-frutti.insert(1, "fragola")       # Inserisce alla posizione 1 (come splice)
+# PHP: array_push($frutti, "mango")  oppure  $frutti[] = "mango"
+# JS:  frutti.push("mango")
+frutti.append("mango")            # Python: .append() aggiunge in fondo
+
+# PHP: array_splice($frutti, 1, 0, ["fragola"])  — inserisce senza rimuovere
+# JS:  frutti.splice(1, 0, "fragola")            — splice(posizione, 0, elemento)
+frutti.insert(1, "fragola")       # Python: .insert(posizione, elemento)
 print(f"\nDopo append e insert: {frutti}")
 
 # Rimuovere elementi:
-frutti.remove("banana")           # Rimuove per VALORE (non esiste in JS)
-ultimo = frutti.pop()             # Rimuove e restituisce l'ultimo (come JS)
-secondo = frutti.pop(1)           # Rimuove e restituisce alla posizione 1
+# PHP: unset($frutti[array_search("banana", $frutti)]); — cerca e rimuove
+# JS:  frutti.splice(frutti.indexOf("banana"), 1);      — trova indice e rimuove
+frutti.remove("banana")           # Python: rimuove per VALORE direttamente!
+
+# PHP: array_pop($frutti)         — rimuove e restituisce l'ultimo
+# JS:  frutti.pop()               — rimuove e restituisce l'ultimo
+ultimo = frutti.pop()             # Python: uguale a JS!
+secondo = frutti.pop(1)           # Rimuove e restituisce alla posizione 1 (solo Python)
 print(f"Rimossi: {ultimo}, {secondo}")
 print(f"Lista attuale: {frutti}")
 
 # Controllare se un elemento esiste:
-# JavaScript:  frutti.includes("mela")
-# Python:      "mela" in frutti
+# PHP:        in_array("mela", $frutti)    — nota: prima il valore, poi l'array!
+# JavaScript: frutti.includes("mela")       — .includes() restituisce true/false
+# Python:     "mela" in frutti              — il più leggibile dei tre!
 
 print(f"\n'mela' è nella lista? {'mela' in frutti}")
 print(f"'banana' è nella lista? {'banana' in frutti}")
@@ -113,6 +147,12 @@ print(f"Massimo: {max(voti)}")
 print(f"Media: {sum(voti) / len(voti):.1f}")
 
 # Ordinare:
+# PHP:  sort($voti)        — MODIFICA l'array originale, non ne crea uno nuovo
+# JS:   voti.sort()        — MODIFICA l'array originale, e attenzione:
+#                             sort() in JS ordina come STRINGHE per default!
+#                             [10, 2, 1].sort() → [1, 10, 2] (sbagliato!)
+#                             Devi fare: .sort((a,b) => a - b) per i numeri.
+# Python: sorted(voti)     — crea una NUOVA lista ordinata (non modifica l'originale)
 voti_ordinati = sorted(voti)           # Crea una NUOVA lista ordinata
 print(f"Ordinati (crescente): {voti_ordinati}")
 
@@ -123,10 +163,16 @@ print(f"Ordinati (decrescente): {voti_decrescenti}")
 # voti.sort()  ← Questo MODIFICA voti, non crea una copia!
 
 # Trovare la posizione di un elemento:
-posizione = voti.index(95)  # Come .indexOf() in JS
+# PHP:  array_search(95, $voti)  — restituisce l'indice, o false se non trovato
+# JS:   voti.indexOf(95)         — restituisce l'indice, o -1 se non trovato
+# Python:
+posizione = voti.index(95)  # Restituisce l'indice. Se non trovato: errore (ValueError)!
 print(f"Il voto 95 è alla posizione: {posizione}")
 
 # Contare le occorrenze:
+# PHP:  array_count_values($array) — restituisce un array associativo con i conteggi
+# JS:   non ha un metodo nativo, devi usare .filter().length o un reduce
+# Python:
 numeri_ripetuti = [1, 2, 3, 2, 1, 2, 4, 2]
 print(f"\nIl 2 appare {numeri_ripetuti.count(2)} volte")
 
@@ -134,9 +180,23 @@ print(f"\nIl 2 appare {numeri_ripetuti.count(2)} volte")
 # PARTE 4: List Comprehension — Il .map() e .filter() di Python
 # ==========================================================================
 
-# In JavaScript per trasformare un array usi:
+# Trasformare o filtrare ogni elemento di una lista.
+#
+# In PHP usi array_map() e array_filter():
+#   $doppi = array_map(fn($n) => $n * 2, $numeri);
+#     // array_map() applica una funzione a ogni elemento dell'array
+#     // fn($n) => $n * 2 è una arrow function che raddoppia ogni numero
+#     // Nota: in PHP il PRIMO argomento è la funzione, il SECONDO l'array!
+#   $pari = array_filter($numeri, fn($n) => $n % 2 === 0);
+#     // array_filter() tiene solo gli elementi per cui la funzione ritorna true
+#
+# In JavaScript usi .map() e .filter():
 #   const doppi = numeri.map(n => n * 2);
+#     // .map() crea un NUOVO array applicando la funzione a ogni elemento
+#     // n => n * 2 è una arrow function: prende n, restituisce n * 2
 #   const pari = numeri.filter(n => n % 2 === 0);
+#     // .filter() crea un NUOVO array con solo gli elementi che passano il test
+#     // n % 2 === 0 controlla se n è pari (resto della divisione per 2 = 0)
 #
 # In Python usi le LIST COMPREHENSION — più concise e "Pythoniche":
 
