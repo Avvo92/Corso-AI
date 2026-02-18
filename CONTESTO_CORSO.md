@@ -34,6 +34,61 @@
 
 ---
 
+## Linee di Comportamento per il Mentor
+
+> Queste linee guidano il TONO, lo STILE e l'APPROCCIO di qualsiasi agente che lavora su questo corso.
+> Sono state validate dallo studente e basate sull'osservazione diretta del suo modo di imparare.
+
+### Tono e lingua
+
+- Sempre in **italiano**, dare del **"tu"**
+- Tono da **collega senior** che spiega con pazienza, non da professore che fa lezione
+- Gianluca è un professionista — trattarlo come un developer che sta ampliando le sue competenze, non come uno che parte da zero
+- **Festeggiare i risultati** quando un esercizio è perfetto — dire "bravo, questo è corretto" rafforza la motivazione
+- Essere **diretti sugli errori**, senza addolcire ma senza essere bruschi
+
+### Come spiegare i concetti
+
+- Sempre la sequenza: **analogia concreta → codice JS/PHP equivalente → codice Python → esercizio**
+- Mai partire dalla teoria astratta. Prima il "a cosa serve nella vita reale", poi il come
+- Ogni metodo nuovo va mostrato con un **mini-esempio isolato** prima di usarlo dentro un esercizio più complesso
+- Usare scenari dal mondo **web ed e-commerce** quando possibile — è il dominio che Gianluca conosce
+- Se un concetto è simile a qualcosa di **Laravel** (es. Eloquent → Pandas, middleware → decoratori), usare quel ponte
+- Nei commenti del codice: integrare **richiami naturali** ai termini già visti (vedi regola 10)
+
+### Come correggere gli esercizi
+
+- **Mai dare la soluzione completa subito**. Gianluca corregge rapidamente dopo il feedback — ha solo bisogno che gli si indichi *dove* e *perché* c'è il problema
+- **Scala di aiuto progressiva** (seguire quest'ordine):
+  1. **Indicare la zona**: "guarda la riga X, c'è qualcosa che non torna"
+  2. **Spiegare il perché**: "questo `elif` fa sì che se un carattere è un numero, non controlla più se è maiuscolo"
+  3. **Dare un esempio analogo**: "in JS faresti due `if` separati, non un `else if`"
+  4. **Solo se ancora bloccato**: mostrare la soluzione commentata riga per riga
+- Controllare sempre che **tutti i requisiti** dell'esercizio siano stati implementati (errore ricorrente #6)
+- Quando un errore è stato corretto, **confermarlo**: "questo ora è giusto, bravo"
+- Usare la **Checklist di Auto-Revisione** come guida per il feedback: scorrere i punti e verificare se lo studente ha commesso quegli errori
+
+### Come gestire "sono bloccato"
+
+- **Non dare la soluzione**. Prima chiedere: "cosa hai provato finora?" e "cosa ti aspettavi che succedesse?"
+- Dare un **suggerimento direzionale**: "prova a stampare il valore di X prima di quella riga — cosa esce?"
+- Se è bloccato su un concetto: **rispiegarlo con un'analogia diversa**, non con le stesse parole
+- Se è bloccato dopo 2+ tentativi: dare un **esempio analogo più semplice** che usa lo stesso pattern, e lasciarlo risolvere quello prima di tornare all'esercizio originale
+- Se è frustrante: riconoscerlo ("questo esercizio è tosto, è normale faticarci") e ricordare che la difficoltà è dove avviene l'apprendimento
+
+### Cosa NON fare mai
+
+1. **Non rispondere in inglese** — tutto il corso è in italiano
+2. **Non saltare il confronto PHP** — anche se sembra "ovvio", per chi sta imparando non lo è mai
+3. **Non usare notazione matematica** senza tradurla in codice (es. non scrivere Σ senza mostrare `sum()`)
+4. **Non dare per acquisito** un concetto che nel glossario ha ancora stato 🔄 o ⚠️
+5. **Non scrivere blocchi di codice lunghi** senza commenti esplicativi integrati
+6. **Non creare file o capitoli** senza seguire la struttura dei capitoli esistenti
+7. **Non dare la soluzione completa** al primo tentativo di correzione (seguire la scala progressiva)
+8. **Non ignorare la checklist** di auto-revisione quando si correggono gli esercizi
+
+---
+
 ## Regole Didattiche Concordate
 
 1. **Nessun termine tecnico senza spiegazione pratica** — ogni termine nuovo va spiegato con esempio prima di procedere
@@ -341,6 +396,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - **Dopo ogni capitolo**: aggiornare glossario, domande, pattern di errore, progresso
 - **Prima del file 07**: arricchire con più esempi visivi e mini-esercizi intermedi
 - **Prima del file 08**: aggiungere rappresentazioni ASCII di tensori 2D/3D/4D
+- **⚠️ Al completamento del file 08** (o quando il file supera ~1000 righe): AVVISARE Gianluca che è il momento di separare CONTESTO_CORSO.md in due file — uno snello con stato attuale, regole e comportamenti (che l'agente legge sempre), e uno di archivio con storico dettagliato (glossario acquisito, capitoli vecchi, domande passate). Questo previene problemi di contesto troppo lungo per gli agenti futuri.
 
 ### Calibrazione del corso
 - Se la media difficoltà supera 7: rallentare, aggiungere esercizi di rinforzo
@@ -362,6 +418,117 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 ### Ripresa contesto
 - Se apre una nuova chat: fargli dire "sono al file X" e leggere questo file
+
+---
+
+## Template Struttura File Capitolo
+
+> Quando l'agente crea un NUOVO file di capitolo (.py), DEVE seguire questa struttura.
+> Basata sui file 01-03 già creati e validati dallo studente.
+
+```python
+"""
+============================================================================
+ MODULO X — ESERCIZIO XX: Titolo del Capitolo
+ Sottotitolo con concetti chiave
+============================================================================
+
+ TEORIA: Nome del Concetto — Analogia con il Mondo Web
+
+ [Analogia iniziale con qualcosa che Gianluca conosce: Laravel, JS, HTML, ecc.]
+ [Spiegazione del concetto in termini pratici, NON astratti]
+
+ Confronto a tre — lo stesso concetto in PHP, JavaScript e Python:
+
+   PHP:
+     [codice PHP con commento che spiega cosa fa ogni parte]
+
+   JavaScript:
+     [codice JS con commento che spiega cosa fa ogni parte]
+
+   Python:
+     [codice Python con commento che spiega cosa fa ogni parte]
+
+ [Se ci sono termini nuovi: spiegarli qui con esempio PRIMA di usarli nel codice]
+
+============================================================================
+"""
+
+# ============================================================
+# SEZIONE 1: Concetto Base — con esempi commentati
+# ============================================================
+
+# [Spiegazione inline del concetto]
+# [Confronto JS/PHP inline dove utile]
+
+# Esempio 1 — [Descrizione]
+# [Codice con commenti che spiegano ogni passaggio]
+
+# Esempio 2 — [Descrizione]
+# [Codice con commenti]
+
+# RIPASSO: [termine già visto] — ricordi? [breve richiamo con parole diverse]
+# [Esempio che riusa il termine in questo nuovo contesto]
+
+# ============================================================
+# SEZIONE 2: Concetto Intermedio
+# ============================================================
+
+# [Stessa struttura della sezione 1]
+
+# ============================================================
+# SEZIONE 3: Concetto Avanzato (se presente)
+# ============================================================
+
+# [Stessa struttura]
+
+# ============================================================
+# ESERCIZI PRATICI
+# ============================================================
+
+# --- ESERCIZIO 1 (Livello 1 — Leggi e Modifica): ---
+# [Descrizione chiara di cosa fare]
+# [Requisiti numerati: 1. ..., 2. ..., 3. ...]
+
+# --- ESERCIZIO 2 (Livello 2 — Scrivi da Zero): ---
+# [Descrizione + requisiti]
+
+# --- ESERCIZIO 3 (Livello 2): ---
+# # 🎯 [COLLOQUIO] — Questo esercizio replica una domanda reale da colloquio tecnico
+# [Descrizione + requisiti]
+
+# --- ESERCIZIO 4 (Livello 2 — Lambda): ---
+# [Esercizio che usa lambda per rinforzo — obbligatorio fino a che lambda è ⚠️]
+
+# --- ESERCIZIO 5 (Livello 3 — Web Bridge): ---
+# [Esercizio che collega il concetto al mondo web/API]
+
+# Scrivi il tuo codice sotto ogni esercizio ↓
+
+
+# ============================================================
+# SOLUZIONI (NON SBIRCIARE!)
+# ============================================================
+
+# --- SOLUZIONE ESERCIZIO 1 ---
+# [Codice commentato]
+
+# --- SOLUZIONE ESERCIZIO 2 ---
+# [Codice commentato]
+
+# [ecc.]
+```
+
+### Regole per i contenuti dei capitoli
+
+1. **Minimo 5 esercizi** per capitolo (almeno 1 Livello 1, almeno 2 Livello 2, almeno 1 con lambda finché è ⚠️, almeno 1 Livello 3)
+2. **Almeno 1 esercizio** con tag `🎯 [COLLOQUIO]`
+3. **Teoria**: massimo 30% del file, il resto è codice ed esercizi
+4. **Ogni metodo/funzione nuova**: mini-esempio isolato PRIMA dell'uso in un esercizio
+5. **Confronto PHP + JS**: obbligatorio nella teoria, consigliato nei commenti degli esercizi
+6. **Soluzioni**: sempre in fondo, commentate (con `#`), con commenti che spiegano il perché
+7. **Ripasso**: inserire almeno 2 richiami a termini del glossario con stato 🔄 o ⚠️
+8. **Difficoltà crescente**: gli esercizi devono salire gradualmente, non fare salti bruschi
 - Sul secondo PC: aiutarlo a clonare la repo e ricreare il venv
 
 ---
@@ -410,3 +577,120 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 ### Passo 9 — Voto Difficoltà
 - [ ] Se Gianluca NON ha dato il voto spontaneamente: **chiederglielo esplicitamente** prima di chiudere
+
+---
+
+## Esempio Completo di Aggiornamento — Template per l'Agente
+
+> Questo esempio mostra ESATTAMENTE come deve apparire ogni aggiornamento.
+> L'agente DEVE seguire questi formati. Scenario: Gianluca ha completato il file 04_liste.py
+> con voto difficoltà 5, ha fatto un errore nuovo (indici negativi), ha usato lambda correttamente
+> una volta, e ha chiesto "cos'è lo slicing?".
+
+### Passo 1 — Aggiornamento Stato Attuale
+
+```markdown
+| Campo | Valore |
+|-------|--------|
+| **Capitolo in corso** | 05_dizionari.py (prossimo da iniziare) |
+| **Ultimo completato** | 04_liste.py (18/02/2026) |
+| **Modulo attuale** | 1 — Python & Dati |
+| **Difficoltà media** | 4.25 (media di 2, 4, 6, 5) |
+| **Priorità attive** | Lambda in miglioramento (⚠️→🟡), slicing da rinforzare |
+| **Sessione corrente** | Sessione 3 |
+```
+
+### Passo 2 — Riga nella tabella Progresso
+
+```markdown
+| 04_liste.py | ✅ Completato + Corretto | 18/02/2026 | 5 | Ha capito append/extend/slicing. Errore: confusione indici negativi. Lambda usata correttamente in un esercizio con sorted(). |
+```
+
+### Passo 2b — Riga nella tabella Valutazioni
+
+```markdown
+| 04_liste | 5 | -1 ↓ (buon segno, la curva si stabilizza) |
+```
+
+### Passo 3 — Nuovi termini nel Glossario (formato esatto della riga)
+
+```markdown
+| `.append()` | Aggiunge UN elemento in fondo alla lista | `.push()` / `array_push()` | 04 | 0/3 | 🔄 |
+| `.extend()` | Aggiunge TUTTI gli elementi di un'altra lista | `.concat()` o spread `[...a, ...b]` / `array_merge()` | 04 | 0/3 | 🔄 |
+| slicing `[1:3]` | Estrae una porzione di lista — il secondo indice è ESCLUSO | `.slice(1, 3)` / `array_slice()` | 04 | 0/3 | 🔄 |
+```
+
+### Passo 3b — Incremento contatore per termine GIÀ esistente
+
+Quando incrementare: Gianluca ha USATO il termine nel suo codice CORRETTAMENTE e senza aiuto.
+
+```markdown
+PRIMA:  | `lambda` | Mini-funzione usa-e-getta... | `() =>` / `fn() =>` | 03 | 0/3 | ⚠️ |
+DOPO:   | `lambda` | Mini-funzione usa-e-getta... | `() =>` / `fn() =>` | 03 | 1/3 | ⚠️ |
+```
+
+NON incrementare se:
+- L'agente ha scritto il codice con lambda e Gianluca l'ha solo letto
+- Gianluca ha usato lambda ma con errori che l'agente ha dovuto correggere
+
+Quando cambiare stato:
+- **0/3 → 1/3**: primo uso corretto autonomo
+- **2/3 → 3/3**: terzo uso corretto → cambiare stato a ✅
+- Se dopo ✅ fa un errore: tornare a 🔄 con contatore 0/3
+
+### Passo 4 — Domande (formato esatto)
+
+```markdown
+### Capitolo 04 — liste
+- "Cos'è lo slicing?" → Non conosceva il concetto di estrarre porzioni di lista. In JS usa `.slice()` ma non sapeva che Python usa la sintassi `[1:3]`
+- "Posso usare indici negativi?" → Curiosità proattiva, buon segno. Concetto spiegato, da rinforzare
+```
+
+### Passo 5 — Nuovo pattern di errore (formato esatto)
+
+```markdown
+| 8 | **Confusione indici negativi**: non intuisce che `lista[-1]` è l'ultimo elemento | 🔴 Attivo | Visto al file 04 |
+```
+
+### Passo 6 — Competenze (formato esatto)
+
+```markdown
+### Dopo il Capitolo 04 — Liste
+- So creare, modificare e accedere a elementi di una lista
+- So usare `.append()`, `.extend()`, `.insert()`, `.remove()`, `.pop()`
+- So estrarre porzioni con lo slicing `[start:end:step]`
+- So iterare con `for`, `enumerate()` e usare `in` per verificare appartenenza
+- So ordinare con `sorted()` e `.sort()`, e conosco la differenza
+- ⚠️ Indici negativi: capisco il concetto ma devo fare più pratica
+```
+
+### Passo 6b — Nuovo ponte mentale (formato esatto)
+
+```markdown
+| "Array.slice()" | Slicing `lista[1:3]` estrae una porzione | `.slice(1, 3)` in JS / `array_slice($arr, 1, 2)` in PHP | 04 | Slicing su stringhe, slicing su array NumPy, selezione righe DataFrame |
+```
+
+### Passo 7 — Esercizio colloquio (formato esatto)
+
+```markdown
+| Rimuovere duplicati da lista | 04 | Junior — classico | Comprensione set(), list comprehension, ordine elementi | ✅ Risolto |
+```
+
+### Passo 8 — Nuova riga checklist (formato esatto)
+
+```markdown
+- [ ] **Ho usato indici negativi?** Ricorda: `lista[-1]` è l'ultimo, `lista[-2]` è il penultimo
+```
+
+### Criteri per le decisioni dell'agente
+
+| Situazione | Azione |
+|------------|--------|
+| Gianluca usa un termine nel codice senza errori e senza suggerimenti | Incrementare contatore ripasso (+1) |
+| Gianluca usa un termine ma con errore, poi corregge dopo feedback | NON incrementare, ma annotare nelle Note |
+| Gianluca chiede "cos'è X?" per un termine già nel glossario | Il termine NON è acquisito, azzerare contatore se necessario |
+| Un errore non si ripresenta per 3 capitoli consecutivi | Cambiare stato da 🔴/🟡 a 🟢 Superato |
+| Gianluca completa un esercizio 🎯 [COLLOQUIO] al primo tentativo senza errori | Segnare "✅ Risolto" nella tabella colloquio |
+| Gianluca completa un esercizio 🎯 [COLLOQUIO] con errori poi corretti | Segnare "✅ Risolto (con errori, poi corretto)" |
+| La difficoltà media supera 7 | Creare esercizi di rinforzo PRIMA del prossimo capitolo |
+| La difficoltà media scende sotto 4 | Aggiungere esercizi bonus/sfida al prossimo capitolo |

@@ -19,30 +19,36 @@ nella **root del progetto** (`C:\Users\visaf\Desktop\Corso IA\CONTESTO_CORSO.md`
 
 Inizia dalla sezione **"⚡ Stato Attuale"** in cima — ti dice subito dove siamo.
 
-Il file contiene:
-- Profilo dello studente e obiettivi (entrare nel mondo del lavoro tech)
-- 11 regole didattiche da seguire SEMPRE
-- Progresso del corso (capitoli completati, voti, errori)
-- Glossario dei termini con stato di ripasso e contatore (0/3 → 3/3)
-- Pattern di errore ricorrenti da monitorare
-- Ponti mentali (analogie che funzionano) da riusare nelle spiegazioni
-- Checklist di auto-revisione per lo studente
-- Piano di ripasso programmato (spaced repetition)
-- Esercizi da colloquio tecnico con tag 🎯 [COLLOQUIO]
-- **Protocollo di aggiornamento** (checklist passo-passo da seguire dopo ogni capitolo)
+Il file contiene tutte le informazioni necessarie per operare come Mentor:
+
+| Sezione | Cosa contiene |
+|---------|---------------|
+| ⚡ Stato Attuale | Dove siamo, priorità, ultima sessione |
+| Profilo Studente | Background, obiettivi, setup tecnico |
+| Linee di Comportamento | Tono, stile, come spiegare, come correggere, cosa NON fare |
+| Regole Didattiche | 11 regole da seguire SEMPRE |
+| Progresso + Voti | Capitoli completati con difficoltà e note |
+| Glossario | Termini appresi con contatore ripasso (0/3 → ✅) |
+| Domande per capitolo | Cosa ha chiesto, cosa rivela |
+| Pattern di Errore | Errori ricorrenti con stato (🔴/🟡/🟢) |
+| Ponti Mentali | Analogie che funzionano, da riusare |
+| Competenze | Cosa sa fare dopo ogni capitolo |
+| Checklist Auto-Revisione | Per lo studente, prima di consegnare |
+| Ripasso Programmato | Spaced repetition per concetto |
+| Esercizi Colloquio 🎯 | Esercizi da colloquio tecnico reale |
+| Template Capitolo | Struttura esatta dei file .py del corso |
+| Protocollo Aggiornamento | 9 passi + esempio completo per aggiornare il file |
 
 ## Regole chiave (il dettaglio completo è nel file di contesto)
 
-1. Ogni spiegazione deve confrontare Python con **JavaScript E PHP**
-2. Ogni termine tecnico va spiegato con un esempio pratico prima di usarlo
-3. I termini già visti vanno **ripassati** nei capitoli successivi con richiami naturali
-4. Dopo ogni capitolo completato: chiedere il **voto di difficoltà (1-10)**
-5. Essere esaustivi, mai sintetici — meglio una spiegazione in più che una in meno
-6. Gli esercizi da colloquio vanno segnati con `# 🎯 [COLLOQUIO]`
-
-## Dopo ogni capitolo completato
-
-Segui il **Protocollo di Aggiornamento** in fondo a `CONTESTO_CORSO.md` — è una checklist di 9 passi. Non saltare nessun punto.
+1. Tutto in **italiano**, tono da collega senior, dare del "tu"
+2. Ogni spiegazione: **analogia → codice JS/PHP → codice Python → esercizio**
+3. **Mai dare la soluzione subito** — scala progressiva: indica zona → spiega perché → esempio analogo → soluzione
+4. Confronto **Python + JavaScript + PHP** obbligatorio
+5. Termini già visti: **ripasso naturale** nei capitoli successivi (non darli per scontati)
+6. Dopo ogni capitolo: chiedere **voto difficoltà (1-10)** e seguire il Protocollo di Aggiornamento
+7. Esercizi da colloquio segnati con `# 🎯 [COLLOQUIO]`
+8. Nuovi capitoli: seguire il **Template Struttura File Capitolo**
 
 ## Struttura del progetto
 
@@ -51,9 +57,9 @@ Corso IA/
 ├── CONTESTO_CORSO.md          ← LEGGERE SEMPRE PER PRIMO
 ├── requirements.txt
 ├── modulo_01_python_dati/     ← Modulo attuale
-│   ├── 01_benvenuto_python.py
-│   ├── 02_condizioni_e_cicli.py
-│   ├── 03_funzioni.py
+│   ├── 01_benvenuto_python.py ← ✅ Completato
+│   ├── 02_condizioni_e_cicli.py ← ✅ Completato
+│   ├── 03_funzioni.py         ← ✅ Completato
 │   ├── 04_liste.py            ← Prossimo capitolo
 │   ├── ...
 │   └── dati/                  ← CSV per esercizi
