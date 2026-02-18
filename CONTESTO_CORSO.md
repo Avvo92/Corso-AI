@@ -2,6 +2,23 @@
 
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
+>
+> **Ultimo aggiornamento**: 17/02/2026
+
+---
+
+## ⚡ Stato Attuale — Leggere Per Primo
+
+| Campo | Valore |
+|-------|--------|
+| **Capitolo in corso** | 04_liste.py (prossimo da iniziare) |
+| **Ultimo completato** | 03_funzioni.py (17/02/2026) |
+| **Modulo attuale** | 1 — Python & Dati |
+| **Difficoltà media** | 4.0 (trend: +2 per capitolo, monitorare) |
+| **Priorità attive** | Lambda da rinforzare (⚠️), lettura completa delle consegne (🔴) |
+| **Sessione corrente** | Sessione 2 |
+
+> **Per l'agente**: dopo aver letto questa tabella, leggi le "Regole Didattiche" e i "Pattern di Errore" prima di produrre qualsiasi contenuto. Aggiorna questa tabella ad ogni fine capitolo.
 
 ---
 
@@ -12,6 +29,7 @@
 - **Sistema operativo**: Windows 10 (usa Git Bash come terminale in Cursor)
 - **Python installato**: 3.14.3
 - **IDE**: Cursor
+- **Version control**: Git + GitHub (il corso è già in una repository)
 - **Obiettivo finale**: Entrare nel mondo del lavoro tech con competenze solide in Python, AI/ML e web development. Il progetto finale deve essere il **diamante del portfolio**: una full web app (React + Laravel + FastAPI) con IA integrata — bella, reattiva, funzionale — da mostrare ai recruiter come prova concreta di competenza.
 
 ---
@@ -28,6 +46,7 @@
 8. **Suggerimenti autocomplete disattivati** durante lo studio per favorire la memorizzazione
 9. **Voto difficoltà obbligatorio**: dopo ogni capitolo Gianluca deve dare un voto da 1 a 10. Se dimentica, **ricordarglielo esplicitamente**
 10. **Ripasso intelligente dei termini appresi**: nei capitoli successivi, quando si usa un termine già visto (es. `enumerate`, `lambda`, `*args`), non limitarsi a usarlo — reinserire una breve spiegazione contestuale come se fosse un "richiamo naturale". Non deve sembrare una ripetizione forzata, ma un promemoria organico integrato nel flusso della lezione. Esempio: invece di scrivere solo `sorted(lista, key=lambda x: x["prezzo"])`, aggiungere un commento tipo: *"Usiamo `sorted()` — ricordi? Crea una NUOVA lista ordinata senza modificare l'originale — con una `lambda` come chiave: una mini-funzione usa-e-getta che dice 'ordina in base a questo campo'"*
+11. **Tag `[COLLOQUIO]` sugli esercizi**: gli esercizi che replicano domande reali da colloqui tecnici devono essere segnati con il tag `# 🎯 [COLLOQUIO]` nel commento. Questo aiuta Gianluca a sapere quali esercizi meritano attenzione extra e pratica ripetuta, perché potrebbe trovarseli davanti in un'intervista reale.
 
 ---
 
@@ -278,6 +297,43 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 ---
 
+## Esercizi da Colloquio 🎯
+
+> Registro degli esercizi che replicano domande reali da colloqui tecnici.
+> Gianluca dovrebbe saperli risolvere a memoria, senza aiuto, sotto pressione.
+> Consiglio: riprovare quelli segnati ⚠️ una volta a settimana finché diventano automatici.
+
+### Già incontrati
+
+| Esercizio | Capitolo | Tipo di colloquio | Cosa testa | Stato |
+|-----------|----------|-------------------|------------|-------|
+| FizzBuzz | 02 | Junior/Mid — classico filtro iniziale | Modulo `%`, condizionali, ordine delle condizioni (15 prima di 3 e 5) | ✅ Risolto (con errore su range, poi corretto) |
+| Validatore password | 02 | Junior — string processing | Iterazione carattere per carattere, controlli multipli indipendenti | ✅ Risolto (con errori su elif e == True, poi corretti) |
+| Funzione con *args e return multiplo | 03 | Junior/Mid — comprensione funzioni | Parametri variabili, tuple unpacking, aggregazioni (min/max/media) | ✅ Risolto |
+| Ordinamento con sorted + lambda | 03 | Mid — manipolazione dati | Lambda come key function, ordinamento personalizzato | ✅ Risolto (mancava reverse=True, poi corretto) |
+| Costruire una risposta API JSON-like | 03 | Junior/Mid — backend developer | Dizionari, isinstance, struttura dati consistente | ✅ Risolto (count come stringa, poi corretto) |
+
+### Cosa aspettarsi nei prossimi capitoli
+
+| Capitolo | Esercizi colloquio previsti |
+|----------|-----------------------------|
+| 04 — Liste | Rimuovere duplicati, invertire una lista senza `.reverse()`, trovare l'elemento più frequente, two-sum problem |
+| 05 — Dizionari | Contare frequenze di parole, raggruppare dati per chiave, merge di due dizionari, anagrammi |
+| 06 — File CSV | Parsing manuale di CSV, trovare anomalie nei dati, aggregazioni per gruppo |
+| 07 — NumPy | Normalizzazione di un array, distanza euclidea, operazioni su matrici |
+| 09 — Pandas | Pulizia dati con valori mancanti, group by + aggregazione, pivot table |
+| Mod. 2 — ML | Train/test split manuale, calcolo accuratezza, feature scaling |
+| Mod. 4 — DL | Spiegare backpropagation a parole, costruire un modello semplice, leggere una loss curve |
+
+### Come ripassarli
+
+1. Una volta a settimana, scegli 2-3 esercizi dalla lista "Già incontrati"
+2. Riscrivili da zero su un file vuoto, senza guardare la soluzione
+3. Cronometrati: un junior ha circa 15-20 minuti per esercizio in un colloquio
+4. Se non riesci entro il tempo, ristudia il capitolo e riprova dopo 2 giorni
+
+---
+
 ## Note per il Mentor
 
 ### Promemoria automatici
@@ -307,3 +363,50 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 ### Ripresa contesto
 - Se apre una nuova chat: fargli dire "sono al file X" e leggere questo file
 - Sul secondo PC: aiutarlo a clonare la repo e ricreare il venv
+
+---
+
+## Protocollo di Aggiornamento — Checklist per l'Agente
+
+> Dopo OGNI capitolo completato e corretto, l'agente DEVE eseguire tutti questi aggiornamenti
+> in un'unica operazione. Non saltare nessun punto.
+
+### Passo 1 — Stato Attuale (sezione in cima)
+- [ ] Aggiornare "Capitolo in corso" al prossimo file
+- [ ] Aggiornare "Ultimo completato" con nome file e data
+- [ ] Ricalcolare "Difficoltà media" con il nuovo voto
+- [ ] Aggiornare "Priorità attive" se cambiate
+- [ ] Aggiornare "Ultimo aggiornamento" con la data odierna
+
+### Passo 2 — Progresso
+- [ ] Nella tabella Progresso: cambiare stato a ✅, inserire data e voto difficoltà
+- [ ] Nella tabella Valutazioni: aggiungere riga con voto e trend
+- [ ] Scrivere le Note sintetiche (errori fatti, cosa ha capito, cosa resta debole)
+
+### Passo 3 — Glossario
+- [ ] Aggiungere i NUOVI termini introdotti nel capitolo (con stato 🔄 e contatore 0/3)
+- [ ] Per i termini GIÀ nel glossario che sono stati usati/ripassati: incrementare contatore (es. 0/3 → 1/3)
+- [ ] Se un termine raggiunge 3/3: cambiare stato a ✅ Acquisito
+
+### Passo 4 — Domande
+- [ ] Aggiungere sezione "Capitolo XX — nome" con le domande fatte durante la sessione
+- [ ] Per ogni domanda: annotare cosa rivela (concetto debole, curiosità, buon istinto)
+
+### Passo 5 — Pattern di Errore
+- [ ] Nuovi errori: aggiungere riga con stato 🔴
+- [ ] Errori visti ma corretti: aggiornare stato a 🟡
+- [ ] Errori non più ripetuti per 3+ capitoli: aggiornare stato a 🟢
+
+### Passo 6 — Competenze e Ponti
+- [ ] Aggiungere sezione "Dopo il Capitolo XX" in "Cosa So Fare Adesso"
+- [ ] Se un'analogia ha funzionato particolarmente bene: aggiungerla ai "Ponti Mentali"
+
+### Passo 7 — Colloquio e Ripasso
+- [ ] Se il capitolo conteneva esercizi con tag 🎯 [COLLOQUIO]: aggiungerli alla tabella "Già incontrati"
+- [ ] Aggiornare la tabella "Ripasso Programmato" se un concetto è stato rivisto
+
+### Passo 8 — Checklist Auto-Revisione
+- [ ] Se è emerso un NUOVO tipo di errore: aggiungere un punto alla checklist di Gianluca
+
+### Passo 9 — Voto Difficoltà
+- [ ] Se Gianluca NON ha dato il voto spontaneamente: **chiederglielo esplicitamente** prima di chiudere
