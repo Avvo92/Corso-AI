@@ -1,7 +1,7 @@
 """
 ============================================================================
  MODULO 1 — ESERCIZIO 04: Le Liste
- Liste, Slicing, List Comprehension
+ Liste, Slicing, List Comprehension, Lambda con le Liste
 ============================================================================
 
  TEORIA: Le Liste Python = Gli Array PHP e JavaScript
@@ -50,12 +50,38 @@
    - Selezionare un pezzo di un'immagine
    - Dividere i dati in training e test
 
+ LAMBDA — Ripasso rapido:
+ Ricordi le lambda dal capitolo 03? Sono mini-funzioni usa-e-getta, di una
+ sola riga. In questo capitolo le userai MOLTO con le liste:
+   - sorted(lista, key=lambda x: ...) per ordinamenti personalizzati
+   - filter(lambda x: ..., lista)     per filtrare elementi
+   - map(lambda x: ..., lista)        per trasformare elementi
+
+ In JavaScript sarebbero le arrow function:
+   lista.sort((a, b) => a.prezzo - b.prezzo)
+   lista.filter(x => x > 10)
+   lista.map(x => x * 2)
+
+ In PHP sarebbero le short closure:
+   usort($lista, fn($a, $b) => $a['prezzo'] - $b['prezzo'])
+   array_filter($lista, fn($x) => $x > 10)
+   array_map(fn($x) => $x * 2, $lista)
+
+ Stessa idea, sintassi diversa. Vedile in azione negli esempi qui sotto.
+
 ============================================================================
 """
 
 # ==========================================================================
 # PARTE 1: Creare e Manipolare Liste
 # ==========================================================================
+
+# RIPASSO — f-string: ricordi? Sono le stringhe con la f davanti che ti
+# permettono di mettere variabili dentro {} — come i template literal
+# `${variabile}` in JS o "$variabile" in PHP.
+
+# RIPASSO — len(): è una FUNZIONE (non un metodo!), si scrive len(lista),
+# non lista.len(). In JS usi .length (proprietà), in PHP usi count() (funzione).
 
 # Creare una lista:
 # PHP:        $frutti = ["mela", "banana", "arancia"];
@@ -112,7 +138,9 @@ numeri = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 print(f"\nLista originale: {numeri}")
 
 # Sintassi: lista[inizio:fine]
-# ATTENZIONE: 'fine' è ESCLUSO (come .slice() in JS)
+# RIPASSO — ATTENZIONE: 'fine' è ESCLUSO! Proprio come range() — ricordi
+# dal capitolo 02 che range(1, 20) arriva a 19? Stessa regola qui:
+# lista[2:5] prende gli indici 2, 3, 4 — il 5 è escluso.
 
 print(f"\nnumeri[2:5]   = {numeri[2:5]}")     # [2, 3, 4] — dal 2 al 4
 print(f"numeri[:4]    = {numeri[:4]}")         # [0, 1, 2, 3] — dall'inizio al 3
@@ -259,12 +287,101 @@ print(f"Nome prima riga: {tabella_voti[0][0]}")    # "Marco"
 print(f"Secondo voto di Laura: {tabella_voti[1][2]}")  # 88
 
 # Iterare su una matrice:
+# RIPASSO — enumerate(): ricordi? Dà indice + valore insieme, come
+# .forEach((val, index) => ...) in JS. Perfetto per numerare le righe.
 print("\n=== Pagella ===")
-for riga in tabella_voti:
+for i, riga in enumerate(tabella_voti):
     nome = riga[0]
     voti = riga[1:]  # tutti gli elementi tranne il primo (slicing!)
     media = sum(voti) / len(voti)
-    print(f"{nome}: voti {voti}, media {media:.1f}")
+    print(f"Studente {i + 1}: {nome} — voti {voti}, media {media:.1f}")
+
+
+# ==========================================================================
+# PARTE 6: Lambda con le Liste — Rinforzo
+# ==========================================================================
+
+# Le lambda sono mini-funzioni usa-e-getta. In JS sono le arrow function
+# (() =>), in PHP sono le short closure (fn() =>). In Python: lambda x: ...
+#
+# Perché le rivediamo qui? Perché con le LISTE diventano potentissime.
+# Tre usi principali: sorted(), filter(), map().
+
+# --- USO 1: sorted() con lambda ---
+# Ricordi sorted() dal capitolo 03? Crea una NUOVA lista ordinata.
+# Con una lambda come "key", decidi TU in base a cosa ordinare.
+
+prodotti = [
+    {"nome": "Mouse", "prezzo": 25.99},
+    {"nome": "Tastiera", "prezzo": 49.99},
+    {"nome": "Monitor", "prezzo": 199.99},
+    {"nome": "Cuffie", "prezzo": 35.00},
+    {"nome": "Webcam", "prezzo": 59.90},
+]
+
+# Ordinare per prezzo (crescente):
+# La lambda dice: "per ogni prodotto p, usa p["prezzo"] come valore di confronto"
+# JS equivalente:  prodotti.sort((a, b) => a.prezzo - b.prezzo)
+# PHP equivalente: usort($prodotti, fn($a, $b) => $a['prezzo'] <=> $b['prezzo'])
+per_prezzo = sorted(prodotti, key=lambda p: p["prezzo"])
+
+print("\n=== Prodotti per prezzo (crescente) ===")
+for p in per_prezzo:
+    print(f"  {p['nome']}: {p['prezzo']:.2f}€")
+
+# Ordinare per nome (alfabetico):
+per_nome = sorted(prodotti, key=lambda p: p["nome"])
+print("\n=== Prodotti per nome (A-Z) ===")
+for p in per_nome:
+    print(f"  {p['nome']}: {p['prezzo']:.2f}€")
+
+# Ordinare per prezzo (decrescente) — aggiungi reverse=True:
+piu_cari = sorted(prodotti, key=lambda p: p["prezzo"], reverse=True)
+print("\n=== Prodotti più cari prima ===")
+for p in piu_cari:
+    print(f"  {p['nome']}: {p['prezzo']:.2f}€")
+
+# --- USO 2: filter() con lambda ---
+# filter() tiene solo gli elementi per cui la lambda restituisce True.
+# Restituisce un oggetto "filter" — lo avvolgiamo con list() per vederlo.
+#
+# JS equivalente:  prodotti.filter(p => p.prezzo < 50)
+# PHP equivalente: array_filter($prodotti, fn($p) => $p['prezzo'] < 50)
+
+economici = list(filter(lambda p: p["prezzo"] < 50, prodotti))
+print("\n=== Prodotti sotto 50€ (filter + lambda) ===")
+for p in economici:
+    print(f"  {p['nome']}: {p['prezzo']:.2f}€")
+
+# Lo stesso risultato con list comprehension (spesso più leggibile):
+economici_v2 = [p for p in prodotti if p["prezzo"] < 50]
+# Entrambi funzionano! La list comprehension è più "Pythonica",
+# ma filter + lambda è utile quando passi funzioni ad altre funzioni.
+
+# --- USO 3: map() con lambda ---
+# map() applica la lambda a OGNI elemento e crea un nuovo risultato.
+#
+# JS equivalente:  prodotti.map(p => p.nome)
+# PHP equivalente: array_map(fn($p) => $p['nome'], $prodotti)
+
+solo_nomi = list(map(lambda p: p["nome"], prodotti))
+print(f"\nSolo i nomi: {solo_nomi}")
+
+# Aggiungere l'IVA a tutti i prezzi:
+con_iva = list(map(lambda p: {**p, "prezzo_iva": round(p["prezzo"] * 1.22, 2)}, prodotti))
+# {**p, "prezzo_iva": ...} crea un NUOVO dizionario con tutto quello che c'era in p
+# PIÙ un campo "prezzo_iva". Il ** è come lo spread operator (...) in JS!
+print("\n=== Prezzi con IVA (map + lambda) ===")
+for p in con_iva:
+    print(f"  {p['nome']}: {p['prezzo']:.2f}€ → con IVA: {p['prezzo_iva']:.2f}€")
+
+# --- RIEPILOGO LAMBDA CON LE LISTE ---
+# sorted(lista, key=lambda x: ...)  → ordina in base a un criterio
+# filter(lambda x: ..., lista)      → tiene solo chi soddisfa la condizione
+# map(lambda x: ..., lista)         → trasforma ogni elemento
+#
+# Ricorda: filter() e map() restituiscono oggetti "pigri" — usa list() per
+# ottenere una lista vera. Oppure usa le list comprehension che sono più leggibili!
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
@@ -296,34 +413,135 @@ for riga in tabella_voti:
 # ...
 
 
-# ESERCIZIO 3 (Medio):
+# 🎯 [COLLOQUIO] — ESERCIZIO 3 (Medio — Rimuovi Duplicati):
+# Questo esercizio replica una domanda CLASSICA dei colloqui tecnici.
+#
 # Scrivi una funzione 'rimuovi_duplicati(lista)' che prende una lista e
 # restituisce una nuova lista SENZA elementi duplicati, mantenendo l'ordine.
 # Es: rimuovi_duplicati([3, 1, 2, 3, 1, 4]) → [3, 1, 2, 4]
+#
+# Requisiti:
+#   1. La funzione deve avere una docstring (ricordi? """ ... """)
+#   2. L'ordine originale deve essere mantenuto
+#   3. La lista originale NON deve essere modificata
+#   4. Testa con: [3, 1, 2, 3, 1, 4] e con una lista vuota []
+#
 # Suggerimento: usa una lista di appoggio e 'if elemento not in ...'
 #
 # Scrivi il tuo codice qui sotto:
 # ...
 
 
-# ESERCIZIO 4 (Sfida):
-# Crea una funzione 'appiattisci(lista_di_liste)' che prende una lista
-# di liste e restituisce una singola lista con tutti gli elementi.
-# Es: appiattisci([[1,2], [3,4], [5]]) → [1, 2, 3, 4, 5]
-# Prova a farlo sia con un ciclo normale, sia con una list comprehension.
+# ESERCIZIO 4 (Medio — Lambda con sorted):
+# Hai questa lista di studenti:
+#   studenti = [
+#       {"nome": "Marco", "voto": 72, "eta": 22},
+#       {"nome": "Laura", "voto": 95, "eta": 20},
+#       {"nome": "Giulia", "voto": 88, "eta": 23},
+#       {"nome": "Luca", "voto": 65, "eta": 21},
+#       {"nome": "Anna", "voto": 91, "eta": 22},
+#   ]
+#
+# Usando sorted() con una lambda come key:
+#   a) Ordina per voto decrescente (i migliori prima) e stampa la classifica
+#   b) Ordina per età crescente e stampa
+#   c) Ordina per nome alfabetico e stampa
+#   d) Usa filter() con una lambda per trovare chi ha voto >= 80
+#   e) Usa map() con una lambda per creare una lista di sole stringhe
+#      tipo: ["Marco: 72", "Laura: 95", ...]
 #
 # Scrivi il tuo codice qui sotto:
 # ...
 
 
-# ESERCIZIO 5 (Sfida — Preview AI):
+# ESERCIZIO 5 (Medio — Lambda con filter e map):
+# Hai questa lista di prodotti del tuo e-commerce:
+#   catalogo = [
+#       {"nome": "T-shirt", "prezzo": 19.99, "disponibile": True},
+#       {"nome": "Jeans", "prezzo": 59.99, "disponibile": False},
+#       {"nome": "Sneakers", "prezzo": 89.99, "disponibile": True},
+#       {"nome": "Cappello", "prezzo": 14.99, "disponibile": True},
+#       {"nome": "Giacca", "prezzo": 129.99, "disponibile": False},
+#   ]
+#
+# a) Usa filter + lambda per ottenere solo i prodotti disponibili
+# b) Usa filter + lambda per ottenere solo i prodotti sotto 50€
+# c) Usa map + lambda per creare una lista di stringhe tipo:
+#    "T-shirt — 19.99€ (disponibile)" o "Jeans — 59.99€ (esaurito)"
+# d) Usa sorted + lambda per ordinare per prezzo crescente
+# e) Combina: prendi solo i disponibili, ordinali per prezzo, e stampa
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+
+
+# 🎯 [COLLOQUIO] — ESERCIZIO 6 (Sfida — Inverti senza .reverse()):
+# Questo è un altro classico da colloquio tecnico.
+#
+# Scrivi una funzione 'inverti_lista(lista)' che inverte l'ordine degli
+# elementi SENZA usare .reverse(), reversed() o lo slicing [::-1].
+# Es: inverti_lista([1, 2, 3, 4, 5]) → [5, 4, 3, 2, 1]
+#
+# Requisiti:
+#   1. Docstring obbligatoria
+#   2. NON usare .reverse(), reversed(), o [::-1]
+#   3. La lista originale NON deve essere modificata
+#   4. Testa con: [1, 2, 3, 4, 5], ["a", "b", "c"], e una lista vuota []
+#
+# Suggerimento: pensa a come faresti con un ciclo for e range()
+# (ricordi? range(inizio, fine, passo) — il passo può essere negativo!)
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+
+
+# 🎯 [COLLOQUIO] — ESERCIZIO 7 (Sfida — Elemento più frequente):
+# Domanda frequente nei colloqui di livello junior/mid.
+#
+# Scrivi una funzione 'piu_frequente(lista)' che restituisce l'elemento
+# che appare più volte nella lista.
+# Es: piu_frequente([1, 3, 2, 1, 4, 1, 3]) → 1
+# Es: piu_frequente(["a", "b", "a", "c", "a"]) → "a"
+#
+# Requisiti:
+#   1. Docstring obbligatoria
+#   2. Usa .count() — ricordi? Conta quante volte un elemento appare
+#   3. Restituisci l'elemento (non il conteggio)
+#   4. Testa con: [1, 3, 2, 1, 4, 1, 3] e ["mela", "pera", "mela"]
+#
+# Suggerimento avanzato: puoi usare max() con una lambda!
+#   max(lista, key=lambda x: ...) restituisce l'elemento con il valore
+#   più alto di "qualcosa". Quel "qualcosa" lo decidi tu con la lambda.
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+
+
+# ESERCIZIO 8 (Sfida — Appiattisci):
+# Crea una funzione 'appiattisci(lista_di_liste)' che prende una lista
+# di liste e restituisce una singola lista con tutti gli elementi.
+# Es: appiattisci([[1,2], [3,4], [5]]) → [1, 2, 3, 4, 5]
+#
+# Requisiti:
+#   1. Docstring obbligatoria
+#   2. Fallo in DUE modi: uno con ciclo for, uno con list comprehension
+#   3. Testa con: [[1,2], [3,4], [5]] e con [["a","b"], ["c"]]
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+
+
+# ESERCIZIO 9 (Sfida — Preview AI):
 # Simula la divisione di un dataset in training e test.
 # Hai questa lista di 20 numeri:
 #   dati = list(range(1, 21))  # [1, 2, 3, ..., 20]
+#     (ricordi range()? Il 21 è ESCLUSO, quindi ottieni da 1 a 20)
+#
 # a) Dividi in 80% training (primi 16) e 20% test (ultimi 4) usando slicing
 # b) Dividi il training in "batch" (gruppi) da 4 elementi ciascuno
 #    Suggerimento: usa slicing con range → training[i:i+4] per ogni batch
 # c) Stampa ogni batch numerato: "Batch 1: [1, 2, 3, 4]", ecc.
+#    (usa enumerate() per avere il numero del batch!)
 # Questo è ESATTAMENTE come funziona il training di una rete neurale!
 #
 # Scrivi il tuo codice qui sotto:
@@ -351,21 +569,129 @@ for riga in tabella_voti:
 # stringhe = [f"{f}°F = {round((f-32)*5/9, 1)}°C" for f in temperature_f]
 # print(f"Formattate: {stringhe}")
 
-# --- SOLUZIONE ESERCIZIO 3 ---
+# --- SOLUZIONE ESERCIZIO 3 (Rimuovi Duplicati) ---
 # def rimuovi_duplicati(lista):
-#     """Rimuove duplicati mantenendo l'ordine originale."""
+#     """Rimuove duplicati mantenendo l'ordine originale.
+#     La lista originale non viene modificata."""
 #     risultato = []
 #     for elemento in lista:
 #         if elemento not in risultato:
 #             risultato.append(elemento)
 #     return risultato
 #
-# print(rimuovi_duplicati([3, 1, 2, 3, 1, 4]))
+# print(rimuovi_duplicati([3, 1, 2, 3, 1, 4]))  # [3, 1, 2, 4]
+# print(rimuovi_duplicati([]))                    # []
 
-# --- SOLUZIONE ESERCIZIO 4 ---
+# --- SOLUZIONE ESERCIZIO 4 (Lambda con sorted) ---
+# studenti = [
+#     {"nome": "Marco", "voto": 72, "eta": 22},
+#     {"nome": "Laura", "voto": 95, "eta": 20},
+#     {"nome": "Giulia", "voto": 88, "eta": 23},
+#     {"nome": "Luca", "voto": 65, "eta": 21},
+#     {"nome": "Anna", "voto": 91, "eta": 22},
+# ]
+#
+# # a) Per voto decrescente
+# per_voto = sorted(studenti, key=lambda s: s["voto"], reverse=True)
+# print("\n=== Classifica per voto ===")
+# for i, s in enumerate(per_voto, 1):
+#     print(f"  {i}° {s['nome']}: {s['voto']}")
+#
+# # b) Per età crescente
+# per_eta = sorted(studenti, key=lambda s: s["eta"])
+# print("\n=== Per età ===")
+# for s in per_eta:
+#     print(f"  {s['nome']}: {s['eta']} anni")
+#
+# # c) Per nome alfabetico
+# per_nome = sorted(studenti, key=lambda s: s["nome"])
+# print("\n=== Per nome ===")
+# for s in per_nome:
+#     print(f"  {s['nome']}")
+#
+# # d) Filter: voto >= 80
+# bravi = list(filter(lambda s: s["voto"] >= 80, studenti))
+# print("\n=== Voto >= 80 ===")
+# for s in bravi:
+#     print(f"  {s['nome']}: {s['voto']}")
+#
+# # e) Map: lista di stringhe
+# stringhe = list(map(lambda s: f"{s['nome']}: {s['voto']}", studenti))
+# print(f"\nStringhe: {stringhe}")
+
+# --- SOLUZIONE ESERCIZIO 5 (Lambda con filter e map) ---
+# catalogo = [
+#     {"nome": "T-shirt", "prezzo": 19.99, "disponibile": True},
+#     {"nome": "Jeans", "prezzo": 59.99, "disponibile": False},
+#     {"nome": "Sneakers", "prezzo": 89.99, "disponibile": True},
+#     {"nome": "Cappello", "prezzo": 14.99, "disponibile": True},
+#     {"nome": "Giacca", "prezzo": 129.99, "disponibile": False},
+# ]
+#
+# # a) Solo disponibili
+# disponibili = list(filter(lambda p: p["disponibile"], catalogo))
+# print("\n=== Disponibili ===")
+# for p in disponibili:
+#     print(f"  {p['nome']}: {p['prezzo']:.2f}€")
+#
+# # b) Sotto 50€
+# economici = list(filter(lambda p: p["prezzo"] < 50, catalogo))
+# print("\n=== Sotto 50€ ===")
+# for p in economici:
+#     print(f"  {p['nome']}: {p['prezzo']:.2f}€")
+#
+# # c) Stringhe formattate
+# desc = list(map(
+#     lambda p: f"{p['nome']} — {p['prezzo']:.2f}€ ({'disponibile' if p['disponibile'] else 'esaurito'})",
+#     catalogo
+# ))
+# for d in desc:
+#     print(d)
+#
+# # d) Ordinati per prezzo
+# per_prezzo = sorted(catalogo, key=lambda p: p["prezzo"])
+# print("\n=== Per prezzo ===")
+# for p in per_prezzo:
+#     print(f"  {p['nome']}: {p['prezzo']:.2f}€")
+#
+# # e) Combo: disponibili, ordinati per prezzo
+# combo = sorted(
+#     filter(lambda p: p["disponibile"], catalogo),
+#     key=lambda p: p["prezzo"]
+# )
+# print("\n=== Disponibili per prezzo ===")
+# for p in combo:
+#     print(f"  {p['nome']}: {p['prezzo']:.2f}€")
+
+# --- SOLUZIONE ESERCIZIO 6 (Inverti senza .reverse()) ---
+# def inverti_lista(lista):
+#     """Inverte l'ordine senza usare .reverse(), reversed() o [::-1]."""
+#     risultato = []
+#     for i in range(len(lista) - 1, -1, -1):
+#         risultato.append(lista[i])
+#     return risultato
+#
+# print(inverti_lista([1, 2, 3, 4, 5]))  # [5, 4, 3, 2, 1]
+# print(inverti_lista(["a", "b", "c"]))  # ["c", "b", "a"]
+# print(inverti_lista([]))                # []
+
+# --- SOLUZIONE ESERCIZIO 7 (Elemento più frequente) ---
+# def piu_frequente(lista):
+#     """Restituisce l'elemento che appare più volte nella lista."""
+#     return max(lista, key=lambda x: lista.count(x))
+#
+# # Spiegazione: max() prende l'elemento "più grande". Ma più grande in base
+# # a cosa? La lambda dice: "confronta in base a quante volte appare nella
+# # lista". Quindi max restituisce quello che appare più volte.
+# # È come usare .sort((a,b) => ...) in JS ma per trovare il massimo.
+#
+# print(piu_frequente([1, 3, 2, 1, 4, 1, 3]))   # 1
+# print(piu_frequente(["mela", "pera", "mela"]))  # "mela"
+
+# --- SOLUZIONE ESERCIZIO 8 (Appiattisci) ---
+# # Metodo 1: ciclo for
 # def appiattisci(lista_di_liste):
 #     """Appiattisce una lista di liste in una singola lista."""
-#     # Metodo 1: ciclo for
 #     risultato = []
 #     for sotto_lista in lista_di_liste:
 #         for elemento in sotto_lista:
@@ -373,12 +699,14 @@ for riga in tabella_voti:
 #     return risultato
 #
 # # Metodo 2: list comprehension
-# # def appiattisci(lista_di_liste):
-# #     return [elem for sotto in lista_di_liste for elem in sotto]
+# def appiattisci_v2(lista_di_liste):
+#     """Appiattisce con list comprehension."""
+#     return [elem for sotto in lista_di_liste for elem in sotto]
 #
-# print(appiattisci([[1,2], [3,4], [5]]))
+# print(appiattisci([[1,2], [3,4], [5]]))       # [1, 2, 3, 4, 5]
+# print(appiattisci_v2([["a","b"], ["c"]]))      # ["a", "b", "c"]
 
-# --- SOLUZIONE ESERCIZIO 5 ---
+# --- SOLUZIONE ESERCIZIO 9 (Preview AI — Train/Test Split) ---
 # dati = list(range(1, 21))
 # training = dati[:16]
 # test = dati[16:]
@@ -386,7 +714,6 @@ for riga in tabella_voti:
 # print(f"Test (20%): {test}")
 #
 # batch_size = 4
-# for i in range(0, len(training), batch_size):
-#     batch = training[i:i+batch_size]
-#     batch_num = i // batch_size + 1
-#     print(f"Batch {batch_num}: {batch}")
+# for i, start in enumerate(range(0, len(training), batch_size)):
+#     batch = training[start:start + batch_size]
+#     print(f"Batch {i + 1}: {batch}")
