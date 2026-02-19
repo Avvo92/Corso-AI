@@ -409,7 +409,7 @@ ultimo_trimestre = mesi[9:]
 print(f"Ultimo trimestre: {ultimo_trimestre}")
 mesi_al_contrario = mesi[::-1]
 print(f"Mesi al contrario: {mesi_al_contrario}")
-mesi_alterni = mesi[1::2]
+mesi_alterni = mesi[::2]
 print(f"Mesi alterni: {mesi_alterni}")
 
 
@@ -427,7 +427,7 @@ temperature_f = [32, 50, 68, 77, 86, 95, 104]
 print("\n\nEsercizio due")
 celsius = [round(((t - 32) * 5/9), 1) for t in temperature_f]
 celsius_filtrati = [c for c in celsius if c > 25]
-celsius_stringa = [f"{c}°C" for c in celsius]
+celsius_stringa = [f"{f}°F = {round((f - 32) * 5/9, 1)}°C" for f in temperature_f]
 
 print(f"\nLista Celsius: {celsius}")
 print(f"Celsius sopra i 25°C: {celsius_filtrati}")
@@ -504,8 +504,8 @@ per_alfabeto = sorted(studenti, key=lambda s: s["nome"])
 for s in per_alfabeto:
   print(f"{s["nome"]}")
   
-print(f"\nStudenti con voto maggiore di 80\n")
-voto_maggiore_ottanta = sorted(filter(lambda s: s["voto"] > 80, studenti), key=lambda s: s["voto"], reverse=True)
+print(f"\nStudenti con voto maggiore o uguale a 80\n")
+voto_maggiore_ottanta = sorted(filter(lambda s: s["voto"] >= 80, studenti), key=lambda s: s["voto"], reverse=True)
 for s in voto_maggiore_ottanta:
   print(f"{s["nome"]}: voto => {s["voto"]}")
   
@@ -584,8 +584,33 @@ for p in prodotti_disponibili_per_prezzo:
 # (ricordi? range(inizio, fine, passo) — il passo può essere negativo!)
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\n\nEsercizio sei")
+lista = [1, 2, 3, 4, 5]
 
+def inverti_lista_1(lista):
+  """
+  Questa funzione, presa una qualunque lista,
+  ne inverte l'ordine e restituisce una nuova lista invertita
+  senza modificare la lista originale
+  """
+  lista_invertita = []
+  for l in lista:
+    lista_invertita.insert(0, l)
+  return lista_invertita
+
+def inverti_lista_2(lista):
+  """
+  Questa funziona, come la precedente,
+  inverte l'ordine di una qualunque lista, 
+  ma invece di usare un medoto utilizza lo
+  slicing delle liste
+  """
+  lista_invertita = lista[::-1]
+  return lista_invertita
+print("\n\nEsercizio sei")
+print("\nLista invertita\n")
+print(f"{inverti_lista_1(lista)}")
+print(f"{inverti_lista_2(lista)}")
 
 # 🎯 [COLLOQUIO] — ESERCIZIO 7 (Sfida — Elemento più frequente):
 # Domanda frequente nei colloqui di livello junior/mid.
@@ -606,7 +631,15 @@ for p in prodotti_disponibili_per_prezzo:
 #   più alto di "qualcosa". Quel "qualcosa" lo decidi tu con la lambda.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+
+def piu_frequente(lista):
+  """
+  Questa funzione restituisce il valore 
+  con il maggior numero di occorrenze
+  all'interno di una lista
+  """
+  return max(lista, key=lambda l: lista.count(l))
+    
 
 
 # ESERCIZIO 8 (Sfida — Appiattisci):
@@ -620,8 +653,37 @@ for p in prodotti_disponibili_per_prezzo:
 #   3. Testa con: [[1,2], [3,4], [5]] e con [["a","b"], ["c"]]
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+lista = [
+  [1,2],
+  [3,4],
+  [5]
+]
 
+def appiattisci_1(lista_di_liste):
+  """
+  Questa funzione appiattisce una lista di liste
+  usando due cicli for annidati
+  """
+  lista_appiattita = []
+  for l in lista_di_liste:
+    for j in l:
+      lista_appiattita.append(j)
+  return lista_appiattita
+
+def appiattisci_2(lista_di_liste):
+  """
+  Questa funzione appiattisce una lista di liste
+  usando la list comprhension
+  """ 
+  return [elem for sotto in lista_di_liste for elem in sotto]
+    
+  
+
+
+print("\n\nEsercizio otto")
+print("\nLista appiattita\n")
+print(f"{appiattisci_1(lista)}")
+print(f"{appiattisci_2(lista)}")    
 
 # ESERCIZIO 9 (Sfida — Preview AI):
 # Simula la divisione di un dataset in training e test.
@@ -637,7 +699,26 @@ for p in prodotti_disponibili_per_prezzo:
 # Questo è ESATTAMENTE come funziona il training di una rete neurale!
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+dati = list(range(1, 21))
+ottanta = dati[:16]
+trenta = dati[17:]
+
+Batch_1 = ottanta[:4]
+Batch_2 = ottanta[4:8]
+Batch_3 = ottanta[8:12]
+Batch_4 = ottanta[12:]
+
+print("\n\nEsercizio otto")
+print(f"{Batch_1}")
+print(f"{Batch_2}")
+print(f"{Batch_3}")
+print(f"{Batch_4}")
+
+batch_size = 4
+for i, start in enumerate(range(0, len(training), batch_size)):
+    batch = training[start:start + batch_size]
+    print(f"Batch {i + 1}: {batch}")
+
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗

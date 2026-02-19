@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 17/02/2026
+> **Ultimo aggiornamento**: 19/02/2026
 
 ---
 
@@ -11,11 +11,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | 04_liste.py (prossimo da iniziare) |
-| **Ultimo completato** | 03_funzioni.py (17/02/2026) |
+| **Capitolo in corso** | 05_dizionari.py (prossimo da iniziare) |
+| **Ultimo completato** | 04_liste.py (19/02/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
-| **Difficoltà media** | 4.0 (trend: +2 per capitolo, monitorare) |
-| **Priorità attive** | Lambda da rinforzare (⚠️), lettura completa delle consegne (🔴) |
+| **Difficoltà media** | 5.25 (media di 2, 4, 6, 9 — salto importante, vedi nota sotto) |
+| **Priorità attive** | ⚠️ enumerate/tuple non interiorizzati, ⚠️ Lambda in miglioramento ma ancora fragili, 🔴 Lettura completa consegne, 🔴 DIFFICOLTÀ 9 → valutare rinforzo prima del cap. 05 |
 | **Sessione corrente** | Sessione 2 |
 
 > **Per l'agente**: dopo aver letto questa tabella, leggi le "Regole Didattiche" e i "Pattern di Errore" prima di produrre qualsiasi contenuto. Aggiorna questa tabella ad ogni fine capitolo.
@@ -116,7 +116,7 @@
 | 01_benvenuto_python.py | ✅ Completato + Corretto | 17/02/2026 | 2 | Buon primo approccio. Errori tipici da JS: ternario con `?:`, nomi variabili in inglese misto. Ha capito f-string, tipi, casting. |
 | 02_condizioni_e_cicli.py | ✅ Completato + Corretto | 17/02/2026 | 4 | FizzBuzz: `range(1,20)` invece di `range(1,21)`. Password: `elif` dove servivano due `if`, `== True` ridondante. Scacchiera perfetta. Temperature incompleto (mancava la media). |
 | 03_funzioni.py | ✅ Completato + Corretto | 17/02/2026 | 6 | Ha capito *args, return multipli, sorted. **Lambda ancora poco chiare** — da rinforzare nei prossimi capitoli. Errori: lista vs parametri separati a *args, count come stringa, mancava `reverse=True`, mancava parametro `decimali`. Tutti corretti. |
-| 04_liste.py | ⬜ Da fare | | | |
+| 04_liste.py | ✅ Completato + Corretto | 19/02/2026 | 9 | Difficoltà alta. Ha capito slicing, list comprehension, sorted/filter/map con lambda. **Punti deboli**: enumerate+tuple non interiorizzati (molte domande), range a 3 parametri nuovo, consegne non lette completamente (ex.1 indice sbagliato, ex.2 formato incompleto, ex.3 senza funzione, ex.6 usa [::-1] vietato, ex.9 indice errato). Lambda usate correttamente in ex.4/5/7 — miglioramento reale. |
 | 05_dizionari.py | ⬜ Da fare | | | |
 | 06_file_csv.py | ⬜ Da fare | | | |
 | 07_numpy_intro.py | ⬜ Da fare | | | Da arricchire prima che ci arrivi |
@@ -148,8 +148,9 @@
 | 01_benvenuto_python | 2 | — |
 | 02_condizioni_e_cicli | 4 | +2 ↑ |
 | 03_funzioni | 6 | +2 ↑ |
+| 04_liste | 9 | +3 ↑ (salto preoccupante — enumerate/tuple/combinazione concetti) |
 
-**Media attuale**: 4.0 — Curva in salita costante (+2 per capitolo). Ritmo ok ma da monitorare: se continua a salire di 2 punti per capitolo, al file 06 sarebbe a 10.
+**Media attuale**: 5.25 — Salto da 6 a 9 (+3). La curva accelera. Causa principale: combinazione di concetti nuovi (slicing, list comprehension, lambda con liste, enumerate+tuple). Valutare esercizi di rinforzo su enumerate/tuple prima del capitolo 05.
 
 ---
 
@@ -168,26 +169,43 @@
 
 | Termine | Significato sintetico | Equivalente JS/PHP | Cap. | Ripassi | Stato |
 |---------|-----------------------|--------------------|------|---------|-------|
-| `f-string` | Stringa con variabili inline `f"ciao {nome}"` | `` `ciao ${nome}` `` / `"ciao $nome"` | 01 | 0/3 | 🔄 |
+| `f-string` | Stringa con variabili inline `f"ciao {nome}"` | `` `ciao ${nome}` `` / `"ciao $nome"` | 01 | 1/3 | 🔄 |
 | `type()` | Restituisce il tipo di una variabile | `typeof` / `gettype()` | 01 | 0/3 | 🔄 |
 | `int()`, `float()`, `str()` | Casting esplicito tra tipi | `parseInt()`, `parseFloat()` / `(int)`, `(float)` | 01 | 0/3 | 🔄 |
 | `range()` | Genera sequenza di numeri — **il secondo numero è ESCLUSO!** | Non diretto / `range()` PHP | 02 | 0/3 | 🔄 |
 | `enumerate()` | Itera dando indice + valore insieme | `.forEach((val, i))` / Non diretto | 02 | 0/3 | 🔄 |
-| `for...in` | Itera sugli elementi di una lista | `for...of` / `foreach` | 02 | 0/3 | 🔄 |
+| `for...in` | Itera sugli elementi di una lista | `for...of` / `foreach` | 02 | 1/3 | 🔄 |
 | `while` | Ciclo finché la condizione è vera | Identico | 02 | 0/3 | 🔄 |
 | `if/elif/else` | Condizionali — nota: `elif` non `else if` | `if/else if/else` | 02 | 0/3 | 🔄 |
-| `def` | Definisce una funzione | `function` | 03 | 0/3 | 🔄 |
+| `def` | Definisce una funzione | `function` | 03 | 1/3 | 🔄 |
 | `return` multiplo | Restituisce più valori come tupla — si "spacchettano" con `a, b = funzione()` | Non diretto (array/oggetto) | 03 | 0/3 | 🔄 |
 | `*args` | Parametri variabili posizionali — come spread `...args` | `...args` / `...$args` | 03 | 0/3 | 🔄 |
 | `**kwargs` | Parametri con nome variabili — come passare un oggetto di opzioni | Destructuring / Array associativo | 03 | 0/3 | 🔄 |
-| `lambda` | Mini-funzione usa-e-getta, una riga sola — ⚠️ **DA RINFORZARE** | `() =>` / `fn() =>` | 03 | 0/3 | ⚠️ |
-| `sorted()` | Ordina creando una NUOVA lista (l'originale resta intatta!) | `.sort()` (attenzione: in JS modifica in-place!) / `usort()` | 03 | 0/3 | 🔄 |
+| `lambda` | Mini-funzione usa-e-getta, una riga sola — ⚠️ **DA RINFORZARE** | `() =>` / `fn() =>` | 03 | 1/3 | ⚠️ |
+| `sorted()` | Ordina creando una NUOVA lista (l'originale resta intatta!) | `.sort()` (attenzione: in JS modifica in-place!) / `usort()` | 03 | 1/3 | 🔄 |
 | `isinstance()` | Verifica se un valore è di un certo tipo | `instanceof` / `instanceof` | 03 | 0/3 | 🔄 |
-| `docstring` | Commento `"""..."""` dentro una funzione per documentarla | JSDoc `/** */` / PHPDoc `/** */` | 03 | 0/3 | 🔄 |
+| `docstring` | Commento `"""..."""` dentro una funzione per documentarla | JSDoc `/** */` / PHPDoc `/** */` | 03 | 1/3 | 🔄 |
 | `.isdigit()` | True se il carattere è un numero | Regex o `!isNaN()` / `ctype_digit()` | 02 | 0/3 | 🔄 |
 | `.isupper()` | True se il carattere è maiuscolo | Regex / `ctype_upper()` | 02 | 0/3 | 🔄 |
-| `min()`, `max()`, `sum()` | Funzioni aggregate su liste | `Math.min()`, `.reduce()` / `min()`, `array_sum()` | 03 | 0/3 | 🔄 |
-| `len()` | Lunghezza di lista/stringa — è una funzione, non un `.length`! | `.length` / `count()`, `strlen()` | 02 | 0/3 | 🔄 |
+| `min()`, `max()`, `sum()` | Funzioni aggregate su liste | `Math.min()`, `.reduce()` / `min()`, `array_sum()` | 03 | 1/3 | 🔄 |
+| `len()` | Lunghezza di lista/stringa — è una funzione, non un `.length`! | `.length` / `count()`, `strlen()` | 02 | 1/3 | 🔄 |
+
+### Liste e Iterazione (File 04)
+
+| Termine | Significato sintetico | Equivalente JS/PHP | Cap. | Ripassi | Stato |
+|---------|-----------------------|--------------------|------|---------|-------|
+| `.append()` | Aggiunge UN elemento in fondo alla lista | `.push()` / `array_push()` | 04 | 0/3 | 🔄 |
+| `.insert(pos, elem)` | Inserisce un elemento a una posizione specifica | `.splice(pos, 0, elem)` / `array_splice()` | 04 | 0/3 | 🔄 |
+| `.remove(val)` | Rimuove la prima occorrenza per valore | `.splice(indexOf(val), 1)` / `unset()` | 04 | 0/3 | 🔄 |
+| `.pop(i)` | Rimuove e restituisce l'elemento alla posizione i | `.splice(i, 1)` / `array_pop()` | 04 | 0/3 | 🔄 |
+| slicing `[start:end:step]` | Estrae una porzione di lista — end è ESCLUSO! | `.slice(start, end)` / `array_slice()` | 04 | 0/3 | 🔄 |
+| `in` (operatore) | Verifica se un elemento esiste nella lista | `.includes()` / `in_array()` | 04 | 0/3 | 🔄 |
+| list comprehension | `[expr for x in lista if cond]` — crea liste in modo compatto | `.map()` + `.filter()` / `array_map()` + `array_filter()` | 04 | 0/3 | 🔄 |
+| `filter()` | Filtra elementi con una funzione — restituisce oggetto pigro, serve `list()` | `.filter()` / `array_filter()` | 04 | 0/3 | 🔄 |
+| `map()` | Trasforma ogni elemento con una funzione — restituisce oggetto pigro, serve `list()` | `.map()` / `array_map()` | 04 | 0/3 | 🔄 |
+| `.count(val)` | Conta quante volte un valore appare nella lista | `.filter().length` / `array_count_values()` | 04 | 0/3 | 🔄 |
+| `.index(val)` | Restituisce la posizione di un valore (errore se non trovato!) | `.indexOf()` / `array_search()` | 04 | 0/3 | 🔄 |
+| tupla / unpacking | Coppia di valori `(i, val)` — si spacchetta con `a, b = tupla` — ⚠️ **NON INTERIORIZZATO** | Destructuring `[a, b] = arr` / `list($a, $b) = $arr` | 04 | 0/3 | ⚠️ |
 
 ### Concetti Generali
 
@@ -222,6 +240,19 @@
 - Chiarimenti su f-string con doppi apici annidati
 - "Questa formula è corretta? K = C + 273.15" → Verifica proattiva delle formule, buon segno
 
+### Capitolo 04 — liste
+- "Spiegami questa funzione (appiattisci_2 con list comprehension doppia)" → Il doppio `for` in una list comprehension non era intuitivo
+- "Ma elem cosa è?" → Non capiva che `elem` è solo un nome di variabile scelto dal programmatore, non una keyword
+- "Il primo elem rappresenta gli elementi che entrano nell'array?" → Aveva bisogno di capire che l'espressione a sinistra è l'output della list comprehension
+- "Non riesco a capire il funzionamento del ciclo for usando enumerate" → enumerate + unpacking ancora non naturale
+- "Non capisco dove era la tupla" → Non vedeva la tupla nel codice perché è enumerate a crearla implicitamente — concetto astratto
+- "La tupla ed enumerate non mi rendono molto sicuro" → **Autodichiarato**: tuple ed enumerate sono punti deboli consapevoli
+- "Perché range ha tre parametri?" → Non sapeva che range() accetta start, stop, step
+- "Come funziona enumerate?" → Ha chiesto una spiegazione completa da zero
+- "Funzione per lunghezza lista python" → Aveva bisogno di ricordare `len()` — ponte da `.length` e `count()`
+- "La tupla la decidiamo noi, basta dividere in due variabili?" → Stava capendo l'unpacking, ma serviva conferma
+- "Come fare per evitare che tu possa scordarti queste cose?" → Consapevolezza meta-cognitiva, buon segno — ha portato alla creazione della Cursor Rule
+
 ---
 
 ## Pattern di Errore Ricorrenti
@@ -231,13 +262,15 @@ Questi sono gli errori che Gianluca tende a ripetere. Da monitorare nei prossimi
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
 | 1 | **Sintassi JS in Python**: usa `? :` invece di `if...else` ternario | 🔴 Attivo | Visto al file 01 |
-| 2 | **`range()` fine escluso**: dimentica che il secondo numero è escluso | 🔴 Attivo | Visto al file 02 |
+| 2 | **`range()` / slicing fine escluso**: dimentica che il secondo numero è escluso | 🔴 Attivo | Visto al file 02. Ripetuto al file 04: `dati[17:]` invece di `dati[16:]` |
 | 3 | **`== True` ridondante**: scrive `if valore == True` | 🟡 Corretto una volta | Visto al file 02, corretto dopo feedback |
 | 4 | **Calcoli dentro le f-string**: espressioni troppo lunghe nelle `{}` | 🟡 Corretto una volta | Visto al file 01, corretto dopo feedback |
 | 5 | **Tipi nei dizionari**: mette stringhe dove servono numeri | 🟡 Corretto una volta | Visto al file 03 (`count` come stringa) |
-| 6 | **Lettura incompleta delle consegne**: non implementa tutti i requisiti | 🔴 Attivo | Visto ai file 02 e 03 |
-
-| 7 | **Lambda poco chiare**: non ha ancora interiorizzato la sintassi e l'uso delle funzioni lambda | 🔴 Attivo | Autodichiarato dopo file 03. Inserire lambda in esercizi futuri (liste, dizionari, sorted, filter, map) per rinforzo graduale |
+| 6 | **Lettura incompleta delle consegne**: non implementa tutti i requisiti | 🔴 Attivo | Visto ai file 02, 03 e 04. Al file 04: ex.1 mesi alterni con indice sbagliato, ex.2 formato stringa incompleto, ex.3 senza funzione, ex.6 usa [::-1] vietato, ex.9 variabile sbagliata |
+| 7 | **Lambda poco chiare**: non ha ancora interiorizzato la sintassi e l'uso delle funzioni lambda | 🟡 In miglioramento | Autodichiarato dopo file 03. Al file 04: usate correttamente in ex.4/5/7 con sorted, filter, map. Miglioramento reale ma da consolidare |
+| 8 | **enumerate/tuple/unpacking**: non capisce che enumerate crea tuple e che l'unpacking le spacchetta | 🔴 Attivo | Autodichiarato al file 04: "la tupla ed enumerate non mi rendono molto sicuro". Molte domande su questo |
+| 9 | **Codice superfluo**: aggiunge espressioni inutili (`== l` dopo `.insert()`) | 🟡 Corretto una volta | Visto al file 04 ex.6 |
+| 10 | **Vincoli esercizio ignorati**: usa metodi vietati dalla consegna (es. `[::-1]` quando esplicitamente proibito) | 🔴 Attivo | Visto al file 04 ex.6. Collegato al pattern #6 (lettura consegne) |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 Superato
 
@@ -257,6 +290,7 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 ## Ritmo di Studio
 
 - **Sessione 1 (17/02/2026)**: File 01, 02, 03 completati in una sessione
+- **Sessione 2 (19/02/2026)**: File 04 completato. Difficoltà 9 — il salto maggiore finora. Enumerate/tuple e combinazione di concetti sono stati i punti più difficili
 - **Ritmo stimato**: 1-2 file al giorno
 - **Tempo totale stimato per il corso**: 3-4 mesi
 - **Momento migliore per studiare**: ❓ Da chiedere
@@ -275,6 +309,9 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 | "foreach" | `for elemento in lista` itera sugli elementi | `for...of` in JS / `foreach` in PHP | 02 | Iterazione su array NumPy, righe DataFrame, batch di dati |
 | "Database in RAM" | Pandas DataFrame = tabella SQL in memoria | Query Eloquent / tabella MySQL | Teoria | Pandas, feature engineering, EDA |
 | "Pixel = numero" | Un'immagine è una griglia di numeri | — | Teoria | OpenCV, tensori immagine, input delle reti neurali |
+| "Array.slice()" | Slicing `lista[1:3]` estrae una porzione di lista | `.slice(1, 3)` in JS / `array_slice($arr, 1, 2)` in PHP | 04 | Slicing su stringhe, slicing su array NumPy, selezione righe DataFrame |
+| ".push()/.pop()" | `.append()` aggiunge in fondo, `.pop()` rimuove e restituisce | `.push()` / `.pop()` in JS (identico!) | 04 | Strutture dati stack, gestione code |
+| ".map() + .filter()" | List comprehension `[expr for x in lista if cond]` fa entrambi | `.map().filter()` in JS / `array_map()` + `array_filter()` in PHP | 04 | `.apply()` su DataFrame Pandas, trasformazione dati |
 
 ### Come usare questa sezione
 Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente:
@@ -312,6 +349,19 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - So scrivere docstring per documentare le funzioni
 - ⚠️ Lambda: conosco la sintassi ma non mi viene ancora naturale usarle
 
+### Dopo il Capitolo 04 — Liste
+- So creare, modificare e accedere a elementi di una lista con `.append()`, `.insert()`, `.remove()`, `.pop()`
+- So estrarre porzioni con lo slicing `[start:end:step]`, incluso il reverse `[::-1]`
+- So usare `in` per verificare se un elemento è nella lista
+- So usare list comprehension per trasformare e filtrare: `[expr for x in lista if cond]`
+- So ordinare con `sorted()` + `lambda` come key, anche con `reverse=True`
+- So usare `filter()` e `map()` con lambda (avvolgendo con `list()`)
+- So lavorare con liste di liste (matrici) e accedere con doppio indice `lista[r][c]`
+- So usare `.count()` per contare occorrenze e `max()` con lambda per trovare l'elemento più frequente
+- So dividere dati in training/test con slicing e creare batch con `range(start, stop, step)`
+- ⚠️ enumerate() e tuple/unpacking: capisco il concetto ma non mi viene ancora naturale
+- ⚠️ Lambda: in miglioramento — usate correttamente con sorted, filter, map, ma serve ancora pratica
+
 ---
 
 ## Checklist di Auto-Revisione (prima di consegnare il codice)
@@ -327,6 +377,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - [ ] **Ho calcoli lunghi dentro le f-string?** Se sì, calcolo prima in una variabile e poi stampo
 - [ ] **Ho usato `range()`?** Il secondo numero è escluso: `range(1, 20)` arriva a 19!
 - [ ] **Ho usato la sintassi JS per sbaglio?** Niente `? :` per il ternario, niente `===`, niente `{}`
+- [ ] **Ho rispettato TUTTI i vincoli?** Se dice "senza usare X", ho davvero evitato X? (es. "senza [::-1]" significa che NON posso usarlo)
+- [ ] **L'esercizio chiede una funzione?** Se dice "scrivi una funzione", devo usare `def`, non scrivere il codice libero
+- [ ] **Ho usato slicing?** Ricorda: il secondo indice è ESCLUSO, come `range()`. `dati[16:]` parte dall'indice 16, non dal 17!
 
 ### Controlli Bonus (buone pratiche)
 - [ ] La funzione ha una docstring?
@@ -342,13 +395,16 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 | Concetto | Appreso il | Rivisto (3gg) | Rivisto (7gg) | Rivisto (14gg) | Stato |
 |----------|-----------|---------------|---------------|----------------|-------|
-| f-string, tipi, casting | 17/02 | file 04 | file 06 | file 09 | Da verificare |
-| if/elif/else, for, while | 17/02 | file 04 | file 06 | file 09 | Da verificare |
-| range() fine escluso | 17/02 | file 04 ⚠️ | file 06 | file 09 | Da rinforzare |
-| enumerate() unpacking | 17/02 | file 04 | file 06 | file 09 | Da verificare |
+| f-string, tipi, casting | 17/02 | ✅ file 04 (usato correttamente) | file 06 | file 09 | OK |
+| if/elif/else, for, while | 17/02 | ✅ file 04 (usato correttamente) | file 06 | file 09 | OK |
+| range() fine escluso | 17/02 | ❌ file 04 (errore ripetuto: dati[17:]) | file 06 | file 09 | ⚠️ Da rinforzare ancora |
+| enumerate() unpacking | 17/02 | ❌ file 04 (molte domande, non autonomo) | file 06 ⚠️ | file 09 | ⚠️ Non interiorizzato |
 | def, return, *args, **kwargs | 17/02 | file 05 | file 07 | file 10 | Da verificare |
-| lambda | 17/02 | file 04 ⚠️ | file 05 ⚠️ | file 07 | ⚠️ Non chiaro — rinforzo prioritario |
-| sorted() con key | 17/02 | file 04 | file 05 | file 07 | Da verificare |
+| lambda | 17/02 | 🟡 file 04 (usata correttamente in ex.4/5/7 ma con aiuto teoria) | file 05 ⚠️ | file 07 | In miglioramento |
+| sorted() con key | 17/02 | ✅ file 04 (usato correttamente con lambda) | file 05 | file 07 | OK |
+| slicing, list comprehension | 19/02 | file 05 | file 07 | file 10 | Da verificare |
+| tuple/unpacking | 19/02 | file 05 ⚠️ | file 07 ⚠️ | file 10 | ⚠️ Rinforzo prioritario |
+| filter(), map() | 19/02 | file 05 | file 07 | file 10 | Da verificare |
 
 ⚠️ = Il concetto richiede rinforzo attivo (non solo uso passivo, ma esercizio dedicato)
 
@@ -369,6 +425,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | Funzione con *args e return multiplo | 03 | Junior/Mid — comprensione funzioni | Parametri variabili, tuple unpacking, aggregazioni (min/max/media) | ✅ Risolto |
 | Ordinamento con sorted + lambda | 03 | Mid — manipolazione dati | Lambda come key function, ordinamento personalizzato | ✅ Risolto (mancava reverse=True, poi corretto) |
 | Costruire una risposta API JSON-like | 03 | Junior/Mid — backend developer | Dizionari, isinstance, struttura dati consistente | ✅ Risolto (count come stringa, poi corretto) |
+| Rimuovi duplicati da lista | 04 | Junior — classico | Iterazione, `not in`, costruzione lista di appoggio | ✅ Risolto (logica corretta, mancava incapsulamento in funzione) |
+| Inverti lista senza .reverse() | 04 | Junior — classico | Cicli, `.insert(0)`, `range()` con passo negativo | ✅ Risolto (con errori: `== l` superfluo, seconda versione usa [::-1] vietato) |
+| Elemento più frequente | 04 | Junior/Mid — frequente | `max()` con lambda, `.count()` | ✅ Risolto perfettamente al primo tentativo |
 
 ### Cosa aspettarsi nei prossimi capitoli
 
