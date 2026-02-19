@@ -155,14 +155,14 @@ print(f"\nIndirizzo: {utente.get('indirizzo', 'Non specificato')}")
 # 1) Stampa marca e modello in una f-string
 # 2) Accedi alla chiave "colore" con .get() usando un default "sconosciuto"
 # Scrivi qui sotto:
-auto = {
-    "marca":"Fiat",
-    "modello":"500",
-    "anno":2020,
-    "km":30000
-}
-print(f"Marca: {auto['marca']}, Modello: {auto['modello']}")
-print(f"Colore: {auto.get('colore', 'sconosciuto')}")
+# auto = {
+#     "marca":"Fiat",
+#     "modello":"500",
+#     "anno":2020,
+#     "km":30000
+# }
+# print(f"Marca: {auto['marca']}, Modello: {auto['modello']}")
+# print(f"Colore: {auto.get('colore', 'sconosciuto')}")
 
 
 
@@ -196,7 +196,18 @@ print(f"Dopo update: {utente}")
 # 3) Rimuovi la chiave "anno" con .pop() e stampa il valore rimosso
 # 4) Usa .update() per aggiungere "targa" e "proprietario" in un colpo solo
 # Scrivi qui sotto:
-# ...
+# auto = {
+#     "marca":"Fiat",
+#     "modello":"500",
+#     "anno":2020,
+#     "km":30000
+# }
+# auto['colore'] ="rosso"
+# auto['km'] = "10000"
+# auto.pop('anno', None)
+# auto.update({'targa':'vb546tr', 'proprietario':'Anna'})
+# print(f"{auto}")
+
 
 
 # ==========================================================================
@@ -260,7 +271,18 @@ for i, (chiave, valore) in enumerate(prodotto.items(), 1):
 #    "2. modello: Panda"
 #    ecc.
 # Scrivi qui sotto:
-# ...
+auto = {
+    "marca":"Fiat",
+    "modello":"500",
+    "anno":2020,
+    "km":30000
+}
+
+for key,value in auto.items():
+    print(f"{key} -> {value}")
+
+for i, (key, value) in enumerate(auto.items(), 1):
+    print(f"#{i} => {key} : {value}")
 
 
 # ==========================================================================
