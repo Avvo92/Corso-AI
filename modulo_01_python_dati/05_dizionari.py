@@ -48,6 +48,10 @@
 # PARTE 1: Creare e Accedere ai Dizionari
 # ==========================================================================
 
+# RIPASSO — f-string: ricordi? Sono le stringhe con la f davanti che ti
+# permettono di mettere variabili dentro {} — come i template literal
+# `${variabile}` in JS o "$variabile" in PHP. Le usiamo in tutto il file.
+
 # Creare un dizionario:
 utente = {
     "nome": "Marco",
@@ -145,9 +149,25 @@ for valore in prodotto.values():
 #       // .forEach() scorre ogni coppia
 #       // ([k, v]) è il destructuring: scompone ["nome","Mouse"] in k e v
 
+# RIPASSO — unpacking (spacchettamento): ricordi le tuple dal capitolo 04?
+# .items() restituisce coppie (chiave, valore) — esattamente come enumerate()
+# restituiva coppie (indice, elemento). Con `for chiave, valore in ...` le
+# spacchetti in due variabili separate. È lo STESSO concetto, applicato
+# ai dizionari invece che alle liste.
+
 print("\n=== Chiavi e valori ===")
 for chiave, valore in prodotto.items():
     print(f"  {chiave}: {valore}")
+
+# RIPASSO — enumerate(): ricordi? Dà indice + valore insieme. Anche qui
+# puoi usarlo se ti serve sapere a che punto sei nell'iterazione:
+print("\n=== Con enumerate ===")
+for i, (chiave, valore) in enumerate(prodotto.items(), 1):
+    print(f"  {i}. {chiave}: {valore}")
+# Nota: enumerate() avvolge .items(), che già produce tuple (chiave, valore).
+# Quindi enumerate produce tuple annidate: (0, ("nome", "Tastiera Meccanica"))
+# Per spacchettarle scrivi: i, (chiave, valore) — le parentesi interne
+# dicono a Python "questa è una tupla dentro la tupla esterna".
 
 # ==========================================================================
 # PARTE 4: Dizionari Annidati (Nested)
@@ -192,10 +212,19 @@ for prod in ordine["prodotti"]:
 # PARTE 5: Dictionary Comprehension
 # ==========================================================================
 
+# RIPASSO — list comprehension (dal capitolo 04): ricordi la sintassi
+# [COSA for ELEMENTO in LISTA if CONDIZIONE]? Era come .map() + .filter()
+# in JS. Le dict comprehension sono IDENTICHE, ma con le graffe {} e la
+# coppia chiave:valore.
+#
 # Come le list comprehension, ma per i dizionari.
 # Sintassi: {chiave: valore for elemento in iterabile}
 
-# Esempio: creare un dizionario da due liste (come zip in JS):
+# Esempio: creare un dizionario da due liste:
+# zip() prende due liste e le "accoppia" elemento per elemento:
+#   zip(["a","b"], [1,2]) → [("a",1), ("b",2)]
+# PHP: array_combine($chiavi, $valori)
+# JS:  Object.fromEntries(keys.map((k, i) => [k, values[i]]))
 nomi = ["Marco", "Laura", "Giulia"]
 voti = [85, 92, 78]
 
@@ -213,7 +242,48 @@ prezzi_scontati = {nome: round(prezzo * 0.8, 2) for nome, prezzo in prezzi.items
 print(f"Con sconto 20%: {prezzi_scontati}")
 
 # ==========================================================================
-# PARTE 6: Metodi Utili
+# PARTE 6: Lambda con i Dizionari — Rinforzo
+# ==========================================================================
+
+# RIPASSO — lambda: ricordi? Sono mini-funzioni usa-e-getta, di una sola
+# riga. In JS sono le arrow function (() =>), in PHP le short closure
+# (fn() =>). Al capitolo 04 le hai usate con sorted(), filter() e map()
+# sulle liste. Ora le usiamo con i dizionari — stessa logica!
+
+# Ordinare una lista di dizionari con sorted() + lambda:
+# sorted() crea una NUOVA lista ordinata. Con key=lambda dici "ordina
+# in base a QUESTO campo del dizionario".
+
+dipendenti = [
+    {"nome": "Marco", "stipendio": 35000, "reparto": "Sviluppo"},
+    {"nome": "Laura", "stipendio": 42000, "reparto": "Marketing"},
+    {"nome": "Giulia", "stipendio": 38000, "reparto": "Sviluppo"},
+    {"nome": "Luca", "stipendio": 45000, "reparto": "Direzione"},
+    {"nome": "Anna", "stipendio": 33000, "reparto": "Marketing"},
+]
+
+# Ordinare per stipendio crescente:
+per_stipendio = sorted(dipendenti, key=lambda d: d["stipendio"])
+print("\n=== Dipendenti per stipendio (crescente) ===")
+for d in per_stipendio:
+    print(f"  {d['nome']}: {d['stipendio']:,}€ ({d['reparto']})")
+
+# Filtrare con filter() + lambda:
+sviluppatori = list(filter(lambda d: d["reparto"] == "Sviluppo", dipendenti))
+print(f"\nSviluppatori: {[d['nome'] for d in sviluppatori]}")
+
+# Trasformare con map() + lambda — estrarre solo i nomi:
+solo_nomi = list(map(lambda d: d["nome"], dipendenti))
+print(f"Solo nomi: {solo_nomi}")
+
+# Trovare il massimo con max() + lambda:
+# max() restituisce l'elemento "più grande". Con key=lambda decidi tu in
+# base a cosa confrontare. Qui: chi ha lo stipendio più alto?
+piu_pagato = max(dipendenti, key=lambda d: d["stipendio"])
+print(f"Più pagato: {piu_pagato['nome']} ({piu_pagato['stipendio']:,}€)")
+
+# ==========================================================================
+# PARTE 7: Metodi Utili
 # ==========================================================================
 
 config = {"tema": "dark", "lingua": "it", "font_size": 14}
@@ -288,27 +358,104 @@ print(f"Copia: {config_copia['tema']}")  # "light"
 # ...
 
 
-# ESERCIZIO 4 (Sfida):
+# 🎯 [COLLOQUIO] — ESERCIZIO 4 (Sfida — Conta Parole):
+# Questa è una domanda CLASSICA dei colloqui tecnici, sia per junior che
+# per mid-level. Viene chiesta in varianti diverse ma il concetto è sempre:
+# "conta le frequenze di qualcosa usando un dizionario".
+#
 # Scrivi una funzione 'conta_parole(testo)' che:
-#   - Prende una stringa di testo
-#   - Restituisce un dizionario con ogni parola e quante volte appare
-#   - Le parole devono essere tutte in minuscolo
+#   1. Prende una stringa di testo
+#   2. Restituisce un dizionario con ogni parola e quante volte appare
+#   3. Le parole devono essere tutte in minuscolo
+#   4. La funzione deve avere una docstring
 # Es: conta_parole("ciao mondo ciao") → {"ciao": 2, "mondo": 1}
 # Suggerimento: testo.lower().split() divide il testo in parole minuscole.
+# Suggerimento 2: .get(chiave, default) è PERFETTO per contare frequenze.
+# Testa con: "Ciao mondo ciao a tutto il mondo" e con una stringa vuota ""
 #
 # Scrivi il tuo codice qui sotto:
 # ...
 
 
-# ESERCIZIO 5 (Sfida — Simula API):
+# ESERCIZIO 5 (Medio — Lambda con Dizionari — Rinforzo):
+# Hai questa lista di film:
+#   film_lista = [
+#       {"titolo": "Inception", "anno": 2010, "voto": 8.8},
+#       {"titolo": "Interstellar", "anno": 2014, "voto": 8.6},
+#       {"titolo": "The Matrix", "anno": 1999, "voto": 8.7},
+#       {"titolo": "Parasite", "anno": 2019, "voto": 8.5},
+#       {"titolo": "Oppenheimer", "anno": 2023, "voto": 8.3},
+#   ]
+#
+# Usando sorted(), filter(), map() con lambda (come hai fatto al cap. 04):
+#   a) Ordina i film per voto decrescente (i migliori prima)
+#   b) Filtra solo i film usciti dal 2010 in poi
+#   c) Crea una lista di stringhe tipo: ["Inception (2010) — ⭐ 8.8", ...]
+#   d) Trova il film più vecchio (usa min con lambda)
+#   e) Ordina per anno crescente e stampa con enumerate numerato da 1
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+
+
+# ESERCIZIO 6 (Medio — enumerate + dizionari):
+# Hai questo dizionario di inventario:
+#   inventario = {
+#       "T-shirt": 45,
+#       "Jeans": 12,
+#       "Sneakers": 8,
+#       "Cappello": 30,
+#       "Giacca": 3,
+#   }
+#
+# a) Usando enumerate() e .items(), stampa una tabella numerata:
+#    "1. T-shirt: 45 pezzi"
+#    "2. Jeans: 12 pezzi"
+#    ecc.
+# b) Trova e stampa i prodotti con scorta bassa (meno di 10 pezzi),
+#    usando enumerate per mostrare la posizione nella lista originale
+# c) Crea un NUOVO dizionario con solo i prodotti che hanno più di 15 pezzi,
+#    usando dict comprehension
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+
+
+# 🎯 [COLLOQUIO] — ESERCIZIO 7 (Sfida — Raggruppare per Chiave):
+# Questo è un altro classico da colloquio: raggruppare dati per una proprietà.
+# È la versione Python del GROUP BY di SQL o del groupBy di Laravel/Eloquent.
+#
+# Scrivi una funzione 'raggruppa_per(lista_dizionari, chiave)' che:
+#   1. Prende una lista di dizionari e il nome di una chiave
+#   2. Restituisce un dizionario dove ogni valore unico della chiave
+#      diventa una chiave del risultato, e il valore è la lista degli
+#      elementi originali che avevano quel valore
+#   3. La funzione deve avere una docstring
+#
+# Es: raggruppa_per(
+#   [{"nome": "Marco", "citta": "Milano"}, {"nome": "Laura", "citta": "Roma"},
+#    {"nome": "Giulia", "citta": "Milano"}],
+#   "citta"
+# ) → {"Milano": [{"nome":"Marco",...}, {"nome":"Giulia",...}], "Roma": [...]}
+#
+# Testa con i prodotti dell'esercizio 2 raggruppati per "categoria".
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+
+
+# ESERCIZIO 8 (Sfida — Simula API):
 # Crea una funzione 'processa_ordini(ordini)' che prende una lista di
 # ordini (come il dizionario 'ordine' della Parte 4) e restituisce un
 # dizionario "report" con:
-#   - "totale_ordini": numero di ordini
-#   - "fatturato_totale": somma di tutti i totali
-#   - "citta_piu_ordini": la città con più ordini
+#   - "totale_ordini": numero di ordini — usa len()
+#   - "fatturato_totale": somma di tutti i totali — usa sum() con una
+#     list comprehension (ricordi? [expr for x in lista])
+#   - "citta_piu_ordini": la città con più ordini — usa un dizionario
+#     per contare (come in conta_parole), poi max() con lambda
 #   - "prodotto_piu_venduto": il prodotto che appare più volte
-# Puoi creare una lista di 3-4 ordini per testarla.
+# La funzione deve avere una docstring.
+# Puoi creare una lista di 3-4 ordini di esempio per testarla.
 #
 # Scrivi il tuo codice qui sotto:
 # ...
@@ -373,22 +520,111 @@ print(f"Copia: {config_copia['tema']}")  # "light"
 # giudizi = {nome: giudizio(voto) for nome, voto in voti_studenti.items()}
 # print(f"Giudizi: {giudizi}")
 
-# --- SOLUZIONE ESERCIZIO 4 ---
+# --- SOLUZIONE ESERCIZIO 4 (Conta Parole 🎯) ---
 # def conta_parole(testo):
-#     """Conta le occorrenze di ogni parola nel testo."""
+#     """Conta le occorrenze di ogni parola nel testo.
+#     Le parole vengono convertite in minuscolo."""
+#     if not testo.strip():
+#         return {}
 #     conteggio = {}
 #     for parola in testo.lower().split():
 #         conteggio[parola] = conteggio.get(parola, 0) + 1
 #     return conteggio
+#
 # print(conta_parole("Ciao mondo ciao a tutto il mondo"))
+# # {'ciao': 2, 'mondo': 2, 'a': 1, 'tutto': 1, 'il': 1}
+# print(conta_parole(""))  # {}
 
-# --- SOLUZIONE ESERCIZIO 5 ---
+# --- SOLUZIONE ESERCIZIO 5 (Lambda con Dizionari) ---
+# film_lista = [
+#     {"titolo": "Inception", "anno": 2010, "voto": 8.8},
+#     {"titolo": "Interstellar", "anno": 2014, "voto": 8.6},
+#     {"titolo": "The Matrix", "anno": 1999, "voto": 8.7},
+#     {"titolo": "Parasite", "anno": 2019, "voto": 8.5},
+#     {"titolo": "Oppenheimer", "anno": 2023, "voto": 8.3},
+# ]
+#
+# # a) Per voto decrescente
+# per_voto = sorted(film_lista, key=lambda f: f["voto"], reverse=True)
+# print("\n=== Film per voto ===")
+# for f in per_voto:
+#     print(f"  {f['titolo']}: ⭐ {f['voto']}")
+#
+# # b) Film dal 2010 in poi
+# recenti = list(filter(lambda f: f["anno"] >= 2010, film_lista))
+# print(f"\nDal 2010: {[f['titolo'] for f in recenti]}")
+#
+# # c) Lista di stringhe formattate
+# stringhe = list(map(lambda f: f"{f['titolo']} ({f['anno']}) — ⭐ {f['voto']}", film_lista))
+# for s in stringhe:
+#     print(s)
+#
+# # d) Film più vecchio
+# piu_vecchio = min(film_lista, key=lambda f: f["anno"])
+# print(f"\nPiù vecchio: {piu_vecchio['titolo']} ({piu_vecchio['anno']})")
+#
+# # e) Per anno con enumerate
+# per_anno = sorted(film_lista, key=lambda f: f["anno"])
+# print("\n=== Cronologia ===")
+# for i, f in enumerate(per_anno, 1):
+#     print(f"  {i}. {f['titolo']} ({f['anno']})")
+
+# --- SOLUZIONE ESERCIZIO 6 (enumerate + dizionari) ---
+# inventario = {
+#     "T-shirt": 45,
+#     "Jeans": 12,
+#     "Sneakers": 8,
+#     "Cappello": 30,
+#     "Giacca": 3,
+# }
+#
+# # a) Tabella numerata
+# print("\n=== Inventario ===")
+# for i, (prodotto, quantita) in enumerate(inventario.items(), 1):
+#     print(f"  {i}. {prodotto}: {quantita} pezzi")
+#
+# # b) Scorta bassa
+# print("\n=== Scorta bassa (<10 pezzi) ===")
+# for i, (prodotto, quantita) in enumerate(inventario.items(), 1):
+#     if quantita < 10:
+#         print(f"  ⚠️ Posizione {i}: {prodotto} — solo {quantita} pezzi!")
+#
+# # c) Dict comprehension — solo prodotti con più di 15 pezzi
+# abbondanti = {prod: qty for prod, qty in inventario.items() if qty > 15}
+# print(f"\nBen forniti (>15): {abbondanti}")
+
+# --- SOLUZIONE ESERCIZIO 7 (Raggruppare per Chiave 🎯) ---
+# def raggruppa_per(lista_dizionari, chiave):
+#     """Raggruppa una lista di dizionari per il valore di una chiave.
+#     Come il GROUP BY di SQL o il groupBy() di Laravel/Eloquent."""
+#     risultato = {}
+#     for elemento in lista_dizionari:
+#         valore_chiave = elemento[chiave]
+#         if valore_chiave not in risultato:
+#             risultato[valore_chiave] = []
+#         risultato[valore_chiave].append(elemento)
+#     return risultato
+#
+# prodotti = [
+#     {"nome": "Laptop", "prezzo": 999.99, "categoria": "Elettronica"},
+#     {"nome": "Libro Python", "prezzo": 35.00, "categoria": "Libri"},
+#     {"nome": "Cuffie", "prezzo": 79.99, "categoria": "Elettronica"},
+#     {"nome": "Zaino", "prezzo": 59.99, "categoria": "Accessori"},
+#     {"nome": "Libro AI", "prezzo": 42.00, "categoria": "Libri"},
+# ]
+# per_cat = raggruppa_per(prodotti, "categoria")
+# for cat, items in per_cat.items():
+#     print(f"\n{cat}:")
+#     for p in items:
+#         print(f"  - {p['nome']}: {p['prezzo']}€")
+
+# --- SOLUZIONE ESERCIZIO 8 (Simula API) ---
 # def processa_ordini(ordini):
+#     """Processa una lista di ordini e restituisce un report riassuntivo.
+#     Simula l'elaborazione di dati da un'API e-commerce."""
 #     conteggio_citta = {}
 #     conteggio_prodotti = {}
-#     fatturato = 0
 #     for ordine in ordini:
-#         fatturato += ordine["totale"]
 #         citta = ordine["cliente"]["indirizzo"]["citta"]
 #         conteggio_citta[citta] = conteggio_citta.get(citta, 0) + 1
 #         for prod in ordine["prodotti"]:
@@ -396,7 +632,7 @@ print(f"Copia: {config_copia['tema']}")  # "light"
 #             conteggio_prodotti[nome] = conteggio_prodotti.get(nome, 0) + prod["quantita"]
 #     return {
 #         "totale_ordini": len(ordini),
-#         "fatturato_totale": round(fatturato, 2),
+#         "fatturato_totale": round(sum(o["totale"] for o in ordini), 2),
 #         "citta_piu_ordini": max(conteggio_citta, key=conteggio_citta.get),
 #         "prodotto_piu_venduto": max(conteggio_prodotti, key=conteggio_prodotti.get)
 #     }
