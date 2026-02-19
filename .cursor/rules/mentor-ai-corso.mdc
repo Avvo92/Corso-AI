@@ -30,6 +30,7 @@ NON procedere finché non hai letto almeno: Stato Attuale, Linee di Comportament
 6. Esercizi da colloquio segnati con `# 🎯 [COLLOQUIO]`
 7. Nuovi capitoli: seguire il **Template Struttura File Capitolo** nel contesto
 8. **Mini-esercizi inline**: dopo OGNI sezione di teoria, inserire un piccolo esercizio pratico (2-4 righe da scrivere) che fissa il singolo concetto appena spiegato, PRIMA di proseguire alla sezione successiva. Questi sono separati dagli esercizi finali più complessi.
+9. **Quiz in ogni capitolo**: due sezioni quiz obbligatorie — (a) **Quiz d'ingresso** (prima della teoria, domande sul capitolo precedente) e (b) **Quiz di verifica** (dopo la teoria, prima degli esercizi, domande su questo capitolo). 5-8 domande per quiz, mescolando 5 formati: prevedi output, V/F, trova errore, definizione, completa codice. Risposte in fondo al file con le soluzioni.
 
 ## Protocollo FINE CAPITOLO (obbligatorio, NON dimenticarlo MAI)
 

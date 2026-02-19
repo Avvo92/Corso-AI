@@ -44,6 +44,60 @@
 ============================================================================
 """
 
+# ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  QUIZ D'INGRESSO — Rispondi PRIMA di leggere la teoria!              ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+
+# Queste domande verificano i concetti del CAPITOLO 04 (Liste).
+# Rispondi senza guardare il codice — servono a capire cosa hai interiorizzato.
+# Le risposte corrette sono in fondo al file nella sezione SOLUZIONI.
+
+# DOMANDA 1 — Prevedi l'output:
+# Cosa stampa questo codice?
+#   numeri = [10, 20, 30, 40, 50]
+#   print(numeri[1:4])
+# La tua risposta: ___
+
+# DOMANDA 2 — Vero o Falso?
+# "Il metodo .append() restituisce la lista modificata"
+# La tua risposta (V/F): ___
+
+# DOMANDA 3 — Completa il codice:
+# Voglio stampare ogni frutto con il suo numero (partendo da 1):
+#   frutti = ["mela", "pera", "banana"]
+#   for i, frutto in ___(frutti, ___):
+#       print(f"{i}. {frutto}")
+# Riempi i due spazi: ___
+
+# DOMANDA 4 — Trova l'errore:
+#   prezzi = [10, 20, 30, 40, 50]
+#   ultimi_tre = prezzi[3:]
+#   print(ultimi_tre)   # Volevo [30, 40, 50] ma ottengo qualcos'altro
+# Qual è il problema? ___
+
+# DOMANDA 5 — Definizione:
+# Cosa fa la funzione sorted() applicata a una lista?
+# Che differenza c'è tra sorted(lista) e lista.sort()?
+# La tua risposta: ___
+
+# DOMANDA 6 — Prevedi l'output:
+# Cosa stampa questo codice?
+#   nomi = ["Marco", "Anna", "Luca"]
+#   risultato = list(filter(lambda n: len(n) > 4, nomi))
+#   print(risultato)
+# La tua risposta: ___
+
+# DOMANDA 7 — Vero o Falso?
+# "La list comprehension [x*2 for x in lista if x > 3] prima filtra
+#  gli elementi maggiori di 3, poi li raddoppia"
+# La tua risposta (V/F): ___
+
+# DOMANDA 8 — Completa il codice:
+# Voglio creare una lista con i quadrati dei numeri pari da 1 a 10:
+#   quadrati_pari = [___  for n in range(1, 11)  if ___]
+# Riempi i due spazi: ___
+
+
 # ==========================================================================
 # PARTE 1: Creare e Accedere ai Dizionari
 # ==========================================================================
@@ -99,7 +153,15 @@ print(f"\nIndirizzo: {utente.get('indirizzo', 'Non specificato')}")
 # 1) Stampa marca e modello in una f-string
 # 2) Accedi alla chiave "colore" con .get() usando un default "sconosciuto"
 # Scrivi qui sotto:
-# ...
+auto = {
+    "marca":"Fiat",
+    "modello":"500",
+    "anno":2020,
+    "km":30000
+}
+print(f"Marca: {auto['marca']}, Modello: {auto['modello']}")
+print(f"Colore: {auto.get('colore', 'sconosciuto')}")
+
 
 
 # ==========================================================================
@@ -387,6 +449,65 @@ print(f"Copia: {config_copia['tema']}")  # "light"
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  QUIZ DI VERIFICA — Hai capito la teoria?                            ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+
+# Queste domande verificano i concetti di QUESTO capitolo (Dizionari).
+# Rispondi DOPO aver letto la teoria, PRIMA di fare gli esercizi.
+# Le risposte corrette sono in fondo al file nella sezione SOLUZIONI.
+
+# DOMANDA 1 — Prevedi l'output:
+# Cosa stampa questo codice?
+#   persona = {"nome": "Luca", "eta": 25}
+#   persona["eta"] = 26
+#   persona["citta"] = "Roma"
+#   print(len(persona))
+# La tua risposta: ___
+
+# DOMANDA 2 — Trova l'errore:
+#   config = {"tema": "dark", "lingua": "it"}
+#   print(config["font_size"])
+# Qual è il problema? Come lo risolveresti? ___
+
+# DOMANDA 3 — Vero o Falso?
+# "Quando fai copia = dizionario (senza .copy()), modificare 'copia'
+#  modifica anche 'dizionario'"
+# La tua risposta (V/F): ___
+
+# DOMANDA 4 — Definizione:
+# Che differenza c'è tra dizionario.keys(), dizionario.values()
+# e dizionario.items()?
+# La tua risposta: ___
+
+# DOMANDA 5 — Completa il codice:
+# Voglio iterare su un dizionario stampando chiave e valore:
+#   prodotto = {"nome": "Mouse", "prezzo": 29.99}
+#   for ___, ___ in prodotto.___():
+#       print(f"{chiave}: {valore}")
+# Riempi i tre spazi: ___
+
+# DOMANDA 6 — Prevedi l'output:
+# Cosa stampa questo codice?
+#   voti = {"Marco": 7, "Laura": 9, "Giulia": 5}
+#   bravi = {n: v for n, v in voti.items() if v >= 7}
+#   print(bravi)
+# La tua risposta: ___
+
+# DOMANDA 7 — Vero o Falso?
+# ".setdefault('chiave', valore) sovrascrive il valore se la chiave
+#  esiste già nel dizionario"
+# La tua risposta (V/F): ___
+
+# DOMANDA 8 — Completa il codice:
+# Voglio contare quante volte appare ogni lettera nella parola "banana":
+#   conteggio = {}
+#   for lettera in "banana":
+#       conteggio[lettera] = conteggio.___(lettera, ___) + 1
+#   print(conteggio)
+# Riempi i due spazi: ___
+
+
+# ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  ESERCIZI — Ora Prova Tu!                                             ║
 # ╚═════════════════════════════════════════════════════════════════════════╝
 
@@ -539,6 +660,77 @@ print(f"Copia: {config_copia['tema']}")  # "light"
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  SOLUZIONI — Guardale Solo DOPO Aver Provato!                         ║
 # ╚═════════════════════════════════════════════════════════════════════════╝
+
+# --- RISPOSTE QUIZ D'INGRESSO (Cap. 04 — Liste) ---
+#
+# 1. [20, 30, 40]
+#    → numeri[1:4] prende gli indici 1, 2, 3 (il 4 è ESCLUSO).
+#
+# 2. FALSO
+#    → .append() modifica la lista ma restituisce None, non la lista.
+#      Se fai x = lista.append("a"), x sarà None.
+#
+# 3. enumerate(frutti, 1)
+#    → enumerate() dà indice + valore; il secondo parametro (1) dice
+#      da che numero partire per il contatore.
+#
+# 4. L'indice di partenza è sbagliato: prezzi[3:] dà [40, 50] (indici 3 e 4).
+#    Per avere [30, 40, 50] serve prezzi[2:] (l'indice di 30 è 2, non 3).
+#
+# 5. sorted() crea una NUOVA lista ordinata senza modificare l'originale.
+#    lista.sort() invece MODIFICA la lista originale e restituisce None.
+#    In JS .sort() modifica l'array originale (come .sort() di Python).
+#
+# 6. ["Marco"]
+#    → filter() con lambda n: len(n) > 4 tiene solo i nomi con più di 4
+#      caratteri. "Marco" ha 5 lettere, "Anna" 4, "Luca" 4.
+#
+# 7. VERO
+#    → Nella list comprehension, il "if" viene valutato prima: filtra gli
+#      elementi che soddisfano la condizione, poi applica l'espressione
+#      (x*2) solo a quelli che passano il filtro.
+#
+# 8. n**2  e  n % 2 == 0
+#    → [n**2 for n in range(1, 11) if n % 2 == 0] dà [4, 16, 36, 64, 100]
+#      Prima filtra i pari (2,4,6,8,10), poi eleva al quadrato.
+
+# --- RISPOSTE QUIZ DI VERIFICA (Cap. 05 — Dizionari) ---
+#
+# 1. 3
+#    → Parte con 2 chiavi ("nome", "eta"). Modifica "eta" (resta 2 chiavi),
+#      poi aggiunge "citta" (diventa 3 chiavi). len() conta le chiavi.
+#
+# 2. KeyError! La chiave "font_size" non esiste nel dizionario.
+#    Soluzione: usare config.get("font_size", valore_default) per evitare
+#    il crash, oppure controllare prima con "font_size" in config.
+#
+# 3. VERO
+#    → In Python, = NON copia un dizionario: crea solo un secondo nome
+#      che punta allo STESSO oggetto. Per copiare serve .copy().
+#      Attenzione: in PHP $copia = $array copia automaticamente!
+#
+# 4. .keys() restituisce solo le chiavi (es. ["nome", "prezzo"])
+#    .values() restituisce solo i valori (es. ["Mouse", 29.99])
+#    .items() restituisce coppie (chiave, valore) come tuple:
+#    [("nome", "Mouse"), ("prezzo", 29.99)]
+#
+# 5. chiave, valore, items
+#    → for chiave, valore in prodotto.items():
+#      .items() restituisce tuple (chiave, valore) che vengono
+#      spacchettate nelle due variabili.
+#
+# 6. {"Marco": 7, "Laura": 9}
+#    → La dict comprehension filtra con if v >= 7, quindi tiene
+#      Marco (7) e Laura (9), esclude Giulia (5).
+#
+# 7. FALSO
+#    → .setdefault() imposta il valore SOLO se la chiave NON esiste.
+#      Se la chiave c'è già, non fa nulla e restituisce il valore esistente.
+#
+# 8. get, 0
+#    → conteggio.get(lettera, 0) + 1
+#      .get(lettera, 0) restituisce il conteggio attuale della lettera,
+#      oppure 0 se non è ancora stata contata. Poi si aggiunge 1.
 
 # --- SOLUZIONE ESERCIZIO 1 ---
 # film = {

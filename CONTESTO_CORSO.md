@@ -105,6 +105,17 @@
 10. **Ripasso intelligente dei termini appresi**: nei capitoli successivi, quando si usa un termine già visto (es. `enumerate`, `lambda`, `*args`), non limitarsi a usarlo — reinserire una breve spiegazione contestuale come se fosse un "richiamo naturale". Non deve sembrare una ripetizione forzata, ma un promemoria organico integrato nel flusso della lezione. Esempio: invece di scrivere solo `sorted(lista, key=lambda x: x["prezzo"])`, aggiungere un commento tipo: *"Usiamo `sorted()` — ricordi? Crea una NUOVA lista ordinata senza modificare l'originale — con una `lambda` come chiave: una mini-funzione usa-e-getta che dice 'ordina in base a questo campo'"*
 11. **Tag `[COLLOQUIO]` sugli esercizi**: gli esercizi che replicano domande reali da colloqui tecnici devono essere segnati con il tag `# 🎯 [COLLOQUIO]` nel commento. Questo aiuta Gianluca a sapere quali esercizi meritano attenzione extra e pratica ripetuta, perché potrebbe trovarseli davanti in un'intervista reale.
 12. **Mini-esercizi inline dopo ogni sezione di teoria**: dopo OGNI Parte/sezione di spiegazione, inserire un piccolo esercizio pratico (etichettato `# --- MINI-ESERCIZIO X — Prova subito! ---`) che fissa il singolo concetto appena spiegato. Devono essere brevi (2-4 cose da fare), focalizzati solo su quella sezione, e separati dagli esercizi finali più complessi. Questo approccio è stato richiesto dallo studente al capitolo 05 perché aiuta a fissare concetto per concetto prima di affrontare gli esercizi combinati.
+13. **Quiz a inizio e fine teoria in ogni capitolo**: ogni capitolo deve avere DUE sezioni quiz:
+    - **Quiz d'ingresso** (subito dopo il docstring di apertura, prima della PARTE 1): 5-8 domande rapide sui concetti del **capitolo precedente**, per verificare che siano stati interiorizzati.
+    - **Quiz di verifica** (tra l'ultima PARTE di teoria e la sezione ESERCIZI): 5-8 domande sui concetti appena studiati in **questo** capitolo, per verificare la comprensione prima di praticare.
+    - I 5 formati di domanda da mescolare in ogni quiz:
+      - **Prevedi l'output**: dato un blocco di codice, scrivere cosa stampa
+      - **Vero/Falso**: affermazioni su metodi, comportamenti, differenze
+      - **Trova l'errore**: codice con un bug da individuare e spiegare
+      - **Definizione**: cosa fa un metodo, a cosa corrisponde in JS/PHP
+      - **Completa il codice**: codice con parti mancanti (___) da riempire
+    - Formato: domande nei commenti, lo studente scrive la risposta sotto ogni domanda. Le risposte corrette vanno nella sezione SOLUZIONI in fondo al file.
+    - Approccio richiesto dallo studente al capitolo 05 per avere più dati sui punti deboli.
 
 ---
 
@@ -516,6 +527,26 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 ============================================================================
 """
 
+# ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  QUIZ D'INGRESSO — Rispondi PRIMA di leggere la teoria!              ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+
+# Queste domande verificano i concetti del capitolo PRECEDENTE.
+# Rispondi senza guardare il codice — servono a capire cosa hai interiorizzato.
+# Le risposte corrette sono in fondo al file nella sezione SOLUZIONI.
+
+# DOMANDA 1 — Prevedi l'output:
+# Cosa stampa questo codice?
+#   [codice]
+# La tua risposta: ___
+
+# DOMANDA 2 — Vero o Falso?
+# "[affermazione]"
+# La tua risposta (V/F): ___
+
+# [... 5-8 domande, mescolando i 5 formati ...]
+
+
 # ============================================================
 # SEZIONE 1: Concetto Base — con esempi commentati
 # ============================================================
@@ -550,6 +581,21 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 # [Stessa struttura]
 
+# ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  QUIZ DI VERIFICA — Hai capito la teoria?                            ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+
+# Queste domande verificano i concetti di QUESTO capitolo.
+# Rispondi DOPO aver letto la teoria, PRIMA di fare gli esercizi.
+# Le risposte corrette sono in fondo al file nella sezione SOLUZIONI.
+
+# DOMANDA 1 — [formato]
+# [domanda]
+# La tua risposta: ___
+
+# [... 5-8 domande, mescolando i 5 formati ...]
+
+
 # ============================================================
 # ESERCIZI PRATICI
 # ============================================================
@@ -578,6 +624,16 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 # SOLUZIONI (NON SBIRCIARE!)
 # ============================================================
 
+# --- RISPOSTE QUIZ D'INGRESSO ---
+# 1. [risposta con spiegazione breve]
+# 2. [risposta con spiegazione breve]
+# [ecc.]
+
+# --- RISPOSTE QUIZ DI VERIFICA ---
+# 1. [risposta con spiegazione breve]
+# 2. [risposta con spiegazione breve]
+# [ecc.]
+
 # --- SOLUZIONE ESERCIZIO 1 ---
 # [Codice commentato]
 
@@ -598,6 +654,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 7. **Ripasso**: inserire almeno 2 richiami a termini del glossario con stato 🔄 o ⚠️
 8. **Difficoltà crescente**: gli esercizi devono salire gradualmente, non fare salti bruschi
 9. **Mini-esercizi inline obbligatori**: dopo OGNI sezione di teoria, aggiungere un mini-esercizio (etichettato `# --- MINI-ESERCIZIO X — Prova subito! ---`) con 2-4 task brevi focalizzati SOLO sul concetto appena spiegato. Servono a fissare il singolo concetto prima di proseguire. Sono SEPARATI dagli esercizi finali che combinano più concetti. Approccio richiesto dallo studente al capitolo 05.
+10. **Due sezioni quiz per capitolo**: (a) Quiz d'ingresso prima della teoria (5-8 domande sul capitolo precedente), (b) Quiz di verifica dopo la teoria e prima degli esercizi (5-8 domande su questo capitolo). 5 formati: prevedi output, V/F, trova errore, definizione, completa codice. Risposte in fondo con le soluzioni.
 - Sul secondo PC: aiutarlo a clonare la repo e ricreare il venv
 
 ---
