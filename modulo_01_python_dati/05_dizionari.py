@@ -56,46 +56,48 @@
 # Cosa stampa questo codice?
 #   numeri = [10, 20, 30, 40, 50]
 #   print(numeri[1:4])
-# La tua risposta: ___
+# La tua risposta: [20, 30, 40, 50]
 
 # DOMANDA 2 — Vero o Falso?
 # "Il metodo .append() restituisce la lista modificata"
-# La tua risposta (V/F): ___
+# La tua risposta (V/F): V
 
 # DOMANDA 3 — Completa il codice:
 # Voglio stampare ogni frutto con il suo numero (partendo da 1):
 #   frutti = ["mela", "pera", "banana"]
-#   for i, frutto in ___(frutti, ___):
+#   for i, frutto in range(frutti, len(frutti)):
 #       print(f"{i}. {frutto}")
-# Riempi i due spazi: ___
+# Riempi i due spazi: ok
 
 # DOMANDA 4 — Trova l'errore:
 #   prezzi = [10, 20, 30, 40, 50]
 #   ultimi_tre = prezzi[3:]
 #   print(ultimi_tre)   # Volevo [30, 40, 50] ma ottengo qualcos'altro
-# Qual è il problema? ___
+# Qual è il problema? il problema è che lo start dell slicing doveva essere [1:]
 
 # DOMANDA 5 — Definizione:
 # Cosa fa la funzione sorted() applicata a una lista?
 # Che differenza c'è tra sorted(lista) e lista.sort()?
-# La tua risposta: ___
+# La tua risposta: la funzione sorted serve per ordinare un lista secondo un determinato criterio
+# nel primo caso è chiamata come funzione nel secondo come metodo, in ogni caso si una con la lambda function
 
 # DOMANDA 6 — Prevedi l'output:
 # Cosa stampa questo codice?
 #   nomi = ["Marco", "Anna", "Luca"]
 #   risultato = list(filter(lambda n: len(n) > 4, nomi))
 #   print(risultato)
-# La tua risposta: ___
+# La tua risposta: restituisce una lista (non sovrascrive l'originale) in cui
+# i nomi hanno lunghezza maggiore di 4
 
 # DOMANDA 7 — Vero o Falso?
 # "La list comprehension [x*2 for x in lista if x > 3] prima filtra
 #  gli elementi maggiori di 3, poi li raddoppia"
-# La tua risposta (V/F): ___
+# La tua risposta (V/F): V
 
 # DOMANDA 8 — Completa il codice:
 # Voglio creare una lista con i quadrati dei numeri pari da 1 a 10:
-#   quadrati_pari = [___  for n in range(1, 11)  if ___]
-# Riempi i due spazi: ___
+#   quadrati_pari = [n*n  for n in range(1, 11)  if x % 2 == 0]
+# Riempi i due spazi: ok
 
 
 # ==========================================================================

@@ -31,14 +31,32 @@ NON procedere finché non hai letto almeno: Stato Attuale, Linee di Comportament
 7. Nuovi capitoli: seguire il **Template Struttura File Capitolo** nel contesto
 8. **Mini-esercizi inline**: dopo OGNI sezione di teoria, inserire un piccolo esercizio pratico (2-4 righe da scrivere) che fissa il singolo concetto appena spiegato, PRIMA di proseguire alla sezione successiva. Questi sono separati dagli esercizi finali più complessi.
 9. **Quiz in ogni capitolo**: due sezioni quiz obbligatorie — (a) **Quiz d'ingresso** (prima della teoria, domande sul capitolo precedente) e (b) **Quiz di verifica** (dopo la teoria, prima degli esercizi, domande su questo capitolo). 5-8 domande per quiz, mescolando 5 formati: prevedi output, V/F, trova errore, definizione, completa codice. Risposte in fondo al file con le soluzioni.
+10. **Rinforzo mirato dai quiz**: dopo ogni correzione di quiz, registrare le risposte sbagliate/parziali nella sezione "Lacune dai Quiz" di CONTESTO_CORSO.md (stato 🔴). Quando si prepara il capitolo successivo, **consultare quella tabella** e inserire un blocco `# 🔁 RINFORZO MIRATO` per ogni lacuna aperta, posizionandolo dove il concetto debole si collega al nuovo argomento. Il blocco include: descrizione dell'errore, spiegazione con esempio diverso, 1-2 micro-esercizi. Seguire il Passo 10 del Protocollo di Aggiornamento per gestire il ciclo di vita delle lacune (🔴 → 🟡 → 🟢).
+11. **Tecnica Feynman**: nel quiz di verifica, includere almeno 1 domanda `💬 Spiega con parole tue` dove lo studente riformula un concetto chiave senza usare codice. Se la spiegazione è confusa → registrare come lacuna.
+12. **Progetto incrementale "Catalogo E-commerce"**: ogni capitolo (dal 05 in poi) ha una sezione `🏗️ PROGETTO INCREMENTALE` alla fine degli esercizi. Consultare la roadmap nella sezione "Progetto Incrementale" di CONTESTO_CORSO.md per il task specifico. Aggiornare il progresso al Passo 11 del Protocollo.
+13. **Esercizi di refactoring**: dal cap. 03 in poi, almeno 1 esercizio `🔧 [REFACTORING]` per capitolo — codice brutto ma funzionante da riscrivere.
+14. **Interleaving**: dal cap. 04 in poi, almeno 1 esercizio `🔀 [INTERLEAVING]` che mescola concetti del capitolo corrente con capitoli precedenti.
+15. **Retrieval practice**: dal cap. 04 in poi, almeno 1 esercizio `🧠 [RETRIEVAL]` — riscrivere da zero una funzione di un capitolo precedente senza guardare il codice.
+16. **Confronto prima/dopo**: nell'ultimo capitolo di ogni modulo, sezione `🔄 CONFRONTO PRIMA/DOPO` — lo studente riscrive codice del primo capitolo del modulo con le competenze acquisite.
+
+## Protocollo CORREZIONE (obbligatorio ad OGNI correzione)
+
+**Ogni volta** che Gianluca chiede di correggere qualcosa (quiz, mini-esercizi, esercizi, progetto incrementale — qualsiasi cosa), DOPO aver dato il feedback:
+
+1. **Aggiornare CONTESTO_CORSO.md** con le lacune emerse:
+   - Quiz sbagliati/parziali → aggiungere righe alla tabella "Lacune dai Quiz" (stato 🔴)
+   - Errori ricorrenti → aggiornare la tabella "Pattern di Errore"
+   - Termini usati correttamente senza aiuto → incrementare contatore nel Glossario
+   - Ripasso Programmato → aggiornare lo stato dei concetti verificati
+2. Questo aggiornamento va fatto **subito**, non solo a fine capitolo
 
 ## Protocollo FINE CAPITOLO (obbligatorio, NON dimenticarlo MAI)
 
-Quando Gianluca dice "ho finito" o "correggi" o "passiamo al prossimo":
+Quando Gianluca dice "ho finito" o "correggi gli esercizi finali" o "passiamo al prossimo":
 
 1. **Correggere** gli esercizi (seguendo la scala progressiva)
 2. **Chiedere il voto di difficoltà (1-10)** — se non lo dà spontaneamente, CHIEDERLO ESPLICITAMENTE prima di procedere
-3. **Aggiornare CONTESTO_CORSO.md** seguendo il Protocollo di Aggiornamento (9 passi) descritto nel file stesso
+3. **Aggiornare CONTESTO_CORSO.md** seguendo il Protocollo di Aggiornamento COMPLETO (11 passi) descritto nel file stesso
 4. **Fare il commit** delle modifiche
 
 NON passare al capitolo successivo senza aver completato TUTTI e 4 questi passi.

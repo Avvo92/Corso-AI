@@ -59,6 +59,7 @@
 
 ### Come correggere gli esercizi
 
+- **Aggiornamento immediato obbligatorio**: OGNI volta che si corregge qualcosa (quiz, mini-esercizi, esercizi, progetto — qualsiasi cosa), DOPO il feedback aggiornare subito CONTESTO_CORSO.md: lacune dai quiz (🔴), pattern di errore, contatori glossario, ripasso programmato. Non aspettare la fine del capitolo per registrare le lacune.
 - **Mai dare la soluzione completa subito**. Gianluca corregge rapidamente dopo il feedback — ha solo bisogno che gli si indichi *dove* e *perché* c'è il problema
 - **Scala di aiuto progressiva** (seguire quest'ordine):
   1. **Indicare la zona**: "guarda la riga X, c'è qualcosa che non torna"
@@ -116,6 +117,13 @@
       - **Completa il codice**: codice con parti mancanti (___) da riempire
     - Formato: domande nei commenti, lo studente scrive la risposta sotto ogni domanda. Le risposte corrette vanno nella sezione SOLUZIONI in fondo al file.
     - Approccio richiesto dallo studente al capitolo 05 per avere più dati sui punti deboli.
+14. **Rinforzo mirato dai quiz**: le risposte sbagliate o parziali ai quiz vengono registrate nella sezione "Lacune dai Quiz" di questo file. Quando si prepara il capitolo successivo, il Mentor **DEVE** inserire un blocco `# 🔁 RINFORZO MIRATO` per ogni lacuna aperta (stato 🔴), posizionandolo nel punto della teoria dove il concetto debole si collega naturalmente al nuovo argomento. Il rinforzo include una spiegazione con un esempio diverso da quello del quiz + 1-2 micro-esercizi. L'obiettivo è che il concetto venga verificato di nuovo nel quiz d'ingresso del capitolo dopo: se corretto → 🟢, se sbagliato di nuovo → nuovo ciclo di rinforzo.
+15. **Tecnica Feynman (spiega con parole tue)**: nei quiz di verifica, includere almeno 1 domanda di tipo **"Spiega con parole tue"** dove Gianluca deve riformulare un concetto come se lo stesse insegnando a un collega. Se non riesce a spiegarlo in modo chiaro e semplice, il concetto non è interiorizzato. Questo è il 6° formato di domanda (aggiunto ai 5 esistenti). Nei quiz d'ingresso è opzionale. Esempio: *"Spiega con parole tue cosa fa `.items()` su un dizionario e perché serve l'unpacking nel for."*
+16. **Progetto mini incrementale**: un progetto unico che attraversa tutto il corso, crescendo capitolo dopo capitolo. Ogni capitolo aggiunge una funzionalità nuova usando i concetti appena appresi. Il progetto è definito nella sezione "Progetto Incrementale" di questo file. Alla fine di ogni capitolo, dopo gli esercizi e prima delle soluzioni, c'è una sezione `# 🏗️ PROGETTO INCREMENTALE` con il task specifico per quel capitolo. Questo collega i concetti isolati in qualcosa di concreto e reale, e diventa un pezzo del portfolio.
+17. **Esercizi di refactoring**: ogni capitolo (dal 3° in poi) deve contenere almeno 1 esercizio etichettato `# 🔧 [REFACTORING]` dove Gianluca riceve codice funzionante ma scritto male (ripetitivo, con cicli inutili, variabili confuse, pattern inefficienti) e deve riscriverlo usando i concetti del capitolo. Non inventa logica, la migliora. Questo prepara al lavoro reale dove si legge e migliora codice altrui più spesso di quanto se ne scriva da zero.
+18. **Interleaving (esercizi mescolati)**: dal capitolo 4° in poi, ogni capitolo deve contenere almeno 1 esercizio etichettato `# 🔀 [INTERLEAVING]` che mescola concetti del capitolo corrente con concetti di 1-2 capitoli precedenti. Costringono il cervello a *scegliere* quale strumento usare, non solo a usare quello appena studiato. La ricerca mostra che l'interleaving è più faticoso ma produce ricordi più duraturi.
+19. **Retrieval practice (scrivi da zero dalla memoria)**: dal capitolo 4° in poi, ogni capitolo deve contenere almeno 1 esercizio etichettato `# 🧠 [RETRIEVAL]` dove Gianluca deve riscrivere da zero, senza guardare il codice originale, una funzione o esercizio di un capitolo precedente. L'esercizio specifica COSA riscrivere e da QUALE capitolo. Richiamare dalla memoria è il modo più potente per consolidare.
+20. **Confronto "prima e dopo" a fine modulo**: alla fine dell'ULTIMO capitolo di ogni modulo, inserire una sezione `# 🔄 CONFRONTO PRIMA/DOPO` dove Gianluca riguarda il proprio codice del primo capitolo del modulo e lo riscrive con le competenze acquisite. Motivazionale (vede il progresso) e consolidante (applica concetti avanzati a problemi già risolti).
 
 ---
 
@@ -409,16 +417,60 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 |----------|-----------|---------------|---------------|----------------|-------|
 | f-string, tipi, casting | 17/02 | ✅ file 04 (usato correttamente) | file 06 | file 09 | OK |
 | if/elif/else, for, while | 17/02 | ✅ file 04 (usato correttamente) | file 06 | file 09 | OK |
-| range() fine escluso | 17/02 | ❌ file 04 (errore ripetuto: dati[17:]) | file 06 | file 09 | ⚠️ Da rinforzare ancora |
-| enumerate() unpacking | 17/02 | ❌ file 04 (molte domande, non autonomo) | file 06 ⚠️ | file 09 | ⚠️ Non interiorizzato |
+| range() fine escluso | 17/02 | ❌ file 04 (errore ripetuto: dati[17:]) | ❌ quiz ingresso 05 (numeri[1:4]→4 elem, prezzi[1:]→indice sbagliato) | file 09 | 🔴 Errore persistente — 3 occorrenze |
+| enumerate() unpacking | 17/02 | ❌ file 04 (molte domande, non autonomo) | ❌ quiz ingresso 05 (ha usato range invece di enumerate) | file 09 | 🔴 Non interiorizzato — conferma al quiz |
 | def, return, *args, **kwargs | 17/02 | file 05 | file 07 | file 10 | Da verificare |
 | lambda | 17/02 | 🟡 file 04 (usata correttamente in ex.4/5/7 ma con aiuto teoria) | file 05 ⚠️ | file 07 | In miglioramento |
-| sorted() con key | 17/02 | ✅ file 04 (usato correttamente con lambda) | file 05 | file 07 | OK |
+| sorted() con key | 17/02 | ✅ file 04 (usato correttamente con lambda) | ⚠️ quiz ingresso 05 (non sa che sorted crea nuova lista, pensa lambda obbligatoria) | file 07 | ⚠️ Uso corretto ma teoria incompleta |
 | slicing, list comprehension | 19/02 | file 05 | file 07 | file 10 | Da verificare |
 | tuple/unpacking | 19/02 | file 05 ⚠️ | file 07 ⚠️ | file 10 | ⚠️ Rinforzo prioritario |
 | filter(), map() | 19/02 | file 05 | file 07 | file 10 | Da verificare |
 
 ⚠️ = Il concetto richiede rinforzo attivo (non solo uso passivo, ma esercizio dedicato)
+
+---
+
+## Lacune dai Quiz — Rinforzo nel Prossimo Capitolo
+
+> Dopo la correzione dei quiz (ingresso o verifica), le risposte sbagliate o parziali vengono registrate qui.
+> Il Mentor **DEVE** consultare questa tabella quando prepara un nuovo capitolo e inserire
+> un blocco `# 🔁 RINFORZO MIRATO` per ogni lacuna con stato 🔴, al punto della teoria dove il
+> concetto si collega naturalmente al nuovo argomento.
+>
+> **Ciclo di vita di una lacuna**:
+> 1. Gianluca sbaglia una domanda al quiz → si aggiunge una riga con stato 🔴
+> 2. Nel capitolo successivo si inserisce un blocco RINFORZO MIRATO → stato passa a 🟡
+> 3. Al quiz d'ingresso del capitolo dopo, se risponde correttamente → stato passa a 🟢
+> 4. Se sbaglia di nuovo → torna a 🔴 con un nuovo rinforzo programmato
+
+| # | Concetto | Quiz (tipo/cap.) | Errore commesso | Rinforzo in | Stato |
+|---|----------|-------------------|-----------------|-------------|-------|
+| 1 | Slicing — fine escluso | Ingresso/05 | `numeri[1:4]` → ha scritto [20,30,40,50] invece di [20,30,40]. Non applica "il secondo numero è escluso" | 06 | 🔴 |
+| 2 | .append() restituisce None | Ingresso/05 | Pensava che .append() restituisse la lista modificata (come .push() in JS restituisce la lunghezza). In Python modifica in-place e restituisce None | 06 | 🔴 |
+| 3 | enumerate vs range | Ingresso/05 | Ha scritto `range(frutti, len(frutti))` dove serviva `enumerate(frutti, 1)`. Non distingue quando usare enumerate e quando range | 06 | 🔴 |
+| 4 | Indici delle liste (contare da 0) | Ingresso/05 | Per ottenere [30,40,50] da [10,20,30,40,50] ha scritto `[1:]` invece di `[2:]`. Sa che 3 era troppo ma non conta da 0 correttamente | 06 | 🔴 |
+| 5 | sorted() crea nuova lista vs .sort() in-place | Ingresso/05 | Sa che uno è funzione e l'altro metodo, ma non ha menzionato la differenza chiave: sorted() crea una NUOVA lista, .sort() modifica in-place e restituisce None. Dice anche che lambda è obbligatoria (è opzionale) | 06 | 🔴 |
+| 6 | Output concreto vs descrizione concettuale | Ingresso/05 | Alla domanda "cosa stampa" ha descritto il concetto invece di dare il valore concreto `["Marco"]`. Capisce il meccanismo ma non sa prevedere l'output esatto | 06 | 🔴 |
+| 7 | Variabile corretta nelle comprehension | Ingresso/05 | Ha scritto `x % 2 == 0` quando la variabile del for era `n`. Causerebbe NameError. Disattenzione sui nomi delle variabili nel contesto della comprehension | 06 | 🔴 |
+
+Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
+
+### Formato del blocco RINFORZO MIRATO nei capitoli
+
+Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inserisce blocchi con questo formato nei punti strategici della teoria:
+
+```
+# 🔁 RINFORZO MIRATO — [nome concetto]
+# Al quiz del cap. XX hai confuso/sbagliato [breve descrizione errore].
+# Rivediamolo con un esempio diverso:
+# [spiegazione breve con nuovo esempio, diverso da quello del quiz]
+#
+# Prova subito:
+# 1) [micro-esercizio focalizzato sulla lacuna]
+# 2) [secondo micro-esercizio, opzionale]
+# Scrivi qui sotto:
+# ...
+```
 
 ---
 
@@ -459,6 +511,58 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 2. Riscrivili da zero su un file vuoto, senza guardare la soluzione
 3. Cronometrati: un junior ha circa 15-20 minuti per esercizio in un colloquio
 4. Se non riesci entro il tempo, ristudia il capitolo e riprova dopo 2 giorni
+
+---
+
+## Progetto Incrementale — "Catalogo E-commerce"
+
+> Un progetto unico che cresce capitolo dopo capitolo. Ogni capitolo aggiunge una funzionalità
+> usando i concetti appena appresi. Alla fine del modulo, Gianluca avrà costruito un sistema
+> completo di gestione catalogo prodotti — applicabile direttamente al mondo e-commerce che conosce.
+>
+> Il progetto è pensato per il dominio che Gianluca padroneggia (e-commerce/web), così il contesto
+> non aggiunge carico cognitivo e può concentrarsi sulla tecnica Python.
+
+### Tema del progetto
+
+**"Catalogo E-commerce"** — Un sistema per gestire prodotti, ordini, statistiche e visualizzazioni di un negozio online. Parte semplice (una lista di prodotti) e cresce fino a diventare un piccolo tool di analisi dati con output grafici.
+
+### Roadmap per capitolo
+
+| Capitolo | Funzionalità da aggiungere | Concetti esercitati |
+|----------|----------------------------|---------------------|
+| 04 — Liste | Lista prodotti: aggiungere, rimuovere, cercare, ordinare per nome/prezzo | Liste, slicing, sorted + lambda, list comprehension |
+| 05 — Dizionari | Prodotti come dizionari con proprietà (nome, prezzo, categoria, stock). Carrello come dizionario. | Dizionari, .get(), .items(), dict comprehension, nesting |
+| 06 — File CSV | Caricare il catalogo da file CSV e salvare gli aggiornamenti su file | Lettura/scrittura CSV, parsing, gestione errori |
+| 07 — NumPy | Calcoli statistici su prezzi: media, deviazione standard, normalizzazione, percentili | Array NumPy, operazioni vettoriali, aggregazioni |
+| 08 — Tensori | Rappresentare immagini prodotto come tensori, operazioni base su batch di immagini | Tensori 2D/3D, reshape, operazioni su assi |
+| 09 — Pandas | Caricare catalogo in DataFrame, filtrare, raggruppare per categoria, pivot table | DataFrame, query, groupby, merge |
+| 10 — Pandas Progetto | Report completo: top seller, margini, trend, export HTML | Analisi completa, apply, multi-aggregation |
+| 11 — Matplotlib | Dashboard visuale: grafico prezzi per categoria, trend vendite, pie chart stock | plot, bar, pie, subplot, styling |
+| 12 — Web Bridge | API endpoint FastAPI che espone il catalogo e le statistiche | FastAPI, endpoint, JSON response |
+
+### Progresso del progetto
+
+| Capitolo | Stato | Note |
+|----------|-------|------|
+| 04 — Liste | ⬜ Non ancora assegnato (il cap. 04 era già completato prima dell'introduzione del progetto) | |
+| 05 — Dizionari | ⬜ Da fare | Prima volta con il progetto incrementale |
+| 06 — File CSV | ⬜ Da fare | |
+| 07 — NumPy | ⬜ Da fare | |
+| 08 — Tensori | ⬜ Da fare | |
+| 09 — Pandas | ⬜ Da fare | |
+| 10 — Pandas Progetto | ⬜ Da fare | |
+| 11 — Matplotlib | ⬜ Da fare | |
+| 12 — Web Bridge | ⬜ Da fare | |
+
+### Regole per il progetto incrementale
+
+1. La sezione `# 🏗️ PROGETTO INCREMENTALE` va alla fine degli esercizi, prima delle soluzioni
+2. Deve richiedere 15-25 minuti (non troppo lungo, non troppo breve)
+3. Il task deve usare SOLO concetti visti fino a quel capitolo (niente anticipazioni)
+4. Ogni capitolo costruisce sul codice del capitolo precedente — lo studente può copiare e estendere
+5. La soluzione va nella sezione SOLUZIONI come gli altri esercizi
+6. Se è il primo capitolo con il progetto, fornire il codice base da cui partire
 
 ---
 
@@ -563,6 +667,20 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 # RIPASSO: [termine già visto] — ricordi? [breve richiamo con parole diverse]
 # [Esempio che riusa il termine in questo nuovo contesto]
 
+# 🔁 RINFORZO MIRATO — [concetto debole dal quiz precedente]
+# Al quiz del cap. XX hai confuso/sbagliato [breve descrizione errore].
+# Rivediamolo con un esempio diverso:
+# [spiegazione con nuovo esempio, collegato al contesto della sezione corrente]
+#
+# Prova subito:
+# 1) [micro-esercizio focalizzato sulla lacuna]
+# 2) [secondo micro-esercizio, opzionale]
+# Scrivi qui sotto:
+# ...
+# (Questo blocco viene inserito SOLO se ci sono lacune 🔴 nella tabella
+#  "Lacune dai Quiz" di CONTESTO_CORSO.md. Va posizionato dove il concetto
+#  debole si collega naturalmente al nuovo argomento della sezione.)
+
 # --- MINI-ESERCIZIO 1 — Prova subito! ---
 # [2-4 task brevi e focalizzati SOLO sul concetto di questa sezione]
 # [Non devono essere complessi — servono a fissare prima di proseguire]
@@ -589,11 +707,18 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 # Rispondi DOPO aver letto la teoria, PRIMA di fare gli esercizi.
 # Le risposte corrette sono in fondo al file nella sezione SOLUZIONI.
 
-# DOMANDA 1 — [formato]
+# DOMANDA 1 — [formato tra i 5 classici]
 # [domanda]
 # La tua risposta: ___
 
-# [... 5-8 domande, mescolando i 5 formati ...]
+# [... 5-8 domande, mescolando i 5 formati classici ...]
+
+# DOMANDA X — 💬 Spiega con parole tue (Tecnica Feynman):
+# Spiega come se lo stessi insegnando a un collega: [concetto chiave del capitolo].
+# Non usare codice — solo parole. Se non riesci a spiegarlo chiaramente,
+# quel concetto ha bisogno di rinforzo.
+# La tua spiegazione: ___
+# (Almeno 1 domanda Feynman obbligatoria nel quiz di verifica)
 
 
 # ============================================================
@@ -617,7 +742,55 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 # --- ESERCIZIO 5 (Livello 3 — Web Bridge): ---
 # [Esercizio che collega il concetto al mondo web/API]
 
+# --- ESERCIZIO X — 🔧 [REFACTORING]: ---
+# Il codice qui sotto FUNZIONA, ma è scritto male.
+# Riscrivilo usando i concetti di questo capitolo per renderlo più pulito,
+# leggibile e Pythonico.
+# [Codice brutto ma funzionante da riscrivere]
+# Requisiti: [cosa deve migliorare]
+
+# --- ESERCIZIO X — 🔀 [INTERLEAVING]: ---
+# (dal capitolo 04 in poi)
+# Questo esercizio mescola concetti di capitoli diversi.
+# [Descrizione che richiede concetti del capitolo corrente + 1-2 precedenti]
+
+# --- ESERCIZIO X — 🧠 [RETRIEVAL]: ---
+# (dal capitolo 04 in poi)
+# Senza guardare il codice del capitolo XX, riscrivi da zero la funzione
+# [nome_funzione] che [descrizione di cosa faceva].
+# Requisiti: [stessi dell'originale, riportati qui]
+
 # Scrivi il tuo codice sotto ogni esercizio ↓
+
+
+# ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  🏗️ PROGETTO INCREMENTALE — Catalogo E-commerce                      ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+
+# In questo capitolo aggiungi al progetto: [funzionalità specifica]
+# Parti dal codice del capitolo precedente (oppure dal codice base
+# fornito se è la prima volta).
+#
+# Task:
+# 1) [cosa fare, passo passo]
+# 2) [...]
+# 3) [...]
+#
+# Questo progetto attraversa tutto il corso — ogni capitolo aggiunge
+# un pezzo. Alla fine avrai un sistema completo di gestione catalogo.
+
+# Scrivi il tuo codice qui sotto:
+# ...
+
+
+# ============================================================
+# 🔄 CONFRONTO PRIMA/DOPO (solo nell'ultimo capitolo di ogni modulo)
+# ============================================================
+
+# (Questa sezione compare SOLO nell'ultimo capitolo di un modulo)
+# Riguarda il tuo codice del capitolo XX (il primo di questo modulo).
+# Riscrivilo usando TUTTO quello che hai imparato in questo modulo.
+# Confronta il "prima" e il "dopo" — vedrai quanto sei migliorato!
 
 
 # ============================================================
@@ -655,6 +828,13 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 8. **Difficoltà crescente**: gli esercizi devono salire gradualmente, non fare salti bruschi
 9. **Mini-esercizi inline obbligatori**: dopo OGNI sezione di teoria, aggiungere un mini-esercizio (etichettato `# --- MINI-ESERCIZIO X — Prova subito! ---`) con 2-4 task brevi focalizzati SOLO sul concetto appena spiegato. Servono a fissare il singolo concetto prima di proseguire. Sono SEPARATI dagli esercizi finali che combinano più concetti. Approccio richiesto dallo studente al capitolo 05.
 10. **Due sezioni quiz per capitolo**: (a) Quiz d'ingresso prima della teoria (5-8 domande sul capitolo precedente), (b) Quiz di verifica dopo la teoria e prima degli esercizi (5-8 domande su questo capitolo). 5 formati: prevedi output, V/F, trova errore, definizione, completa codice. Risposte in fondo con le soluzioni.
+11. **Blocchi RINFORZO MIRATO obbligatori**: se nella tabella "Lacune dai Quiz" di CONTESTO_CORSO.md ci sono righe con stato 🔴, il capitolo **DEVE** contenere un blocco `# 🔁 RINFORZO MIRATO — [concetto]` per ciascuna lacuna aperta. Il blocco va posizionato nella sezione di teoria dove il concetto debole si collega naturalmente al nuovo argomento. Formato: etichetta, descrizione dell'errore commesso, spiegazione con esempio diverso da quello del quiz, 1-2 micro-esercizi focalizzati. Questi blocchi sono SEPARATI dai mini-esercizi e dagli esercizi finali.
+12. **Almeno 1 esercizio di refactoring** per capitolo (dal cap. 03 in poi), etichettato `# 🔧 [REFACTORING]`. Fornire codice funzionante ma scritto male, che lo studente deve riscrivere usando i concetti del capitolo. Il codice "brutto" deve contenere pattern riconoscibili (cicli inutili, variabili poco chiare, ripetizioni) migliorabili con gli strumenti appena appresi.
+13. **Almeno 1 esercizio di interleaving** per capitolo (dal cap. 04 in poi), etichettato `# 🔀 [INTERLEAVING]`. L'esercizio deve mescolare concetti del capitolo corrente con concetti di 1-2 capitoli precedenti, costringendo a scegliere lo strumento giusto.
+14. **Almeno 1 esercizio di retrieval practice** per capitolo (dal cap. 04 in poi), etichettato `# 🧠 [RETRIEVAL]`. Lo studente deve riscrivere da zero, senza guardare il codice originale, una funzione/esercizio di un capitolo precedente. L'esercizio specifica cosa riscrivere e da quale capitolo.
+15. **Almeno 1 domanda Feynman** nel quiz di verifica, etichettata `# 💬 Spiega con parole tue`. Lo studente deve riformulare un concetto chiave del capitolo con parole proprie, senza usare codice. Se la spiegazione è confusa o incompleta, il concetto va registrato come lacuna.
+16. **Sezione Progetto Incrementale** obbligatoria in ogni capitolo (dal cap. 05 in poi), etichettata `# 🏗️ PROGETTO INCREMENTALE`. Il task specifico per ogni capitolo è definito nella roadmap della sezione "Progetto Incrementale" di CONTESTO_CORSO.md. Deve durare 15-25 minuti e usare solo concetti visti fino a quel punto.
+17. **Sezione Confronto Prima/Dopo** obbligatoria nell'ULTIMO capitolo di ogni modulo, etichettata `# 🔄 CONFRONTO PRIMA/DOPO`. Lo studente riguarda il proprio codice del primo capitolo del modulo e lo riscrive con le competenze acquisite.
 - Sul secondo PC: aiutarlo a clonare la repo e ricreare il venv
 
 ---
@@ -703,6 +883,19 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 ### Passo 9 — Voto Difficoltà
 - [ ] Se Gianluca NON ha dato il voto spontaneamente: **chiederglielo esplicitamente** prima di chiudere
+
+### Passo 10 — Lacune dai Quiz
+- [ ] Se in questa sessione sono stati corretti dei quiz (ingresso o verifica): per ogni risposta **sbagliata o parziale**, aggiungere una riga alla tabella "Lacune dai Quiz" con stato 🔴 e il capitolo target per il rinforzo (= il prossimo da preparare)
+- [ ] Se una lacuna già registrata è stata rinforzata in questo capitolo (blocco 🔁 inserito): aggiornare lo stato a 🟡
+- [ ] Se al quiz d'ingresso Gianluca ha risposto correttamente a un concetto che era 🟡: aggiornare lo stato a 🟢 Superato
+- [ ] Se al quiz d'ingresso Gianluca ha sbagliato di nuovo un concetto che era 🟡: riportare lo stato a 🔴 e programmare un nuovo rinforzo
+- [ ] Se una domanda Feynman (💬 "Spiega con parole tue") ha ricevuto una risposta confusa o incompleta: registrarla come lacuna con nota "Feynman — non sa riformulare"
+
+### Passo 11 — Progetto Incrementale e Metodi Avanzati
+- [ ] Se il capitolo conteneva la sezione 🏗️ PROGETTO INCREMENTALE: aggiornare la tabella "Progresso del progetto" nella sezione "Progetto Incrementale" (stato ✅/⚠️ + note)
+- [ ] Se il capitolo conteneva un esercizio 🔧 [REFACTORING]: annotare nelle Note del Progresso se Gianluca ha migliorato effettivamente il codice e come
+- [ ] Se il capitolo conteneva un esercizio 🧠 [RETRIEVAL]: se Gianluca è riuscito a riscrivere la funzione senza errori, incrementare il contatore ripasso del concetto corrispondente nel Glossario. Se ha avuto difficoltà, annotare e programmare un nuovo retrieval nel capitolo dopo
+- [ ] Se è l'ultimo capitolo del modulo e conteneva 🔄 CONFRONTO PRIMA/DOPO: annotare le osservazioni di Gianluca sul proprio miglioramento nella sezione "Cosa So Fare Adesso"
 
 ---
 
