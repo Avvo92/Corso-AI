@@ -93,6 +93,15 @@ print(f"\nIndirizzo: {utente.get('indirizzo', 'Non specificato')}")
 # Se usi utente["indirizzo"] e la chiave non esiste → KeyError! (crash)
 # Con .get() invece ottieni il valore di default senza crash.
 
+# --- MINI-ESERCIZIO 1 — Prova subito! ---
+# Crea un dizionario 'auto' con chiavi: marca, modello, anno, km.
+# Poi:
+# 1) Stampa marca e modello in una f-string
+# 2) Accedi alla chiave "colore" con .get() usando un default "sconosciuto"
+# Scrivi qui sotto:
+# ...
+
+
 # ==========================================================================
 # PARTE 2: Modificare un Dizionario
 # ==========================================================================
@@ -115,6 +124,16 @@ print(f"Email rimossa: {telefono}")
 # Python:
 utente.update({"citta": "Roma", "ruolo": "senior developer"})
 print(f"Dopo update: {utente}")
+
+# --- MINI-ESERCIZIO 2 — Prova subito! ---
+# Usa il dizionario 'auto' che hai creato nel mini-esercizio 1.
+# 1) Aggiungi la chiave "colore" con un valore a tua scelta
+# 2) Modifica i km con un valore diverso
+# 3) Rimuovi la chiave "anno" con .pop() e stampa il valore rimosso
+# 4) Usa .update() per aggiungere "targa" e "proprietario" in un colpo solo
+# Scrivi qui sotto:
+# ...
+
 
 # ==========================================================================
 # PARTE 3: Iterare su un Dizionario
@@ -169,6 +188,17 @@ for i, (chiave, valore) in enumerate(prodotto.items(), 1):
 # Per spacchettarle scrivi: i, (chiave, valore) — le parentesi interne
 # dicono a Python "questa è una tupla dentro la tupla esterna".
 
+# --- MINI-ESERCIZIO 3 — Prova subito! ---
+# Usa il dizionario 'auto' dei mini-esercizi precedenti.
+# 1) Stampa tutte le chiavi e i valori usando un for con .items()
+# 2) Stampa una tabella numerata usando enumerate() con .items():
+#    "1. marca: Fiat"
+#    "2. modello: Panda"
+#    ecc.
+# Scrivi qui sotto:
+# ...
+
+
 # ==========================================================================
 # PARTE 4: Dizionari Annidati (Nested)
 # ==========================================================================
@@ -208,6 +238,20 @@ for prod in ordine["prodotti"]:
     subtotale = prod["prezzo"] * prod["quantita"]
     print(f"  - {prod['nome']}: {prod['prezzo']}€ x{prod['quantita']} = {subtotale}€")
 
+# --- MINI-ESERCIZIO 4 — Prova subito! ---
+# Crea un dizionario annidato 'ristorante' con:
+#   - "nome": il nome del ristorante
+#   - "indirizzo": un dizionario con "via", "citta", "cap"
+#   - "menu": una lista di dizionari, ognuno con "piatto" e "prezzo"
+#     (metti almeno 3 piatti)
+# Poi:
+# 1) Stampa il nome e la città del ristorante
+# 2) Stampa il nome del secondo piatto nel menu
+# 3) Con un ciclo for, stampa tutti i piatti con il prezzo
+# Scrivi qui sotto:
+# ...
+
+
 # ==========================================================================
 # PARTE 5: Dictionary Comprehension
 # ==========================================================================
@@ -240,6 +284,17 @@ print(f"Frutti cari (>1.50€): {cari}")
 # Trasformare i valori:
 prezzi_scontati = {nome: round(prezzo * 0.8, 2) for nome, prezzo in prezzi.items()}
 print(f"Con sconto 20%: {prezzi_scontati}")
+
+# --- MINI-ESERCIZIO 5 — Prova subito! ---
+# Dato il dizionario:
+#   temperature = {"Milano": 28, "Roma": 35, "Napoli": 33, "Torino": 25, "Palermo": 38}
+# Usando le dict comprehension:
+# 1) Crea un nuovo dizionario con solo le città sopra i 30°C
+# 2) Crea un nuovo dizionario con le temperature convertite in Fahrenheit
+#    (F = C * 9/5 + 32), arrotondate a 1 decimale
+# Scrivi qui sotto:
+# ...
+
 
 # ==========================================================================
 # PARTE 6: Lambda con i Dizionari — Rinforzo
@@ -282,6 +337,16 @@ print(f"Solo nomi: {solo_nomi}")
 piu_pagato = max(dipendenti, key=lambda d: d["stipendio"])
 print(f"Più pagato: {piu_pagato['nome']} ({piu_pagato['stipendio']:,}€)")
 
+# --- MINI-ESERCIZIO 6 — Prova subito! ---
+# Usa la lista 'dipendenti' qui sopra.
+# 1) Con sorted() + lambda, ordina per nome in ordine alfabetico e stampa
+# 2) Con filter() + lambda, trova chi guadagna più di 36.000€
+# 3) Con max() + lambda, trova chi ha il nome più lungo
+#    (suggerimento: len(d["nome"]) dà la lunghezza del nome)
+# Scrivi qui sotto:
+# ...
+
+
 # ==========================================================================
 # PARTE 7: Metodi Utili
 # ==========================================================================
@@ -309,6 +374,16 @@ config_copia = config.copy()  # Come {...config} in JS
 config_copia["tema"] = "light"
 print(f"Originale: {config['tema']}")   # Rimane "dark"
 print(f"Copia: {config_copia['tema']}")  # "light"
+
+# --- MINI-ESERCIZIO 7 — Prova subito! ---
+# Crea un dizionario 'preferenze' con: "lingua": "it", "notifiche": True
+# 1) Usa "in" per verificare se la chiave "tema" esiste
+# 2) Usa .setdefault() per aggiungere "tema" con default "auto"
+#    (solo se non esiste già)
+# 3) Crea una copia con .copy(), modifica "lingua" nella copia a "en",
+#    e verifica che l'originale non sia cambiato stampando entrambi
+# Scrivi qui sotto:
+# ...
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
