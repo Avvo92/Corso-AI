@@ -104,6 +104,7 @@
 9. **Voto difficoltà obbligatorio**: dopo ogni capitolo Gianluca deve dare un voto da 1 a 10. Se dimentica, **ricordarglielo esplicitamente**
 10. **Ripasso intelligente dei termini appresi**: nei capitoli successivi, quando si usa un termine già visto (es. `enumerate`, `lambda`, `*args`), non limitarsi a usarlo — reinserire una breve spiegazione contestuale come se fosse un "richiamo naturale". Non deve sembrare una ripetizione forzata, ma un promemoria organico integrato nel flusso della lezione. Esempio: invece di scrivere solo `sorted(lista, key=lambda x: x["prezzo"])`, aggiungere un commento tipo: *"Usiamo `sorted()` — ricordi? Crea una NUOVA lista ordinata senza modificare l'originale — con una `lambda` come chiave: una mini-funzione usa-e-getta che dice 'ordina in base a questo campo'"*
 11. **Tag `[COLLOQUIO]` sugli esercizi**: gli esercizi che replicano domande reali da colloqui tecnici devono essere segnati con il tag `# 🎯 [COLLOQUIO]` nel commento. Questo aiuta Gianluca a sapere quali esercizi meritano attenzione extra e pratica ripetuta, perché potrebbe trovarseli davanti in un'intervista reale.
+12. **Mini-esercizi inline dopo ogni sezione di teoria**: dopo OGNI Parte/sezione di spiegazione, inserire un piccolo esercizio pratico (etichettato `# --- MINI-ESERCIZIO X — Prova subito! ---`) che fissa il singolo concetto appena spiegato. Devono essere brevi (2-4 cose da fare), focalizzati solo su quella sezione, e separati dagli esercizi finali più complessi. Questo approccio è stato richiesto dallo studente al capitolo 05 perché aiuta a fissare concetto per concetto prima di affrontare gli esercizi combinati.
 
 ---
 
@@ -531,11 +532,17 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 # RIPASSO: [termine già visto] — ricordi? [breve richiamo con parole diverse]
 # [Esempio che riusa il termine in questo nuovo contesto]
 
+# --- MINI-ESERCIZIO 1 — Prova subito! ---
+# [2-4 task brevi e focalizzati SOLO sul concetto di questa sezione]
+# [Non devono essere complessi — servono a fissare prima di proseguire]
+# Scrivi qui sotto:
+# ...
+
 # ============================================================
 # SEZIONE 2: Concetto Intermedio
 # ============================================================
 
-# [Stessa struttura della sezione 1]
+# [Stessa struttura della sezione 1, incluso mini-esercizio alla fine]
 
 # ============================================================
 # SEZIONE 3: Concetto Avanzato (se presente)
@@ -590,6 +597,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 6. **Soluzioni**: sempre in fondo, commentate (con `#`), con commenti che spiegano il perché
 7. **Ripasso**: inserire almeno 2 richiami a termini del glossario con stato 🔄 o ⚠️
 8. **Difficoltà crescente**: gli esercizi devono salire gradualmente, non fare salti bruschi
+9. **Mini-esercizi inline obbligatori**: dopo OGNI sezione di teoria, aggiungere un mini-esercizio (etichettato `# --- MINI-ESERCIZIO X — Prova subito! ---`) con 2-4 task brevi focalizzati SOLO sul concetto appena spiegato. Servono a fissare il singolo concetto prima di proseguire. Sono SEPARATI dagli esercizi finali che combinano più concetti. Approccio richiesto dallo studente al capitolo 05.
 - Sul secondo PC: aiutarlo a clonare la repo e ricreare il venv
 
 ---
