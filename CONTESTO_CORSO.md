@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 19/02/2026
+> **Ultimo aggiornamento**: 17/02/2026
 
 ---
 
@@ -11,12 +11,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | 05_dizionari.py (prossimo da iniziare) |
+| **Capitolo in corso** | 05_dizionari.py (mini-esercizi teoria completati, esercizi finali da fare) |
 | **Ultimo completato** | 04_liste.py (19/02/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
 | **Difficoltà media** | 5.25 (media di 2, 4, 6, 9 — salto importante, vedi nota sotto) |
-| **Priorità attive** | ⚠️ enumerate/tuple non interiorizzati, ⚠️ Lambda in miglioramento ma ancora fragili, 🔴 Lettura completa consegne, 🔴 DIFFICOLTÀ 9 → valutare rinforzo prima del cap. 05 |
-| **Sessione corrente** | Sessione 2 |
+| **Priorità attive** | ✅ enumerate/tuple **migliorati** (ponte .items()=enumerate funziona), ⚠️ Lambda in miglioramento (filter ordine parametri fragile), 🔴 Lettura completa consegne (persiste), 🟡 Dict comprehension non interiorizzata, 🟡 Tipi: stringhe dove servono numeri |
+| **Sessione corrente** | Sessione 3 |
 
 > **Per l'agente**: dopo aver letto questa tabella, leggi le "Regole Didattiche" e i "Pattern di Errore" prima di produrre qualsiasi contenuto. Aggiorna questa tabella ad ogni fine capitolo.
 
@@ -225,7 +225,24 @@
 | `map()` | Trasforma ogni elemento con una funzione — restituisce oggetto pigro, serve `list()` | `.map()` / `array_map()` | 04 | 0/3 | 🔄 |
 | `.count(val)` | Conta quante volte un valore appare nella lista | `.filter().length` / `array_count_values()` | 04 | 0/3 | 🔄 |
 | `.index(val)` | Restituisce la posizione di un valore (errore se non trovato!) | `.indexOf()` / `array_search()` | 04 | 0/3 | 🔄 |
-| tupla / unpacking | Coppia di valori `(i, val)` — si spacchetta con `a, b = tupla` — ⚠️ **NON INTERIORIZZATO** | Destructuring `[a, b] = arr` / `list($a, $b) = $arr` | 04 | 0/3 | ⚠️ |
+| tupla / unpacking | Coppia di valori `(i, val)` — si spacchetta con `a, b = tupla` — migliorato al cap.05 | Destructuring `[a, b] = arr` / `list($a, $b) = $arr` | 04 | 1/3 | ⚠️ |
+
+### Dizionari e Metodi (File 05)
+
+| Termine | Significato sintetico | Equivalente JS/PHP | Cap. | Ripassi | Stato |
+|---------|-----------------------|--------------------|------|---------|-------|
+| dizionario `{}` | Struttura chiave-valore — come un oggetto JS o array associativo PHP | `{}` oggetto / `[]` array associativo | 05 | 0/3 | 🔄 |
+| `.keys()` | Restituisce tutte le chiavi del dizionario | `Object.keys()` / `array_keys()` | 05 | 0/3 | 🔄 |
+| `.values()` | Restituisce tutti i valori del dizionario | `Object.values()` / `array_values()` | 05 | 0/3 | 🔄 |
+| `.items()` | Restituisce tuple `(chiave, valore)` — l'`enumerate()` dei dizionari! | `Object.entries()` / `foreach($arr as $k => $v)` | 05 | 0/3 | 🔄 |
+| `.get(chiave, default)` | Accede a una chiave con valore di default se non esiste — evita errori | `obj?.key ?? default` / `$arr['key'] ?? default` | 05 | 0/3 | 🔄 |
+| `.setdefault(k, v)` | Aggiunge la chiave solo se non esiste, altrimenti restituisce il valore corrente | Non diretto / Non diretto | 05 | 0/3 | 🔄 |
+| `.update(dict2)` | Unisce un altro dizionario dentro il primo (modifica in-place) | `Object.assign()` / `array_merge()` | 05 | 0/3 | 🔄 |
+| `.copy()` | Crea una copia superficiale del dizionario (modifiche alla copia non toccano l'originale) | `{...obj}` spread / Non diretto (`array_merge()` crea nuovo) | 05 | 0/3 | 🔄 |
+| `zip()` | Accoppia elementi di due liste come una "cerniera" → lista di tuple | Non diretto / Non diretto | 05 | 0/3 | 🔄 |
+| `**dizionario` | Spread operator per dizionari — spacchetta le coppie chiave-valore | `...obj` / `...` + `array_merge()` | 05 | 0/3 | 🔄 |
+| dict comprehension | `{k: v for k, v in ...}` — crea dizionari in modo compatto — ⚠️ **DA RINFORZARE** | Non diretto / Non diretto | 05 | 0/3 | ⚠️ |
+| `in` (su dizionari) | Verifica se una CHIAVE esiste nel dizionario (non i valori!) | `"key" in obj` / `array_key_exists()` | 05 | 0/3 | 🔄 |
 
 ### Concetti Generali
 
@@ -273,6 +290,19 @@
 - "La tupla la decidiamo noi, basta dividere in due variabili?" → Stava capendo l'unpacking, ma serviva conferma
 - "Come fare per evitare che tu possa scordarti queste cose?" → Consapevolezza meta-cognitiva, buon segno — ha portato alla creazione della Cursor Rule
 
+### Capitolo 05 — dizionari (mini-esercizi, teoria in corso)
+- "Il metodo zip cosa restituisce?" → Non conosceva zip(), spiegato come "cerniera" che accoppia due liste
+- "prezzi.items() cosa restituisce? Lo stesso metodo poteva essere usato nelle liste?" → Distinzione liste vs dizionari non ancora ovvia. Ha portato al ponte mentale ".items() = enumerate dei dizionari"
+- ".items() è il corrispettivo di enumerate per i dictionary?" → **Ponte mentale confermato**: ha capito l'analogia e chiesto di registrarla
+- "Il metodo append funziona per le dictionary?" → Confusione sui metodi specifici di liste vs dizionari
+- "Metodo per inserire un elemento alla fine di una lista" → Cercava `.append()` — lo conosce ma non lo ricorda al volo
+- "Operatore ternario in Python" → Chiesto 2 volte — la sintassi `valore if condizione else altro` non è intuitiva venendo da `? :` in JS/PHP
+- "**p rispiegami questa sintassi" → Il doppio asterisco `**` per spread dei dizionari non era chiaro
+- "Come inserire chiave e valore in una lista python?" → Confusione tra lista e dizionario — ha capito che le liste non hanno chiavi
+- Errore di sintassi su filter(): `filter(studenti, lambda s: ...)` — ordine parametri invertito, confonde con sorted(lista, key=lambda)
+- Errore f-string: doppi apici dentro doppi apici `f"{s["nome"]}"` → errore già visto al cap.03
+- Errore negazione: `if (!(n in lista))` → sintassi JS, in Python è `if n not in lista`
+
 ---
 
 ## Pattern di Errore Ricorrenti
@@ -285,12 +315,15 @@ Questi sono gli errori che Gianluca tende a ripetere. Da monitorare nei prossimi
 | 2 | **`range()` / slicing fine escluso**: dimentica che il secondo numero è escluso | 🔴 Attivo | Visto al file 02. Ripetuto al file 04: `dati[17:]` invece di `dati[16:]` |
 | 3 | **`== True` ridondante**: scrive `if valore == True` | 🟡 Corretto una volta | Visto al file 02, corretto dopo feedback |
 | 4 | **Calcoli dentro le f-string**: espressioni troppo lunghe nelle `{}` | 🟡 Corretto una volta | Visto al file 01, corretto dopo feedback |
-| 5 | **Tipi nei dizionari**: mette stringhe dove servono numeri | 🟡 Corretto una volta | Visto al file 03 (`count` come stringa) |
-| 6 | **Lettura incompleta delle consegne**: non implementa tutti i requisiti | 🔴 Attivo | Visto ai file 02, 03 e 04. Al file 04: ex.1 mesi alterni con indice sbagliato, ex.2 formato stringa incompleto, ex.3 senza funzione, ex.6 usa [::-1] vietato, ex.9 variabile sbagliata |
-| 7 | **Lambda poco chiare**: non ha ancora interiorizzato la sintassi e l'uso delle funzioni lambda | 🟡 In miglioramento | Autodichiarato dopo file 03. Al file 04: usate correttamente in ex.4/5/7 con sorted, filter, map. Miglioramento reale ma da consolidare |
-| 8 | **enumerate/tuple/unpacking**: non capisce che enumerate crea tuple e che l'unpacking le spacchetta | 🔴 Attivo | Autodichiarato al file 04: "la tupla ed enumerate non mi rendono molto sicuro". Molte domande su questo |
+| 5 | **Tipi nei dizionari**: mette stringhe dove servono numeri | 🔴 Attivo | Visto al file 03 (`count` come stringa). **Ripetuto al file 05** mini-ex.2: `auto['km'] = "10000"` (stringa invece di numero) |
+| 6 | **Lettura incompleta delle consegne**: non implementa tutti i requisiti | 🔴 Attivo | Visto ai file 02, 03, 04, **05**. Al file 05: mini-ex.4 (2 piatti invece di 3, mancano i print), mini-ex.6 (manca punto 3 max), mini-ex.7 (manca modifica lingua nella copia) |
+| 7 | **Lambda poco chiare**: non ha ancora interiorizzato la sintassi e l'uso delle funzioni lambda | 🟡 In miglioramento | Al file 05 mini-ex.6: sorted+lambda corretta, ha combinato filter+sorted autonomamente. **Ordine parametri filter ancora fragile** (mette lista prima di lambda) |
+| 8 | **enumerate/tuple/unpacking**: non capisce che enumerate crea tuple e che l'unpacking le spacchetta | 🟡 In miglioramento | **Miglioramento significativo al file 05**: mini-ex.3 usato correttamente `for i, (key, value) in enumerate(.items(), 1)`. Ponte mentale ".items() = enumerate dei dizionari" ha fatto click |
 | 9 | **Codice superfluo**: aggiunge espressioni inutili (`== l` dopo `.insert()`) | 🟡 Corretto una volta | Visto al file 04 ex.6 |
 | 10 | **Vincoli esercizio ignorati**: usa metodi vietati dalla consegna (es. `[::-1]` quando esplicitamente proibito) | 🔴 Attivo | Visto al file 04 ex.6. Collegato al pattern #6 (lettura consegne) |
+| 11 | **Ordine parametri filter()**: mette la lista prima della lambda (`filter(lista, lambda)` invece di `filter(lambda, lista)`) | 🔴 Attivo | Visto al file 05 durante le domande. Confonde con sorted() che ha `key=lambda` come parametro con nome |
+| 12 | **Variabile sbagliata nel contesto**: usa una variabile di un altro scope/esempio | 🟡 Visto una volta | Al file 05 mini-ex.7: `'tema' in config` invece di `'tema' in preferenze` |
+| 13 | **Dict comprehension evitata**: quando la consegna chiede dict comprehension, usa il ciclo for classico | 🟡 Visto una volta | Al file 05 mini-ex.5: consegna diceva "usando le dict comprehension", ha usato for+dizionario vuoto |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 Superato
 
@@ -311,6 +344,7 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 
 - **Sessione 1 (17/02/2026)**: File 01, 02, 03 completati in una sessione
 - **Sessione 2 (19/02/2026)**: File 04 completato. Difficoltà 9 — il salto maggiore finora. Enumerate/tuple e combinazione di concetti sono stati i punti più difficili
+- **Sessione 3 (17/02/2026)**: File 05 in corso. Mini-esercizi teoria completati. Miglioramento significativo su enumerate+.items(). Dict comprehension ancora da interiorizzare
 - **Ritmo stimato**: 1-2 file al giorno
 - **Tempo totale stimato per il corso**: 3-4 mesi
 - **Momento migliore per studiare**: ❓ Da chiedere
@@ -332,6 +366,8 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 | "Array.slice()" | Slicing `lista[1:3]` estrae una porzione di lista | `.slice(1, 3)` in JS / `array_slice($arr, 1, 2)` in PHP | 04 | Slicing su stringhe, slicing su array NumPy, selezione righe DataFrame |
 | ".push()/.pop()" | `.append()` aggiunge in fondo, `.pop()` rimuove e restituisce | `.push()` / `.pop()` in JS (identico!) | 04 | Strutture dati stack, gestione code |
 | ".map() + .filter()" | List comprehension `[expr for x in lista if cond]` fa entrambi | `.map().filter()` in JS / `array_map()` + `array_filter()` in PHP | 04 | `.apply()` su DataFrame Pandas, trasformazione dati |
+| ".items() = enumerate dei dizionari" | `.items()` restituisce tuple `(chiave, valore)` da spacchettare — stessa meccanica di `enumerate()` che dà `(indice, valore)` | `Object.entries()` in JS / `foreach($arr as $k => $v)` in PHP | 05 | `.iterrows()` su DataFrame Pandas, iterazione su qualsiasi struttura chiave-valore |
+| "** = spread per dizionari" | `{**dict1, **dict2}` unisce dizionari | `{...obj1, ...obj2}` in JS / `array_merge()` in PHP | 05 | Merging config, parametri opzionali, kwargs |
 
 ### Come usare questa sezione
 Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente:
@@ -382,6 +418,20 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - ⚠️ enumerate() e tuple/unpacking: capisco il concetto ma non mi viene ancora naturale
 - ⚠️ Lambda: in miglioramento — usate correttamente con sorted, filter, map, ma serve ancora pratica
 
+### Dopo il Capitolo 05 — Dizionari (parziale — mini-esercizi teoria)
+- So creare dizionari con `{}` e accedere ai valori con `dizionario["chiave"]`
+- So aggiungere/modificare valori: `dizionario["nuova_chiave"] = valore`
+- So iterare con `.keys()`, `.values()`, `.items()`
+- ✅ So combinare `.items()` + `enumerate()` per avere indice + chiave + valore — **grande miglioramento**
+- So usare `.get()` con valore di default per evitare errori su chiavi inesistenti
+- So usare `.setdefault()` per aggiungere solo se la chiave non esiste
+- So usare `.copy()` per creare copie indipendenti
+- So usare `in` per verificare l'esistenza di una chiave
+- So ordinare una lista di dizionari con `sorted()` + `lambda` per una chiave specifica
+- So filtrare dizionari con `filter()` + `lambda` (⚠️ ordine parametri: prima lambda, poi lista)
+- ⚠️ Dict comprehension: conosco il concetto ma tendo ancora a usare il for classico
+- ⚠️ Dizionari annidati: so accedervi ma dimentico di implementare tutti i livelli richiesti
+
 ---
 
 ## Checklist di Auto-Revisione (prima di consegnare il codice)
@@ -400,6 +450,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - [ ] **Ho rispettato TUTTI i vincoli?** Se dice "senza usare X", ho davvero evitato X? (es. "senza [::-1]" significa che NON posso usarlo)
 - [ ] **L'esercizio chiede una funzione?** Se dice "scrivi una funzione", devo usare `def`, non scrivere il codice libero
 - [ ] **Ho usato slicing?** Ricorda: il secondo indice è ESCLUSO, come `range()`. `dati[16:]` parte dall'indice 16, non dal 17!
+- [ ] **Ho usato `filter()`?** Il primo parametro è la funzione lambda, il secondo la lista: `filter(lambda x: ..., lista)`. NON al contrario!
+- [ ] **La consegna chiede dict comprehension?** Se sì, devo usare `{chiave: valore for ... in ...}`, non un ciclo for con dizionario vuoto
+- [ ] **I valori nel dizionario sono del tipo giusto?** Un chilometraggio è un numero `10000`, non una stringa `"10000"`
 
 ### Controlli Bonus (buone pratiche)
 - [ ] La funzione ha una docstring?
@@ -418,13 +471,15 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | f-string, tipi, casting | 17/02 | ✅ file 04 (usato correttamente) | file 06 | file 09 | OK |
 | if/elif/else, for, while | 17/02 | ✅ file 04 (usato correttamente) | file 06 | file 09 | OK |
 | range() fine escluso | 17/02 | ❌ file 04 (errore ripetuto: dati[17:]) | ❌ quiz ingresso 05 (numeri[1:4]→4 elem, prezzi[1:]→indice sbagliato) | file 09 | 🔴 Errore persistente — 3 occorrenze |
-| enumerate() unpacking | 17/02 | ❌ file 04 (molte domande, non autonomo) | ❌ quiz ingresso 05 (ha usato range invece di enumerate) | file 09 | 🔴 Non interiorizzato — conferma al quiz |
+| enumerate() unpacking | 17/02 | ❌ file 04 (molte domande, non autonomo) | ❌ quiz 05 / ✅ mini-ex.3 cap.05 (usato con .items()!) | file 09 | 🟡 In miglioramento |
 | def, return, *args, **kwargs | 17/02 | file 05 | file 07 | file 10 | Da verificare |
 | lambda | 17/02 | 🟡 file 04 (usata correttamente in ex.4/5/7 ma con aiuto teoria) | file 05 ⚠️ | file 07 | In miglioramento |
 | sorted() con key | 17/02 | ✅ file 04 (usato correttamente con lambda) | ⚠️ quiz ingresso 05 (non sa che sorted crea nuova lista, pensa lambda obbligatoria) | file 07 | ⚠️ Uso corretto ma teoria incompleta |
 | slicing, list comprehension | 19/02 | file 05 | file 07 | file 10 | Da verificare |
 | tuple/unpacking | 19/02 | file 05 ⚠️ | file 07 ⚠️ | file 10 | ⚠️ Rinforzo prioritario |
-| filter(), map() | 19/02 | file 05 | file 07 | file 10 | Da verificare |
+| filter(), map() | 19/02 | 🟡 file 05 mini-ex.6 (filter+sorted combinati, ma ordine param fragile) | file 07 | file 10 | ⚠️ Ordine parametri filter da rinforzare |
+| dict comprehension | 17/02 (cap.05) | file 06 ⚠️ | file 08 | file 11 | 🔴 Non usata quando richiesta — rinforzo prioritario |
+| .items() + unpacking | 17/02 (cap.05) | file 06 | file 08 | file 11 | ✅ Usato correttamente al primo tentativo |
 
 ⚠️ = Il concetto richiede rinforzo attivo (non solo uso passivo, ma esercizio dedicato)
 
