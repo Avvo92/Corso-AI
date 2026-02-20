@@ -208,6 +208,21 @@ print(f"Dopo update: {utente}")
 # auto.update({'targa':'vb546tr', 'proprietario':'Anna'})
 # print(f"{auto}")
 
+# 📝 CORREZIONE MENTOR — Mini-esercizio 2:
+# ✅ Punto 1 (colore): Perfetto.
+# ⚠️ Punto 2 (km): ATTENZIONE AI TIPI! Hai scritto "10000" (stringa con le
+#    virgolette). I chilometri sono un NUMERO, non una stringa!
+#    Sbagliato: auto['km'] = "10000"   ← stringa
+#    Corretto:  auto['km'] = 10000     ← numero intero
+#    Pensa a PHP: $auto['km'] = 10000; — scriveresti le virgolette?
+#    Pensa a JS: auto.km = 10000; — idem.
+#    Regola: se il valore rappresenta una QUANTITÀ (km, prezzo, età, voti),
+#    deve essere un numero. Le stringhe sono per TESTI (nomi, indirizzi, email).
+# ✅ Punto 3 (.pop): Perfetto, con default None — ottima pratica difensiva.
+# ✅ Punto 4 (.update): Perfetto, sintassi corretta.
+# ✅ Print finale: Funziona, ma potresti rendere l'output più leggibile con
+#    più print separati invece di stampare tutto il dizionario grezzo.
+
 
 
 # ==========================================================================
@@ -284,6 +299,14 @@ for key,value in auto.items():
 for i, (key, value) in enumerate(auto.items(), 1):
     print(f"#{i} => {key} : {value}")
 
+# 📝 CORREZIONE MENTOR — Mini-esercizio 3:
+# ✅ Punto 1 (.items() con for): PERFETTO! Sintassi impeccabile.
+# ✅ Punto 2 (enumerate + .items()): ECCELLENTE! Hai usato correttamente
+#    enumerate(auto.items(), 1) con l'unpacking (i, (key, value)).
+#    Questo è esattamente il pattern che al capitolo 04 ti dava problemi.
+#    GRANDE MIGLIORAMENTO — il ponte ".items() = enumerate dei dizionari"
+#    ha funzionato!
+
 
 # ==========================================================================
 # PARTE 4: Dizionari Annidati (Nested)
@@ -335,7 +358,45 @@ for prod in ordine["prodotti"]:
 # 2) Stampa il nome del secondo piatto nel menu
 # 3) Con un ciclo for, stampa tutti i piatti con il prezzo
 # Scrivi qui sotto:
-# ...
+ristorante = {
+    "nome" : "Rosso Ciliegino",
+    "indirizzo" : {
+        "citta" : "Roma",
+        "via" : "via Fasulla 13",
+        "cap" : "21345"
+    },
+    "menu" : [
+        {
+            "piatto" : "Amatriciana",
+            "prezzo" : 12.99
+        },
+        {
+            "piatto" : "Carbonara",
+            "prezzo" : 11.99
+        }
+    ]
+}
+
+# 📝 CORREZIONE MENTOR — Mini-esercizio 4:
+# ✅ Struttura dizionario: Ben fatta! Annidamento corretto con indirizzo
+#    come sotto-dizionario e menu come lista di dizionari. Bravo!
+# ⚠️ CONSEGNA INCOMPLETA (Pattern #6 — lettura consegne):
+#    La consegna chiedeva:
+#      - "metti almeno 3 piatti" → Ne hai messi solo 2 (Amatriciana, Carbonara)
+#      - "1) Stampa il nome e la città" → Manca il print!
+#      - "2) Stampa il nome del secondo piatto" → Manca il print!
+#      - "3) Con un ciclo for, stampa tutti i piatti con prezzo" → Manca il for!
+#
+#    Ecco cosa mancava (NON copiare, prova a scriverlo tu):
+#    - Aggiungi un terzo piatto al menu (es. "Cacio e Pepe")
+#    - print(f"Ristorante: {ristorante['nome']}, Città: {ristorante['indirizzo']['citta']}")
+#    - print(f"Secondo piatto: {ristorante['menu'][1]['piatto']}")
+#    - for piatto in ristorante["menu"]:
+#          print(f"  {piatto['piatto']}: {piatto['prezzo']}€")
+#
+#    CONSIGLIO: Prima di passare al prossimo esercizio, rileggi TUTTA la
+#    consegna e conta i punti numerati (1, 2, 3). Se ne vedi 3, devi
+#    scrivere almeno 3 blocchi di codice.
 
 
 # ==========================================================================
@@ -379,7 +440,44 @@ print(f"Con sconto 20%: {prezzi_scontati}")
 # 2) Crea un nuovo dizionario con le temperature convertite in Fahrenheit
 #    (F = C * 9/5 + 32), arrotondate a 1 decimale
 # Scrivi qui sotto:
-# ...
+temperature = {"Milano": 28, "Roma": 35, "Napoli": 33, "Torino": 25, "Palermo": 38}
+nuove_temperature = {}
+for key, value in temperature.items():
+    if value > 30:
+        nuove_temperature[key] = value
+print("\n=== Temperature delle citta' sopra i 30° ===\n")  
+print(f"{nuove_temperature}")
+
+temperature_in_f = {}
+for key, value in temperature.items():
+    temperature_in_f[key] = round(value * 9/5 + 32, 1)
+print("\n=== Temperature delle citta' in Fahrenheit ===\n")  
+print(f"{temperature_in_f}")
+
+# 📝 CORREZIONE MENTOR — Mini-esercizio 5:
+# ✅ Logica: Entrambi i risultati sono CORRETTI — filtraggio > 30°C e
+#    conversione in Fahrenheit con arrotondamento. La logica è giusta!
+# ⚠️ MA: La consegna diceva "Usando le dict comprehension"!
+#    Tu hai usato un ciclo for classico con dizionario vuoto — funziona,
+#    ma non è quello che la consegna chiedeva.
+#
+#    Il tuo codice (for classico):
+#      nuove_temperature = {}
+#      for key, value in temperature.items():
+#          if value > 30:
+#              nuove_temperature[key] = value
+#
+#    Con dict comprehension (UNA sola riga!):
+#      nuove_temperature = {k: v for k, v in temperature.items() if v > 30}
+#
+#    Per il Fahrenheit:
+#      temperature_in_f = {k: round(v * 9/5 + 32, 1) for k, v in temperature.items()}
+#
+#    Confronta: è come la list comprehension [expr for x in lista if cond],
+#    ma con le graffe {} e chiave:valore!
+#
+#    ESERCIZIO BONUS: prova a riscrivere entrambi i punti con dict
+#    comprehension. Quando ti viene naturale, sarà un livello in più.
 
 
 # ==========================================================================
@@ -430,7 +528,37 @@ print(f"Più pagato: {piu_pagato['nome']} ({piu_pagato['stipendio']:,}€)")
 # 3) Con max() + lambda, trova chi ha il nome più lungo
 #    (suggerimento: len(d["nome"]) dà la lunghezza del nome)
 # Scrivi qui sotto:
-# ...
+dipendenti = [
+    {"nome": "Marco", "stipendio": 35000, "reparto": "Sviluppo"},
+    {"nome": "Laura", "stipendio": 42000, "reparto": "Marketing"},
+    {"nome": "Giulia", "stipendio": 38000, "reparto": "Sviluppo"},
+    {"nome": "Luca", "stipendio": 45000, "reparto": "Direzione"},
+    {"nome": "Anna", "stipendio": 33000, "reparto": "Marketing"},
+]
+print("\nDipendenti ordinati per ordine alfabetico\n")
+ordine_alfabetico = sorted(dipendenti, key=lambda a: a['nome'])
+for d in ordine_alfabetico:
+    print(f"{d['nome']}")
+
+print("\nDipendenti che guadagnao più di 36.000,00 €\n")
+dipendenti_su_sorted = sorted(filter((lambda d: d['stipendio'] > 36000), dipendenti), key=lambda d: d['stipendio'])
+for d in dipendenti_su_sorted:
+    print(f"{d['nome']} => Reddito : {d['stipendio']:.2f} €")
+
+# 📝 CORREZIONE MENTOR — Mini-esercizio 6:
+# ✅ Punto 1 (sorted per nome): PERFETTO! sorted() + lambda con key corretto.
+# ✅ Punto 2 (filter > 36000): ECCELLENTE! Hai combinato filter() + sorted()
+#    autonomamente — non era richiesto ma dimostra iniziativa e comprensione.
+#    La sintassi filter(lambda, lista) è CORRETTA questa volta — bravo!
+#    Nota: le parentesi intorno a lambda non sono necessarie ma non fanno danno.
+# ⚠️ Punto 3 (max per nome più lungo): MANCA!
+#    La consegna chiedeva: "Con max() + lambda, trova chi ha il nome più lungo"
+#    Ecco la soluzione (prova prima a farla tu!):
+#      nome_lungo = max(dipendenti, key=lambda d: len(d["nome"]))
+#      print(f"Nome più lungo: {nome_lungo['nome']} ({len(nome_lungo['nome'])} caratteri)")
+#
+#    max() funziona come sorted(): con key=lambda gli dici "confronta in base
+#    a QUESTO valore". Qui: len(d["nome"]) = la lunghezza del nome.
 
 
 # ==========================================================================
@@ -469,7 +597,46 @@ print(f"Copia: {config_copia['tema']}")  # "light"
 # 3) Crea una copia con .copy(), modifica "lingua" nella copia a "en",
 #    e verifica che l'originale non sia cambiato stampando entrambi
 # Scrivi qui sotto:
-# ...
+preferenze = {
+    "lingua": "it",
+    "notifiche": True    
+}
+print("\nEsercizi sui Metodi Utili\n")
+print(f"Ha un 'tema' => {'tema' in preferenze}")
+preferenze.setdefault("tema", "blu")
+print("\nDopo il setdefault()\n")
+print(f"Ha un 'tema' => {'tema' in config}")
+copia_preferenze = preferenze.copy()
+print(f"\nCopia della dictionary 'preferenza'\n")
+print(f"{copia_preferenze}")
+print(f"{preferenze}")
+
+# 📝 CORREZIONE MENTOR — Mini-esercizio 7:
+# ✅ Punto 1 ("tema" in preferenze): Corretto! Sintassi `in` giusta.
+# ✅ Punto 2 (.setdefault): Corretto! Aggiunge "tema" solo se non esiste.
+#    Nota: hai usato "blu" come default — la consegna suggeriva "auto", ma
+#    il concetto è giusto.
+# ⚠️ Punto 3 (.copy + modifica + verifica): INCOMPLETO!
+#    La consegna diceva:
+#      "modifica 'lingua' nella copia a 'en', e verifica che l'originale
+#       non sia cambiato stampando entrambi"
+#    Tu hai:
+#      - Creato la copia ✅
+#      - NON hai modificato "lingua" nella copia ❌
+#      - Hai stampato entrambi ✅ ma senza la modifica non dimostri nulla
+#
+#    Cosa mancava:
+#      copia_preferenze["lingua"] = "en"  # Modifica SOLO la copia
+#      print(f"Originale: {preferenze['lingua']}")  # Deve restare "it"
+#      print(f"Copia: {copia_preferenze['lingua']}")  # Deve essere "en"
+#
+# ⚠️ BUG DISTRAZIONE: alla riga 524 hai scritto:
+#      'tema' in config    ← ma 'config' è la variabile della TEORIA!
+#    Doveva essere:
+#      'tema' in preferenze  ← la TUA variabile dell'esercizio
+#    Funziona lo stesso perché 'config' esiste, ma stai controllando il
+#    dizionario sbagliato! Attenzione ai nomi delle variabili.
+
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
@@ -486,27 +653,27 @@ print(f"Copia: {config_copia['tema']}")  # "light"
 #   persona["eta"] = 26
 #   persona["citta"] = "Roma"
 #   print(len(persona))
-# La tua risposta: ___
+# La tua risposta: 2
 
 # DOMANDA 2 — Trova l'errore:
 #   config = {"tema": "dark", "lingua": "it"}
 #   print(config["font_size"])
-# Qual è il problema? Come lo risolveresti? ___
+# Qual è il problema? Come lo risolveresti? print(f"{'font_size' in config}")
 
 # DOMANDA 3 — Vero o Falso?
 # "Quando fai copia = dizionario (senza .copy()), modificare 'copia'
 #  modifica anche 'dizionario'"
-# La tua risposta (V/F): ___
+# La tua risposta (V/F): V, credi di si perchè di fa una copia del riferimento 
 
 # DOMANDA 4 — Definizione:
 # Che differenza c'è tra dizionario.keys(), dizionario.values()
 # e dizionario.items()?
-# La tua risposta: ___
+# La tua risposta: si, il primo restituisce le chiavi, il secondo il valore iscritto in quella chiave, e items restituisce una tupla (chiave, valore)
 
 # DOMANDA 5 — Completa il codice:
 # Voglio iterare su un dizionario stampando chiave e valore:
 #   prodotto = {"nome": "Mouse", "prezzo": 29.99}
-#   for ___, ___ in prodotto.___():
+#   for chiave, valore in prodotto.items():
 #       print(f"{chiave}: {valore}")
 # Riempi i tre spazi: ___
 
@@ -515,20 +682,20 @@ print(f"Copia: {config_copia['tema']}")  # "light"
 #   voti = {"Marco": 7, "Laura": 9, "Giulia": 5}
 #   bravi = {n: v for n, v in voti.items() if v >= 7}
 #   print(bravi)
-# La tua risposta: ___
+# La tua risposta: {"Laura": 9}
 
 # DOMANDA 7 — Vero o Falso?
 # ".setdefault('chiave', valore) sovrascrive il valore se la chiave
 #  esiste già nel dizionario"
-# La tua risposta (V/F): ___
+# La tua risposta (V/F): F
 
 # DOMANDA 8 — Completa il codice:
 # Voglio contare quante volte appare ogni lettera nella parola "banana":
 #   conteggio = {}
 #   for lettera in "banana":
-#       conteggio[lettera] = conteggio.___(lettera, ___) + 1
+#       conteggio[lettera] = conteggio.items(lettera, totale) + 1
 #   print(conteggio)
-# Riempi i due spazi: ___
+# Riempi i due spazi: items, totale
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
