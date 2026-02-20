@@ -668,7 +668,7 @@ print(f"{preferenze}")
 # DOMANDA 4 — Definizione:
 # Che differenza c'è tra dizionario.keys(), dizionario.values()
 # e dizionario.items()?
-# La tua risposta: si, il primo restituisce le chiavi, il secondo il valore iscritto in quella chiave, e items restituisce una tupla (chiave, valore)
+# La tua risposta: il primo restituisce le chiavi, il secondo il valore, e items restituisce le tuple (chiave, valore)
 
 # DOMANDA 5 — Completa il codice:
 # Voglio iterare su un dizionario stampando chiave e valore:
