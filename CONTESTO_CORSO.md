@@ -3,7 +3,11 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 17/02/2026
+> **Ultimo aggiornamento**: 22/02/2026
+>
+> **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
+> deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
+> Il resto è contesto di supporto da consultare quando serve.
 
 ---
 
@@ -15,10 +19,78 @@
 | **Ultimo completato** | 04_liste.py (19/02/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
 | **Difficoltà media** | 5.25 (media di 2, 4, 6, 9 — salto importante, vedi nota sotto) |
-| **Priorità attive** | ✅ enumerate/tuple **migliorati** (ponte .items()=enumerate funziona), ⚠️ Lambda in miglioramento (filter ordine parametri fragile), 🔴 Lettura completa consegne (persiste), 🟡 Dict comprehension non interiorizzata, 🟡 Tipi: stringhe dove servono numeri |
 | **Sessione corrente** | Sessione 3 |
 
-> **Per l'agente**: dopo aver letto questa tabella, leggi le "Regole Didattiche" e i "Pattern di Errore" prima di produrre qualsiasi contenuto. Aggiorna questa tabella ad ogni fine capitolo.
+---
+
+## 📝 Ultima Sessione — Continuità tra Chat
+
+> Questa sezione viene aggiornata dall'agente alla FINE di ogni sessione di lavoro.
+> Serve a dare continuità immediata quando si apre una nuova chat.
+
+| Campo | Valore |
+|-------|--------|
+| **Data** | 22/02/2026 |
+| **Cosa è stato fatto** | Ristrutturazione completa del corso: da 6 a 10 moduli per copertura mercato AI 2026. Aggiornati roadmap, requirements, Cursor Rule. Nessun lavoro sul capitolo 05. |
+| **Errori emersi** | Nessuno (sessione di pianificazione, non di studio) |
+| **Cosa fare nella prossima sessione** | Completare gli esercizi finali del capitolo 05_dizionari.py, poi quiz di verifica |
+| **Stato motivazione** | Alto — Gianluca ha scelto di espandere il corso per massimizzare le opportunità lavorative |
+
+---
+
+## 🔴 Priorità Attive — Errori e Lacune da Monitorare ORA
+
+> Questa sezione raccoglie SOLO gli elementi con stato 🔴 o ⚠️ che l'agente deve
+> tenere presenti ADESSO. È un "cruscotto" — il dettaglio completo è nelle sezioni
+> dedicate più in basso.
+
+### Pattern di errore attivi (🔴)
+
+| # | Pattern | Ripetuto in |
+|---|---------|-------------|
+| 1 | Sintassi JS in Python (`? :` invece di ternario Python) | file 01 |
+| 2 | `range()` / slicing fine escluso | file 02, 04, quiz 05 |
+| 5 | Tipi nei dizionari: stringhe dove servono numeri | file 03, 05 |
+| 6 | Lettura incompleta delle consegne | file 02, 03, 04, 05 |
+| 10 | Vincoli esercizio ignorati | file 04 |
+| 11 | Ordine parametri `filter()`: mette lista prima di lambda | file 05 |
+
+### Concetti da rinforzare (⚠️)
+
+| Concetto | Stato | Note breve |
+|----------|-------|------------|
+| Lambda | ⚠️ In miglioramento | Usata correttamente con sorted, ma ordine parametri filter fragile |
+| Dict comprehension | ⚠️ Non interiorizzata | Tende a usare for classico quando la consegna chiede dict comprehension |
+| Tuple/unpacking | ⚠️ → 🟡 In miglioramento | Ponte mentale `.items() = enumerate dei dizionari` ha funzionato |
+
+### Lacune quiz aperte (🔴) — da rinforzare nel capitolo 06
+
+| # | Concetto | Errore commesso |
+|---|----------|-----------------|
+| 1 | Slicing fine escluso | `numeri[1:4]` → 4 elementi invece di 3 |
+| 2 | `.append()` restituisce None | Pensava restituisse la lista modificata |
+| 3 | enumerate vs range | `range(frutti, len(frutti))` dove serviva `enumerate(frutti, 1)` |
+| 4 | Indici liste (contare da 0) | `[1:]` invece di `[2:]` per ottenere [30,40,50] |
+| 5 | sorted() nuova lista vs .sort() in-place | Non ha menzionato la differenza chiave |
+| 6 | Output concreto vs descrizione | Descrive il concetto invece di dare il valore `["Marco"]` |
+| 7 | Variabile corretta nelle comprehension | `x` invece di `n` (la variabile del for) |
+
+---
+
+## 📌 Prossimo Capitolo — Cosa Preparare
+
+> L'agente DEVE leggere questa sezione PRIMA di creare un nuovo capitolo.
+
+| Campo | Valore |
+|-------|--------|
+| **Prossimo capitolo** | 06_file_csv.py (dopo completamento esercizi finali 05) |
+| **Rinforzi da inserire (🔁)** | 7 blocchi RINFORZO MIRATO per le lacune quiz 1-7 (vedi tabella sopra) |
+| **Concetti ⚠️ da ripassare** | Lambda (usarla in almeno 2 esercizi), dict comprehension (almeno 1 esercizio) |
+| **Pattern 🔴 da monitorare** | #2 (range/slicing fine escluso), #5 (tipi nei dizionari), #6 (lettura consegne), #11 (ordine filter) |
+| **Ponte mentale da riusare** | ".items() = enumerate dei dizionari" (ha funzionato al cap.05) |
+| **Note** | La difficoltà è salita da 6 a 9 al cap.04. Il cap.05 (in corso) sembra stabilizzarsi. Monitorare attentamente il voto del 05. |
+
+> **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
 ---
 
@@ -689,7 +761,16 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 - **Dopo ogni capitolo**: aggiornare glossario, domande, pattern di errore, progresso
 - **Prima del file 07**: arricchire con più esempi visivi e mini-esercizi intermedi
 - **Prima del file 08**: aggiungere rappresentazioni ASCII di tensori 2D/3D/4D
-- **⚠️ Al completamento del file 08** (o quando il file supera ~1000 righe): AVVISARE Gianluca che è il momento di separare CONTESTO_CORSO.md in due file — uno snello con stato attuale, regole e comportamenti (che l'agente legge sempre), e uno di archivio con storico dettagliato (glossario acquisito, capitoli vecchi, domande passate). Questo previene problemi di contesto troppo lungo per gli agenti futuri.
+- **⚠️ A FINE MODULO 1** (completamento file 12_web_bridge.py): creare `ARCHIVIO_MODULO_01.md` e migrare il dettaglio storico del M1:
+  - Progresso dettagliato dei 12 capitoli (tabella con date, voti, note)
+  - Pattern di errore con stato 🟢 (risolti)
+  - Lacune quiz con stato 🟢 (superate)
+  - Domande fatte nei capitoli del M1 (storico)
+  - Glossario: i termini ✅ (acquisiti con 3/3) vengono COPIATI (non spostati) nell'archivio. Restano anche nel file principale per il ripasso naturale, ma contrassegnati come acquisiti
+  - Competenze M1 complete → archiviate come "Cosa Sapevo Fare Dopo il Modulo 1"
+  - **Regola**: quando l'agente prepara un capitolo del M2+ e deve fare rinforzo su concetti del M1, DEVE consultare `ARCHIVIO_MODULO_01.md` per il contesto storico completo
+  - **Regola**: il file principale CONTESTO_CORSO.md mantiene: sezioni in cima (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), Profilo, Regole Didattiche, Glossario completo, Pattern attivi, Lacune attive, e tutto ciò che è ATTIVO. Obiettivo: mantenerlo sotto le ~800 righe dopo la migrazione
+  - Ripetere questo processo a fine di ogni modulo successivo (ARCHIVIO_MODULO_02.md, ecc.)
 - **A inizio di ogni nuovo modulo (M2-M10)**: creare la cartella del modulo (`modulo_XX_nome/`) con un `README.md` che segue la struttura del README del Modulo 1
 - **Per i moduli M2-M10**: ogni modulo finale produce una demo deployabile. Il Mentor deve guidare il deploy e verificare che il link sia funzionante
 - **Al modulo M5**: quando i confronti PHP/JS non hanno equivalente diretto (es. embedding, backpropagation), usare analogie dal mondo web/e-commerce. Registrare i nuovi ponti mentali nella sezione apposita

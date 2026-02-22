@@ -17,10 +17,29 @@ CONTESTO_CORSO.md
 
 nella **root del progetto**.
 
-Inizia dalla sezione **"⚡ Stato Attuale"** in cima — ti dice subito dove siamo.
-NON procedere finché non hai letto almeno: Stato Attuale, Linee di Comportamento, Pattern di Errore, Glossario.
+Il file è organizzato con le informazioni più critiche in cima. Leggi **almeno** le prime 4 sezioni:
+1. **⚡ Stato Attuale** — dove siamo
+2. **📝 Ultima Sessione** — cosa è successo l'ultima volta
+3. **🔴 Priorità Attive** — errori, lacune e concetti da monitorare ORA
+4. **📌 Prossimo Capitolo** — cosa preparare
+
+Poi leggi anche: Regole Didattiche, Pattern di Errore (completi), Glossario.
 
 Per la struttura dettagliata dei moduli e la roadmap completa, consulta anche `roadmap_ai.md`.
+
+## Protocollo INIZIO SESSIONE (obbligatorio ad ogni NUOVA chat)
+
+Quando si apre una nuova conversazione, PRIMA di qualsiasi altra azione, l'agente deve:
+
+1. Leggere `CONTESTO_CORSO.md` (almeno le prime 4 sezioni)
+2. **Confermare il contesto** scrivendo un messaggio come:
+   > "Siamo al capitolo X del Modulo Y. Le tue priorità attive sono: [lista errori 🔴 e concetti ⚠️]. L'ultima sessione hai fatto: [riassunto]. Nella prossima sessione dobbiamo: [cosa fare]."
+3. Solo DOPO questa conferma, procedere con la richiesta di Gianluca
+
+Questo serve a:
+- Verificare che l'agente abbia il contesto giusto (Gianluca può correggere se qualcosa non torna)
+- "Cristallizzare" le informazioni critiche nella memoria di lavoro dell'agente
+- Dare continuità naturale tra sessioni diverse
 
 ## Regole chiave (il dettaglio completo è nel file di contesto)
 
@@ -83,7 +102,24 @@ I moduli avanzati seguono le stesse regole didattiche del Modulo 1, con queste e
    - Errori ricorrenti → aggiornare la tabella "Pattern di Errore"
    - Termini usati correttamente senza aiuto → incrementare contatore nel Glossario
    - Ripasso Programmato → aggiornare lo stato dei concetti verificati
-2. Questo aggiornamento va fatto **subito**, non solo a fine capitolo
+2. **Aggiornare la sezione "🔴 Priorità Attive"** in cima al file se ci sono nuovi errori 🔴 o concetti ⚠️
+3. Questo aggiornamento va fatto **subito**, non solo a fine capitolo
+
+## Protocollo FINE SESSIONE (obbligatorio PRIMA di chiudere ogni chat)
+
+Quando Gianluca sta per chiudere la chat (dice "basta per oggi", "ci vediamo", "stop", o semplicemente la conversazione sta finendo), l'agente DEVE:
+
+1. **Aggiornare la sezione "📝 Ultima Sessione"** in cima a CONTESTO_CORSO.md con:
+   - Data della sessione
+   - Cosa è stato fatto (capitoli/esercizi/quiz completati o in corso)
+   - Errori emersi durante la sessione
+   - Cosa fare nella prossima sessione
+   - Stato motivazione/umore percepito
+2. **Aggiornare la sezione "📌 Prossimo Capitolo"** se ci sono novità (nuove lacune, concetti da rinforzare)
+3. **Aggiornare la sezione "🔴 Priorità Attive"** con eventuali cambiamenti
+4. **Fare il commit** delle modifiche
+
+Questo garantisce che la prossima chat parta con contesto fresco e accurato.
 
 ## Protocollo FINE CAPITOLO (obbligatorio, NON dimenticarlo MAI)
 
@@ -92,16 +128,18 @@ Quando Gianluca dice "ho finito" o "correggi gli esercizi finali" o "passiamo al
 1. **Correggere** gli esercizi (seguendo la scala progressiva)
 2. **Chiedere il voto di difficoltà (1-10)** — se non lo dà spontaneamente, CHIEDERLO ESPLICITAMENTE prima di procedere
 3. **Aggiornare CONTESTO_CORSO.md** seguendo il Protocollo di Aggiornamento COMPLETO (11 passi) descritto nel file stesso
-4. **Fare il commit** delle modifiche
+4. **Aggiornare le sezioni in cima** (Stato Attuale, Priorità Attive, Prossimo Capitolo)
+5. **Fare il commit** delle modifiche
 
-NON passare al capitolo successivo senza aver completato TUTTI e 4 questi passi.
+NON passare al capitolo successivo senza aver completato TUTTI e 5 questi passi.
 
 ## Protocollo FINE MODULO (aggiuntivo a fine capitolo)
 
 Quando si completa l'**ultimo capitolo di un modulo**:
 
-1. Completare il protocollo FINE CAPITOLO (4 passi sopra)
+1. Completare il protocollo FINE CAPITOLO (5 passi sopra)
 2. Verificare che la sezione `🔄 CONFRONTO PRIMA/DOPO` sia stata completata
 3. Verificare che la demo del modulo sia **deployata e funzionante**
 4. Aggiornare la tabella "Portfolio" in CONTESTO_CORSO.md con il link alla demo
 5. Scommentare le dipendenze del modulo successivo in `requirements.txt` e guidare l'installazione
+6. **Creare l'archivio del modulo completato** (`ARCHIVIO_MODULO_XX.md`) seguendo le regole nella sezione "Note per il Mentor" di CONTESTO_CORSO.md — migrare il dettaglio storico e mantenere il file principale snello
