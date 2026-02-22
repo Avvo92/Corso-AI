@@ -31,10 +31,10 @@
 | Campo | Valore |
 |-------|--------|
 | **Data** | 22/02/2026 |
-| **Cosa è stato fatto** | Ristrutturazione completa del corso: da 6 a 10 moduli per copertura mercato AI 2026. Aggiornati roadmap, requirements, Cursor Rule. Nessun lavoro sul capitolo 05. |
+| **Cosa è stato fatto** | Integrazione delle 11 criticità didattiche: Ponte Matematico (bridge M2→M3), esercizi DEBUG/REAL-WORLD/RECALL, strategia hardware (Colab per GPU), budget API con tracker, mock interview mensili, split file avanzati, diversificazione dominio, team workflow M10. Aggiornati CONTESTO_CORSO.md, roadmap_ai.md, Cursor Rule. Nessun lavoro sul capitolo 05. |
 | **Errori emersi** | Nessuno (sessione di pianificazione, non di studio) |
 | **Cosa fare nella prossima sessione** | Completare gli esercizi finali del capitolo 05_dizionari.py, poi quiz di verifica |
-| **Stato motivazione** | Alto — Gianluca ha scelto di espandere il corso per massimizzare le opportunità lavorative |
+| **Stato motivazione** | Alto — Gianluca ha rafforzato il corso per massimizzare preparazione e opportunità lavorative |
 
 ---
 
@@ -103,6 +103,88 @@
 - **IDE**: Cursor
 - **Version control**: Git + GitHub (il corso è già in una repository)
 - **Obiettivo finale**: Entrare nel mondo del lavoro tech con competenze solide in Python, AI/ML e web development. Il progetto finale deve essere il **diamante del portfolio**: una full web app (React + Laravel + FastAPI) con IA integrata — bella, reattiva, funzionale — da mostrare ai recruiter come prova concreta di competenza.
+
+---
+
+## Strategia Hardware e Piattaforme
+
+> Questa sezione documenta l'hardware disponibile e le piattaforme alternative per i moduli che richiedono GPU.
+> L'agente DEVE consultarla prima di preparare capitoli dei moduli avanzati.
+
+### Hardware disponibile
+
+| Componente | Dettaglio |
+|------------|-----------|
+| **GPU** | AMD Radeon Vega 10 Mobile (integrata, NO CUDA, NO VRAM dedicata) |
+| **Supporto CUDA** | Nessuno — PyTorch/TensorFlow GPU non funzionano in locale |
+| **Ollama** | Funziona su CPU — limitato a modelli fino a ~3B parametri (es. Phi-3 Mini, Qwen2 0.5B/1.5B) |
+| **RAM** | Da verificare — Docker Desktop richiede almeno 8GB liberi |
+| **OS** | Windows 10 con Git Bash |
+
+### Piattaforma per modulo
+
+| Modulo | Richiede GPU? | Piattaforma | Note |
+|--------|---------------|-------------|------|
+| M1 — Python & Dati | No | CPU locale | Tutto funziona in locale |
+| M2 — ML | No | CPU locale | Scikit-Learn funziona su CPU |
+| Ponte Matematico | No | CPU locale | Solo NumPy + Matplotlib |
+| M3 — DL & CV | **Sì** | **Google Colab** (GPU gratuita) | Training PyTorch su CPU è 10-50x più lento — usare Colab |
+| M4 — NLP & Embeddings | Parziale | CPU locale + Colab per modelli grandi | sentence-transformers funziona su CPU per modelli piccoli |
+| M5 — LLM & Prompt Eng. | No | CPU locale + API | Ollama (CPU, modelli ≤3B) + API OpenAI per il resto |
+| M6 — RAG | No | CPU locale + API | ChromaDB locale, LLM via API/Ollama |
+| M7 — AI Agents | No | CPU locale + API | Come M5-M6 |
+| M8 — Fine-Tuning | **Sì** | **Google Colab** (GPU gratuita) | QLoRA richiede GPU — impossibile in locale |
+| M9 — MLOps & Docker | Parziale | CPU locale | Docker Desktop su Windows richiede WSL2 + RAM sufficiente |
+| M10 — Progetto Finale | Parziale | CPU locale + Colab + Cloud | Deploy su cloud, training su Colab |
+
+### Regole per l'agente
+
+1. **Prima di ogni modulo che richiede GPU** (M3, M8): preparare un notebook Google Colab con le dipendenze pre-installate e le istruzioni per connettere il runtime GPU
+2. **Ollama**: usare SOLO modelli fino a ~3B parametri (Phi-3 Mini, Qwen2 0.5B/1.5B). Modelli più grandi saranno troppo lenti su CPU
+3. **Google Colab**: per M3 e M8, il workflow è: sviluppare il codice in locale (Cursor) → copiare nel notebook Colab per il training → riportare i risultati in locale
+4. **Kaggle Notebooks**: backup se Google Colab non è disponibile (stesse GPU gratuite)
+5. **Esercizi adattati**: quando un esercizio richiede training su GPU, dare SEMPRE un'alternativa CPU-friendly (modello più piccolo, dataset ridotto, meno epoch) per chi non può/vuole usare Colab
+
+---
+
+## Budget API — Monitoraggio Costi
+
+> Budget totale disponibile: **30-50 EUR** per tutto il corso.
+> L'agente DEVE monitorare i costi e dare SEMPRE l'alternativa gratuita (Ollama) dove possibile.
+
+### Allocazione stimata per modulo
+
+| Modulo | Costo stimato | Cosa costa | Strategia risparmio |
+|--------|---------------|-----------|---------------------|
+| M1-M4 | **0 EUR** | Niente — tutto locale/gratuito | — |
+| M5 — LLM | ~8-12 EUR | API OpenAI (chat completions, vision) | Ollama per sviluppo/test, API solo per demo finale e esercizi che richiedono GPT-4 |
+| M6 — RAG | ~3-5 EUR | Embedding API + RAG queries | Embedding locali con sentence-transformers (gratuito), API solo per generazione |
+| M7 — Agents | ~8-12 EUR | Agent loops (molte chiamate API) | Ollama per loop di sviluppo, API per demo finale |
+| M8 — Fine-Tuning | ~0-5 EUR | Training su Colab (gratuito), eval con API | Training su Colab gratis, eval con Ollama dove possibile |
+| M9-M10 | ~5-10 EUR | Deploy demo, testing finale | Semantic caching per ridurre chiamate ripetute |
+| **Riserva** | ~5-10 EUR | Imprevisti | — |
+
+### Tracker costi (aggiornato dal mentor)
+
+| Modulo | Speso | Residuo | Note |
+|--------|-------|---------|------|
+| M1 | 0 EUR | 30-50 EUR | — |
+| M2 | — | — | — |
+| M3 | — | — | — |
+| M4 | — | — | — |
+| M5 | — | — | — |
+| M6 | — | — | — |
+| M7 | — | — | — |
+| M8 | — | — | — |
+| M9 | — | — | — |
+| M10 | — | — | — |
+
+### Regole di gestione costi
+
+1. **Ollama-first**: per ogni esercizio dei M5-M7, PRIMA provare con Ollama (gratuito), poi API a pagamento solo quando serve qualità superiore o funzionalità non disponibili localmente (vision, function calling avanzato)
+2. **Monitoraggio**: dopo ogni sessione che usa API a pagamento, aggiornare il tracker e segnalare se si sta superando il budget allocato per quel modulo
+3. **Skill professionale**: il monitoraggio costi è una competenza AI Engineer — insegnarlo come skill, non solo come vincolo economico
+4. **Semantic caching**: dal M5 in poi, quando si ripete una query già fatta, NON richiamare l'API — usare la risposta precedente
 
 ---
 
@@ -196,6 +278,15 @@
 18. **Interleaving (esercizi mescolati)**: dal capitolo 4° in poi, ogni capitolo deve contenere almeno 1 esercizio etichettato `# 🔀 [INTERLEAVING]` che mescola concetti del capitolo corrente con concetti di 1-2 capitoli precedenti. Costringono il cervello a *scegliere* quale strumento usare, non solo a usare quello appena studiato. La ricerca mostra che l'interleaving è più faticoso ma produce ricordi più duraturi.
 19. **Retrieval practice (scrivi da zero dalla memoria)**: dal capitolo 4° in poi, ogni capitolo deve contenere almeno 1 esercizio etichettato `# 🧠 [RETRIEVAL]` dove Gianluca deve riscrivere da zero, senza guardare il codice originale, una funzione o esercizio di un capitolo precedente. L'esercizio specifica COSA riscrivere e da QUALE capitolo. Richiamare dalla memoria è il modo più potente per consolidare.
 20. **Confronto "prima e dopo" a fine modulo**: alla fine dell'ULTIMO capitolo di ogni modulo, inserire una sezione `# 🔄 CONFRONTO PRIMA/DOPO` dove Gianluca riguarda il proprio codice del primo capitolo del modulo e lo riscrive con le competenze acquisite. Motivazionale (vede il progresso) e consolidante (applica concetti avanzati a problemi già risolti).
+21. **Matematica tradotta in codice**: i concetti matematici NON vanno evitati — vanno tradotti. Ogni formula o concetto matematico deve essere accompagnato da: (a) **analogia concreta** (es. "il gradiente è la pendenza della collina"), (b) **codice Python equivalente** che mostra l'operazione passo passo, (c) **visualizzazione Matplotlib** dove possibile (grafico, frecce, superfici). La formula simbolica arriva ULTIMA, solo come "etichetta" di ciò che il codice fa. Sequenza obbligatoria: analogia → codice → grafico → formula. Il "Ponte Matematico" (2 capitoli tra M2 e M3) introduce i 5-6 concetti fondamentali; nei moduli successivi, ogni nuovo concetto matematico segue la stessa sequenza.
+22. **Esercizi di debug autonomo**: dal Modulo 2 in poi, ogni capitolo deve contenere almeno 1 esercizio etichettato `# 🔍 [DEBUG]` dove Gianluca riceve codice che produce un errore reale (con stack trace completo) e deve trovare il bug da solo. Il mentor **NON usa la scala progressiva** per questi esercizi — interviene SOLO dopo 2+ tentativi falliti. Il codice buggato deve contenere errori realistici (off-by-one, tipo sbagliato, variabile non definita, logica invertita, import mancante). L'obiettivo è costruire il "muscolo del debug" — la skill #1 che separa un junior produttivo da uno che chiede aiuto ogni 10 minuti.
+23. **Esercizi real-world**: dal Modulo 5 in poi, almeno 1 esercizio per modulo etichettato `# 🌊 [REAL-WORLD]` con consegne deliberatamente vaghe, dati sporchi (encoding misto, colonne mancanti, duplicati, valori anomali), e nessuna soluzione unica. Il mentor valuta l'**approccio e il ragionamento**, non il risultato esatto. Questi esercizi preparano al divario tra esercizi puliti e il caos dei progetti reali. Esempio: "Ecco un CSV di 5000 recensioni con encoding misto e duplicati. Costruisci qualcosa di utile."
+24. **Strategia costi API**: per ogni esercizio dei Moduli M5-M7 che usa LLM, dare SEMPRE l'opzione Ollama come fallback gratuito. Prima sviluppare e testare con Ollama (modelli locali, gratis), poi passare ad API a pagamento solo quando serve qualità superiore. Insegnare il monitoraggio costi come skill professionale: dopo ogni sessione con API, aggiornare il tracker nella sezione "Budget API". Budget totale: 30-50 EUR.
+25. **Concetti durevoli prima, framework dopo**: per ogni modulo avanzato, prima costruire la soluzione "a mano" (puro Python + libreria minima), poi riscriverla con il framework. Esempio: nel M6, prima un RAG completo con puro Python + ChromaDB, poi la versione con LangChain. Nel M7, prima un agente con puro Python, poi con LangGraph. Così i concetti (che durano 10+ anni) si separano dai framework (che cambiano ogni 6 mesi). Se LangChain cambia API, i concetti restano solidi.
+26. **Recall cross-modulo**: il primo capitolo di ogni nuovo modulo (dal M3 in poi) deve contenere almeno 1 esercizio etichettato `# 🔄 [RECALL CROSS-MODULO]` che richiede di usare competenze di un modulo precedente nel nuovo contesto. Questo colma il gap di retention tra moduli distanti. Esempi: al M5, riscrivere un endpoint FastAPI dal M1 prima di costruire l'API LLM. Al M6, ripulire un CSV con Pandas come si faceva al M1. Al M9, riscrivere un modello Scikit-Learn dal M2 prima di containerizzarlo.
+27. **Mock interview mensili**: dal Modulo 4 in poi, 1 volta al mese l'AI simula un colloquio tecnico reale. 3 domande, 15 minuti ciascuna, nessun hint, valutazione severa (passeresti / borderline / non passeresti). È l'unico momento in cui l'AI abbandona il tono supportivo. I risultati sono tracciati nella sezione "Mock Interview" di questo file.
+28. **Split file per moduli avanzati**: dal Modulo 2 in poi, se un capitolo supera le ~400 righe, splittare in due file: `XXa_teoria.py` (spiegazione + mini-esercizi) e `XXb_pratica.py` (quiz verifica + esercizi + progetto incrementale + soluzioni). Il quiz d'ingresso resta nel file `a`. Per i moduli M3-M4 dove la visualizzazione inline aiuta (output di training, grafici loss, immagini), valutare l'uso di **Jupyter Notebook** (`.ipynb`) al posto dei file `.py`. La scelta va fatta capitolo per capitolo in base al contenuto.
+29. **Diversificazione dominio**: dal Modulo 5 in poi, almeno 1 esercizio per modulo usa un dominio diverso dall'e-commerce. Il progetto incrementale resta nel dominio e-commerce (per coerenza e riduzione del carico cognitivo), ma gli esercizi singoli ampliano il contesto per preparare ai colloqui dove il dominio può essere qualsiasi. Domini alternativi suggeriti: documenti legali (M6 — RAG), ticket di supporto tecnico (M7 — Agents), dati medici/sanitari (M5 — LLM), logistica/supply chain (M8), analisi finanziaria (M9).
 
 ---
 
@@ -223,6 +314,7 @@
 | Modulo | Focus | Librerie principali | Stato |
 |--------|-------|---------------------|-------|
 | 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit | scikit-learn, streamlit | ⬜ Da creare |
+| **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, coseno, gradiente, discesa — tutto in codice + Matplotlib | numpy, matplotlib | ⬜ Da creare |
 | 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | torch, torchvision, gradio | ⬜ Da creare |
 | 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | transformers, sentence-transformers | ⬜ Da creare |
 | 5 — LLM Integration & Prompt Engineering | API OpenAI, prompt engineering, structured output, function calling, Pydantic, Ollama, multimodale, sicurezza AI | openai, pydantic-ai, ollama | ⬜ Da creare |
@@ -668,12 +760,62 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M8 — Fine-Tuning | "Quando fine-tuning vs RAG vs prompt engineering?", "cos'è LoRA e perché funziona?" |
 | M9 — MLOps | "Come deployeresti un servizio LLM?", "come gestisci i costi?", "come testi un'app AI?" |
 
+### Domini alternativi per esercizi (dal M5 in poi)
+
+> Almeno 1 esercizio per modulo esce dal dominio e-commerce per ampliare il contesto.
+
+| Modulo | Dominio alternativo | Esempio esercizio |
+|--------|---------------------|-------------------|
+| M5 — LLM | Dati sanitari | Chatbot che risponde a domande su sintomi/farmaci da un dataset medico |
+| M6 — RAG | Documenti legali | RAG su contratti e normative: chunking di testi lunghi, ricerca per clausola |
+| M7 — Agents | Ticket supporto tecnico | Agente che classifica, prioritizza e assegna ticket di supporto IT |
+| M8 — Fine-Tuning | Logistica/supply chain | Fine-tuning per generare descrizioni di spedizioni nel tono dell'azienda |
+| M9 — MLOps | Analisi finanziaria | Deploy di un servizio che analizza report trimestrali |
+| M10 — Finale | A scelta dello studente | Il progetto finale resta e-commerce, ma il mock interview può usare qualsiasi dominio |
+
 ### Come ripassarli
 
 1. Una volta a settimana, scegli 2-3 esercizi dalla lista "Già incontrati"
 2. Riscrivili da zero su un file vuoto, senza guardare la soluzione
 3. Cronometrati: un junior ha circa 15-20 minuti per esercizio in un colloquio
 4. Se non riesci entro il tempo, ristudia il capitolo e riprova dopo 2 giorni
+
+---
+
+## Mock Interview — Validazione Esterna
+
+> Dal Modulo 4 in poi, 1 volta al mese (a metà o fine modulo), l'AI simula un colloquio tecnico reale.
+> Questo è l'UNICO momento in cui l'AI abbandona il tono supportivo e diventa un intervistatore freddo.
+> L'obiettivo è calibrare la preparazione reale e prevenire il "senso di competenza inflato".
+
+### Formato
+
+1. **3 domande** da colloquio reale (mix di coding, teoria, system design dove applicabile)
+2. **Timer**: 15 minuti per domanda (Gianluca si cronometra)
+3. **Nessun hint**: il mentor NON usa la scala progressiva — simula un intervistatore che aspetta la risposta
+4. **Valutazione severa**: voto secco per ogni domanda
+   - **Passeresti** — risposta corretta, completa, nei tempi
+   - **Borderline** — risposta parziale o con errori minori
+   - **Non passeresti** — risposta sbagliata, incompleta, o fuori tempo
+5. **Feedback finale**: dopo le 3 domande, il mentor torna al tono normale e spiega dove migliorare
+
+### Risultati Mock Interview
+
+| # | Data | Modulo | D1 | D2 | D3 | Esito globale | Note |
+|---|------|--------|----|----|----|---------------|------|
+| 1 | — | M4 | — | — | — | — | — |
+| 2 | — | M5 | — | — | — | — | — |
+| 3 | — | M6 | — | — | — | — | — |
+| 4 | — | M7 | — | — | — | — | — |
+| 5 | — | M8 | — | — | — | — | — |
+| 6 | — | M9 | — | — | — | — | — |
+| 7 | — | M10 | — | — | — | — | — |
+
+### Quando attivare
+
+- L'agente propone il mock interview quando Gianluca è a metà o fine di un modulo (dal M4 in poi)
+- Gianluca può anche chiedere "facciamo un mock interview" in qualsiasi momento
+- Le domande devono coprire il modulo corrente + 1-2 concetti dei moduli precedenti
 
 ---
 
@@ -759,6 +901,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 ### Promemoria automatici
 - **Dopo ogni capitolo completato**: chiedere il voto di difficoltà (1-10) se non lo dà spontaneamente
 - **Dopo ogni capitolo**: aggiornare glossario, domande, pattern di errore, progresso
+- **Prima del Modulo 3 (DL & CV)**: preparare un notebook Google Colab con PyTorch + torchvision pre-installati, istruzioni per connettere GPU, e un test rapido per verificare che CUDA funzioni su Colab. Idem per il Modulo 8 (Fine-Tuning) con PEFT + bitsandbytes
 - **Prima del file 07**: arricchire con più esempi visivi e mini-esercizi intermedi
 - **Prima del file 08**: aggiungere rappresentazioni ASCII di tensori 2D/3D/4D
 - **⚠️ A FINE MODULO 1** (completamento file 12_web_bridge.py): creare `ARCHIVIO_MODULO_01.md` e migrare il dettaglio storico del M1:
@@ -777,6 +920,12 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 - **Al modulo M7**: guidare la costruzione di un MCP server custom. Questo è un meta-skill: Gianluca capirà come funziona Cursor stesso
 - **Al modulo M9**: il primo deploy live. Verificare che il link funzioni e sia inseribile nel CV
 - **Al modulo M10**: guidare la creazione del profilo GitHub professionale (README, pinned repos, link demo)
+- **Al modulo M10 — Simulazione team workflow**: il progetto finale simula un flusso di lavoro in team:
+  - **Feature branches**: ogni fase del progetto (AI service, backend, frontend, deploy) ha il suo branch
+  - **Pull Request con descrizione strutturata**: ogni merge richiede una PR con titolo, descrizione, checklist
+  - **Code review dall'AI**: il mentor fa code review come un collega senior — commenti su naming, struttura, edge case, performance. Può richiedere modifiche prima dell'approvazione
+  - **Conventional commits**: obbligatori per tutto il M10 (es. `feat:`, `fix:`, `refactor:`, `docs:`, `test:`)
+  - Questo prepara al lavoro reale dove si collabora con PR, code review, e branching strategy
 
 ### Calibrazione del corso
 - Se la media difficoltà supera 7: rallentare, aggiungere esercizi di rinforzo
@@ -809,6 +958,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
   - Docker → "Come `node_modules` ma per l'intero sistema operativo"
   - LoRA → "Invece di ristrutturare tutta la casa, aggiungi solo una stanza"
 - Registrare i nuovi ponti mentali nella sezione "Ponti Mentali" quando funzionano
+- **Concetti durevoli prima, framework dopo**: in ogni modulo avanzato, la soluzione viene prima costruita "a mano" (puro Python + libreria minima), poi riscritta con il framework. Questo garantisce che i concetti sopravvivano ai cambi di API dei framework
+- **Approccio "visualizzazione-prima" per la matematica**: quando un concetto AI richiede una base matematica (gradienti, spazi vettoriali, decomposizione matriciale), seguire sempre la sequenza: analogia concreta → codice Python → grafico Matplotlib → formula (solo come etichetta finale). Mai partire dalla formula. I 2 capitoli del Ponte Matematico (tra M2 e M3) stabiliscono le fondamenta; nei moduli successivi si richiamano e si estendono
 - **Esercizi `[SYSTEM DESIGN]`** (dal M5 in poi): nuovo tag per esercizi dove Gianluca progetta un'architettura AI. Formato: scenario reale → requisiti → disegno architettura → discussione trade-off. Non c'è una sola soluzione giusta — l'obiettivo è ragionare sui compromessi
 
 ### Ripresa contesto
@@ -967,6 +1118,34 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 # [Codice brutto ma funzionante da riscrivere]
 # Requisiti: [cosa deve migliorare]
 
+# --- ESERCIZIO X — 🔄 [RECALL CROSS-MODULO]: ---
+# (nel primo capitolo di ogni modulo, dal M3 in poi)
+# Prima di affrontare i nuovi concetti, riprendiamo una competenza
+# del Modulo X che ti servirà in questo modulo.
+# [Task che richiede di usare una competenza di un modulo precedente
+#  nel contesto del modulo corrente]
+# Scrivi qui sotto:
+# ...
+
+# --- ESERCIZIO X — 🌊 [REAL-WORLD]: ---
+# (dal Modulo 5 in poi — almeno 1 per modulo)
+# ⚠️ Questo esercizio simula un task reale: la consegna è vaga,
+# i dati sono sporchi, e non c'è una sola soluzione corretta.
+# Il Mentor valuta il tuo APPROCCIO, non il risultato esatto.
+# [Consegna deliberatamente vaga con dati problematici]
+# Il tuo approccio:
+# ...
+
+# --- ESERCIZIO X — 🔍 [DEBUG]: ---
+# (dal Modulo 2 in poi)
+# Il codice qui sotto DOVREBBE funzionare, ma produce un errore.
+# Eseguilo, leggi lo stack trace, trova il bug e correggilo.
+# Il Mentor interviene SOLO dopo 2+ tentativi falliti.
+# [Codice buggato con errore realistico]
+# Stack trace atteso: [descrizione dell'errore che vedrai]
+# La tua correzione:
+# ...
+
 # --- ESERCIZIO X — 🔀 [INTERLEAVING]: ---
 # (dal capitolo 04 in poi)
 # Questo esercizio mescola concetti di capitoli diversi.
@@ -1053,6 +1232,9 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 15. **Almeno 1 domanda Feynman** nel quiz di verifica, etichettata `# 💬 Spiega con parole tue`. Lo studente deve riformulare un concetto chiave del capitolo con parole proprie, senza usare codice. Se la spiegazione è confusa o incompleta, il concetto va registrato come lacuna.
 16. **Sezione Progetto Incrementale** obbligatoria in ogni capitolo (dal cap. 05 in poi), etichettata `# 🏗️ PROGETTO INCREMENTALE`. Il task specifico per ogni capitolo è definito nella roadmap della sezione "Progetto Incrementale" di CONTESTO_CORSO.md. Deve durare 15-25 minuti e usare solo concetti visti fino a quel punto.
 17. **Sezione Confronto Prima/Dopo** obbligatoria nell'ULTIMO capitolo di ogni modulo, etichettata `# 🔄 CONFRONTO PRIMA/DOPO`. Lo studente riguarda il proprio codice del primo capitolo del modulo e lo riscrive con le competenze acquisite.
+18. **Almeno 1 esercizio di debug autonomo** per capitolo (dal M2 in poi), etichettato `# 🔍 [DEBUG]`. Fornire codice buggato con stack trace reale. Il mentor NON usa la scala progressiva — lo studente deve trovare il bug da solo. Intervento solo dopo 2+ tentativi falliti.
+19. **Almeno 1 esercizio real-world** per modulo (dal M5 in poi), etichettato `# 🌊 [REAL-WORLD]`. Consegne vaghe, dati sporchi, nessuna soluzione unica. Il mentor valuta l'approccio e il ragionamento, non il risultato esatto.
+20. **Almeno 1 esercizio recall cross-modulo** nel primo capitolo di ogni modulo (dal M3 in poi), etichettato `# 🔄 [RECALL CROSS-MODULO]`. Richiede di usare competenze di un modulo precedente nel nuovo contesto, colmando il gap di retention tra moduli distanti.
 - Sul secondo PC: aiutarlo a clonare la repo e ricreare il venv
 
 ---

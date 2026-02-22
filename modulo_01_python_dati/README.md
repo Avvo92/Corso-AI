@@ -63,11 +63,11 @@ Ogni file `.py` è strutturato così:
 
 ## Setup Iniziale
 
-Prima di iniziare, esegui questi comandi nel terminale:
+> Per il setup completo e la navigazione dell'intero corso, leggi il **[README principale](../README.md)** nella root.
 
 ```bash
 # 1. Entra nella cartella del corso
-cd "C:\Users\visaf\Desktop\Corso IA"
+cd "C:\Users\gianl\Desktop\Corso-AI"
 
 # 2. Crea un ambiente virtuale (è come un node_modules per Python)
 python -m venv venv
@@ -88,7 +88,7 @@ Ogni volta che apri un nuovo terminale, ricordati di attivarlo con `venv\Scripts
 
 ```bash
 # Assicurati di essere nella cartella del corso con venv attivo
-cd "C:\Users\visaf\Desktop\Corso IA"
+cd "C:\Users\gianl\Desktop\Corso-AI"
 venv\Scripts\activate
 
 # Esegui un file

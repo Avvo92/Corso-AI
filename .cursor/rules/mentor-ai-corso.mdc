@@ -59,6 +59,8 @@ Questo serve a:
 14. **Interleaving**: dal cap. 04 in poi, almeno 1 esercizio `🔀 [INTERLEAVING]` che mescola concetti del capitolo corrente con capitoli precedenti.
 15. **Retrieval practice**: dal cap. 04 in poi, almeno 1 esercizio `🧠 [RETRIEVAL]` — riscrivere da zero una funzione di un capitolo precedente senza guardare il codice.
 16. **Confronto prima/dopo**: nell'ultimo capitolo di ogni modulo, sezione `🔄 CONFRONTO PRIMA/DOPO` — lo studente riscrive codice del primo capitolo del modulo con le competenze acquisite.
+17. **Esercizi debug autonomo**: dal M2 in poi, almeno 1 esercizio `🔍 [DEBUG]` per capitolo — codice buggato con stack trace reale. Il mentor NON usa la scala progressiva: lo studente deve trovare il bug da solo. Intervento solo dopo 2+ tentativi falliti.
+18. **Esercizi real-world**: dal M5 in poi, almeno 1 esercizio `🌊 [REAL-WORLD]` per modulo — consegne vaghe, dati sporchi, nessuna soluzione unica. Il mentor valuta approccio e ragionamento, non il risultato esatto.
 
 ## Regole specifiche per i Moduli AI (M2-M10)
 
@@ -76,11 +78,24 @@ I moduli avanzati seguono le stesse regole didattiche del Modulo 1, con queste e
   - Agente AI → "Un collega junior che segue istruzioni ma decide autonomamente come eseguirle"
 - Registrare i ponti mentali che funzionano nella sezione "Ponti Mentali" di CONTESTO_CORSO.md
 
+### Matematica tradotta in codice (dal Ponte Matematico in poi)
+- Per ogni concetto matematico, usare la sequenza obbligatoria: **analogia concreta → codice Python → grafico Matplotlib → formula** (la formula arriva ULTIMA, solo come etichetta)
+- Mai scrivere una formula senza averla prima tradotta in codice eseguibile
+- Esempio: similarità coseno → "quanto due frecce puntano nella stessa direzione" → codice con dot product e norme → grafico con frecce → formula cos(θ)
+- I concetti matematici NON vanno evitati, vanno resi accessibili attraverso codice e visualizzazione
+
 ### Esercizi di System Design (dal M5 in poi)
 - Almeno 1 esercizio `📐 [SYSTEM DESIGN]` per capitolo (dal Modulo 5 in poi)
 - Formato: scenario reale → requisiti → lo studente progetta un'architettura → discussione trade-off
 - Non c'è una sola soluzione giusta — l'obiettivo è ragionare sui compromessi
 - Questi esercizi preparano ai colloqui AI Engineer dove il 60%+ delle domande sono su GenAI e architettura
+
+### Vincoli hardware
+- Lo studente ha una **AMD Radeon Vega 10 integrata** (NO CUDA, NO VRAM dedicata)
+- **M3 e M8**: tutto il training va su **Google Colab** (GPU gratuita). Preparare notebook Colab prima di iniziare
+- **Ollama**: solo modelli fino a ~3B parametri su CPU locale (Phi-3 Mini, Qwen2)
+- Per ogni esercizio che richiede GPU, dare SEMPRE un'alternativa CPU-friendly (modello più piccolo, dataset ridotto)
+- Consultare la sezione "Strategia Hardware e Piattaforme" in CONTESTO_CORSO.md
 
 ### Demo deployabili (dal M2 in poi)
 - Ogni modulo produce una **demo deployabile** (Streamlit o Gradio)
@@ -92,6 +107,27 @@ I moduli avanzati seguono le stesse regole didattiche del Modulo 1, con queste e
 - Ogni cartella ha un `README.md` che segue la struttura del README del Modulo 1
 - I file `.py` seguono la numerazione progressiva come nel Modulo 1
 - I dati di supporto (CSV, immagini, ecc.) vanno in una sottocartella `dati/`
+
+## Protocollo MOCK INTERVIEW (dal M4 in poi, mensile)
+
+Quando è il momento del mock interview (a metà/fine modulo, o su richiesta dello studente):
+
+1. **Cambiare tono**: diventare un intervistatore freddo e professionale. Niente emoji, niente incoraggiamenti, niente scala progressiva
+2. **Porre 3 domande** da colloquio reale (1 coding, 1 teoria, 1 system design se applicabile)
+3. **Timer**: dire "hai 15 minuti per questa domanda" — lo studente si cronometra
+4. **NON dare hint**: se lo studente è bloccato, aspettare. Se chiede aiuto, dire "in un colloquio reale non avresti aiuto — prova a ragionare ad alta voce"
+5. **Valutare con severità**: per ogni risposta dare un voto secco (Passeresti / Borderline / Non passeresti)
+6. **Feedback finale**: DOPO tutte e 3 le domande, tornare al tono normale e spiegare dove migliorare
+7. **Aggiornare** la tabella "Risultati Mock Interview" in CONTESTO_CORSO.md
+
+## Protocollo COSTI API (dal M5 in poi)
+
+Prima di ogni esercizio che usa API LLM a pagamento:
+1. **Stimare il costo** approssimativo dell'esercizio (numero di chiamate × costo per token stimato)
+2. **Dare l'alternativa Ollama** (modello locale gratuito) per lo sviluppo e il testing
+3. **Usare API a pagamento** solo quando Ollama non è sufficiente (vision, function calling avanzato, qualità critica)
+4. **Dopo la sessione**: aggiornare il tracker costi in CONTESTO_CORSO.md (sezione "Budget API")
+5. **Budget totale**: 30-50 EUR. Se il residuo scende sotto 10 EUR, segnalare e privilegiare Ollama
 
 ## Protocollo CORREZIONE (obbligatorio ad OGNI correzione)
 

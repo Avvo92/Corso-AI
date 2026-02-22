@@ -41,7 +41,7 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | Mese | Moduli | Output concreto |
 |------|--------|-----------------|
 | **1** | M1 — Python & Dati | Base Python solida + Catalogo E-commerce v1 |
-| **2** | M2 — ML + M3 — DL & CV | 2 demo deployate (Streamlit + Gradio) |
+| **2** | M2 — ML + Ponte Matematico + M3 — DL & CV | 2 demo deployate (Streamlit + Gradio) + intuizioni matematiche |
 | **3** | M4 — NLP + M5 — LLM & Prompt Eng. | 2 demo + competenze LLM operative |
 | **4** | M6 — RAG + M7 — Agents | 2 demo + le 2 skill più richieste |
 | **5** | M8 — Fine-Tuning + M9 — MLOps | Pipeline produzione completa |
@@ -103,6 +103,35 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 ---
 
+## Ponte Matematico — 2 capitoli bridge tra M2 e M3
+
+> **Stato**: da creare (si affronta dopo il completamento del M2)
+>
+> Questi 2 capitoli NON sono un modulo separato — sono un **ponte** tra il mondo ML
+> (dove la matematica è nascosta dentro Scikit-Learn) e il mondo Deep Learning / NLP
+> (dove servono intuizioni su vettori, gradienti e spazi). L'approccio resta invariato:
+> codice Python prima, formula solo come "etichetta" di ciò che il codice fa.
+
+| # | File | Argomento | Perché serve |
+|---|------|-----------|-------------|
+| 01 | `01_matematica_per_ai.py` | Vettori come liste, moltiplicazione matrice come loop annidato, dot product, similarità coseno — tutto in codice | Prerequisito per embeddings (M4), attention (M4), LoRA (M8) |
+| 02 | `02_gradiente_discesa.py` | Derivata come "pendenza della collina", gradiente come "direzione di discesa", learning rate come "dimensione del passo" — visualizzato con Matplotlib | Prerequisito per backpropagation (M3), training loop (M3), loss function (M3) |
+
+**Librerie**: numpy, matplotlib (già installate dal M1)
+
+**Piattaforma**: CPU locale (nessuna GPU necessaria)
+
+**Approccio didattico**:
+- Ogni concetto matematico segue la sequenza: **analogia concreta → codice Python → grafico Matplotlib → formula** (la formula arriva ULTIMA, solo come etichetta)
+- Esempio: "il dot product è come calcolare quanto due frecce puntano nella stessa direzione" → codice con `sum(a*b for a,b in zip(v1,v2))` → grafico con le frecce → formula `a · b = Σ aᵢbᵢ` (solo come etichetta)
+- I 5-6 concetti coperti: vettore, matrice, moltiplicazione matriciale, dot product, similarità coseno, gradiente/derivata, discesa del gradiente
+
+**Analogie ponte**: Vettore → array JS. Matrice → array di array. Dot product → il "punteggio di compatibilità" tra due prodotti. Gradiente → GPS che ricalcola la strada.
+
+**Tempo**: 3-4 giorni
+
+---
+
 ## Modulo 3 — Deep Learning & Computer Vision
 
 **Obiettivo**: capire come funzionano le reti neurali. Prerequisito per capire Transformer e LLM.
@@ -118,6 +147,8 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | 07 | `07_progetto_gradio.py` | Progetto: classificatore immagini + demo Gradio | Portfolio piece #2 |
 
 **Librerie**: torch, torchvision, gradio
+
+**Piattaforma**: **Google Colab** (GPU gratuita) — la GPU locale (AMD Vega 10) non supporta CUDA. Workflow: sviluppo codice in Cursor → training su Colab → risultati in locale.
 
 **Demo di modulo**: classificatore immagini su Gradio/HuggingFace Spaces.
 
@@ -170,6 +201,8 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 **Librerie**: openai, pydantic-ai, ollama
 
+**Piattaforma**: CPU locale. Ollama con modelli fino a 3B parametri (Phi-3 Mini, Qwen2) per esercizi gratuiti + API OpenAI per esercizi che richiedono qualita superiore.
+
 **Demo di modulo**: assistente AI e-commerce con function calling per cercare prodotti, controllare stock, calcolare preventivi — risposte in streaming.
 
 **Analogie ponte**: Function calling → API REST endpoint (l'LLM fa la richiesta). Structured output → validazione form. Prompt → query SQL (istruisci il "database" a restituire ciò che vuoi).
@@ -199,6 +232,8 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 **Demo di modulo**: assistente documentale che risponde a domande su una knowledge base con metriche di qualità visibili.
 
+**Principio "concetti prima, framework dopo"**: il file 05 (pipeline completo) costruisce un RAG da zero con puro Python + ChromaDB — senza LangChain. Solo dal file 06 si introduce LangChain come astrazione. Così se LangChain cambia API (è già successo 3 volte in 2 anni), i concetti restano.
+
 **Analogie ponte**: Vector DB → database SQL, ma cerca per significato. Chunking → paginazione API. RAG pipeline → middleware Laravel (intercetta, arricchisce, passa al controller).
 
 **Tempo**: 2-3 settimane
@@ -225,6 +260,8 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 **Demo di modulo**: agente che cerca informazioni, le analizza, e produce un report strutturato con fonti.
 
+**Principio "concetti prima, framework dopo"**: il file 01-03 costruiscono un agente con puro Python (loop, tool use manuale, stato). Solo dal file 04 si introduce LangGraph come framework. CrewAI (file 06) è introduttivo — il focus è sui concetti di multi-agent, non sul framework specifico.
+
 **Analogie ponte**: Agente → collega junior che segue istruzioni ma decide come. LangGraph → state machine. MCP → API REST che Cursor usa per parlare con i tuoi strumenti.
 
 **Tempo**: 2-3 settimane
@@ -246,6 +283,8 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | 07 | `07_progetto_finetuning.py` | Progetto: modello per descrizioni e-commerce + demo comparativa | Portfolio piece #7 |
 
 **Librerie**: peft, bitsandbytes, trl, transformers, datasets
+
+**Piattaforma**: **Google Colab** (GPU gratuita) — QLoRA richiede GPU NVIDIA. Workflow: preparazione dataset in locale → training su Colab → valutazione e demo in locale/HuggingFace Spaces.
 
 **Demo di modulo**: confronto interattivo tra modello base e modello fine-tunato sullo stesso task.
 
@@ -323,6 +362,7 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 | Fase | Settimana | Cosa fai |
 |------|-----------|----------|
+| 0. Setup Git workflow | 0 | Feature branches, conventional commits, template PR — simulazione lavoro in team |
 | 1. Progettazione | 1 | Architettura, schema DB, user stories, API design |
 | 2. AI Service | 1-2 | RAG pipeline + Agent system + LLM integration |
 | 3. Backend | 2 | FastAPI endpoints, autenticazione, business logic |
@@ -332,7 +372,9 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | 7. Polish | 4 | Error handling, loading states, edge cases, testing |
 | 8. Portfolio | 4 | README, architettura diagram, video demo, profilo GitHub |
 
-**Output finale**: link live + repo GitHub + README professionale + video demo 2 minuti.
+**Simulazione team workflow**: il progetto M10 usa feature branches, PR con descrizione strutturata, code review dall'AI mentor, e conventional commits. Ogni fase (AI service, backend, frontend, deploy) ha il suo branch e la sua PR — come in un team reale.
+
+**Output finale**: link live + repo GitHub + README professionale + video demo 2 minuti + storico PR con code review.
 
 **Tempo**: 3-4 settimane
 
@@ -415,6 +457,16 @@ Ogni modulo ha: almeno 2 esercizi `🎯 [COLLOQUIO]` + dal M5 in poi almeno 1 es
 
 ---
 
+## Nota Strutturale — File Lunghi e Jupyter
+
+I moduli avanzati (dal M2 in poi) possono avere capitoli complessi che superano le 400 righe.
+In questi casi:
+- **Split in due file**: `XXa_teoria.py` (spiegazione + mini-esercizi) e `XXb_pratica.py` (esercizi + progetto + soluzioni)
+- **Jupyter Notebook**: per i moduli dove la visualizzazione inline migliora l'apprendimento (M3: curve di loss, M4: embedding visualizzati, Ponte Matematico: grafici Matplotlib), usare `.ipynb` al posto di `.py`
+- La scelta va fatta capitolo per capitolo in base al contenuto
+
+---
+
 ## Approccio Didattico (invariato per tutti i moduli)
 
 Ogni capitolo di ogni modulo segue le stesse regole validate nel Modulo 1:
@@ -423,7 +475,7 @@ Ogni capitolo di ogni modulo segue le stesse regole validate nel Modulo 1:
 2. **Sequenza**: analogia concreta → codice JS/PHP (o analogia web) → codice Python → esercizio
 3. **Struttura file**: docstring → quiz ingresso → sezioni teoria con mini-esercizi → quiz verifica → esercizi → progetto incrementale → soluzioni
 4. **Quiz**: 2 per capitolo (ingresso + verifica), 6 formati (output, V/F, errore, definizione, completa codice, Feynman)
-5. **Esercizi speciali**: `[COLLOQUIO]`, `[REFACTORING]`, `[INTERLEAVING]`, `[RETRIEVAL]`, `[SYSTEM DESIGN]` (dal M5)
+5. **Esercizi speciali**: `[COLLOQUIO]`, `[REFACTORING]`, `[INTERLEAVING]`, `[RETRIEVAL]`, `[SYSTEM DESIGN]` (dal M5), `[DEBUG]` (dal M2), `[REAL-WORLD]` (dal M5), `[RECALL CROSS-MODULO]` (dal M3)
 6. **Spaced repetition**: glossario con contatore, ripasso programmato, rinforzo mirato dalle lacune quiz
 7. **Scala di aiuto**: indica zona → spiega perché → esempio analogo → soluzione
 8. **Voto difficoltà** obbligatorio dopo ogni capitolo
