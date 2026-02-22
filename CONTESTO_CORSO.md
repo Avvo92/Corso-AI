@@ -148,13 +148,44 @@
 
 ### Moduli Successivi
 
-| Modulo | Stato |
-|--------|-------|
-| 2 — Machine Learning (Scikit-Learn) | ⬜ Da creare |
-| 3 — Computer Vision (OpenCV, YOLO) | ⬜ Da creare |
-| 4 — Deep Learning (PyTorch) | ⬜ Da creare (dettaglio extra richiesto) |
-| 5 — NLP & LLM (HuggingFace, OpenAI) | ⬜ Da creare |
-| 6 — Progetto Finale (React + Laravel + FastAPI) | ⬜ Da creare |
+| Modulo | Focus | Librerie principali | Stato |
+|--------|-------|---------------------|-------|
+| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit | scikit-learn, streamlit | ⬜ Da creare |
+| 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | torch, torchvision, gradio | ⬜ Da creare |
+| 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | transformers, sentence-transformers | ⬜ Da creare |
+| 5 — LLM Integration & Prompt Engineering | API OpenAI, prompt engineering, structured output, function calling, Pydantic, Ollama, multimodale, sicurezza AI | openai, pydantic-ai, ollama | ⬜ Da creare |
+| 6 — RAG Systems | ChromaDB, LangChain, chunking, hybrid search, RAGAS evaluation, LangSmith observability | langchain, chromadb, ragas, langsmith | ⬜ Da creare |
+| 7 — AI Agents & Automation | LangGraph, tool use, multi-agent, MCP server custom, agentic RAG | langgraph, crewai | ⬜ Da creare |
+| 8 — Fine-Tuning & Personalizzazione | LoRA, QLoRA, PEFT, dataset preparation, valutazione modello | peft, bitsandbytes, trl | ⬜ Da creare |
+| 9 — MLOps, Testing, Docker & Deploy | Async Python, Docker, testing AI, CI/CD, deploy cloud, semantic caching | docker, redis, pytest | ⬜ Da creare |
+| 10 — Progetto Finale: Full-Stack AI Product | React + FastAPI + RAG + Agent + Docker + Deploy live | Tutto il corso | ⬜ Da creare |
+
+#### Portfolio — Demo deployate per modulo
+
+> Ogni modulo produce un progetto deployabile. Alla fine del corso avrai 8 demo live nel portfolio.
+
+| # | Progetto | Modulo | Piattaforma deploy | Cosa dimostra |
+|---|----------|--------|---------------------|---------------|
+| 1 | Predittore prezzo case | M2 | Streamlit Cloud | ML classico, data analysis, Streamlit |
+| 2 | Classificatore immagini | M3 | HuggingFace Spaces | Deep Learning, transfer learning, Gradio |
+| 3 | Analizzatore recensioni e-commerce | M4 | Streamlit Cloud | NLP, embeddings, sentiment analysis |
+| 4 | Assistente e-commerce AI | M5 | Streamlit Cloud | LLM API, function calling, streaming |
+| 5 | RAG documentale | M6 | Streamlit Cloud | RAG, vector DB, evaluation |
+| 6 | Agente di ricerca e analisi | M7 | Streamlit Cloud | AI agents, tool use, LangGraph |
+| 7 | Demo fine-tuning comparativa | M8 | HuggingFace Spaces | Fine-tuning, LoRA, comparazione base vs fine-tunato |
+| 8 | Prodotto full-stack AI (diamante portfolio) | M10 | Cloud (Railway/Render) | Full-stack: React + FastAPI + RAG + Agent + Docker |
+
+#### Evoluzione del Progetto Incrementale "Catalogo E-commerce"
+
+> Il progetto incrementale evolve naturalmente attraverso i moduli, diventando progressivamente il progetto finale.
+
+| Fase | Moduli | Il progetto diventa... |
+|------|--------|-----------------------|
+| **Data Tool** | M1-M2 | Catalogo prodotti con analisi dati, statistiche, previsioni prezzi |
+| **Smart Tool** | M3-M4 | + classificazione immagini prodotto, analisi sentiment recensioni |
+| **AI-Powered** | M5-M6 | + chatbot AI sul catalogo (RAG), ricerca semantica prodotti, function calling |
+| **Autonomous** | M7-M8 | + agente che gestisce ordini/inventario, modello personalizzato per generazione descrizioni |
+| **Production** | M9-M10 | + containerizzato, deployato, testato, monitorato, con CI/CD — il diamante del portfolio |
 
 ---
 
@@ -548,17 +579,22 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | Inverti lista senza .reverse() | 04 | Junior — classico | Cicli, `.insert(0)`, `range()` con passo negativo | ✅ Risolto (con errori: `== l` superfluo, seconda versione usa [::-1] vietato) |
 | Elemento più frequente | 04 | Junior/Mid — frequente | `max()` con lambda, `.count()` | ✅ Risolto perfettamente al primo tentativo |
 
-### Cosa aspettarsi nei prossimi capitoli
+### Cosa aspettarsi nei prossimi capitoli e moduli
 
-| Capitolo | Esercizi colloquio previsti |
-|----------|-----------------------------|
-| 04 — Liste | Rimuovere duplicati, invertire una lista senza `.reverse()`, trovare l'elemento più frequente, two-sum problem |
+| Capitolo/Modulo | Esercizi colloquio previsti |
+|------------------|-----------------------------|
 | 05 — Dizionari | Contare frequenze di parole, raggruppare dati per chiave, merge di due dizionari, anagrammi |
 | 06 — File CSV | Parsing manuale di CSV, trovare anomalie nei dati, aggregazioni per gruppo |
 | 07 — NumPy | Normalizzazione di un array, distanza euclidea, operazioni su matrici |
 | 09 — Pandas | Pulizia dati con valori mancanti, group by + aggregazione, pivot table |
-| Mod. 2 — ML | Train/test split manuale, calcolo accuratezza, feature scaling |
-| Mod. 4 — DL | Spiegare backpropagation a parole, costruire un modello semplice, leggere una loss curve |
+| M2 — ML | Train/test split manuale, calcolo accuratezza, feature scaling, "spiega overfitting" |
+| M3 — DL & CV | Spiegare backpropagation a parole, costruire un modello semplice, leggere una loss curve |
+| M4 — NLP | "Cos'è un embedding?", "Come funziona un Transformer?", similarità coseno a mano |
+| M5 — LLM | "Progetta un chatbot con function calling", prompt engineering sotto pressione, "cos'è il prompt injection?" |
+| M6 — RAG | "Progetta un RAG per 10M documenti", "che chunking strategy useresti?", "come valuti la qualità del RAG?" |
+| M7 — Agents | "Progetta un agente che gestisce ordini", "quando workflow vs agente?", "cos'è il MCP?" |
+| M8 — Fine-Tuning | "Quando fine-tuning vs RAG vs prompt engineering?", "cos'è LoRA e perché funziona?" |
+| M9 — MLOps | "Come deployeresti un servizio LLM?", "come gestisci i costi?", "come testi un'app AI?" |
 
 ### Come ripassarli
 
@@ -571,18 +607,19 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 
 ## Progetto Incrementale — "Catalogo E-commerce"
 
-> Un progetto unico che cresce capitolo dopo capitolo. Ogni capitolo aggiunge una funzionalità
-> usando i concetti appena appresi. Alla fine del modulo, Gianluca avrà costruito un sistema
-> completo di gestione catalogo prodotti — applicabile direttamente al mondo e-commerce che conosce.
+> Un progetto unico che cresce capitolo dopo capitolo e attraversa **tutto il corso** (10 moduli).
+> Ogni capitolo aggiunge una funzionalità usando i concetti appena appresi.
+> Alla fine del corso, Gianluca avrà costruito un **prodotto AI completo e deployato** —
+> il diamante del portfolio.
 >
 > Il progetto è pensato per il dominio che Gianluca padroneggia (e-commerce/web), così il contesto
-> non aggiunge carico cognitivo e può concentrarsi sulla tecnica Python.
+> non aggiunge carico cognitivo e può concentrarsi sulla tecnica.
 
 ### Tema del progetto
 
-**"Catalogo E-commerce"** — Un sistema per gestire prodotti, ordini, statistiche e visualizzazioni di un negozio online. Parte semplice (una lista di prodotti) e cresce fino a diventare un piccolo tool di analisi dati con output grafici.
+**"Catalogo E-commerce"** — Un sistema che parte come semplice lista di prodotti e cresce fino a diventare un prodotto AI full-stack con RAG, agenti, modello personalizzato, e deploy su cloud.
 
-### Roadmap per capitolo
+### Roadmap per capitolo — Modulo 1 (Python & Dati)
 
 | Capitolo | Funzionalità da aggiungere | Concetti esercitati |
 |----------|----------------------------|---------------------|
@@ -596,10 +633,24 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 11 — Matplotlib | Dashboard visuale: grafico prezzi per categoria, trend vendite, pie chart stock | plot, bar, pie, subplot, styling |
 | 12 — Web Bridge | API endpoint FastAPI che espone il catalogo e le statistiche | FastAPI, endpoint, JSON response |
 
+### Roadmap per modulo — Moduli 2-10
+
+| Modulo | Funzionalità da aggiungere al Catalogo | Concetti esercitati |
+|--------|-----------------------------------------|---------------------|
+| M2 — ML | Predittore prezzi prodotti basato su caratteristiche (categoria, brand, stagione) + prima demo Streamlit | Scikit-Learn, train/test, metriche, Streamlit |
+| M3 — DL & CV | Classificatore immagini prodotto (es. categoria da foto) con transfer learning + demo Gradio | PyTorch, CNN, transfer learning, Gradio |
+| M4 — NLP | Analisi sentiment recensioni clienti + ricerca semantica prodotti per significato | Embeddings, sentence-transformers, similarità coseno |
+| M5 — LLM | Chatbot AI del catalogo: risponde a domande sui prodotti, usa function calling per cercare/filtrare/calcolare | OpenAI API, prompt engineering, structured output, function calling |
+| M6 — RAG | Knowledge base del catalogo: carica documentazione/FAQ e risponde con contesto reale, non allucinato | ChromaDB, LangChain, chunking, RAGAS evaluation |
+| M7 — Agents | Agente autonomo che gestisce ordini, controlla inventario, suggerisce riordini, genera report | LangGraph, tool use, agentic RAG, MCP |
+| M8 — Fine-Tuning | Modello personalizzato per generare descrizioni prodotto nel "tono" del brand | LoRA, QLoRA, PEFT, dataset curation |
+| M9 — MLOps | Tutto containerizzato e deployato: Docker + CI/CD + monitoring + semantic caching | Docker, GitHub Actions, Redis, testing |
+| M10 — Finale | Frontend React/Next.js + Backend FastAPI + tutti i servizi AI integrati → deploy live | Full-stack, architettura microservizi, deploy cloud |
+
 ### Progresso del progetto
 
-| Capitolo | Stato | Note |
-|----------|-------|------|
+| Capitolo/Modulo | Stato | Note |
+|-----------------|-------|------|
 | 04 — Liste | ⬜ Non ancora assegnato (il cap. 04 era già completato prima dell'introduzione del progetto) | |
 | 05 — Dizionari | ⬜ Da fare | Prima volta con il progetto incrementale |
 | 06 — File CSV | ⬜ Da fare | |
@@ -609,6 +660,15 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 10 — Pandas Progetto | ⬜ Da fare | |
 | 11 — Matplotlib | ⬜ Da fare | |
 | 12 — Web Bridge | ⬜ Da fare | |
+| M2 — ML | ⬜ Da fare | |
+| M3 — DL & CV | ⬜ Da fare | |
+| M4 — NLP | ⬜ Da fare | |
+| M5 — LLM | ⬜ Da fare | |
+| M6 — RAG | ⬜ Da fare | |
+| M7 — Agents | ⬜ Da fare | |
+| M8 — Fine-Tuning | ⬜ Da fare | |
+| M9 — MLOps | ⬜ Da fare | |
+| M10 — Finale | ⬜ Da fare | Il diamante del portfolio |
 
 ### Regole per il progetto incrementale
 
@@ -618,6 +678,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 4. Ogni capitolo costruisce sul codice del capitolo precedente — lo studente può copiare e estendere
 5. La soluzione va nella sezione SOLUZIONI come gli altri esercizi
 6. Se è il primo capitolo con il progetto, fornire il codice base da cui partire
+7. Nei moduli avanzati (M2-M10): il progetto incrementale di fine modulo produce una **demo deployabile** (Streamlit, Gradio, o cloud). Il deploy è parte del task.
 
 ---
 
@@ -629,6 +690,12 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 - **Prima del file 07**: arricchire con più esempi visivi e mini-esercizi intermedi
 - **Prima del file 08**: aggiungere rappresentazioni ASCII di tensori 2D/3D/4D
 - **⚠️ Al completamento del file 08** (o quando il file supera ~1000 righe): AVVISARE Gianluca che è il momento di separare CONTESTO_CORSO.md in due file — uno snello con stato attuale, regole e comportamenti (che l'agente legge sempre), e uno di archivio con storico dettagliato (glossario acquisito, capitoli vecchi, domande passate). Questo previene problemi di contesto troppo lungo per gli agenti futuri.
+- **A inizio di ogni nuovo modulo (M2-M10)**: creare la cartella del modulo (`modulo_XX_nome/`) con un `README.md` che segue la struttura del README del Modulo 1
+- **Per i moduli M2-M10**: ogni modulo finale produce una demo deployabile. Il Mentor deve guidare il deploy e verificare che il link sia funzionante
+- **Al modulo M5**: quando i confronti PHP/JS non hanno equivalente diretto (es. embedding, backpropagation), usare analogie dal mondo web/e-commerce. Registrare i nuovi ponti mentali nella sezione apposita
+- **Al modulo M7**: guidare la costruzione di un MCP server custom. Questo è un meta-skill: Gianluca capirà come funziona Cursor stesso
+- **Al modulo M9**: il primo deploy live. Verificare che il link funzioni e sia inseribile nel CV
+- **Al modulo M10**: guidare la creazione del profilo GitHub professionale (README, pinned repos, link demo)
 
 ### Calibrazione del corso
 - Se la media difficoltà supera 7: rallentare, aggiungere esercizi di rinforzo
@@ -647,6 +714,21 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 - Il codice deve essere pulito, ben strutturato, commentato con docstring
 - Il progetto finale deve avere: README professionale, deploy, demo live, codice su GitHub
 - Nei moduli avanzati: introdurre best practice di produzione (logging, error handling, testing)
+- **Dal M2 in poi**: ogni modulo produce una demo deployabile (Streamlit o Gradio)
+- **Dal M5 in poi**: includere almeno 1 esercizio di **system design** dove Gianluca progetta un'architettura su carta prima di scrivere codice
+- **Al M10**: guidare la creazione del profilo GitHub professionale e assicurarsi che almeno 5 demo siano live
+
+### Adattamento didattico per i moduli AI (M2-M10)
+- **Confronti PHP/JS/Python**: restano obbligatori dove esiste un equivalente (es. `fetch()` → `requests`, `Array.map()` → `map()`, Eloquent → Pandas)
+- **Concetti puramente AI** (embedding, backpropagation, attention, chunking, ecc.): il confronto a tre lingue è sostituito da **analogie dal mondo web/e-commerce** che Gianluca conosce. Esempio:
+  - Embedding → "Come le coordinate GPS catturano una posizione, un embedding cattura il significato di un testo"
+  - Backpropagation → "Come il GPS ricalcola il percorso dopo una svolta sbagliata"
+  - ChromaDB → "Come un database SQL, ma cerca per significato invece che per query esatta"
+  - RAG → "Come una ricerca su Google: prima trovi i risultati rilevanti, poi li leggi per rispondere"
+  - Docker → "Come `node_modules` ma per l'intero sistema operativo"
+  - LoRA → "Invece di ristrutturare tutta la casa, aggiungi solo una stanza"
+- Registrare i nuovi ponti mentali nella sezione "Ponti Mentali" quando funzionano
+- **Esercizi `[SYSTEM DESIGN]`** (dal M5 in poi): nuovo tag per esercizi dove Gianluca progetta un'architettura AI. Formato: scenario reale → requisiti → disegno architettura → discussione trade-off. Non c'è una sola soluzione giusta — l'obiettivo è ragionare sui compromessi
 
 ### Ripresa contesto
 - Se apre una nuova chat: fargli dire "sono al file X" e leggere questo file

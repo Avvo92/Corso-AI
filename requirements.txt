@@ -8,6 +8,10 @@
 #   venv\Scripts\activate     (Windows)
 #   source venv/bin/activate  (Mac/Linux)
 #   pip install -r requirements.txt
+#
+# NOTA: le dipendenze dei moduli futuri sono commentate.
+# Verranno scommentate quando si inizia il modulo corrispondente,
+# per evitare di installare tutto subito (alcune librerie sono pesanti).
 # =============================================
 
 # --- MODULO 1: Python & Dati ---
@@ -17,4 +21,51 @@ matplotlib>=3.9
 fastapi>=0.115
 uvicorn>=0.30
 
-# (I moduli successivi aggiungeranno le loro librerie qui)
+# --- MODULO 2: Machine Learning ---
+# scikit-learn>=1.5
+# streamlit>=1.40
+
+# --- MODULO 3: Deep Learning & Computer Vision ---
+# torch>=2.4
+# torchvision>=0.19
+# gradio>=5.0
+
+# --- MODULO 4: NLP, Embeddings & Transformers ---
+# transformers>=4.46
+# sentence-transformers>=3.3
+# tokenizers>=0.20
+
+# --- MODULO 5: LLM Integration & Prompt Engineering ---
+# openai>=1.55
+# pydantic-ai>=0.0.36
+# ollama>=0.4
+
+# --- MODULO 6: RAG Systems ---
+# langchain>=0.3
+# langchain-community>=0.3
+# langchain-openai>=0.2
+# chromadb>=0.5
+# ragas>=0.2
+# langsmith>=0.2
+# pypdf>=5.0
+# unstructured>=0.16
+
+# --- MODULO 7: AI Agents & Automation ---
+# langgraph>=0.2
+# crewai>=0.86
+
+# --- MODULO 8: Fine-Tuning & Personalizzazione ---
+# peft>=0.13
+# bitsandbytes>=0.44
+# trl>=0.12
+# datasets>=3.1
+# accelerate>=1.1
+
+# --- MODULO 9: MLOps, Testing, Docker & Deploy ---
+# redis>=5.2
+# pytest>=8.3
+# pytest-asyncio>=0.24
+# httpx>=0.27
+
+# --- MODULO 10: Progetto Finale ---
+# (Usa tutte le dipendenze dei moduli precedenti)
