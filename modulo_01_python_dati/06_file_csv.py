@@ -181,48 +181,52 @@ percorso_csv = os.path.join(percorso_dati, "vendite_ecommerce.csv")
 #   persona = {"nome": "Marco", "eta": 30}
 #   persona["lavoro"] = "developer"
 #   print(len(persona))
-# La tua risposta: ___
+# La tua risposta: 3
 
 # DOMANDA 2 — Prevedi l'output:
 # Cosa stampa questo codice?
 #   prezzi = {"mela": 1.50, "banana": 0.80, "kiwi": 2.00}
 #   cari = {k: v for k, v in prezzi.items() if v >= 1.50}
 #   print(cari)
-# La tua risposta: ___
+# La tua risposta: {"mela": 1.50, "kiwi": 2.00}
 
 # DOMANDA 3 — Vero o Falso?
 # "Il metodo .get('chiave', default) restituisce il default se la chiave
 #  non esiste, MA NON aggiunge la chiave al dizionario"
-# La tua risposta (V/F): ___
+# La tua risposta (V/F): V
 
 # DOMANDA 4 — Trova l'errore:
 #   conteggio = {}
 #   for parola in ["ciao", "mondo", "ciao"]:
 #       conteggio[parola] = conteggio.items(parola, 0) + 1
 # Qual è il problema? Come lo correggeresti?
-# La tua risposta: ___
+# La tua risposta:
+#   conteggio = {}
+#   for parola in ["ciao", "mondo", "ciao"]:
+#       conteggio[parola] = conteggio.get(parola, 0) + 1
+
 
 # DOMANDA 5 — Completa il codice:
 #   inventario = {"Maglietta": 20, "Jeans": 5, "Scarpe": 15}
 #   for i, (prodotto, qty) in ___(inventario.___(), 1):
 #       print(f"{i}. {prodotto}: {qty}")
-# Riempi i due spazi: ___
+# Riempi i due spazi: enumerates, items
 
 # DOMANDA 6 — Prevedi l'output:
 #   ordine = {"id": 1, "cliente": {"nome": "Anna", "citta": "Roma"}}
 #   print(ordine["cliente"]["citta"])
-# La tua risposta: ___
+# La tua risposta: Roma
 
 # DOMANDA 7 — Definizione:
 # Che differenza c'è tra .setdefault() e .update()?
-# La tua risposta: ___
+# La tua risposta: .setdefault verifica che la chiave che sto mensionando esiste, e solo qualora non esistesse la crea e vi appone il valore di default che ho inserito, update invece aggiunge tutto le chiavi: valori che scrivo e se gia' esistevano le sovrascrive
 
 # DOMANDA 8 — Prevedi l'output:
 #   d = {"a": 1, "b": 2}
 #   copia = d.copy()
 #   copia["a"] = 99
 #   print(d["a"])
-# La tua risposta: ___
+# La tua risposta: 99
 
 
 # ==========================================================================
