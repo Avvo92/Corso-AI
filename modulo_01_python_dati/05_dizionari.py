@@ -711,7 +711,22 @@ print(f"{preferenze}")
 # Poi aggiungi la chiave "attore_principale" e stampa di nuovo.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+film = {
+    "titolo" : "Inception",
+    "regista": "Christopher Nolan",
+    "anno": "2019",
+    "genere": "Thriller"
+}
+print("\n=== Esercizio 1===\n")
+def stampa(dizionario):
+    for key,value in film.items():
+        print(f"{key.title()}: {value.title()}")
+
+stampa(film)
+
+film.update({"attore": "Leonardo"})
+
+stampa(film)
 
 
 # ESERCIZIO 2 (Medio):
@@ -730,7 +745,33 @@ print(f"{preferenze}")
 #    {"Elettronica": [...], "Libri": [...], "Accessori": [...]}
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+prodotti = [
+      {"nome": "Laptop", "prezzo": 999.99, "categoria": "Elettronica"},
+      {"nome": "Libro Python", "prezzo": 35.00, "categoria": "Libri"},
+      {"nome": "Cuffie", "prezzo": 79.99, "categoria": "Elettronica"},
+      {"nome": "Zaino", "prezzo": 59.99, "categoria": "Accessori"},
+      {"nome": "Libro AI", "prezzo": 42.00, "categoria": "Libri"},
+  ]
+
+print("\n=== Esercizio 2===\n")
+
+def conta_totale(lista):
+    totale = sum(p['prezzo'] for p in lista)
+    return print(f"Totale dei prezzi: {totale} €\n")
+
+def trova_max(lista):
+    massimo =  max(lista, key=lambda p: p['prezzo'])
+    return print(f"Prodotto più costoso:\n- {massimo['nome']} => {massimo['prezzo']} €\n")
+
+def raggruppa_per_categoria(lista):
+    lista_per_categoria = {}
+    for p in lista:        
+        lista_per_categoria.setdefault(p['categoria'], []).append(p['nome'])
+    return print(f"{lista_per_categoria}")
+
+conta_totale(prodotti)
+trova_max(prodotti)
+raggruppa_per_categoria(prodotti)
 
 
 # ESERCIZIO 3 (Medio — Dict Comprehension):
@@ -742,7 +783,32 @@ print(f"{preferenze}")
 #    (>=90: Eccellente, >=70: Buono, >=60: Sufficiente, <60: Insufficiente)
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+voti_studenti = {
+    "Marco": 75, 
+    "Laura": 92, 
+    "Giulia": 58, 
+    "Luca": 88, 
+    "Anna": 45
+}
+
+print("\n=== Esercizio 3===\n")
+
+studenti_promossi = {nome: voto for nome, voto in voti_studenti.items() if voto >= 60}
+
+def giudizio(voto):
+    if voto >= 90: return "Eccellente"
+    if voto >= 70: return "Buono" 
+    if voto >= 60: return "Sufficiente" 
+    if voto < 60: return "Insufficiente" 
+
+giudizi_studenti = {}
+for nome, voto in sorted(voti_studenti.items(), key=lambda x: x[1], reverse=True):
+    giudizi_studenti.update({nome : giudizio(voto)})
+
+print(f"{giudizi_studenti}")
+
+
+
 
 
 # 🎯 [COLLOQUIO] — ESERCIZIO 4 (Sfida — Conta Parole):
@@ -761,7 +827,21 @@ print(f"{preferenze}")
 # Testa con: "Ciao mondo ciao a tutto il mondo" e con una stringa vuota ""
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+
+testo_di_prova = "Ciao mondo ciao a tutto il mondo"
+testo_di_prova_2 = ""
+
+def conta_parole(testo):
+    testo_preparato = testo.lower().split() #restituisce un array con tutto le parole in minuscolo, dividendole usando gli spazi
+    conta_parole = {} # si inizia con un contatore vuoto
+    for parola in testo_preparato: # iteriamo su ogni elemento dell'array
+        conta_parole[parola] = conta_parole.get(parola, 0) + 1  #assegna una chiave per ogni parole, e controlla :
+    return conta_parole                                         # se esiste, aggiunge 1 al contatore, partendo dal
+                                                                # che in questo caso è 0
+print("\n=== Esercizio 4===\n")
+print(f"{conta_parole(testo_di_prova)}")
+print(f"{conta_parole(testo_di_prova_2)}")
+
 
 
 # ESERCIZIO 5 (Medio — Lambda con Dizionari — Rinforzo):
@@ -782,7 +862,29 @@ print(f"{preferenze}")
 #   e) Ordina per anno crescente e stampa con enumerate numerato da 1
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+film_lista = [
+    {"titolo": "Inception", "anno": 2010, "voto": 8.8},
+    {"titolo": "Interstellar", "anno": 2014, "voto": 8.6},
+    {"titolo": "The Matrix", "anno": 1999, "voto": 8.7},
+    {"titolo": "Parasite", "anno": 2019, "voto": 8.5},
+    {"titolo": "Oppenheimer", "anno": 2023, "voto": 8.3},
+]
+
+
+film_per_valutazione = sorted(film_lista, key=lambda v: v['voto']) #come chiave usiamo un lamda che per ogni elemento ci restituisce il valore di voto
+film_a_partire_da_anno = list(filter(lambda a: a['anno'] >=2010, film_lista))
+stringhe_film = list(map(lambda a: f"{a['titolo']} => voto ⭐ {a.get("voto", "nessun voto")}", film_lista))
+film_più_vecchio = min(film_lista, key=lambda a: a.get('anno'))
+anno_crescente = enumerate(list(sorted(film_lista, key=lambda a: a['anno'])),1)
+
+
+print("\n=== Esercizio 5===\n")
+# print(f"{film_a_partire_da_anno}")
+# print(f"{stringhe_film}")
+# print(f"{film_più_vecchio}")
+for key, value in anno_crescente:
+    print(f"#{key}: {value['titolo']}")
+
 
 
 # ESERCIZIO 6 (Medio — enumerate + dizionari):
@@ -805,7 +907,25 @@ print(f"{preferenze}")
 #    usando dict comprehension
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+inventario = {
+    "T-shirt": 45,
+    "Jeans": 12,
+    "Sneakers": 8,
+    "Cappello": 30,
+    "Giacca": 3,
+}
+
+intentario_numerato = enumerate(inventario.items(), 1)
+
+print("\n=== Esercizio 6===\n")
+for key, (k, value) in intentario_numerato:
+    print(f"#{key} => {k}: {value}")
+
+
+
+
+
+
 
 
 # 🎯 [COLLOQUIO] — ESERCIZIO 7 (Sfida — Raggruppare per Chiave):
