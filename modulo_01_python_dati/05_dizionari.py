@@ -99,6 +99,44 @@
 #   quadrati_pari = [n*n  for n in range(1, 11)  if x % 2 == 0]
 # Riempi i due spazi: ok
 
+# 📝 CORREZIONE MENTOR — Quiz d'Ingresso (Cap. 04):
+#
+# D1: ❌ Hai scritto [20, 30, 40, 50] — sono 4 elementi.
+#     Risposta corretta: [20, 30, 40] — l'indice 4 è ESCLUSO.
+#     numeri[1:4] prende indici 1, 2, 3 → [20, 30, 40].
+#     (Pattern #2 — range/slicing fine escluso: persiste)
+#
+# D2: ❌ Hai scritto V (Vero).
+#     Risposta corretta: FALSO. .append() restituisce None.
+#     Modifica la lista in-place ma non la restituisce.
+#     In JS, .push() restituisce la nuova lunghezza — diverso!
+#
+# D3: ❌ Hai scritto "ok" ma il codice contiene errori.
+#     Il codice ha range(frutti, len(frutti)) — doveva essere:
+#     enumerate(frutti, 1). range() genera numeri, enumerate() dà
+#     indice+valore. (Pattern #8 — enumerate vs range)
+#
+# D4: ⚠️ Parziale. Hai detto "doveva essere [1:]" — ma [1:] dà
+#     [20,30,40,50], non [30,40,50]. L'indice di 30 è 2, non 1.
+#     Corretto: prezzi[2:]. (Contare da 0: 10=indice0, 20=1, 30=2)
+#
+# D5: ⚠️ Parziale. Hai capito che sorted ordina, ma mancano due cose:
+#     - sorted() crea una NUOVA lista, .sort() modifica l'originale
+#     - lambda NON è obbligatoria: sorted([3,1,2]) funziona senza lambda
+#
+# D6: ⚠️ Hai descritto cosa fa, ma la domanda chiedeva l'OUTPUT concreto.
+#     Risposta corretta: ["Marco"]. Devi dare il valore, non la spiegazione.
+#
+# D7: ✅ Corretto!
+#
+# D8: ❌ Hai scritto "ok" ma c'è un errore nel codice: la variabile nel
+#     if è "x" ma nel for si chiama "n". Doveva essere: if n % 2 == 0
+#     (Pattern #12 — variabile sbagliata nel contesto)
+#
+# Risultato: 1/8 corrette, 2/8 parziali, 5/8 sbagliate
+# Lacune principali: slicing fine escluso, .append() restituisce None,
+# enumerate vs range, output concreto vs descrizione, nomi variabili
+
 
 # ==========================================================================
 # PARTE 1: Creare e Accedere ai Dizionari
@@ -697,6 +735,38 @@ print(f"{preferenze}")
 #   print(conteggio)
 # Riempi i due spazi: items, totale
 
+# 📝 CORREZIONE MENTOR — Quiz di Verifica (Cap. 05):
+#
+# D1: ❌ Hai scritto 2.
+#     Risposta corretta: 3. Parte con 2 chiavi, modifica "eta" (resta 2),
+#     poi AGGIUNGE "citta" → diventa 3. Aggiungere una chiave nuova
+#     incrementa len().
+#
+# D2: ⚠️ Parziale. Hai identificato che c'è un problema, ma la risposta
+#     corretta è: KeyError! Python crasha se accedi a una chiave inesistente.
+#     La soluzione è .get("font_size", default) — non 'font_size' in config.
+#     Il tuo "in" controlla se esiste ma non risolve il crash.
+#
+# D3: ✅ Corretto! E ottima la spiegazione: "copia del riferimento".
+#
+# D4: ✅ Corretto! Spiegazione chiara e sintetica.
+#
+# D5: ✅ Corretto! (il codice era già completo, dovevi confermarlo)
+#
+# D6: ❌ Hai scritto {"Laura": 9}.
+#     Risposta corretta: {"Marco": 7, "Laura": 9}. La condizione è
+#     v >= 7, e Marco ha voto 7 — passa il filtro! >= include il 7.
+#
+# D7: ✅ Corretto!
+#
+# D8: ❌ Hai scritto "items, totale".
+#     Risposta corretta: get, 0. Il metodo è .get(chiave, default),
+#     non .items(). .items() restituisce tutte le coppie, .get() cerca
+#     UNA chiave con valore di default se non esiste.
+#
+# Risultato: 4/8 corrette, 1/8 parziale, 3/8 sbagliate
+# Lacune: len() con aggiunta chiavi, >= vs >, .get() vs .items()
+
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  ESERCIZI — Ora Prova Tu!                                             ║
@@ -727,6 +797,20 @@ stampa(film)
 film.update({"attore": "Leonardo"})
 
 stampa(film)
+
+# 📝 CORREZIONE MENTOR — Esercizio 1:
+# ✅ Buona idea creare una funzione riutilizzabile per stampare!
+# ⚠️ La funzione accetta 'dizionario' come parametro ma dentro usa 'film'
+#    direttamente (riga 722: film.items() invece di dizionario.items()).
+#    Funziona perché film esiste, ma se passi un altro dizionario non funziona.
+# ⚠️ "anno" è scritto come "2019" (stringa) — dovrebbe essere un numero 2019.
+#    (Pattern #5 — tipi nei dizionari)
+# ⚠️ Manca la chiave "voto" — la consegna diceva "voto (da 1 a 10)".
+#    (Pattern #6 — consegna incompleta)
+# ⚠️ .title() su anno (numero come stringa) funziona ma non ha senso.
+#    Se anno fosse un int (come dovrebbe), .title() crasherebbe.
+# ⚠️ La chiave è "attore" ma la consegna diceva "attore_principale".
+# ✅ Uso di .update() corretto.
 
 
 # ESERCIZIO 2 (Medio):
@@ -773,6 +857,18 @@ conta_totale(prodotti)
 trova_max(prodotti)
 raggruppa_per_categoria(prodotti)
 
+# 📝 CORREZIONE MENTOR — Esercizio 2:
+# ✅ Punto a) manca! Non hai stampato i prodotti di categoria "Elettronica".
+#    (Pattern #6 — consegna incompleta)
+# ✅ Punto b) conta_totale: Logica perfetta! sum() con generator expression.
+# ✅ Punto c) trova_max: max() con lambda — perfetto!
+# ✅ Punto d) raggruppa_per_categoria: ECCELLENTE! Hai usato .setdefault()
+#    con lista vuota + .append() — è la soluzione più elegante.
+#    Questo è esattamente il pattern dell'esercizio 7 (colloquio).
+# ⚠️ return print(...): ricorda che print() restituisce None. Se vuoi
+#    restituire il valore E stamparlo, separa le due operazioni.
+#    Il concetto funzionale è giusto, ma il return è inutile.
+
 
 # ESERCIZIO 3 (Medio — Dict Comprehension):
 # Dato il dizionario:
@@ -807,7 +903,17 @@ for nome, voto in sorted(voti_studenti.items(), key=lambda x: x[1], reverse=True
 
 print(f"{giudizi_studenti}")
 
-
+# 📝 CORREZIONE MENTOR — Esercizio 3:
+# ✅ Punto a) dict comprehension: PERFETTO! Sintassi corretta al primo
+#    tentativo. Dopo il mini-esercizio 5 dove avevi usato il for classico,
+#    qui hai usato la dict comprehension — GRANDE MIGLIORAMENTO!
+# ✅ Punto b) funzione giudizio(): Logica corretta, if a cascata ben fatti.
+#    L'ultimo if (voto < 60) potrebbe essere solo "return" senza condizione
+#    (se non è >=60 è per forza <60), ma funziona ugualmente.
+# ⚠️ Hai usato .update() dentro un for — funziona ma è più verboso.
+#    Potevi usare dict comprehension anche qui:
+#    giudizi = {n: giudizio(v) for n, v in voti_studenti.items()}
+# ✅ Il sorted con reverse=True non era richiesto ma mostra iniziativa.
 
 
 
@@ -842,6 +948,20 @@ print("\n=== Esercizio 4===\n")
 print(f"{conta_parole(testo_di_prova)}")
 print(f"{conta_parole(testo_di_prova_2)}")
 
+# 📝 CORREZIONE MENTOR — Esercizio 4 (🎯 COLLOQUIO — Conta Parole):
+# ✅ ECCELLENTE! Risolto perfettamente al primo tentativo.
+# ✅ .lower().split() — corretto per normalizzare e dividere
+# ✅ .get(parola, 0) + 1 — il pattern perfetto per contare frequenze!
+#    Questo è esattamente quello che serviva nel quiz di verifica D8
+#    (dove avevi confuso .get() con .items()). Qui lo usi correttamente.
+# ✅ Testato con stringa vuota — buona pratica difensiva.
+# ⚠️ Manca la docstring — la consegna diceva "La funzione deve avere
+#    una docstring". (Pattern #6)
+# ⚠️ Il nome della funzione e della variabile interna sono uguali
+#    (conta_parole). Funziona in Python perché la variabile locale
+#    "ombreggia" la funzione, ma è confuso. Meglio usare "conteggio"
+#    per la variabile interna.
+# ✅ Da colloquio: questa soluzione passerebbe. Bravo!
 
 
 # ESERCIZIO 5 (Medio — Lambda con Dizionari — Rinforzo):
@@ -885,6 +1005,22 @@ print("\n=== Esercizio 5===\n")
 for key, value in anno_crescente:
     print(f"#{key}: {value['titolo']}")
 
+# 📝 CORREZIONE MENTOR — Esercizio 5:
+# ✅ a) sorted per voto: Corretto! Ma manca reverse=True — la consegna
+#    chiedeva "decrescente (i migliori prima)". Senza reverse, i peggiori
+#    sono in cima. (Pattern #6 — consegna incompleta)
+# ✅ b) filter dal 2010: Perfetto! filter + lambda + list() — tutto giusto.
+# ⚠️ c) map per stringhe: Errore di sintassi! Hai doppi apici dentro
+#    doppi apici nell'f-string: a.get("voto"...) dentro f"...".
+#    Usa apici singoli: a.get('voto', 'nessun voto')
+#    (Pattern ricorrente — f-string con doppi apici annidati)
+#    Inoltre .get() non serviva: "voto" esiste in tutti i film.
+# ✅ d) min per film più vecchio: Perfetto! min() + lambda.
+# ✅ e) enumerate con anno crescente: Corretto e ben fatto!
+#    Nota: enumerate() restituisce (indice, elemento), e tu usi
+#    key/value — funziona ma "indice, film" sarebbe più chiaro.
+# ⚠️ Hai commentato con # i print dei punti a-d — li hai fatti e poi
+#    commentati? Se sì, OK. Se non li hai stampati, la consegna non è completa.
 
 
 # ESERCIZIO 6 (Medio — enumerate + dizionari):
@@ -921,7 +1057,14 @@ print("\n=== Esercizio 6===\n")
 for key, (k, value) in intentario_numerato:
     print(f"#{key} => {k}: {value}")
 
-
+# 📝 CORREZIONE MENTOR — Esercizio 6:
+# ✅ Punto a) enumerate + .items(): PERFETTO! Unpacking (key, (k, value))
+#    corretto — ormai questo pattern è consolidato!
+# ❌ Punto b) MANCA: scorta bassa (<10 pezzi) con enumerate.
+#    (Pattern #6 — consegna incompleta)
+# ❌ Punto c) MANCA: dict comprehension per prodotti > 15 pezzi.
+#    (Pattern #6 + #13 — dict comprehension evitata)
+# ⚠️ Typo: "intentario_numerato" — manca la 'v' (inventario).
 
 
 
@@ -948,7 +1091,43 @@ for key, (k, value) in intentario_numerato:
 # Testa con i prodotti dell'esercizio 2 raggruppati per "categoria".
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+lista_dizionari = [
+    {"nome": "Marco", "citta": "Milano"},
+    {"nome": "Laura", "citta": "Roma"},
+    {"nome": "Giulia", "citta": "Milano"}
+]
+
+def raggruppa_per(lista_dizionari, chiave):
+    """Prende una lista di dizionari e il nome di una chiave e
+       Restituisce un dizionario dove ogni valore unico della chiave
+       diventa una chiave del risultato, e il valore è la lista degli
+       elementi originali che avevano quel valore"""
+    lista_nuova= {}   
+    for l in lista_dizionari:
+        valore_chiave = l[chiave]
+        if valore_chiave not in lista_nuova:
+            lista_nuova[valore_chiave] = []
+        lista_nuova[valore_chiave].append(l['nome'])
+    return lista_nuova
+
+print("\n=== Esercizio 7===\n")
+print(f"{raggruppa_per(lista_dizionari, "citta")}")
+
+# 📝 CORREZIONE MENTOR — Esercizio 7 (🎯 COLLOQUIO — Raggruppare per Chiave):
+# ✅ Docstring: Presente e chiara — bravo!
+# ✅ Logica: not in + lista vuota + append — pattern corretto!
+# ⚠️ Riga 967: appendi l['nome'] invece di l (l'intero dizionario).
+#    La consegna diceva che il valore deve essere "la lista degli elementi
+#    originali", non solo i nomi. Doveva essere:
+#    lista_nuova[valore_chiave].append(l)  ← l'intero dizionario
+#    Così il risultato sarebbe: {"Milano": [{"nome":"Marco",...}, ...]}
+# ⚠️ F-string con doppi apici annidati alla riga di print — stesso
+#    errore del cap.03. In questo contesto non crasha perché Python 3.12+
+#    li gestisce, ma è una pratica fragile.
+# ⚠️ Non hai testato con i prodotti dell'esercizio 2 come richiesto.
+#    (Pattern #6)
+# ✅ Da colloquio: la struttura passa, ma l'errore sull'append parziale
+#    (solo nome vs dizionario intero) verrebbe notato.
 
 
 # ESERCIZIO 8 (Sfida — Simula API):
@@ -965,7 +1144,96 @@ for key, (k, value) in intentario_numerato:
 # Puoi creare una lista di 3-4 ordini di esempio per testarla.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+
+ordini = [
+    {
+        "id": "ORD-2024-001",
+        "data": "2024-01-15",
+        "cliente": {
+            "nome": "Laura Bianchi",
+            "email": "laura@email.com",
+            "indirizzo": {
+                "via": "Via Roma 42",
+                "citta": "Milano",
+                "cap": "20121"
+            }
+        },
+        "prodotti": [
+            {"nome": "Cuffie Bluetooth", "prezzo": 49.99, "quantita": 1},
+            {"nome": "Mouse Wireless", "prezzo": 29.99, "quantita": 2}
+        ],
+    },
+    
+    {
+        "id": "ORD-2024-002",
+        "data": "2024-02-03",
+        "cliente": {
+            "nome": "Marco Verdi",
+            "email": "marco.verdi@email.com",
+            "indirizzo": {
+                "via": "Corso Garibaldi 18",
+                "citta": "Roma",
+                "cap": "00184"
+            }
+        },
+        "prodotti": [
+            {"nome": "Tastiera Meccanica", "prezzo": 89.99, "quantita": 1},
+            {"nome": "Webcam HD", "prezzo": 59.99, "quantita": 1},
+            {"nome": "Hub USB-C", "prezzo": 34.99, "quantita": 1}
+        ],
+    },
+    
+    {
+        "id": "ORD-2024-003",
+        "data": "2024-03-22",
+        "cliente": {
+            "nome": "Anna Russo",
+            "email": "anna.russo@email.com",
+            "indirizzo": {
+                "via": "Via Dante 7",
+                "citta": "Roma",
+                "cap": "80134"
+            }
+        },
+        "prodotti": [
+            {"nome": "Monitor 27 pollici", "prezzo": 299.99, "quantita": 1},
+            {"nome": "Cavo HDMI", "prezzo": 12.99, "quantita": 2}
+        ],
+    }
+]
+def processa_ordini(ordini):
+    totale_ordini = len(ordini)
+    totale_fatturato = round(sum(sum(x['prezzo']*x['quantita'] for x in t['prodotti']) for t in ordini),2)
+    contatore = {}
+    for c in ordini:
+        valore_chiave = c['cliente']['indirizzo']['citta']
+        if valore_chiave not in contatore:
+            contatore[valore_chiave] = 0
+        contatore[valore_chiave] += 1
+    citta_max_ordini = max(contatore.items(), key=lambda x: x[1])   
+    
+    print(f"Numero ordini: {totale_ordini}\nTotale fatturato: {totale_fatturato} €\nCitta' con piu' ordini: {citta_max_ordini[0].upper()} => {citta_max_ordini[1]}")
+
+print("\n=== Esercizio 8===\n")
+processa_ordini(ordini)
+
+# 📝 CORREZIONE MENTOR — Esercizio 8 (Simula API):
+# ✅ Struttura funzione: def con corpo ben organizzato.
+# ✅ len(ordini): Corretto.
+# ✅ sum() annidato con generator expression: Corretto dopo la correzione
+#    (aggiunto * x['quantita']).
+# ✅ Contatore città con not in + inizializzazione a 0: Perfetto!
+#    (Corretto dopo feedback: era "not in ordini" → "not in contatore")
+# ✅ max() con .items() e lambda x: x[1]: Corretto!
+# ✅ .upper() su citta_max_ordini[0]: Accesso corretto alla tupla.
+# ⚠️ Manca la docstring — la consegna la chiedeva.
+# ⚠️ Manca "prodotto_piu_venduto" — la consegna chiedeva anche quello.
+#    (Pattern #6 — consegna incompleta)
+# ⚠️ print() senza return: OK per stampare, ma la consegna diceva
+#    "restituisce un dizionario report". Sarebbe meglio return {...}
+#    e stampare fuori dalla funzione.
+# ✅ Nel complesso: buona funzione, dimostra navigazione in strutture
+#    annidate, conteggio con dizionari, e max() con lambda. Bravo!
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
