@@ -380,7 +380,8 @@ print(f"\nCaratteri totali: {len(contenuto)}")
 #    (ricorda: il 30 è escluso, quindi ottieni 20 caratteri)
 # 2) Quanti caratteri ottieni con contenuto[0:10]? (Conta: è 10 o 11?)
 # Scrivi qui sotto:
-# ...
+porzione = contenuto[10:31]
+# la risposta è 10
 
 
 # --- MINI-ESERCIZIO 1 — Prova subito! ---
@@ -389,7 +390,12 @@ print(f"\nCaratteri totali: {len(contenuto)}")
 #    di righe, poi slicing [:3])
 # 2) Stampa l'ultima riga del file (suggerimento: indice [-1])
 # Scrivi qui sotto:
-# ...
+with open(percorso_csv, "r", encoding="utf-8") as file:
+    prova = file.readlines()
+print("\nMini Esercizio 1 , Open e Read\n")
+for s in prova[:3]:
+    print(f"{s}")
+print(f"\n{prova[-1]}")
 
 
 # ==========================================================================
@@ -496,14 +502,18 @@ print(f"\nCaratteri totali: {len(contenuto)}")
 # 1) Scrivi un for che stampa le prime 5 righe del file con il numero di riga,
 #    usando enumerate(). Esempio output: "Riga 1: id_ordine,data,prodotto,..."
 # Scrivi qui sotto:
-# ...
-
-print("\n=== Leggere riga per riga ===")
 with open(percorso_csv, "r", encoding="utf-8") as file:
     for numero_riga, riga in enumerate(file):
         riga = riga.strip()
         if numero_riga < 5:
-            print(f"Riga {numero_riga}: {riga}")
+            print(f"Riga: {numero_riga} {riga}")
+
+# print("\n=== Leggere riga per riga ===")
+# with open(percorso_csv, "r", encoding="utf-8") as file:
+#     for numero_riga, riga in enumerate(file):
+#         riga = riga.strip()
+#         if numero_riga < 5:
+#             print(f"Riga {numero_riga}: {riga}")
 
 # Analizziamo il codice qui sopra riga per riga:
 #
@@ -529,7 +539,17 @@ with open(percorso_csv, "r", encoding="utf-8") as file:
 #    (header incluso). Stampa: "Il file ha X righe (1 header + Y dati)"
 # 2) Stampa solo le righe che contengono "Milano" (suggerimento: "Milano" in riga)
 # Scrivi qui sotto:
-# ...
+with open(percorso_csv, "r", encoding="utf-8") as file:
+    counter = 0
+    milano = []
+    for key, value in enumerate(file, 1):
+        if "Milano" in value:
+            milano.append(value.strip())
+        counter = key
+    print("\nMini esercizio 2\n")
+    print(f"Il file ha {counter} Righe, di cui 1 Header e {counter -1} dati\n")
+    print(f"Le righe che contengono milano sono {milano}")
+
 
 
 # ==========================================================================
