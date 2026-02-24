@@ -937,6 +937,75 @@ for chiave, dato in enumerate(dati[:1]):
 #   for chiave, valore in dizionario.items():
 #   # .items() → "dammi tutte le coppie una alla volta"
 
+# --- ESERCIZI EXTRA — .get() vs .items() ---
+#
+# ESERCIZIO 1 (base) — Conteggio semplice con .get()
+# Obiettivo: contare quanti ordini ci sono per città usando dati_csv.
+# Richiesta:
+# 1) Crea un dizionario vuoto: conteggio_citta = {}
+# 2) Cicla su dati_csv e aggiorna il conteggio con:
+#    conteggio_citta[citta] = conteggio_citta.get(citta, 0) + 1
+# 3) Stampa il dizionario finale.
+# Nota: qui usi .get() per aggiornare, NON .items().
+#
+# Scrivi qui sotto:
+conteggio_citta = {}
+for k in dati_csv:
+    conteggio_citta[k['citta']] = conteggio_citta.get(k['citta'], 0) + 1
+print("\nEsercizi extra .get() .items()\n")
+print(f"{conteggio_citta}")
+    
+    
+#
+# ESERCIZIO 2 (intermedio) — Iterazione con .items()
+# Obiettivo: stampare il conteggio in formato leggibile.
+# Richiesta:
+# 1) Usa il dizionario conteggio_citta dell'esercizio 1.
+# 2) Itera con for citta, totale in conteggio_citta.items():
+# 3) Stampa righe tipo: "Milano: 7 ordini"
+# 4) Alla fine stampa anche il totale ordini sommando i valori del dizionario.
+# Nota: qui .items() serve per leggere tutte le coppie chiave/valore.
+#
+# Scrivi qui sotto:
+print("\nRiepilogativi ordini\n")
+counter = 0
+for citta, totale in conteggio_citta.items(): 
+    counter += totale 
+    print(f"{citta}: {totale} ordini")
+print(f"\nTotale ordini: {counter}")    
+#
+# ESERCIZIO 3 (avanzato) — Doppio conteggio (citta + metodo pagamento)
+# Obiettivo: creare una struttura annidata con .get().
+# Richiesta:
+# 1) Crea un dizionario vuoto: report = {}
+# 2) Per ogni record in dati_csv, estrai:
+#    - citta = record["citta"]
+#    - metodo = record["metodo_pagamento"]
+# 3) Aggiorna report cosi:
+#    report[citta][metodo] = numero di ordini
+# 4) Stampa il risultato con due cicli .items(), ad esempio:
+#    Milano:
+#      - Carta di Credito: 4
+#      - PayPal: 2
+# Nota: userai .get() per creare/incrementare in sicurezza i livelli.
+#
+# Scrivi qui sotto:
+report = {}
+
+print(f"\nEsercizio avanzato\n")
+for riga in dati_csv:
+    citta = riga['citta']
+    metodo = riga['metodo_pagamento']
+    report[citta] = report.get(citta, {})
+    report[citta][metodo] = report[citta].get(metodo, 0) + 1    
+    
+for k, v in report.items():
+    print(f"{k}:\n")
+    for c, s in v.items():
+        print(f" - {c} => {s}")
+    print(f"--------------\n")
+
+
 # --- ATTENZIONE CRITICA: tutti i dati dal CSV sono STRINGHE! ---
 #
 # Quando leggi un CSV (sia a mano che con csv.DictReader), OGNI valore
@@ -1105,8 +1174,12 @@ for cat, tot in sorted(fatturato_cat.items(), key=lambda x: x[1], reverse=True):
 #    stringa nel CSV! Devi convertirlo con float())
 #    Quanti ordini hanno prezzo >= 50?
 # Scrivi qui sotto:
-# ...
-
+counter_metodi = {}
+for record in dati_csv:
+    counter_metodi[record['metodo_pagamento']] = counter_metodi.get(record['metodo_pagamento'], 0) + 1    
+max_metodo = max(counter_metodi.items(), key=lambda v: v[1])
+print("\nMini-esercizio 5\n")
+print(f"{max_metodo[0]} => {max_metodo[1]}")
 
 # ==========================================================================
 # PARTE 6: Scrivere un File CSV — Salvare i Risultati
