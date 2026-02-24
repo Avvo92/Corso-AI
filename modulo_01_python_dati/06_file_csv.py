@@ -718,9 +718,10 @@ for chiave, valore in dati[-1].items():
 # 1) Cosa stampa questo codice? Rispondi PRIMA di eseguirlo:
 #    risultato = [1, 2, 3].append(4)
 #    print(risultato)
-# La tua risposta: ___
+# La tua risposta: NONE
 # Scrivi qui sotto:
-# ...
+risultato = [1, 2, 3]
+risultato.append(4)
 
 
 # --- MINI-ESERCIZIO 3 — Prova subito! ---
@@ -731,7 +732,11 @@ for chiave, valore in dati[-1].items():
 # 3) Stampa i primi 3 record in formato tabella:
 #    "1001 | Cuffie Bluetooth | 49.99 | Milano"
 # Scrivi qui sotto:
-# ...
+print("\nMini-esercizio 3\n")
+print(f"Prodotto: {dati[5]['prodotto']} => Prezzo: {dati[5]['prezzo']} €\n")
+print(f"Numero di colonne: {len(dati[0])}\n")
+for dato in dati[:3]:
+    print(f"{dato['id_ordine']} | {dato['prodotto']} | {dato['prezzo']} | {dato['citta']}")
 
 
 # ==========================================================================
@@ -855,7 +860,22 @@ print(f"Primo record: {dict(dati_csv[0])}")
 # 2) Verifica che il primo record di dati_csv sia identico al primo record
 #    di 'dati' (la versione manuale). Sono uguali? Stampa entrambi.
 # Scrivi qui sotto:
-# ...
+print("\nMini-esercizio 4\n")
+for chiave, dato in enumerate(dati_csv):
+    if chiave < 3:
+        print(f"\nRecord n°{chiave}\n")
+        for k, v in dato.items():
+            print(f"{k} => {v}")
+        print("\n")
+print(f"\nPrimo record di 'dati'\n")
+
+for chiave, dato in enumerate(dati[:1]):
+    if dato == dati_csv[0]:
+        print(f"\nRecord n°{chiave}\n")
+        for k, v in dato.items():
+            print(f"{k} => {v}")
+        print("\n")
+    
 
 
 # ==========================================================================
