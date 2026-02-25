@@ -1292,7 +1292,28 @@ print(f"\nReport salvato in: {percorso_output}")
 # 2) Verifica che il file sia stato creato leggendolo e stampando
 #    il numero di righe
 # Scrivi qui sotto:
-# ...
+mio_percorso_dati = os.path.join(os.path.dirname(__file__), "miei_dati")
+os.makedirs(mio_percorso_dati, exist_ok=True)
+mio_percorso_file = os.path.join(mio_percorso_dati, "ordini_milano.csv")
+with open(mio_percorso_file, "w", encoding="utf-8", newline="") as file:
+    scrittore = csv.writer(file)
+    scrittore.writerow(["metodo_pagamento", "numero_ordini"])
+    conteggio_milano = {}
+    for record in dati_csv:        
+        if record['citta'] == "Milano":
+            metodo = record['metodo_pagamento']
+            quantita = record['quantita']
+            conteggio_milano[metodo] = conteggio_milano.get(metodo, 0) + int(quantita) 
+    totale_ordini = 0          
+    for metodo, numero in conteggio_milano.items():
+        totale_ordini += numero
+        scrittore.writerow([metodo, numero])
+print("\nMini-esercizio 6\n")
+print(f"{conteggio_milano}")
+print(f"Totale ordini Milano: {totale_ordini}")
+    
+    
+
 
 
 # 🔁 RINFORZO MIRATO — Output concreto vs descrizione concettuale
@@ -1306,13 +1327,22 @@ print(f"\nReport salvato in: {percorso_output}")
 #   ❌ "Stampa una sotto-lista dal secondo elemento in poi"
 #   ✅ [2, 3]
 #
-# Prova subito — dai la risposta CONCRETA:
+# Prova subito — formato esplicito:
+# Obiettivo: allenarti a rispondere con l'OUTPUT ESATTO, non con la spiegazione.
+# Input: i 3 snippet print qui sotto.
+# Output atteso: una risposta concreta per ciascun punto (valore preciso).
+# Vincolo: vietato descrivere "cosa fa" in astratto; devi scrivere il risultato.
 # 1) Cosa stampa: print({"a": 1, "b": 2}["a"])
-#    La tua risposta: ___
+#    La tua risposta: 1
 # 2) Cosa stampa: print(len([10, 20, 30, 40]))
-#    La tua risposta: ___
+#    La tua risposta: 4
 # 3) Cosa stampa: print("ciao mondo".split(" "))
-#    La tua risposta: ___
+#    La tua risposta: ["ciao", "mondo"]
+# Checklist:
+# [v] Ho scritto 3 output concreti.
+# [v] Non ho usato frasi descrittive al posto del valore.
+# [v] Ho rispettato parentesi, virgolette e formato lista dove serve.
+# Criterio di valutazione: aderenza alla consegna (precisione output).
 # Scrivi qui sotto:
 # ...
 
@@ -1330,11 +1360,21 @@ print(f"\nReport salvato in: {percorso_output}")
 #   ❌ [n*2 for n in range(10) if x > 3]     ← "x" non esiste!
 #   ✅ [r["citta"] for r in dati_csv if r["prezzo"] == "49.99"]  ← tutto "r"
 #
-# Prova subito:
-# 1) Scrivi una list comprehension che crea una lista con i nomi dei prodotti
-#    dal CSV che costano più di 40€ (ricorda: float() per convertire)
+# Prova subito — formato esplicito:
+# Obiettivo: usare la stessa variabile della comprehension in tutte le parti.
+# Input disponibili: lista `dati_csv`; campi utili `record["prodotto"]`, `record["prezzo"]`.
+# Output atteso: una lista Python con i nomi dei prodotti che hanno prezzo > 40.
+# Vincoli obbligatori:
+# - Usa UNA list comprehension.
+# - Usa float(...) su `record["prezzo"]`.
+# - Usa la stessa variabile sia nella parte sinistra sia nell'if.
+# Checklist:
+# [x] Ho usato list comprehension (non ciclo for classico).
+# [x] Ho convertito il prezzo con float.
+# [x] Ho usato la stessa variabile in tutta la comprehension.
+# Criterio di valutazione: aderenza alla consegna (comprehension corretta + filtro corretto).
 # Scrivi qui sotto:
-# ...
+lista_nomi = [record['prodotto'] for record in dati_csv if float(record['prezzo']) > 40]
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
@@ -1348,13 +1388,13 @@ print(f"\nReport salvato in: {percorso_output}")
 # DOMANDA 1 — Vero o Falso?
 # "with open('file.csv', 'r') as f: apre il file e lo chiude automaticamente
 #  quando il blocco with finisce"
-# La tua risposta (V/F): ___
+# La tua risposta (V/F): V
 
 # DOMANDA 2 — Prevedi l'output:
 # Cosa stampa questo codice?
 #   riga = "  ciao mondo  \n"
 #   print(riga.strip())
-# La tua risposta: ___
+# La tua risposta:"ciao mondo"
 
 # DOMANDA 3 — Completa il codice:
 # Voglio leggere un CSV e trasformare ogni riga in un dizionario:
@@ -1362,7 +1402,7 @@ print(f"\nReport salvato in: {percorso_output}")
 #       lettore = csv.___(f)
 #       for record in lettore:
 #           print(record)
-# Riempi lo spazio: ___
+# Riempi lo spazio: DictReader
 
 # DOMANDA 4 — Trova l'errore:
 #   with open('dati.csv', 'r') as f:
@@ -1371,52 +1411,202 @@ print(f"\nReport salvato in: {percorso_output}")
 #           valori = riga.split(",")
 #           prezzo = valori[2] * 2   # voglio raddoppiare il prezzo
 # Qual è il problema?
-# La tua risposta: ___
+# La tua risposta: valore  va converito in number, con int o float : es. valori int(valori[2])
 
 # DOMANDA 5 — Prevedi l'output:
 #   header = "nome,prezzo,citta"
 #   colonne = header.strip().split(",")
 #   print(len(colonne))
-# La tua risposta: ___
+# La tua risposta: 3
 
 # DOMANDA 6 — Vero o Falso?
 # "I dati letti da un file CSV con csv.DictReader sono già del tipo
 #  giusto: i numeri sono int/float e le stringhe sono str"
-# La tua risposta (V/F): ___
+# La tua risposta (V/F): F
 
 # DOMANDA 7 — Definizione:
 # Cosa fa il metodo .split(",") applicato a una stringa?
 # A cosa corrisponde in PHP?
-# La tua risposta: ___
+# La tua risposta: trasforma una stringa in una lista usando come separatore il parametro scelto, php non ricordo
 
 # DOMANDA 8 — 💬 Spiega con parole tue (Tecnica Feynman):
 # Spiega a un collega che non sa Python come funziona il parsing manuale
 # di un file CSV: dall'apertura del file fino ad avere una lista di
 # dizionari. Non usare codice, solo parole.
-# La tua spiegazione: ___
+# La tua spiegazione: il parsing è quella procedura che serve per trasformare una stringa di codice in un formato utilizzabile per operare con i dati che elle contiene. Lo si fa manualmente quando, invece di utilizzare metodi e funzioni pre impostare (come csv.DictRead(f)) si opera manualmente con lo .strip() e lo .split()
 
 
+# 🔁 RINFORZO MIRATO — Parsing CSV: manuale vs DictReader (ripasso operativo)
+# Questo ripasso chiarisce NON solo "cos'e il parsing", ma "quali passi
+# eseguo uno per uno" fino ad avere una lista di dizionari utilizzabile.
+#
+# OBIETTIVO DEL PARSING:
+# trasformare un file CSV (testo) in una struttura dati Python su cui
+# puoi filtrare, contare, ordinare, fare somme.
+#
+# VERSIONE 1 — PARSING MANUALE (controllo totale, piu codice)
+# Pipeline operativa:
+# 1) Apri il file in lettura con with open(...)
+# 2) Leggi tutte le righe (es. readlines())
+# 3) Prendi la prima riga come header
+# 4) Fai strip().split(",") sull'header per ottenere i nomi colonne
+# 5) Per ogni riga dati:
+#    - strip().split(",") per ottenere i valori
+#    - crea un dizionario colonna->valore
+#    - append del dizionario in una lista finale
+# 6) A fine ciclo hai: lista di dizionari (es. [{"id_ordine": "...", ...}, ...])
+#
+# VERSIONE 2 — PARSING CON csv.DictReader (consigliata, piu robusta)
+# Pipeline operativa:
+# 1) Apri il file in lettura con with open(...)
+# 2) Crea lettore = csv.DictReader(file)
+# 3) Itera il lettore: ogni riga e gia un dizionario
+# 4) append in lista (o usa subito i record nel ciclo)
+# 5) A fine ciclo hai la stessa struttura: lista di dizionari
+#
+# DIFFERENZA CHIAVE:
+# - Manuale: decidi tu ogni passo (utile per capire il meccanismo).
+# - DictReader: stesso risultato, meno codice e meno errori su casi reali.
+#
+# ATTENZIONE COMUNE (vale per entrambe):
+# - I valori arrivano come STRINGHE -> per fare calcoli devi convertire:
+#   float(record["prezzo"]), int(record["quantita"])
+#
+# CHECK RAPIDO (prima di continuare):
+# - Input parsing: file CSV di testo
+# - Output parsing: LISTA di DIZIONARI
+# - Chiavi dizionario: nomi colonne
+# - Valori: stringhe (conversione numerica quando serve)
+#
+# --- MINI-ESERCIZI CONSOLIDAMENTO (Parsing) ---
+# Obiettivo: verificare che tu sappia descrivere e applicare entrambe le pipeline.
+#
+# ESERCIZIO A (manuale) — Output operativo:
+# Input disponibili:
+# - file `dati/vendite_ecommerce.csv`
+# Output atteso:
+# 1) crea `dati_manuale` (lista di dizionari) con parsing manuale
+# 2) stampa:
+#    - numero record totali
+#    - chiavi del primo record
+#    - primo record completo
+# Vincoli obbligatori:
+# - usa `readlines()`, `strip()`, `split(",")`
+# - non usare `csv.DictReader` in questo esercizio
+# Checklist:
+# [x] Ho usato parsing manuale completo.
+# [x] `dati_manuale` e una lista di dizionari.
+# [x] Ho stampato i 3 output richiesti.
+# Criterio di valutazione: aderenza alla consegna + correttezza struttura dati.
+#
+# ESERCIZIO B (DictReader) — Confronto tra metodi:
+# Input disponibili:
+# - file `dati/vendite_ecommerce.csv`
+# - risultato dell'esercizio A (`dati_manuale`)
+# Output atteso:
+# 1) crea `dati_auto` usando `csv.DictReader`
+# 2) confronta i primi record:
+#    - `dict(dati_auto[0]) == dati_manuale[0]`
+# 3) stampa il risultato del confronto (True/False) e una frase finale:
+#    "Stessa struttura, implementazione diversa."
+# Vincoli obbligatori:
+# - usa `csv.DictReader`
+# - non rifare parsing manuale in questo esercizio
+# Checklist:
+# [x] Ho creato `dati_auto` con DictReader.
+# [x] Ho confrontato i primi record nel modo richiesto.
+# [x] Ho stampato esito + frase finale.
+# Criterio di valutazione: aderenza alla consegna + comprensione differenze.
+#
+# Scrivi qui sotto:
+
+percorso_cartella = os.path.join(os.path.dirname(__file__), "dati")
+percorso_file = os.path.join(percorso_cartella, "vendite_ecommerce.csv")
+
+#Parsing manuale
+with open(percorso_file, "r", encoding="utf-8") as file:
+    lettore = file.readlines()
+    header = lettore[0].strip().split(',')
+    dati_manuale = []
+    for row in lettore[1:]:
+        if row.strip():
+            values = row.strip().split(",")
+            dictionary = {}
+            for i in range(len(header)):
+                dictionary[header[i]] = values[i]
+            dati_manuale.append(dictionary)
+        
+print(f"\nRinforzo sul parsing\n")
+print(f"Chiavi del primo record\n")           
+for k, v in dati_manuale[0].items():
+    print(f" {k},") 
+print(f"\nNumero di record: {len(dati_manuale)}\n")
+print(f"Primo record completo:\n{dati_manuale[0]}\n")
+        
+#Parsing automatico
+with open(percorso_file, "r", encoding="utf-8") as file: 
+    lettore = csv.DictReader(file)
+    dati_auto = []
+    for r in lettore:
+        dati_auto.append(r)
+        
+confronto = dati_manuale[0] == dati_auto[0]
+print(f"Il confronto è {'corretto' if confronto else 'sbagliato'}")
+    
+    
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  ESERCIZI — Ora Prova Tu!                                             ║
 # ╚═════════════════════════════════════════════════════════════════════════╝
 
 # --- ESERCIZIO 1 (Livello 1 — Leggi e Modifica): ---
-# Usando la lista 'dati_csv' già caricata:
-# a) Stampa tutti gli ordini pagati con "PayPal"
-# b) Conta quanti ordini ci sono per ogni metodo di pagamento
-#    (usa il pattern contatore con .get())
-# c) Stampa il risultato ordinato per conteggio decrescente
-#    (usa sorted() con lambda e reverse=True)
-#
+# Obiettivo: analizzare i metodi di pagamento partendo da `dati_csv`.
+# Input disponibili:
+# - `dati_csv` (lista di dizionari letta dal CSV)
+# - campi utili: `record["metodo_pagamento"]`, `record["id_ordine"]`, `record["citta"]`
+# Output atteso:
+# 1) stampa dei record pagati con PayPal
+# 2) dizionario conteggi per metodo pagamento
+# 3) classifica ordinata per conteggio decrescente (es. "PayPal: 9")
+# Vincoli obbligatori:
+# - Usa il pattern contatore con `.get()`.
+# - Per il punto 3 usa `sorted(..., key=..., reverse=True)`.
+# - Non usare librerie esterne.
+# Checklist:
+# [ ] Ho filtrato correttamente i record PayPal.
+# [ ] Ho usato `.get()` per aggiornare i conteggi.
+# [ ] Ho ordinato in ordine decrescente.
+# [ ] L'output e leggibile (una riga per elemento).
+# Criterio di valutazione: aderenza alla consegna.
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 1\n")
+print(f"Prodotti pagati con PayPal\n")
+for record in dati_csv:
+    if record['metodo_pagamento'] == "PayPal":
+        print(f"{record['id_ordine']}, {record['prodotto']}")
+
+
+conteggio_metodi= {}      
+for record in dati_csv:
+    conteggio_metodi[record['metodo_pagamento']] = conteggio_metodi.get(record['metodo_pagamento'], 0) + 1
+conteggio_metodi_ordinato = sorted(conteggio_metodi.items(), key=lambda c: c[1], reverse=True)
+print("\nNumero ordini per Metodo\n")
+for i, (k, v) in enumerate(conteggio_metodi_ordinato, 1):
+    print(f"#{i}: {k} => {v}")
+    
 
 
 # --- ESERCIZIO 2 (Livello 2 — Scrivi da Zero): ---
-# Scrivi una funzione 'cerca_ordini(dati, **filtri)' che:
-#   1. Prende una lista di dizionari e dei filtri con **kwargs
-#   2. Restituisce tutti i record che corrispondono a TUTTI i filtri
-#   3. La funzione deve avere una docstring
+# Obiettivo: creare una funzione riusabile per filtrare ordini con criteri dinamici.
+# Input disponibili:
+# - parametro `dati`: lista di dizionari (es. `dati_csv`)
+# - parametro `**filtri`: chiavi/valori da rispettare (es. citta="Milano")
+# Output atteso:
+# - una lista con soli record che rispettano TUTTI i filtri richiesti
+# Vincoli obbligatori:
+# - Firma esatta: `cerca_ordini(dati, **filtri)`.
+# - Deve funzionare con 1 o piu filtri contemporaneamente.
+# - Deve avere docstring.
+# - Non modificare `dati` originale.
 #
 # RIPASSO — **kwargs: ricordi? Come lo spread operator {...} in JS.
 # **filtri raccoglie tutti i parametri con nome in un dizionario:
@@ -1424,10 +1614,16 @@ print(f"\nReport salvato in: {percorso_output}")
 #   cerca_ordini(dati, citta="Roma", categoria="Libri")
 #     → filtri = {"citta": "Roma", "categoria": "Libri"}
 #
-# Testa con:
+# Test minimo obbligatorio:
 #   cerca_ordini(dati_csv, citta="Milano")
 #   cerca_ordini(dati_csv, categoria="Elettronica", citta="Roma")
 #
+# Checklist:
+# [ ] La funzione restituisce una lista.
+# [ ] Con 2 filtri applica AND logico (entrambi veri).
+# [ ] Ho scritto la docstring.
+# [ ] Non ho hardcodato nomi campi dentro la funzione.
+# Criterio di valutazione: aderenza alla consegna + correttezza filtro multi-criterio.
 # Scrivi il tuo codice qui sotto:
 # ...
 
@@ -1436,32 +1632,55 @@ print(f"\nReport salvato in: {percorso_output}")
 # Questo tipo di esercizio è molto comune nei colloqui per posizioni
 # che richiedono analisi dati: "dato un CSV, trovami queste informazioni".
 #
-# Leggi il file 'case.csv' (nella cartella dati/) e:
-# a) Calcola il prezzo medio delle case per ogni città
-#    (suggerimento: ti servono due dizionari — somma_prezzi e conteggio)
-# b) Trova la casa più costosa e stampa TUTTE le sue caratteristiche
-#    (suggerimento: max() con lambda su float(casa["prezzo_euro"]))
-# c) Stampa le case ordinate per metri quadri crescenti in formato:
-#    "45mq → 125.000€ (Milano)"
-#    (suggerimento: sorted() con lambda su int(casa["metri_quadri"]))
-# La funzione deve avere una docstring.
+# Obiettivo: fare una mini analisi immobiliare completa da CSV.
+# Input disponibili:
+# - file `dati/case.csv`
+# - campi attesi: `citta`, `prezzo_euro`, `metri_quadri` (+ altri)
+# Output atteso:
+# a) prezzo medio per citta
+# b) casa piu costosa con tutte le caratteristiche
+# c) elenco ordinato per metri quadri crescenti in formato:
+#    "45mq -> 125000EUR (Milano)"
+# Vincoli obbligatori:
+# - Usa `csv.DictReader` per leggere.
+# - Converte tipi: `prezzo_euro` a float, `metri_quadri` a int.
+# - Usa `max(..., key=...)` per la casa piu costosa.
+# - Usa `sorted(..., key=...)` per l'ordinamento finale.
+# - La funzione principale deve avere docstring.
+# Checklist:
+# [ ] Ho letto il CSV senza parsing manuale.
+# [ ] Ho gestito conversioni numeriche correttamente.
+# [ ] Ho stampato il formato richiesto per il punto c.
+# [ ] Ho incluso docstring.
+# Criterio di valutazione: aderenza alla consegna + chiarezza output.
 #
 # Scrivi il tuo codice qui sotto:
 # ...
 
 
 # --- ESERCIZIO 4 (Livello 3 — Web Bridge): ---
-# Scrivi una funzione 'csv_to_html_table(percorso_file)' che:
-#   - Legge un file CSV
-#   - Genera una stringa HTML con una <table> completa
-#   - Include <thead> con i nomi colonne e <tbody> con i dati
-#   - La funzione deve avere una docstring
-# Questo è un vero "ponte" tra il mondo dei dati e il web!
-# In Laravel, faresti una view Blade con un @foreach. Qui generi
-# l'HTML direttamente in Python — utile per report email o PDF.
-#
-# Testa con: csv_to_html_table(percorso_csv)
-# Stampa i primi 500 caratteri del risultato.
+# Obiettivo: convertire un CSV in una tabella HTML pronta per web/report.
+# Input disponibili:
+# - parametro `percorso_file` (path a un CSV valido)
+# Output atteso:
+# - stringa HTML completa con:
+#   - `<table>`
+#   - `<thead>` con intestazioni
+#   - `<tbody>` con tutte le righe
+# Vincoli obbligatori:
+# - Firma esatta: `csv_to_html_table(percorso_file)`.
+# - La funzione deve avere docstring.
+# - Usa i dati del CSV, non hardcodare colonne o righe.
+# - Restituisce una stringa (non stampa direttamente l'intera tabella).
+# Test minimo obbligatorio:
+# - chiama `csv_to_html_table(percorso_csv)`
+# - stampa i primi 500 caratteri del risultato
+# Checklist:
+# [ ] Presente `<table>`, `<thead>`, `<tbody>`.
+# [ ] Colonne lette dal file reale.
+# [ ] Funzione con docstring.
+# [ ] Output restituito come stringa.
+# Criterio di valutazione: aderenza alla consegna + correttezza HTML.
 #
 # Scrivi il tuo codice qui sotto:
 # ...
@@ -1493,12 +1712,23 @@ print(f"\nReport salvato in: {percorso_output}")
 #       tot = tot + float(x["prezzo"]) * float(x["quantita"])
 #   print(tot)
 #
-# Requisiti del refactoring:
+# Obiettivo: ottenere stesso risultato con codice piu pulito e moderno.
+# Input disponibili:
+# - variabile `percorso_csv` e file CSV degli ordini
+# Output atteso:
+# - stampa del totale fatturato come numero corretto
+# Vincoli obbligatori (refactoring):
 # 1. Usa 'with open(...)' invece di open() + close()
 # 2. Usa csv.DictReader invece del parsing manuale
 # 3. Usa sum() con generator expression invece del ciclo per il totale
 # 4. Usa nomi di variabili descrittivi (non f, h, v, d, j, x)
 # 5. Usa for invece di while dove possibile
+# Checklist:
+# [ ] Nessun `while` rimasto per questo task.
+# [ ] Nessun parsing manuale con split.
+# [ ] Totale calcolato con `sum(...)`.
+# [ ] Nomi variabili chiari e leggibili.
+# Criterio di valutazione: aderenza alla consegna + qualita del refactoring.
 #
 # Scrivi il tuo codice qui sotto:
 # ...
@@ -1508,7 +1738,14 @@ print(f"\nReport salvato in: {percorso_output}")
 # Questo esercizio mescola concetti del cap. 06 (CSV) con cap. 04 (liste)
 # e cap. 05 (dizionari).
 #
-# Usando dati_csv:
+# Obiettivo: combinare liste + dizionari + CSV nello stesso flusso logico.
+# Input disponibili: `dati_csv` con campi `prodotto` e `prezzo`.
+# Output atteso:
+# - lista prodotti unici
+# - dizionario prezzi medi per prodotto
+# - classifica decrescente per prezzo medio
+# - stampa numerata da 1 nel formato richiesto
+# Vincoli obbligatori:
 # a) Crea una LISTA con solo i nomi dei prodotti unici (senza duplicati)
 #    usando il pattern "if not in" dal cap. 04
 # b) Crea un DIZIONARIO che mappa ogni prodotto al suo prezzo medio
@@ -1516,6 +1753,12 @@ print(f"\nReport salvato in: {percorso_output}")
 # c) Ordina il dizionario per prezzo medio decrescente con sorted() + lambda
 # d) Stampa il risultato con enumerate numerato da 1:
 #    "1. Cuffie Bluetooth: prezzo medio 49.99€"
+# Checklist:
+# [ ] Lista unici costruita senza set().
+# [ ] Prezzo medio calcolato correttamente (somma/conteggio).
+# [ ] Ordinamento decrescente corretto.
+# [ ] Stampa finale numerata con enumerate(..., start=1).
+# Criterio di valutazione: aderenza alla consegna + integrazione corretta dei capitoli.
 #
 # Scrivi il tuo codice qui sotto:
 # ...
@@ -1524,12 +1767,23 @@ print(f"\nReport salvato in: {percorso_output}")
 # --- ESERCIZIO 7 — 🧠 [RETRIEVAL]: ---
 # Senza guardare il codice del capitolo 05, riscrivi da zero la funzione
 # 'conta_parole(testo)' dell'esercizio 4 del cap. 05.
-# Requisiti (gli stessi dell'originale):
+# Obiettivo: recuperare dalla memoria un pattern fondamentale su dizionari.
+# Input disponibili:
+# - una stringa `testo`
+# Output atteso:
+# - dizionario `{parola: frequenza}` con parole in minuscolo
+# Vincoli obbligatori (gli stessi dell'originale):
 #   1. Prende una stringa di testo
 #   2. Restituisce un dizionario con ogni parola e quante volte appare
 #   3. Le parole devono essere tutte in minuscolo
 #   4. La funzione deve avere una docstring
 # Testa con: "Il gatto e il cane e il pesce"
+# Checklist:
+# [ ] Ho scritto `def conta_parole(testo):` da zero.
+# [ ] Ho incluso docstring.
+# [ ] Uso minuscolo coerente su tutte le parole.
+# [ ] Il conteggio frequenze e corretto.
+# Criterio di valutazione: aderenza alla consegna (memoria + correttezza logica).
 #
 # Scrivi il tuo codice qui sotto:
 # ...
@@ -1542,6 +1796,20 @@ print(f"\nReport salvato in: {percorso_output}")
 # In questo capitolo aggiungi al progetto: CARICAMENTO DA FILE CSV
 # Invece di scrivere i prodotti nel codice, li carichi da un file CSV!
 #
+# Obiettivo: rendere il progetto catalogo persistente su file CSV.
+# Input disponibili:
+# - cartella `dati/`
+# - modulo `csv`
+# - struttura catalogo gia vista nei capitoli precedenti
+# Output atteso:
+# - file `catalogo.csv` creato e leggibile
+# - funzioni di caricamento/salvataggio/report funzionanti
+# - stampa report con metriche richieste
+# Vincoli obbligatori:
+# - Usa `csv.DictReader` per il caricamento.
+# - Usa `csv.writer` per il salvataggio.
+# - Conversioni tipo obbligatorie (`prezzo` float, `stock` int).
+# - Ogni funzione richiesta deve avere docstring.
 # Task:
 # 1) Crea un file "catalogo.csv" nella cartella dati/ con queste colonne:
 #    id,nome,prezzo,categoria,stock
@@ -1567,6 +1835,13 @@ print(f"\nReport salvato in: {percorso_output}")
 #
 # Questo progetto attraversa tutto il corso — ogni capitolo aggiunge
 # un pezzo. Alla fine avrai un sistema completo di gestione catalogo.
+# Checklist finale progetto:
+# [ ] `catalogo.csv` esiste in `dati/` ed e valido.
+# [ ] `carica_catalogo` restituisce lista di dizionari con tipi corretti.
+# [ ] `salva_catalogo` scrive header + dati corretti.
+# [ ] `report_catalogo` stampa tutte le metriche richieste.
+# [ ] Tutte le funzioni hanno docstring.
+# Criterio di valutazione: aderenza alla consegna + coerenza end-to-end.
 
 # Scrivi il tuo codice qui sotto:
 # ...

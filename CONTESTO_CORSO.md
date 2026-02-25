@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 22/02/2026
+> **Ultimo aggiornamento**: 24/02/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -15,11 +15,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | 05_dizionari.py (mini-esercizi teoria completati, esercizi finali da fare) |
-| **Ultimo completato** | 04_liste.py (19/02/2026) |
+| **Capitolo in corso** | 06_file_csv.py (in corso avanzato: teoria + quiz completati, esercizi finali da completare) |
+| **Ultimo completato** | 05_dizionari.py (17/02/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
-| **Difficoltà media** | 5.25 (media di 2, 4, 6, 9 — salto importante, vedi nota sotto) |
-| **Sessione corrente** | Sessione 3 |
+| **Difficoltà media** | 5.8 (media di 2, 4, 6, 9, 8 — curva si stabilizza) |
+| **Priorità attive** | ✅ Lambda quasi acquisita, ✅ enumerate+.items() consolidato, 🟡 Lettura consegne in miglioramento (nuovo formato esercizi inserito), 🟡 Slicing/range in miglioramento, 🟡 Dict comprehension migliorata, 🔴 Parsing CSV manuale vs DictReader da consolidare (passi operativi + output atteso) |
+| **Sessione corrente** | Sessione 4 |
 
 ---
 
@@ -30,11 +31,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 22/02/2026 |
-| **Cosa è stato fatto** | Integrazione delle 11 criticità didattiche: Ponte Matematico (bridge M2→M3), esercizi DEBUG/REAL-WORLD/RECALL, strategia hardware (Colab per GPU), budget API con tracker, mock interview mensili, split file avanzati, diversificazione dominio, team workflow M10. Aggiornati CONTESTO_CORSO.md, roadmap_ai.md, Cursor Rule. Nessun lavoro sul capitolo 05. |
-| **Errori emersi** | Nessuno (sessione di pianificazione, non di studio) |
-| **Cosa fare nella prossima sessione** | Completare gli esercizi finali del capitolo 05_dizionari.py, poi quiz di verifica |
-| **Stato motivazione** | Alto — Gianluca ha rafforzato il corso per massimizzare preparazione e opportunità lavorative |
+| **Data** | 24/02/2026 |
+| **Cosa è stato fatto** | Avanzamento concreto su 06_file_csv.py: completati mini-esercizi 3-6 con feedback iterativo, completati rinforzi mirati (output concreto e variabile nelle comprehension), quiz di verifica completato (7/8 pienamente corretti, 1 parziale), chiariti dubbi su path/file (`os.path.join`, `os.makedirs`, `open`), introdotti 3 esercizi extra `.get()` vs `.items()`, aggiornata formulazione degli esercizi con formato esplicito anti-ambiguita (obiettivo/input/output/vincoli/checklist/criterio) sia in CONTESTO_CORSO.md sia nel capitolo 06. |
+| **Errori emersi** | Nessun errore bloccante. Gap residuo: parsing CSV manuale spiegato in modo parziale (serve rinforzo sui passaggi operativi end-to-end) e distinzione "numero ordini" vs "somma quantita". |
+| **Cosa fare nella prossima sessione** | Completare e correggere gli esercizi finali del capitolo 06 + progetto incrementale; inserire nel capitolo 07 un rinforzo mirato su parsing CSV (manuale vs `csv.DictReader`) con focus su pipeline operativa e output concreto. |
+| **Stato motivazione** | Alto e stabile — approccio molto attivo, richieste di chiarezza precise, ottima metacognizione su ambiguita delle consegne. |
 
 ---
 
@@ -83,10 +84,10 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | 06_file_csv.py (dopo completamento esercizi finali 05) |
-| **Rinforzi da inserire (🔁)** | 7 blocchi RINFORZO MIRATO per le lacune quiz 1-7 (vedi tabella sopra) |
-| **Concetti ⚠️ da ripassare** | Lambda (usarla in almeno 2 esercizi), dict comprehension (almeno 1 esercizio) |
-| **Pattern 🔴 da monitorare** | #2 (range/slicing fine escluso), #5 (tipi nei dizionari), #6 (lettura consegne), #11 (ordine filter) |
+| **Prossimo capitolo** | 07_numpy_intro.py (dopo completamento esercizi finali 06) |
+| **Rinforzi da inserire (🔁)** | Parsing CSV manuale vs `csv.DictReader` (passi operativi, differenze, quando usare cosa) + output concreto vs spiegazione se ricompare |
+| **Concetti ⚠️ da ripassare** | Parsing end-to-end (apertura file -> header -> split -> dict -> append), dict comprehension (1 esercizio), `filter()` ordine parametri |
+| **Pattern 🔴 da monitorare** | #5 (tipi nei dizionari/CSV), #6 (lettura consegne), #11 (ordine filter) |
 | **Ponte mentale da riusare** | ".items() = enumerate dei dizionari" (ha funzionato al cap.05) |
 | **Note** | La difficoltà è salita da 6 a 9 al cap.04. Il cap.05 (in corso) sembra stabilizzarsi. Monitorare attentamente il voto del 05. |
 
@@ -97,12 +98,13 @@
 ## Profilo dello Studente
 
 - **Nome**: Gianluca
-- **Background**: Web Developer con esperienza in HTML, CSS, JavaScript, PHP, Laravel
+- **Background**: Web Developer con esperienza in HTML, CSS, JavaScript, PHP, Laravel. Conoscenza di PHP/Laravel di livello base — i confronti PHP devono essere PARTICOLARMENTE spiegati, non dare per scontato che conosca fgetcsv, trim, explode ecc.
 - **Sistema operativo**: Windows 10 (usa Git Bash come terminale in Cursor)
 - **Python installato**: 3.14.3
 - **IDE**: Cursor
 - **Version control**: Git + GitHub (il corso è già in una repository)
 - **Obiettivo finale**: Entrare nel mondo del lavoro tech con competenze solide in Python, AI/ML e web development. Il progetto finale deve essere il **diamante del portfolio**: una full web app (React + Laravel + FastAPI) con IA integrata — bella, reattiva, funzionale — da mostrare ai recruiter come prova concreta di competenza.
+- **Obiettivo applicativo concreto**: Costruire un'app di **controllo documentale** per la sua società di consulenze. L'app deve verificare l'integrità di buste paga e documenti reddituali (CU, 730) dei clienti: OCR per leggere i documenti, NLP/LLM per estrarre i campi, regole fiscali per validazione incrociata, dashboard con semafori verde/giallo/rosso. Approccio ibrido: regole locali + API con dati anonimizzati o modello locale. Ha già molto materiale documentale a disposizione per il training/RAG. Questo obiettivo può influenzare gli esercizi dei moduli avanzati (M5-M6: usare dominio fiscale/documentale).
 
 ---
 
@@ -251,7 +253,7 @@
 1. **Nessun termine tecnico senza spiegazione pratica** — ogni termine nuovo va spiegato con esempio prima di procedere
 2. **Nessun concetto dato per scontato** — anche quelli "già noti" (API REST, database, MVC) vanno rinfrescati
 3. **Sempre la sequenza: Ripasso → Traduzione → Pratica** per ogni concetto
-4. **Confronto a tre lingue**: ogni spiegazione deve includere PHP + JavaScript + Python
+4. **Confronto a tre lingue**: ogni spiegazione deve includere PHP + JavaScript + Python. Il confronto PHP deve essere PARTICOLARMENTE dettagliato perché Gianluca ha una conoscenza base di PHP — spiegare cosa fanno fopen, fgetcsv, explode, trim ecc. come se fosse un ripasso, non darli per scontati
 5. **Spiegare i metodi usati negli esempi**: se un esempio usa `.reduce()`, `array_map()`, ecc., spiegare cosa fanno
 6. **Essere esaustivi, mai sintetici**: meglio una spiegazione in più che una in meno
 7. **File 07-08 (NumPy/Tensori) e Modulo 4 (Deep Learning)**: livello di dettaglio extra con più esempi visivi, analogie e mini-esercizi intermedi
@@ -300,8 +302,8 @@
 | 02_condizioni_e_cicli.py | ✅ Completato + Corretto | 17/02/2026 | 4 | FizzBuzz: `range(1,20)` invece di `range(1,21)`. Password: `elif` dove servivano due `if`, `== True` ridondante. Scacchiera perfetta. Temperature incompleto (mancava la media). |
 | 03_funzioni.py | ✅ Completato + Corretto | 17/02/2026 | 6 | Ha capito *args, return multipli, sorted. **Lambda ancora poco chiare** — da rinforzare nei prossimi capitoli. Errori: lista vs parametri separati a *args, count come stringa, mancava `reverse=True`, mancava parametro `decimali`. Tutti corretti. |
 | 04_liste.py | ✅ Completato + Corretto | 19/02/2026 | 9 | Difficoltà alta. Ha capito slicing, list comprehension, sorted/filter/map con lambda. **Punti deboli**: enumerate+tuple non interiorizzati (molte domande), range a 3 parametri nuovo, consegne non lette completamente (ex.1 indice sbagliato, ex.2 formato incompleto, ex.3 senza funzione, ex.6 usa [::-1] vietato, ex.9 indice errato). Lambda usate correttamente in ex.4/5/7 — miglioramento reale. |
-| 05_dizionari.py | ⬜ Da fare | | | |
-| 06_file_csv.py | ⬜ Da fare | | | |
+| 05_dizionari.py | ✅ Completato + Corretto | 17/02/2026 | 8 | Quiz ingresso 1/8 corretto (slicing, .append None, enumerate vs range persistono). Quiz verifica 4/8 (len con aggiunta chiavi, >= vs >, .get vs .items). Dict comprehension usata correttamente nell'ex.3 (miglioramento dai mini-ex). Lambda consolidate. Contatore città + max() con lambda padroneggiati. Consegne incomplete persistono (ex.1 manca voto, ex.2 manca punto a, ex.5 manca reverse, ex.6 mancano b/c, ex.7 append parziale, ex.8 manca prodotto_più_venduto). Esercizio 4 (colloquio conta_parole) risolto perfettamente al primo tentativo. |
+| 06_file_csv.py | 🟡 In corso avanzato | 24/02/2026 | n.d. | Teoria completata, quiz verifica completato (7/8 pienamente corretti, 1 parziale). Esercizi finali in corso con nuovo formato consegne esplicite. |
 | 07_numpy_intro.py | ⬜ Da fare | | | Da arricchire prima che ci arrivi |
 | 08_tensori_spiegati.py | ⬜ Da fare | | | Da arricchire prima che ci arrivi |
 | 09_pandas_intro.py | ⬜ Da fare | | | |
@@ -364,8 +366,9 @@
 | 02_condizioni_e_cicli | 4 | +2 ↑ |
 | 03_funzioni | 6 | +2 ↑ |
 | 04_liste | 9 | +3 ↑ (salto preoccupante — enumerate/tuple/combinazione concetti) |
+| 05_dizionari | 8 | -1 ↓ (buon segno: la curva si stabilizza dopo il picco) |
 
-**Media attuale**: 5.25 — Salto da 6 a 9 (+3). La curva accelera. Causa principale: combinazione di concetti nuovi (slicing, list comprehension, lambda con liste, enumerate+tuple). Valutare esercizi di rinforzo su enumerate/tuple prima del capitolo 05.
+**Media attuale**: 5.8 (media di 2, 4, 6, 9, 8). Il calo da 9 a 8 è positivo: il picco al cap.04 era dovuto all'accumulo di concetti nuovi (enumerate, tuple, lambda). Al cap.05 questi concetti si sono consolidati — lambda quasi acquisita, enumerate+.items() padroneggiato. Il problema principale resta la lettura incompleta delle consegne, non la comprensione tecnica.
 
 ---
 
@@ -396,7 +399,7 @@
 | `return` multiplo | Restituisce più valori come tupla — si "spacchettano" con `a, b = funzione()` | Non diretto (array/oggetto) | 03 | 0/3 | 🔄 |
 | `*args` | Parametri variabili posizionali — come spread `...args` | `...args` / `...$args` | 03 | 0/3 | 🔄 |
 | `**kwargs` | Parametri con nome variabili — come passare un oggetto di opzioni | Destructuring / Array associativo | 03 | 0/3 | 🔄 |
-| `lambda` | Mini-funzione usa-e-getta, una riga sola — ⚠️ **DA RINFORZARE** | `() =>` / `fn() =>` | 03 | 1/3 | ⚠️ |
+| `lambda` | Mini-funzione usa-e-getta, una riga sola — migliorata significativamente al cap.05 | `() =>` / `fn() =>` | 03 | 2/3 | 🔄 |
 | `sorted()` | Ordina creando una NUOVA lista (l'originale resta intatta!) | `.sort()` (attenzione: in JS modifica in-place!) / `usort()` | 03 | 1/3 | 🔄 |
 | `isinstance()` | Verifica se un valore è di un certo tipo | `instanceof` / `instanceof` | 03 | 0/3 | 🔄 |
 | `docstring` | Commento `"""..."""` dentro una funzione per documentarla | JSDoc `/** */` / PHPDoc `/** */` | 03 | 1/3 | 🔄 |
@@ -512,13 +515,16 @@ Questi sono gli errori che Gianluca tende a ripetere. Da monitorare nei prossimi
 | 4 | **Calcoli dentro le f-string**: espressioni troppo lunghe nelle `{}` | 🟡 Corretto una volta | Visto al file 01, corretto dopo feedback |
 | 5 | **Tipi nei dizionari**: mette stringhe dove servono numeri | 🔴 Attivo | Visto al file 03 (`count` come stringa). **Ripetuto al file 05** mini-ex.2: `auto['km'] = "10000"` (stringa invece di numero) |
 | 6 | **Lettura incompleta delle consegne**: non implementa tutti i requisiti | 🔴 Attivo | Visto ai file 02, 03, 04, **05**. Al file 05: mini-ex.4 (2 piatti invece di 3, mancano i print), mini-ex.6 (manca punto 3 max), mini-ex.7 (manca modifica lingua nella copia) |
-| 7 | **Lambda poco chiare**: non ha ancora interiorizzato la sintassi e l'uso delle funzioni lambda | 🟡 In miglioramento | Al file 05 mini-ex.6: sorted+lambda corretta, ha combinato filter+sorted autonomamente. **Ordine parametri filter ancora fragile** (mette lista prima di lambda) |
+| 7 | **Lambda poco chiare**: non ha ancora interiorizzato la sintassi e l'uso delle funzioni lambda | 🟡 → quasi 🟢 | Al file 05: usate correttamente in ex.2 (max), ex.3 (sorted), ex.5 (sorted/filter/min/map), ex.7 (contatore), ex.8 (max .items()). Glossario 2/3. Ordine parametri filter corretto. **Quasi acquisita** |
 | 8 | **enumerate/tuple/unpacking**: non capisce che enumerate crea tuple e che l'unpacking le spacchetta | 🟡 In miglioramento | **Miglioramento significativo al file 05**: mini-ex.3 usato correttamente `for i, (key, value) in enumerate(.items(), 1)`. Ponte mentale ".items() = enumerate dei dizionari" ha fatto click |
 | 9 | **Codice superfluo**: aggiunge espressioni inutili (`== l` dopo `.insert()`) | 🟡 Corretto una volta | Visto al file 04 ex.6 |
 | 10 | **Vincoli esercizio ignorati**: usa metodi vietati dalla consegna (es. `[::-1]` quando esplicitamente proibito) | 🔴 Attivo | Visto al file 04 ex.6. Collegato al pattern #6 (lettura consegne) |
 | 11 | **Ordine parametri filter()**: mette la lista prima della lambda (`filter(lista, lambda)` invece di `filter(lambda, lista)`) | 🔴 Attivo | Visto al file 05 durante le domande. Confonde con sorted() che ha `key=lambda` come parametro con nome |
 | 12 | **Variabile sbagliata nel contesto**: usa una variabile di un altro scope/esempio | 🟡 Visto una volta | Al file 05 mini-ex.7: `'tema' in config` invece di `'tema' in preferenze` |
-| 13 | **Dict comprehension evitata**: quando la consegna chiede dict comprehension, usa il ciclo for classico | 🟡 Visto una volta | Al file 05 mini-ex.5: consegna diceva "usando le dict comprehension", ha usato for+dizionario vuoto |
+| 13 | **Dict comprehension evitata**: quando la consegna chiede dict comprehension, usa il ciclo for classico | 🟡 In miglioramento | Mini-ex.5: usato for classico. Ma ex.3a: usata correttamente! Miglioramento parziale |
+| 14 | **return print(...)**: usa return con print, che restituisce sempre None | 🟡 Visto più volte | Al file 05 ex.2: tutte le funzioni hanno `return print(...)`. Il print funziona ma il return è inutile |
+| 15 | **Parametro funzione ignorato**: la funzione accetta un parametro ma dentro usa la variabile globale | 🟡 Visto una volta | Al file 05 ex.1: `def stampa(dizionario)` ma dentro usa `film.items()` invece di `dizionario.items()` |
+| 16 | **Docstring mancante quando richiesta**: la consegna chiede "la funzione deve avere una docstring" e non la scrive | 🔴 Attivo | Al file 05 ex.4 e ex.8. Collegato al pattern #6 (lettura consegne) |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 Superato
 
@@ -532,6 +538,8 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 4. **Sa già ragionare in termini di funzioni, parametri, return** — il background Laravel si sente
 5. **Motivato e orientato al risultato** — vuole capire il perché, non solo il come
 6. **Verifica proattivamente** — controlla formule e logica prima di fidarsi
+7. **Sa creare funzioni riutilizzabili** — nell'ex.1 del cap.05 ha creato spontaneamente una funzione stampa() invece di ripetere il codice
+8. **Pattern contatore padroneggiato** — .get(chiave, 0) + 1 e not in + inizializzazione usati correttamente
 
 ---
 
@@ -540,8 +548,9 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 - **Sessione 1 (17/02/2026)**: File 01, 02, 03 completati in una sessione
 - **Sessione 2 (19/02/2026)**: File 04 completato. Difficoltà 9 — il salto maggiore finora. Enumerate/tuple e combinazione di concetti sono stati i punti più difficili
 - **Sessione 3 (17/02/2026)**: File 05 in corso. Mini-esercizi teoria completati. Miglioramento significativo su enumerate+.items(). Dict comprehension ancora da interiorizzare
-- **Ritmo stimato**: 1-2 file al giorno
-- **Tempo totale stimato per il corso**: 3-4 mesi
+- **Sessione 4 (24/02/2026)**: File 06 in corso avanzato. Rinforzi mirati completati e quiz verifica quasi pieno. Forte miglioramento su `.get()`/`.items()`, sorting con `key`, e gestione path/file. Da consolidare parsing CSV manuale vs `DictReader` e definizione precisa degli output.
+- **Ritmo stimato**: 1 file ogni 2 giorni (aggiornato dallo studente)
+- **Tempo totale stimato per il corso**: 5-6 mesi (corso) + 2-3 mesi (MVP app documentale)
 - **Momento migliore per studiare**: ❓ Da chiedere
 
 ---
@@ -649,8 +658,12 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - [ ] **La consegna chiede dict comprehension?** Se sì, devo usare `{chiave: valore for ... in ...}`, non un ciclo for con dizionario vuoto
 - [ ] **I valori nel dizionario sono del tipo giusto?** Un chilometraggio è un numero `10000`, non una stringa `"10000"`
 
+- [ ] **Ho scritto `return print(...)`?** Se sì, togli il return — print() restituisce None, quindi il return è inutile
+- [ ] **Il parametro della funzione è usato?** Se la funzione accetta `dizionario`, dentro uso `dizionario`, non il nome della variabile globale
+- [ ] **Ho contato bene `>=` vs `>`?** Se la condizione è `>= 7`, il 7 è INCLUSO. Se è `> 7`, il 7 è ESCLUSO
+
 ### Controlli Bonus (buone pratiche)
-- [ ] La funzione ha una docstring?
+- [ ] La funzione ha una docstring? (se la consegna la chiede, è OBBLIGATORIA)
 - [ ] I nomi delle variabili sono in italiano coerente O in inglese coerente (non misti)?
 - [ ] Ho testato con almeno 2-3 input diversi?
 
@@ -667,13 +680,13 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | if/elif/else, for, while | 17/02 | ✅ file 04 (usato correttamente) | file 06 | file 09 | OK |
 | range() fine escluso | 17/02 | ❌ file 04 (errore ripetuto: dati[17:]) | ❌ quiz ingresso 05 (numeri[1:4]→4 elem, prezzi[1:]→indice sbagliato) | file 09 | 🔴 Errore persistente — 3 occorrenze |
 | enumerate() unpacking | 17/02 | ❌ file 04 (molte domande, non autonomo) | ❌ quiz 05 / ✅ mini-ex.3 cap.05 (usato con .items()!) | file 09 | 🟡 In miglioramento |
-| def, return, *args, **kwargs | 17/02 | file 05 | file 07 | file 10 | Da verificare |
-| lambda | 17/02 | 🟡 file 04 (usata correttamente in ex.4/5/7 ma con aiuto teoria) | file 05 ⚠️ | file 07 | In miglioramento |
+| def, return, *args, **kwargs | 17/02 | ✅ file 05 (4 funzioni create: stampa, conta_parole, raggruppa_per, processa_ordini) | file 07 | file 10 | ✅ Consolidato |
+| lambda | 17/02 | 🟡 file 04 (usata correttamente in ex.4/5/7 ma con aiuto teoria) | ✅ file 05 ex.2/4/5/7/8 (usata correttamente con sorted, filter, max, min) | file 07 | 🟡 → ✅ quasi acquisita |
 | sorted() con key | 17/02 | ✅ file 04 (usato correttamente con lambda) | ⚠️ quiz ingresso 05 (non sa che sorted crea nuova lista, pensa lambda obbligatoria) | file 07 | ⚠️ Uso corretto ma teoria incompleta |
 | slicing, list comprehension | 19/02 | file 05 | file 07 | file 10 | Da verificare |
 | tuple/unpacking | 19/02 | file 05 ⚠️ | file 07 ⚠️ | file 10 | ⚠️ Rinforzo prioritario |
 | filter(), map() | 19/02 | 🟡 file 05 mini-ex.6 (filter+sorted combinati, ma ordine param fragile) | file 07 | file 10 | ⚠️ Ordine parametri filter da rinforzare |
-| dict comprehension | 17/02 (cap.05) | file 06 ⚠️ | file 08 | file 11 | 🔴 Non usata quando richiesta — rinforzo prioritario |
+| dict comprehension | 17/02 (cap.05) | ✅ file 05 ex.3a (usata correttamente per filtrare promossi!) | file 08 | file 11 | 🟡 Migliorata — usata nell'ex.3 ma non nell'ex.6c |
 | .items() + unpacking | 17/02 (cap.05) | file 06 | file 08 | file 11 | ✅ Usato correttamente al primo tentativo |
 
 ⚠️ = Il concetto richiede rinforzo attivo (non solo uso passivo, ma esercizio dedicato)
@@ -695,13 +708,17 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 | # | Concetto | Quiz (tipo/cap.) | Errore commesso | Rinforzo in | Stato |
 |---|----------|-------------------|-----------------|-------------|-------|
-| 1 | Slicing — fine escluso | Ingresso/05 | `numeri[1:4]` → ha scritto [20,30,40,50] invece di [20,30,40]. Non applica "il secondo numero è escluso" | 06 | 🔴 |
-| 2 | .append() restituisce None | Ingresso/05 | Pensava che .append() restituisse la lista modificata (come .push() in JS restituisce la lunghezza). In Python modifica in-place e restituisce None | 06 | 🔴 |
-| 3 | enumerate vs range | Ingresso/05 | Ha scritto `range(frutti, len(frutti))` dove serviva `enumerate(frutti, 1)`. Non distingue quando usare enumerate e quando range | 06 | 🔴 |
-| 4 | Indici delle liste (contare da 0) | Ingresso/05 | Per ottenere [30,40,50] da [10,20,30,40,50] ha scritto `[1:]` invece di `[2:]`. Sa che 3 era troppo ma non conta da 0 correttamente | 06 | 🔴 |
-| 5 | sorted() crea nuova lista vs .sort() in-place | Ingresso/05 | Sa che uno è funzione e l'altro metodo, ma non ha menzionato la differenza chiave: sorted() crea una NUOVA lista, .sort() modifica in-place e restituisce None. Dice anche che lambda è obbligatoria (è opzionale) | 06 | 🔴 |
-| 6 | Output concreto vs descrizione concettuale | Ingresso/05 | Alla domanda "cosa stampa" ha descritto il concetto invece di dare il valore concreto `["Marco"]`. Capisce il meccanismo ma non sa prevedere l'output esatto | 06 | 🔴 |
-| 7 | Variabile corretta nelle comprehension | Ingresso/05 | Ha scritto `x % 2 == 0` quando la variabile del for era `n`. Causerebbe NameError. Disattenzione sui nomi delle variabili nel contesto della comprehension | 06 | 🔴 |
+| 1 | Slicing — fine escluso | Ingresso/05 | `numeri[1:4]` → ha scritto [20,30,40,50] invece di [20,30,40]. Non applica "il secondo numero è escluso" | 06 | 🟡 |
+| 2 | .append() restituisce None | Ingresso/05 | Pensava che .append() restituisse la lista modificata (come .push() in JS restituisce la lunghezza). In Python modifica in-place e restituisce None | 06 | 🟡 |
+| 3 | enumerate vs range | Ingresso/05 | Ha scritto `range(frutti, len(frutti))` dove serviva `enumerate(frutti, 1)`. Non distingue quando usare enumerate e quando range | 06 | 🟡 |
+| 4 | Indici delle liste (contare da 0) | Ingresso/05 | Per ottenere [30,40,50] da [10,20,30,40,50] ha scritto `[1:]` invece di `[2:]`. Sa che 3 era troppo ma non conta da 0 correttamente | 06 | 🟡 |
+| 5 | sorted() crea nuova lista vs .sort() in-place | Ingresso/05 | Sa che uno è funzione e l'altro metodo, ma non ha menzionato la differenza chiave: sorted() crea una NUOVA lista, .sort() modifica in-place e restituisce None. Dice anche che lambda è obbligatoria (è opzionale) | 06 | 🟡 |
+| 6 | Output concreto vs descrizione concettuale | Ingresso/05 | Alla domanda "cosa stampa" ha descritto il concetto invece di dare il valore concreto `["Marco"]`. Capisce il meccanismo ma non sa prevedere l'output esatto | 06 | 🟡 |
+| 7 | Variabile corretta nelle comprehension | Ingresso/05 | Ha scritto `x % 2 == 0` quando la variabile del for era `n`. Causerebbe NameError. Disattenzione sui nomi delle variabili nel contesto della comprehension | 06 | 🟡 |
+| 8 | len() con aggiunta chiavi al dizionario | Verifica/05 | Ha scritto 2 invece di 3. Non ha contato che `persona["citta"] = "Roma"` aggiunge una NUOVA chiave (da 2 a 3) | 06 | 🟡 |
+| 9 | >= vs > (include o esclude il valore limite) | Verifica/05 | Dict comprehension `if v >= 7`: ha escluso Marco (voto 7) dalla risposta. Non distingue >= (include) da > (esclude) | 06 | 🟡 |
+| 10 | .get() vs .items() — metodi diversi | Verifica/05 | Per contare frequenze ha scritto `.items(lettera, totale)` invece di `.get(lettera, 0)`. Confonde .items() (tutte le coppie) con .get() (una chiave con default) | 06 | 🟡 |
+| 11 | Parsing CSV manuale vs spiegazione astratta | Verifica/06 | Alla domanda Feynman ha descritto il concetto in modo generale ma senza sequenza operativa completa (apertura file -> lettura righe -> header -> split -> dizionario -> append). Richiesto rinforzo esplicito su "come" e non solo "cos'e". | 07 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
@@ -742,6 +759,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | Rimuovi duplicati da lista | 04 | Junior — classico | Iterazione, `not in`, costruzione lista di appoggio | ✅ Risolto (logica corretta, mancava incapsulamento in funzione) |
 | Inverti lista senza .reverse() | 04 | Junior — classico | Cicli, `.insert(0)`, `range()` con passo negativo | ✅ Risolto (con errori: `== l` superfluo, seconda versione usa [::-1] vietato) |
 | Elemento più frequente | 04 | Junior/Mid — frequente | `max()` con lambda, `.count()` | ✅ Risolto perfettamente al primo tentativo |
+| Conta frequenze parole | 05 | Junior/Mid — classico | Dizionari, `.get()` per contare, `.lower().split()`, iterazione | ✅ Risolto perfettamente al primo tentativo |
+| Raggruppare per chiave (GROUP BY) | 05 | Mid — data manipulation | `not in` + lista vuota + `.append()`, funzione generica con parametro chiave | ✅ Risolto (append parziale: solo nome invece di dizionario intero) |
 
 ### Cosa aspettarsi nei prossimi capitoli e moduli
 
@@ -1093,6 +1112,25 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 # ============================================================
 # ESERCIZI PRATICI
 # ============================================================
+
+### Formato obbligatorio consegne (anti-ambiguita)
+
+Per ogni esercizio dei prossimi capitoli, la consegna deve essere scritta con questa struttura fissa:
+
+1. **Obiettivo in 1 frase**: cosa devo ottenere alla fine (risultato concreto).
+2. **Input disponibili**: quali variabili/file posso usare (es. `dati_csv`, `percorso_output`), con i campi realmente presenti.
+3. **Output atteso**: cosa deve essere stampato/salvato/restituito (formato preciso, esempio incluso).
+4. **Vincoli obbligatori**: cosa DEVO usare e cosa NON posso usare (es. "usa `enumerate` + `if`, non slicing").
+5. **Checklist di verifica**: 3-5 checkbox finali per auto-controllo ("ho filtrato Milano?", "ho scritto header?", "ho contato righe?").
+6. **Criterio di valutazione**: esplicitare se si valuta
+   - aderenza alla consegna (default),
+   - oppure estensioni creative (solo se dichiarato).
+
+Regole aggiuntive per ridurre ambiguita:
+- Se una parola puo creare confusione, specificarla: **"numero ordini" != "somma quantita"**.
+- Se i dati non contengono un campo citato (es. `stato`), la consegna va corretta PRIMA di proporre l'esercizio.
+- Ogni consegna deve includere almeno un esempio mini "input -> output" in 1-2 righe.
+- Nei mini-esercizi, separare chiaramente: **modalita debug** (1 record) vs **modalita consegna** (requisiti completi).
 
 # --- ESERCIZIO 1 (Livello 1 — Leggi e Modifica): ---
 # [Descrizione chiara di cosa fare]
