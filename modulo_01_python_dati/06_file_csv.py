@@ -1619,14 +1619,32 @@ for i, (k, v) in enumerate(conteggio_metodi_ordinato, 1):
 #   cerca_ordini(dati_csv, categoria="Elettronica", citta="Roma")
 #
 # Checklist:
-# [ ] La funzione restituisce una lista.
-# [ ] Con 2 filtri applica AND logico (entrambi veri).
-# [ ] Ho scritto la docstring.
-# [ ] Non ho hardcodato nomi campi dentro la funzione.
+# [x] La funzione restituisce una lista.
+# [ ] Con 2 filtri applica AND logico (entrambi veri). -> avendo usato un ciclo for e una flag, non ho avuto bisogno dell'AND logico
+# [x] Ho scritto la docstring.
+# [x] Non ho hardcodato nomi campi dentro la funzione.
 # Criterio di valutazione: aderenza alla consegna + correttezza filtro multi-criterio.
 # Scrivi il tuo codice qui sotto:
-# ...
 
+print("Esercizio 2")
+def cerca_ordini(dati, **filtri):
+    """Dato una lista di dizionari, presa da un file csv già parsato,
+    e un numero variabile di filtri, la funzione restituisce una lista
+    contentente i record della lista originali che rispettano i filtri
+    precedentemente forniti"""
+    record_filtrati = []
+    for dato in dati:
+        flag = True
+        for chiave_filtro, valore_filtro in filtri.items():
+            if dato[chiave_filtro] != valore_filtro:
+                flag = False
+                break
+        if flag:
+            record_filtrati.append(dato)
+    return record_filtrati  
+    
+ordini_filtrati = cerca_ordini(dati_csv, citta="Milano", metodo_pagamento="PayPal")
+print(f"{ordini_filtrati}")
 
 # 🎯 [COLLOQUIO] — ESERCIZIO 3 (Livello 2 — Analisi dati):
 # Questo tipo di esercizio è molto comune nei colloqui per posizioni
