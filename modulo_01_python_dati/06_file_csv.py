@@ -1796,15 +1796,22 @@ print(f"{csv_to_html_table(case_file)}")
 # 4. Usa nomi di variabili descrittivi (non f, h, v, d, j, x)
 # 5. Usa for invece di while dove possibile
 # Checklist:
-# [ ] Nessun `while` rimasto per questo task.
-# [ ] Nessun parsing manuale con split.
-# [ ] Totale calcolato con `sum(...)`.
-# [ ] Nomi variabili chiari e leggibili.
+# [x] Nessun `while` rimasto per questo task.
+# [x] Nessun parsing manuale con split.
+# [x] Totale calcolato con `sum(...)`.
+# [x] Nomi variabili chiari e leggibili.
 # Criterio di valutazione: aderenza alla consegna + qualita del refactoring.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 5\n")
 
+percorso_principale = os.path.join(os.path.dirname(__file__), "dati")
+percorso_file = os.path.join(percorso_principale, "vendite_ecommerce.csv")
+
+with open(percorso_file, "r", encoding="utf-8") as file:
+    dati_ecommerce = list(csv.DictReader(file))
+    totale_fatturato = sum(float(dato['prezzo']) * int(dato['quantita']) for dato in dati_ecommerce)
+print(f"Totale fatturato:\n{totale_fatturato} €\n")
 
 # --- ESERCIZIO 6 — 🔀 [INTERLEAVING]: ---
 # Questo esercizio mescola concetti del cap. 06 (CSV) con cap. 04 (liste)
@@ -1826,15 +1833,35 @@ print(f"{csv_to_html_table(case_file)}")
 # d) Stampa il risultato con enumerate numerato da 1:
 #    "1. Cuffie Bluetooth: prezzo medio 49.99€"
 # Checklist:
-# [ ] Lista unici costruita senza set().
-# [ ] Prezzo medio calcolato correttamente (somma/conteggio).
-# [ ] Ordinamento decrescente corretto.
-# [ ] Stampa finale numerata con enumerate(..., start=1).
+# [x] Lista unici costruita senza set().
+# [x] Prezzo medio calcolato correttamente (somma/conteggio).
+# [x] Ordinamento decrescente corretto.
+# [x] Stampa finale numerata con enumerate(..., start=1).
 # Criterio di valutazione: aderenza alla consegna + integrazione corretta dei capitoli.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 6\n")
 
+percorso_principale = os.path.join(os.path.dirname(__file__), "dati")
+percorso_file = os.path.join(percorso_principale, "vendite_ecommerce.csv")
+
+with open(percorso_file, "r", encoding="utf-8") as file:
+    dati_ecommerce = list(csv.DictReader(file))
+    unici = []
+    for dato in dati_ecommerce:
+        if dato['prodotto'] not in unici:
+            unici.append(dato['prodotto'])
+    prezzi_quantita = {}
+    for dato in dati_ecommerce:
+        prezzi_quantita[dato['prodotto']] = prezzi_quantita.get(dato['prodotto'], [0, 0])
+        prodotto = prezzi_quantita[dato['prodotto']]
+        prodotto[0] += float(dato['prezzo'])
+        prodotto[1] += 1
+    prezzi_medi = [(i, somma / conteggio) for i, (somma, conteggio) in prezzi_quantita.items()]
+    prezzi_medi_decrescenti = enumerate(sorted(prezzi_medi, key=lambda p: p[1], reverse=True), 1)
+    for i, p in prezzi_medi_decrescenti:
+        print(f"{i}. {p[0]}: prezzo medio {p[1]:.2f} €")
+    
 
 # --- ESERCIZIO 7 — 🧠 [RETRIEVAL]: ---
 # Senza guardare il codice del capitolo 05, riscrivi da zero la funzione
@@ -1851,15 +1878,31 @@ print(f"{csv_to_html_table(case_file)}")
 #   4. La funzione deve avere una docstring
 # Testa con: "Il gatto e il cane e il pesce"
 # Checklist:
-# [ ] Ho scritto `def conta_parole(testo):` da zero.
-# [ ] Ho incluso docstring.
-# [ ] Uso minuscolo coerente su tutte le parole.
-# [ ] Il conteggio frequenze e corretto.
+# [x] Ho scritto `def conta_parole(testo):` da zero.
+# [x] Ho incluso docstring.
+# [x] Uso minuscolo coerente su tutte le parole.
+# [x] Il conteggio frequenze e corretto.
 # Criterio di valutazione: aderenza alla consegna (memoria + correttezza logica).
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 7\n")
 
+testo = "ciao Mondo ciao"
+
+def conta_parole(testo):
+    """
+    Questa funzione, presa un stringa di testo in input,
+    restituisce un dizionario composto da chiavi che
+    reppresentano le parole e per valore invece che è
+    il numero delle occorrenze
+    """
+    lista_testo = testo.lower().split(" ")
+    dizionario_testo = {}
+    for parola in lista_testo:
+        dizionario_testo[parola] = dizionario_testo.get(parola, 0) + 1
+    return dizionario_testo
+
+print(f"{conta_parole(testo)}")
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  🏗️ PROGETTO INCREMENTALE — Catalogo E-commerce                      ║
@@ -1908,16 +1951,80 @@ print(f"{csv_to_html_table(case_file)}")
 # Questo progetto attraversa tutto il corso — ogni capitolo aggiunge
 # un pezzo. Alla fine avrai un sistema completo di gestione catalogo.
 # Checklist finale progetto:
-# [ ] `catalogo.csv` esiste in `dati/` ed e valido.
-# [ ] `carica_catalogo` restituisce lista di dizionari con tipi corretti.
-# [ ] `salva_catalogo` scrive header + dati corretti.
-# [ ] `report_catalogo` stampa tutte le metriche richieste.
-# [ ] Tutte le funzioni hanno docstring.
+# [x] `catalogo.csv` esiste in `dati/` ed e valido.
+# [x] `carica_catalogo` restituisce lista di dizionari con tipi corretti.
+# [x] `salva_catalogo` scrive header + dati corretti.
+# [x] `report_catalogo` stampa tutte le metriche richieste.
+# [x] Tutte le funzioni hanno docstring.
 # Criterio di valutazione: aderenza alla consegna + coerenza end-to-end.
 
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 8\n")
 
+catalogo_seed = [
+    {"id": "P001", "nome": "Cuffie Bluetooth",   "prezzo": 49.99, "categoria": "Elettronica", "stock": 12},
+    {"id": "P002", "nome": "Mouse Wireless",     "prezzo": 29.99, "categoria": "Elettronica", "stock": 25},
+    {"id": "P003", "nome": "Monitor 27 pollici", "prezzo": 299.99,"categoria": "Elettronica", "stock": 6},
+    {"id": "P004", "nome": "Libro Python",       "prezzo": 35.00, "categoria": "Libri",        "stock": 18},
+    {"id": "P005", "nome": "Libro AI",           "prezzo": 42.00, "categoria": "Libri",        "stock": 10},
+    {"id": "P006", "nome": "T-Shirt Nera",       "prezzo": 19.99, "categoria": "Abbigliamento","stock": 40},
+    {"id": "P007", "nome": "Felpa Grigia",       "prezzo": 39.99, "categoria": "Abbigliamento","stock": 22},
+    {"id": "P008", "nome": "Zaino Laptop",       "prezzo": 65.00, "categoria": "Accessori",    "stock": 14},
+    {"id": "P009", "nome": "Tastiera Meccanica", "prezzo": 89.99, "categoria": "Accessori",    "stock": 9}
+]
+
+path_principale = os.path.join(os.path.dirname(__file__), "dati")
+path_file_catalogo = os.path.join(path_principale, "catalogo.csv")
+
+def salva_catalogo(path, cat):
+    """
+    questa funzione, dato un percorso e una lista di record
+    in formato dizionario, li salva nel percorso fornito come 
+    file .csv 
+    """
+    with open(path, "w", encoding="utf-8", newline="") as file:
+        catalogo = csv.writer(file)
+        catalogo.writerow([k for k, v in cat[0].items()])
+        for prodotto in cat:
+            lista_csv = []
+            for k, v in prodotto.items():
+                lista_csv.append(v)
+            catalogo.writerow(lista_csv)
+
+def carica_catalogo(path):
+    """
+    questa funzione prepara il catalogo per la funzione 
+    report, andando a trasformare in number i valori così da
+    poter essere letti in maniera corretta dalla funzione
+    successiva
+    """
+    with open(path, "r", encoding="utf-8") as file:
+        catalogo_prodotti = list(csv.DictReader(file))
+        for prodotto in catalogo_prodotti:
+            prodotto['prezzo'] = float(prodotto['prezzo'])
+            prodotto['stock'] = int(prodotto['stock'])
+    return catalogo_prodotti            
+                        
+def report_catalogo(catalogo):
+    """
+    questa funzione genera un report di analisi
+    del catalogo che viene passato come parametro
+    """
+    contatore_prodotti = sum(1 for c in catalogo)
+    print(f"Numero prodotti in magazzino: {contatore_prodotti}\n")
+    valore_magazzino = sum(p['prezzo'] * p['stock'] for p in catalogo)
+    print(f"Valore totale magazzino: {valore_magazzino} €\n")
+    prodotto_piu_costoso = max(catalogo, key=lambda x: x['prezzo'])
+    print(f"Prodotto di maggior valore: {prodotto_piu_costoso}\n")
+    categorie = {}
+    for prodotto in catalogo:
+        categorie[prodotto['categoria']] = categorie.get(prodotto['categoria'], 0) + 1
+    print("Numero prodotti per categoria:")
+    for k, v in categorie.items():
+        print(f"{k} => {v} prodotti")
+        
+salva_catalogo(path_file_catalogo, catalogo_seed)   
+report_catalogo(carica_catalogo(path_file_catalogo))
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  SOLUZIONI — Guardale Solo DOPO Aver Provato!                         ║

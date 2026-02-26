@@ -1,0 +1,10 @@
+id,nome,prezzo,categoria,stock
+P001,Cuffie Bluetooth,49.99,Elettronica,12
+P002,Mouse Wireless,29.99,Elettronica,25
+P003,Monitor 27 pollici,299.99,Elettronica,6
+P004,Libro Python,35.0,Libri,18
+P005,Libro AI,42.0,Libri,10
+P006,T-Shirt Nera,19.99,Abbigliamento,40
+P007,Felpa Grigia,39.99,Abbigliamento,22
+P008,Zaino Laptop,65.0,Accessori,14
+P009,Tastiera Meccanica,89.99,Accessori,9

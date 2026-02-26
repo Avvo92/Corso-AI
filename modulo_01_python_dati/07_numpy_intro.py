@@ -49,6 +49,54 @@
 
 import numpy as np  # 'np' è la convenzione universale, come '$' per jQuery
 
+# ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  QUIZ D'INGRESSO — Rispondi PRIMA di leggere la teoria NumPy          ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+#
+# Obiettivo: verificare i prerequisiti dal capitolo 06 prima del passaggio
+# a NumPy (soprattutto parsing operativo e output concreto).
+#
+# DOMANDA 1 — Output concreto:
+# Cosa stampa: print("ciao mondo".split(" "))
+# La tua risposta: ___
+#
+# DOMANDA 2 — Vero o Falso?
+# "csv.DictReader restituisce numeri già convertiti in int/float"
+# La tua risposta (V/F): ___
+#
+# DOMANDA 3 — Pipeline operativa (lacuna #11):
+# Descrivi IN ORDINE i passi del parsing manuale CSV, da file testo a
+# lista di dizionari. Niente teoria astratta: solo passaggi operativi.
+# La tua risposta: ___
+#
+# DOMANDA 4 — Differenza pratica:
+# In 1 riga: quando preferisci csv.DictReader rispetto al parsing manuale?
+# La tua risposta: ___
+#
+# DOMANDA 5 — Tipi:
+# Se record["prezzo"] vale "49.99", quale conversione usi per fare calcoli?
+# La tua risposta: ___
+#
+# Checklist:
+# [ ] Ho risposto con output concreti dove richiesto.
+# [ ] Ho descritto la pipeline con passi ordinati.
+# [ ] Ho distinto chiaramente manuale vs DictReader.
+#
+
+# 🔁 RINFORZO MIRATO — Dal CSV a NumPy: stessa logica, struttura diversa
+# Nel capitolo 06 hai consolidato il flusso "testo -> struttura dati".
+# Qui la logica è analoga:
+#   CSV (stringhe) -> lista/dizionari (struttura) -> array NumPy (calcolo veloce)
+#
+# Ponte mentale operativo:
+# 1) Prima estrai dati puliti (e converti i tipi)
+# 2) Poi li trasformi in array NumPy
+# 3) Infine applichi operazioni vettorizzate/statistiche
+#
+# Errore da evitare:
+# - saltare il controllo tipi e aspettarsi che tutto sia già numerico.
+#   Anche in NumPy, se parti da stringhe sporche, i calcoli non sono affidabili.
+
 # ==========================================================================
 # PARTE 1: Creare Array NumPy
 # ==========================================================================
@@ -260,54 +308,84 @@ print(f"\nImmagine 28x28 → vettore: {immagine_simulata.shape} → {vettore.sha
 # ║  ESERCIZI — Ora Prova Tu!                                             ║
 # ╚═════════════════════════════════════════════════════════════════════════╝
 
-# ESERCIZIO 1 (Facile):
-# a) Crea un array NumPy con i numeri da 1 a 20
-# b) Stampa la media, la mediana e la deviazione standard
-# c) Filtra e stampa solo i numeri divisibili per 3
-# d) Moltiplica tutti i numeri per 10 e stampa il risultato
+# ESERCIZIO 1 (Facile) — Fondamentali array 1D
+# Obiettivo: verificare creazione array, statistiche base e filtro booleano.
+# Input: nessuno (crei tu l'array con np.arange).
+# Output atteso:
+# a) array 1..20
+# b) media, mediana, deviazione standard
+# c) solo numeri divisibili per 3
+# d) array moltiplicato per 10
+# Vincoli: usa NumPy puro (no loop per c e d).
+# Checklist:
+# [ ] Ho usato array NumPy e non lista Python.
+# [ ] Ho usato filtro booleano per i divisibili.
+# [ ] Ho stampato i 4 output richiesti.
 #
 # Scrivi il tuo codice qui sotto:
 # ...
 
 
-# ESERCIZIO 2 (Medio):
+# ESERCIZIO 2 (Medio) — Matrici e assi
+# Obiettivo: padroneggiare axis=0/1 e metriche su array 2D.
+# Input:
+# - array 2D 5x4 con numeri casuali tra 50 e 100:
 # Simula i voti di 5 studenti in 4 materie (crea un array 2D 5x4
 # con numeri casuali tra 50 e 100):
 #   voti = np.random.randint(50, 101, size=(5, 4))
+# Output atteso:
 # a) Calcola la media di ogni studente (axis=1)
 # b) Calcola la media di ogni materia (axis=0)
 # c) Trova lo studente con la media più alta (suggerimento: .argmax())
 # d) Conta quanti voti sono insufficienti (<60) in totale
+# Vincoli: niente loop per media/count insufficienze.
+# Checklist:
+# [ ] Ho usato axis correttamente.
+# [ ] Ho usato argmax per il migliore.
+# [ ] Ho contato insufficienze con condizione vettorizzata.
 #
 # Scrivi il tuo codice qui sotto:
 # ...
 
 
 # ESERCIZIO 3 (Medio — Operazioni Vettorizzate):
+# Obiettivo: usare algebra vettoriale senza loop.
 # Hai i prezzi di 8 prodotti in euro:
 #   prezzi_eur = np.array([10.00, 25.50, 99.99, 149.00, 5.99, 45.00, 200.00, 35.50])
+# Output atteso:
 # a) Converti in dollari (tasso 1.08) SENZA usare un loop
 # b) Applica uno sconto del 15% a tutti i prezzi SENZA loop
 # c) Trova tutti i prodotti che costano tra 20€ e 100€ (usa & per "and")
 # d) Calcola il ricavo totale se vendi 1 di ogni prodotto, con IVA 22%
+# Checklist:
+# [ ] Nessun for/while usato.
+# [ ] Ho usato operatori vettorizzati.
+# [ ] Ho usato maschera booleana con &.
 #
 # Scrivi il tuo codice qui sotto:
 # ...
 
 
 # ESERCIZIO 4 (Sfida — Reshape):
+# Obiettivo: capire le trasformazioni di shape senza perdere dati.
 # a) Crea un array 1D con 24 numeri (da 1 a 24)
 # b) Fai reshape in una matrice 4x6
 # c) Fai reshape in un array 3D di forma (2, 3, 4) — pensa a 2 "pagine"
 #    di 3 righe e 4 colonne ciascuna
 # d) Da (2,3,4) torna a 1D con .flatten()
 # e) Stampa la shape ad ogni passaggio
+# Vincoli: nessun dato deve andare perso; controlla sempre .shape.
+# Checklist:
+# [ ] Shape stampata a ogni step.
+# [ ] Stesso numero totale elementi in ogni forma.
+# [ ] Flatten finale corretto.
 #
 # Scrivi il tuo codice qui sotto:
 # ...
 
 
 # ESERCIZIO 5 (Sfida — Preview AI):
+# Obiettivo: simulare una pipeline minima di preprocessing per ML.
 # Simula un mini-dataset di un modello AI.
 # Crea una matrice di 100 "campioni" con 3 "features" ciascuno:
 #   - Feature 1: altezza (casuale tra 150 e 200)
@@ -320,6 +398,14 @@ print(f"\nImmagine 28x28 → vettore: {immagine_simulata.shape} → {vettore.sha
 #
 # Questo si chiama "standardizzazione" ed è un passo FONDAMENTALE
 # prima di dare i dati a un modello AI. Fallo SENZA loop!
+# Output atteso:
+# - shape dataset
+# - medie/std prima della normalizzazione
+# - medie/std dopo la normalizzazione (circa 0 e 1)
+# Checklist:
+# [ ] Dataset creato con shape (100, 3).
+# [ ] Normalizzazione fatta senza loop.
+# [ ] Medie ~0 e std ~1 dopo il transform.
 #
 # Scrivi il tuo codice qui sotto:
 # ...
