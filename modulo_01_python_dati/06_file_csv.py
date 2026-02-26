@@ -1735,8 +1735,28 @@ info_immobiliare(dati_csv_case)
 # Criterio di valutazione: aderenza alla consegna + correttezza HTML.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+def csv_to_html_table(percorso_file):
+    with open(percorso_file, "r", encoding="utf-8") as file:
+        dati_csv_case = list(csv.DictReader(file))
+        headers_tag = [k for k, v in dati_csv_case[0].items()] #lista con le descrizioni delle colonne
+        html = '<table>\n'
+        html += "  <thead><tr>\n"
+        for col in headers_tag:
+            html += f'    <th>{col}</th>\n'
+        html += "  </tr></thead>\n  <tbody>\n"
+        for riga in dati_csv_case:
+            html += "    <tr>\n"
+            for value in riga.values():
+                html += f'      <td>{value}</td>\n'
+            html += "    </tr>\n"
+        html += "  </tbody>\n</table>"
+    return html    
+    
+print("\nEsercizio 4\n")
 
+path_principale = os.path.join(os.path.dirname(__file__), "dati")
+case_file = os.path.join(path_principale, "case.csv")
+print(f"{csv_to_html_table(case_file)}")
 
 # --- ESERCIZIO 5 — 🔧 [REFACTORING]: ---
 # Il codice qui sotto FUNZIONA, ma è scritto male.
