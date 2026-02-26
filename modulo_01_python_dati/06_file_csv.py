@@ -1666,14 +1666,48 @@ print(f"{ordini_filtrati}")
 # - Usa `sorted(..., key=...)` per l'ordinamento finale.
 # - La funzione principale deve avere docstring.
 # Checklist:
-# [ ] Ho letto il CSV senza parsing manuale.
-# [ ] Ho gestito conversioni numeriche correttamente.
-# [ ] Ho stampato il formato richiesto per il punto c.
-# [ ] Ho incluso docstring.
+# [x] Ho letto il CSV senza parsing manuale.
+# [x] Ho gestito conversioni numeriche correttamente.
+# [x] Ho stampato il formato richiesto per il punto c.
+# [x] Ho incluso docstring.
 # Criterio di valutazione: aderenza alla consegna + chiarezza output.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+path_principale = os.path.join(os.path.dirname(__file__), "dati")
+case_file = os.path.join(path_principale, "case.csv")
+
+print(f"\nEsercizio 3\n")
+with open(case_file, "r", encoding="utf-8") as file:
+    dati_csv_case = list(csv.DictReader(file))
+    
+def info_immobiliare(dati_csv_case):
+    """
+    Questa funzione, presa una lista estratta da un file csv,
+    contenente info immobiliare, le analizza restituendo nell' ordine:
+    - media del prezzo delle case per citta;
+    - casa con prezzo più alto
+    - lista di case ordinata per mq
+    """
+    prezzi = {}
+    for dato in dati_csv_case:
+        citta = dato['citta']
+        prezzi[citta] = prezzi.get(citta, [0, 0])
+        prezzi[citta][0] += int(dato['prezzo_euro'])
+        prezzi[citta][1] += 1
+    medie = {}
+    for citta, stats in prezzi.items():
+        dividendo, divisore = stats
+        medie[citta] = round(dividendo / divisore, 2)
+    casa_piu_costosa = max(dati_csv_case, key=lambda x: int(x['prezzo_euro']))
+    case_ordinate = sorted(dati_csv_case,key=lambda x:int(x['metri_quadri']))
+    print(f"Medie per città:\n{medie}\n")
+    print(f"Casa più costosa:\n{casa_piu_costosa}\n")
+    print("Case ordinate per metri quadri:")
+    for case in case_ordinate:
+        print(f"{case['metri_quadri']}mq -> {int(case['prezzo_euro'])}EUR ({case['citta']})")
+
+info_immobiliare(dati_csv_case)
+
 
 
 # --- ESERCIZIO 4 (Livello 3 — Web Bridge): ---
