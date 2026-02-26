@@ -572,6 +572,7 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 | ".map() + .filter()" | List comprehension `[expr for x in lista if cond]` fa entrambi | `.map().filter()` in JS / `array_map()` + `array_filter()` in PHP | 04 | `.apply()` su DataFrame Pandas, trasformazione dati |
 | ".items() = enumerate dei dizionari" | `.items()` restituisce tuple `(chiave, valore)` da spacchettare — stessa meccanica di `enumerate()` che dà `(indice, valore)` | `Object.entries()` in JS / `foreach($arr as $k => $v)` in PHP | 05 | `.iterrows()` su DataFrame Pandas, iterazione su qualsiasi struttura chiave-valore |
 | "** = spread per dizionari" | `{**dict1, **dict2}` unisce dizionari | `{...obj1, ...obj2}` in JS / `array_merge()` in PHP | 05 | Merging config, parametri opzionali, kwargs |
+| "Modalità open() = sicura permessi" | `'r'`, `'w'`, `'a'` definiscono i permessi del file object (sola lettura, scrittura con reset, append) | HTTP method/permessi endpoint (GET vs POST/PUT) | 06 | File CSV, logging su file, gestione configurazioni persistenti |
 
 ### Come usare questa sezione
 Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente:
