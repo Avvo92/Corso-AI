@@ -58,29 +58,46 @@ import numpy as np  # 'np' è la convenzione universale, come '$' per jQuery
 #
 # DOMANDA 1 — Output concreto:
 # Cosa stampa: print("ciao mondo".split(" "))
-# La tua risposta: ___
+# La tua risposta: ["ciao", "mondo"]
 #
 # DOMANDA 2 — Vero o Falso?
 # "csv.DictReader restituisce numeri già convertiti in int/float"
-# La tua risposta (V/F): ___
+# La tua risposta (V/F): F
 #
 # DOMANDA 3 — Pipeline operativa (lacuna #11):
 # Descrivi IN ORDINE i passi del parsing manuale CSV, da file testo a
 # lista di dizionari. Niente teoria astratta: solo passaggi operativi.
-# La tua risposta: ___
+# La tua risposta:
+import os
+print(f"\nQuiz - 1\n")
+percorso_file = os.path.join(os.path.join(os.path.dirname(__file__), "dati"), "catalogo.csv")
+with open(percorso_file, "r", encoding="utf-8") as file:
+  lettore = file.readlines()
+  header = lettore[0].strip().split(',')
+  dictionary_list = []
+  for row in lettore[1:]:
+    if row.strip():
+      values = row.strip().split(",")
+      dictionary = {}
+      for i, v in enumerate(values, 0):
+        dictionary[header[i]] = v
+      dictionary_list.append(dictionary)
+  print(f"{dictionary_list}")
+        
+        
 #
 # DOMANDA 4 — Differenza pratica:
 # In 1 riga: quando preferisci csv.DictReader rispetto al parsing manuale?
-# La tua risposta: ___
+# La tua risposta: quando non mi occorre particolare controllo sul parsing
 #
 # DOMANDA 5 — Tipi:
 # Se record["prezzo"] vale "49.99", quale conversione usi per fare calcoli?
-# La tua risposta: ___
+# La tua risposta: float(record["prezzo"])
 #
 # Checklist:
-# [ ] Ho risposto con output concreti dove richiesto.
-# [ ] Ho descritto la pipeline con passi ordinati.
-# [ ] Ho distinto chiaramente manuale vs DictReader.
+# [x] Ho risposto con output concreti dove richiesto.
+# [x] Ho descritto la pipeline con passi ordinati.
+# [x] Ho distinto chiaramente manuale vs DictReader.
 #
 
 # 🔁 RINFORZO MIRATO — Dal CSV a NumPy: stessa logica, struttura diversa
