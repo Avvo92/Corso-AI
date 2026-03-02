@@ -15,12 +15,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | 06_file_csv.py (in corso avanzato: teoria + quiz completati, esercizi finali da completare) |
-| **Ultimo completato** | 05_dizionari.py (17/02/2026) |
+| **Capitolo in corso** | 07_numpy_intro.py (prossimo da iniziare) |
+| **Ultimo completato** | 06_file_csv.py (24/02/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
 | **Difficoltà media** | 5.8 (media di 2, 4, 6, 9, 8 — curva si stabilizza) |
-| **Priorità attive** | ✅ Lambda quasi acquisita, ✅ enumerate+.items() consolidato, 🟡 Lettura consegne in miglioramento (nuovo formato esercizi inserito), 🟡 Slicing/range in miglioramento, 🟡 Dict comprehension migliorata, 🔴 Parsing CSV manuale vs DictReader da consolidare (passi operativi + output atteso) |
-| **Sessione corrente** | Sessione 4 |
+| **Priorità attive** | ✅ Lambda consolidata nell'uso pratico, ✅ enumerate+.items() consolidato, 🟡 Lettura consegne in miglioramento (formato esplicito efficace), 🟡 Dict comprehension da rendere automatica, 🟡 Parsing CSV manuale vs DictReader rinforzato (da verificare nel quiz d'ingresso 07), ⚠️ filter/lambda ordine parametri da monitorare |
+| **Sessione corrente** | Sessione 5 |
 
 ---
 
@@ -32,9 +32,9 @@
 | Campo | Valore |
 |-------|--------|
 | **Data** | 24/02/2026 |
-| **Cosa è stato fatto** | Avanzamento concreto su 06_file_csv.py: completati mini-esercizi 3-6 con feedback iterativo, completati rinforzi mirati (output concreto e variabile nelle comprehension), quiz di verifica completato (7/8 pienamente corretti, 1 parziale), chiariti dubbi su path/file (`os.path.join`, `os.makedirs`, `open`), introdotti 3 esercizi extra `.get()` vs `.items()`, aggiornata formulazione degli esercizi con formato esplicito anti-ambiguita (obiettivo/input/output/vincoli/checklist/criterio) sia in CONTESTO_CORSO.md sia nel capitolo 06. |
-| **Errori emersi** | Nessun errore bloccante. Gap residuo: parsing CSV manuale spiegato in modo parziale (serve rinforzo sui passaggi operativi end-to-end) e distinzione "numero ordini" vs "somma quantita". |
-| **Cosa fare nella prossima sessione** | Completare e correggere gli esercizi finali del capitolo 06 + progetto incrementale; inserire nel capitolo 07 un rinforzo mirato su parsing CSV (manuale vs `csv.DictReader`) con focus su pipeline operativa e output concreto. |
+| **Cosa è stato fatto** | Chiuso il capitolo 06_file_csv.py end-to-end: quiz verifica completato (7/8 corrette piene + 1 parziale), tutti i rinforzi mirati svolti, aggiunto e completato rinforzo extra sul parsing (manuale vs DictReader), esercizi 1-7 completati con feedback iterativo, progetto incrementale completato con `salva_catalogo`, `carica_catalogo`, `report_catalogo`, uso corretto di path cross-platform e conversioni tipo. Aggiornata anche la chiarezza delle consegne con formato esplicito anti-ambiguita. |
+| **Errori emersi** | Nessun blocco tecnico. Residui minori: aderenza formale ai nomi firma in alcuni punti, output talvolta poco sintetico, e da consolidare la spiegazione "procedurale" dei passaggi quando il task è aperto/Feynman. |
+| **Cosa fare nella prossima sessione** | Avviare 07_numpy_intro.py: quiz d'ingresso + richiamo rapido su parsing/output concreto (verifica lacuna #11), poi teoria NumPy con focus su slicing/shape/indexing e mini-esercizi progressivi; mantenere checklist consegne esplicite. |
 | **Stato motivazione** | Alto e stabile — approccio molto attivo, richieste di chiarezza precise, ottima metacognizione su ambiguita delle consegne. |
 
 ---
@@ -64,17 +64,11 @@
 | Dict comprehension | ⚠️ Non interiorizzata | Tende a usare for classico quando la consegna chiede dict comprehension |
 | Tuple/unpacking | ⚠️ → 🟡 In miglioramento | Ponte mentale `.items() = enumerate dei dizionari` ha funzionato |
 
-### Lacune quiz aperte (🔴) — da rinforzare nel capitolo 06
+### Lacune quiz da monitorare — passaggio al capitolo 07
 
 | # | Concetto | Errore commesso |
 |---|----------|-----------------|
-| 1 | Slicing fine escluso | `numeri[1:4]` → 4 elementi invece di 3 |
-| 2 | `.append()` restituisce None | Pensava restituisse la lista modificata |
-| 3 | enumerate vs range | `range(frutti, len(frutti))` dove serviva `enumerate(frutti, 1)` |
-| 4 | Indici liste (contare da 0) | `[1:]` invece di `[2:]` per ottenere [30,40,50] |
-| 5 | sorted() nuova lista vs .sort() in-place | Non ha menzionato la differenza chiave |
-| 6 | Output concreto vs descrizione | Descrive il concetto invece di dare il valore `["Marco"]` |
-| 7 | Variabile corretta nelle comprehension | `x` invece di `n` (la variabile del for) |
+| 11 | Parsing CSV manuale vs spiegazione astratta | Rinforzo aggiunto nel cap.06 e svolto. Da verificare nel quiz d'ingresso cap.07 con una domanda su pipeline operativa completa. |
 
 ---
 
@@ -84,12 +78,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | 07_numpy_intro.py (dopo completamento esercizi finali 06) |
-| **Rinforzi da inserire (🔁)** | Parsing CSV manuale vs `csv.DictReader` (passi operativi, differenze, quando usare cosa) + output concreto vs spiegazione se ricompare |
-| **Concetti ⚠️ da ripassare** | Parsing end-to-end (apertura file -> header -> split -> dict -> append), dict comprehension (1 esercizio), `filter()` ordine parametri |
+| **Prossimo capitolo** | 07_numpy_intro.py |
+| **Rinforzi da inserire (🔁)** | Verifica rapida lacuna #11 (parsing operativo) nel quiz d'ingresso; se risposta corretta -> stato 🟢 |
+| **Concetti ⚠️ da ripassare** | Slicing/indexing (trasferimento a NumPy), dict comprehension (automatizzare), `filter()` ordine parametri |
 | **Pattern 🔴 da monitorare** | #5 (tipi nei dizionari/CSV), #6 (lettura consegne), #11 (ordine filter) |
 | **Ponte mentale da riusare** | ".items() = enumerate dei dizionari" (ha funzionato al cap.05) |
-| **Note** | La difficoltà è salita da 6 a 9 al cap.04. Il cap.05 (in corso) sembra stabilizzarsi. Monitorare attentamente il voto del 05. |
+| **Note** | Il cap.06 è stato completato con buona autonomia e correzione iterativa. Prima del cap.07: breve warm-up su output concreto e lettura consegne, poi passaggio a ndarray/shape/index slicing. |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -303,7 +297,7 @@
 | 03_funzioni.py | ✅ Completato + Corretto | 17/02/2026 | 6 | Ha capito *args, return multipli, sorted. **Lambda ancora poco chiare** — da rinforzare nei prossimi capitoli. Errori: lista vs parametri separati a *args, count come stringa, mancava `reverse=True`, mancava parametro `decimali`. Tutti corretti. |
 | 04_liste.py | ✅ Completato + Corretto | 19/02/2026 | 9 | Difficoltà alta. Ha capito slicing, list comprehension, sorted/filter/map con lambda. **Punti deboli**: enumerate+tuple non interiorizzati (molte domande), range a 3 parametri nuovo, consegne non lette completamente (ex.1 indice sbagliato, ex.2 formato incompleto, ex.3 senza funzione, ex.6 usa [::-1] vietato, ex.9 indice errato). Lambda usate correttamente in ex.4/5/7 — miglioramento reale. |
 | 05_dizionari.py | ✅ Completato + Corretto | 17/02/2026 | 8 | Quiz ingresso 1/8 corretto (slicing, .append None, enumerate vs range persistono). Quiz verifica 4/8 (len con aggiunta chiavi, >= vs >, .get vs .items). Dict comprehension usata correttamente nell'ex.3 (miglioramento dai mini-ex). Lambda consolidate. Contatore città + max() con lambda padroneggiati. Consegne incomplete persistono (ex.1 manca voto, ex.2 manca punto a, ex.5 manca reverse, ex.6 mancano b/c, ex.7 append parziale, ex.8 manca prodotto_più_venduto). Esercizio 4 (colloquio conta_parole) risolto perfettamente al primo tentativo. |
-| 06_file_csv.py | 🟡 In corso avanzato | 24/02/2026 | n.d. | Teoria completata, quiz verifica completato (7/8 pienamente corretti, 1 parziale). Esercizi finali in corso con nuovo formato consegne esplicite. |
+| 06_file_csv.py | ✅ Completato + Corretto | 24/02/2026 | 8 | Capitolo completato end-to-end. Quiz verifica: 7/8 pienamente corrette (+1 parziale). Esercizi 1-7 e progetto incrementale completati; forte miglioramento su `.get()`/`.items()`, parsing CSV, path handling e refactoring. |
 | 07_numpy_intro.py | ⬜ Da fare | | | Da arricchire prima che ci arrivi |
 | 08_tensori_spiegati.py | ⬜ Da fare | | | Da arricchire prima che ci arrivi |
 | 09_pandas_intro.py | ⬜ Da fare | | | |
@@ -549,6 +543,7 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 - **Sessione 2 (19/02/2026)**: File 04 completato. Difficoltà 9 — il salto maggiore finora. Enumerate/tuple e combinazione di concetti sono stati i punti più difficili
 - **Sessione 3 (17/02/2026)**: File 05 in corso. Mini-esercizi teoria completati. Miglioramento significativo su enumerate+.items(). Dict comprehension ancora da interiorizzare
 - **Sessione 4 (24/02/2026)**: File 06 in corso avanzato. Rinforzi mirati completati e quiz verifica quasi pieno. Forte miglioramento su `.get()`/`.items()`, sorting con `key`, e gestione path/file. Da consolidare parsing CSV manuale vs `DictReader` e definizione precisa degli output.
+- **Sessione 5 (24/02/2026)**: File 06 completato. Esercizi finali e progetto incrementale chiusi; rinforzo parsing aggiuntivo svolto con confronto manuale vs DictReader. Pronto il passaggio al file 07 (NumPy) con verifica iniziale mirata su output concreto e pipeline operativa.
 - **Ritmo stimato**: 1 file ogni 2 giorni (aggiornato dallo studente)
 - **Tempo totale stimato per il corso**: 5-6 mesi (corso) + 2-3 mesi (MVP app documentale)
 - **Momento migliore per studiare**: ❓ Da chiedere
@@ -719,7 +714,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 8 | len() con aggiunta chiavi al dizionario | Verifica/05 | Ha scritto 2 invece di 3. Non ha contato che `persona["citta"] = "Roma"` aggiunge una NUOVA chiave (da 2 a 3) | 06 | 🟡 |
 | 9 | >= vs > (include o esclude il valore limite) | Verifica/05 | Dict comprehension `if v >= 7`: ha escluso Marco (voto 7) dalla risposta. Non distingue >= (include) da > (esclude) | 06 | 🟡 |
 | 10 | .get() vs .items() — metodi diversi | Verifica/05 | Per contare frequenze ha scritto `.items(lettera, totale)` invece di `.get(lettera, 0)`. Confonde .items() (tutte le coppie) con .get() (una chiave con default) | 06 | 🟡 |
-| 11 | Parsing CSV manuale vs spiegazione astratta | Verifica/06 | Alla domanda Feynman ha descritto il concetto in modo generale ma senza sequenza operativa completa (apertura file -> lettura righe -> header -> split -> dizionario -> append). Richiesto rinforzo esplicito su "come" e non solo "cos'e". | 07 | 🔴 |
+| 11 | Parsing CSV manuale vs spiegazione astratta | Verifica/06 | Alla domanda Feynman ha descritto il concetto in modo generale ma senza sequenza operativa completa (apertura file -> lettura righe -> header -> split -> dizionario -> append). Rinforzo esplicito aggiunto e svolto nel cap.06; da verificare a inizio cap.07. | 07 | 🟡 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 

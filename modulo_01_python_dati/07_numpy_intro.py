@@ -335,12 +335,19 @@ print(f"\nImmagine 28x28 → vettore: {immagine_simulata.shape} → {vettore.sha
 # d) array moltiplicato per 10
 # Vincoli: usa NumPy puro (no loop per c e d).
 # Checklist:
-# [ ] Ho usato array NumPy e non lista Python.
-# [ ] Ho usato filtro booleano per i divisibili.
-# [ ] Ho stampato i 4 output richiesti.
+# [x] Ho usato array NumPy e non lista Python.
+# [x] Ho usato filtro booleano per i divisibili.
+# [x] Ho stampato i 4 output richiesti.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print(f"\nEsercizio 1\n")
+nparray = np.arange(1, 21)
+print(f"Array da 1 a 20:\n{nparray}\n")
+print(f"Media: => {nparray.mean()}\n")
+print(f"Mediana: => {np.median(nparray)}\n")
+print(f"Deviazione standard: => {nparray.std():.2f}\n")
+print(f"Solo divisibile per 3:\n{nparray[nparray % 3 == 0]}\n")
+print(f"Tutti gli elementi moltiplicati per 10:\n{nparray * 10}\n")
 
 
 # ESERCIZIO 2 (Medio) — Matrici e assi
@@ -357,12 +364,21 @@ print(f"\nImmagine 28x28 → vettore: {immagine_simulata.shape} → {vettore.sha
 # d) Conta quanti voti sono insufficienti (<60) in totale
 # Vincoli: niente loop per media/count insufficienze.
 # Checklist:
-# [ ] Ho usato axis correttamente.
-# [ ] Ho usato argmax per il migliore.
-# [ ] Ho contato insufficienze con condizione vettorizzata.
+# [x] Ho usato axis correttamente.
+# [x] Ho usato argmax per il migliore.
+# [x] Ho contato insufficienze con condizione vettorizzata.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print(f"\nEsercizio 2\n")
+voti = np.random.randint(50, 101, size=(5, 4))
+media_studente = np.round(voti.mean(axis = 1), 0).astype(int)
+media_materia = np.round(voti.mean(axis = 0), 0).astype(int)
+print(f"Voti 2D:\n{voti}\n")
+print(f"Media voti per Studente:\n{media_studente}\n")
+print(f"Media voti per Materia:\n{media_materia}\n")
+print(f"Studente con media più alta:\n{media_studente.argmax()} => {media_studente.max()}\n")
+print(f"Voti sotto il 60:\n{(voti < 60).sum()} => {voti[voti < 60]}\n")
+
 
 
 # ESERCIZIO 3 (Medio — Operazioni Vettorizzate):
@@ -375,12 +391,21 @@ print(f"\nImmagine 28x28 → vettore: {immagine_simulata.shape} → {vettore.sha
 # c) Trova tutti i prodotti che costano tra 20€ e 100€ (usa & per "and")
 # d) Calcola il ricavo totale se vendi 1 di ogni prodotto, con IVA 22%
 # Checklist:
-# [ ] Nessun for/while usato.
-# [ ] Ho usato operatori vettorizzati.
-# [ ] Ho usato maschera booleana con &.
+# [x] Nessun for/while usato.
+# [x] Ho usato operatori vettorizzati.
+# [x] Ho usato maschera booleana con &.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print(f"\nEsercizio 3\n")
+prezzi_eur = np.array([10.00, 25.50, 99.99, 149.00, 5.99, 45.00, 200.00, 35.50])
+prezzi_usd = np.round(prezzi_eur * 1.08, 2).astype(float)
+prezzi_scontati = np.round(prezzi_eur*0.85, 2).astype(float)
+prezzi_tra_20_e_100 = prezzi_eur[(prezzi_eur > 20) & (prezzi_eur < 100)]
+ricavo_totale = np.sum(prezzi_eur)
+print(f"Prezzi in dollari:\n{np.char.mod('$%.2f',prezzi_usd)}\n")
+print(f"Prezzi scontati:\n{np.char.mod('€%.2f',prezzi_scontati)}\n")
+print(f"Prezzi tra 20 e 100 €:\n{np.char.mod('€%.2f',prezzi_tra_20_e_100)}\n")
+print(f"Ricavo totale: => {np.char.mod('€%.2f',(ricavo_totale * 1.22))}")
 
 
 # ESERCIZIO 4 (Sfida — Reshape):
@@ -393,12 +418,20 @@ print(f"\nImmagine 28x28 → vettore: {immagine_simulata.shape} → {vettore.sha
 # e) Stampa la shape ad ogni passaggio
 # Vincoli: nessun dato deve andare perso; controlla sempre .shape.
 # Checklist:
-# [ ] Shape stampata a ogni step.
-# [ ] Stesso numero totale elementi in ogni forma.
-# [ ] Flatten finale corretto.
+# [x] Shape stampata a ogni step.
+# [x] Stesso numero totale elementi in ogni forma.
+# [x] Flatten finale corretto.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print(f"\nEsercizio 4\n")
+arr = np.arange(1, 25)
+print(f'Array 1D =\n{arr}\n => {arr.shape}\n')
+arr_rs_2d = arr.reshape(4, 6)
+print(f'Array 2D =\n{arr_rs_2d} => {arr_rs_2d.shape}\n')
+arr_rs_3d = arr_rs_2d.reshape(2, 3, 4)
+print(f'Array 3D =\n{arr_rs_3d} => {arr_rs_3d.shape}\n')
+arr_flatten = arr_rs_3d.flatten()
+print(f'Array Flatten =\n{arr_flatten} => {arr_flatten.shape}\n')
 
 
 # ESERCIZIO 5 (Sfida — Preview AI):
