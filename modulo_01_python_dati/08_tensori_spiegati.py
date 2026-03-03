@@ -65,22 +65,22 @@ import numpy as np
 #   import numpy as np
 #   a = np.array([[10, 20, 30], [40, 50, 60]])
 #   print(a.mean(axis=0))
-# La tua risposta:
+# La tua risposta:[25 35 45]
 #
 # DOMANDA 2 — Vero o Falso?
 # "Se un CSV ha 3 valori per riga, la struttura naturale in NumPy è 2D (n, 3),
 #  non 3D."
-# La tua risposta (V/F):
+# La tua risposta (V/F): V
 #
 # DOMANDA 3 — Trova l'errore:
 #   import random
 #   n = random.randint(1, 20)   # voglio 1..19
 # Qual è il problema e come lo correggi?
-# La tua risposta:
+# La tua risposta: random.randint(1, 19) randint include sia il primo che l'ultimo valore che introduco come parametro
 #
 # DOMANDA 4 — Definizione pratica:
 # Differenza tra list.append(x) e list.extend(iterabile) in 1-2 righe.
-# La tua risposta:
+# La tua risposta: .append aggiunge alla fine in valore che ho scelto come parametro, mentra .extend attacca alla fine della lista un ulterio lista di elementi
 #
 # DOMANDA 5 — Completa il codice:
 #   import csv
@@ -88,18 +88,18 @@ import numpy as np
 #   with open("matrice.csv", "r", encoding="utf-8") as f:
 #       rows = list(csv.reader(f))
 #       X = np.array(rows[1:], dtype=___)
-# Perché usiamo rows[1:]?
-# La tua risposta:
+# Perché usiamo rows[1:]? => per estromettere dall' array la prima rige del file csv che di solito è costituita dall'header
+# La tua risposta: float oppure int per convertire i valori che nativamente vengono riportati come stringhe
 #
 # DOMANDA 6 — Vero o Falso?
 # "Dopo standardizzazione z-score, media e deviazione standard per colonna
 #  sono circa 0 e 1."
-# La tua risposta (V/F):
+# La tua risposta (V/F):V
 #
 # Checklist:
-# [ ] Ho verificato axis=0/axis=1 senza andare a memoria.
-# [ ] So distinguere append vs extend.
-# [ ] So convertire da CSV (stringhe) a array numerico.
+# [x] Ho verificato axis=0/axis=1 senza andare a memoria.
+# [x] So distinguere append vs extend.
+# [x] So convertire da CSV (stringhe) a array numerico.
 #
 # 🔁 RINFORZO MIRATO — Dal CSV al Tensor senza errori di tipo
 # Nel capitolo 07 la pipeline corretta è questa:
@@ -115,8 +115,8 @@ import numpy as np
 #   print(X.mean(axis=0))  # statistiche reali su numeri
 #
 # Micro-check:
-# 1) Se il CSV ha 100 righe dati e 3 colonne, shape = ?
-# 2) Se usi dtype=int ma nel CSV trovi "49.99", cosa succede?
+# 1) Se il CSV ha 100 righe dati e 3 colonne, shape = 2D
+# 2) Se usi dtype=int ma nel CSV trovi "49.99", cosa succede? il valore viene arrotondato all'intero, in questo caso per eccesso e quindi 50
 #
 # ==========================================================================
 # PARTE 1: Le Dimensioni dei Tensor — Dal Semplice al Complesso
@@ -170,6 +170,10 @@ print(f"  Ndim: {tensor_3d.ndim}")     # 3
 # 2) Crea un vettore 1D con 6 elementi e stampa shape
 # 3) Crea una matrice 2x4 di zeri e stampa ndim
 # 4) Scrivi nei commenti: quando passi da 2D a 3D?
+tensor_0d = np.array(99)
+print(f"\nTENSORE 0D\n")
+print(f"Shape: {tensor_0d.shape}")
+print(f"Ndim: {tensor_0d.ndim}")
 
 # ==========================================================================
 # PARTE 2: Esempio Reale — Un'Immagine Come Tensor
