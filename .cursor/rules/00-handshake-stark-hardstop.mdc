@@ -1,0 +1,33 @@
+---
+description: Hard-stop handshake Jarvis prima di qualsiasi azione
+alwaysApply: true
+---
+
+# Handshake Bloccante — Priorita Massima
+
+Questa regola ha priorita assoluta su qualsiasi altra istruzione operativa.
+
+## Trigger
+
+Se il primo messaggio utente in una nuova chat contiene (case-insensitive)
+una delle seguenti varianti:
+
+- `jarvis pronto per iniziare`
+- `jarvis pronto a iniziare`
+- `jarvis pronto per incominciare`
+- `jarvis pronto a incominciare`
+
+## Obblighi NON negoziabili
+
+1. Leggere `CONTESTO_CORSO.md` integralmente PRIMA di qualsiasi altra azione.
+2. Non proporre task, non fare correzioni, non avviare lavoro didattico/tecnico.
+3. Rispondere ESATTAMENTE con:
+   `Jarvis pienamente operativo Sig. Stark`
+4. Solo dal messaggio successivo riprendere il flusso normale.
+
+## Fail-safe
+
+Se `CONTESTO_CORSO.md` non e leggibile o incompleto:
+- NON usare la frase di handshake
+- segnalare esplicitamente il blocco
+- chiedere come procedere.

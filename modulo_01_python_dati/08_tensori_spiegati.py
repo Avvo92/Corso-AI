@@ -55,6 +55,69 @@
 
 import numpy as np
 
+# ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  QUIZ D'INGRESSO — Ripasso dal capitolo 07 (NumPy)                    ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+#
+# Obiettivo: consolidare le lacune emerse nel capitolo precedente.
+#
+# DOMANDA 1 — Prevedi l'output:
+#   import numpy as np
+#   a = np.array([[10, 20, 30], [40, 50, 60]])
+#   print(a.mean(axis=0))
+# La tua risposta:
+#
+# DOMANDA 2 — Vero o Falso?
+# "Se un CSV ha 3 valori per riga, la struttura naturale in NumPy è 2D (n, 3),
+#  non 3D."
+# La tua risposta (V/F):
+#
+# DOMANDA 3 — Trova l'errore:
+#   import random
+#   n = random.randint(1, 20)   # voglio 1..19
+# Qual è il problema e come lo correggi?
+# La tua risposta:
+#
+# DOMANDA 4 — Definizione pratica:
+# Differenza tra list.append(x) e list.extend(iterabile) in 1-2 righe.
+# La tua risposta:
+#
+# DOMANDA 5 — Completa il codice:
+#   import csv
+#   import numpy as np
+#   with open("matrice.csv", "r", encoding="utf-8") as f:
+#       rows = list(csv.reader(f))
+#       X = np.array(rows[1:], dtype=___)
+# Perché usiamo rows[1:]?
+# La tua risposta:
+#
+# DOMANDA 6 — Vero o Falso?
+# "Dopo standardizzazione z-score, media e deviazione standard per colonna
+#  sono circa 0 e 1."
+# La tua risposta (V/F):
+#
+# Checklist:
+# [ ] Ho verificato axis=0/axis=1 senza andare a memoria.
+# [ ] So distinguere append vs extend.
+# [ ] So convertire da CSV (stringhe) a array numerico.
+#
+# 🔁 RINFORZO MIRATO — Dal CSV al Tensor senza errori di tipo
+# Nel capitolo 07 la pipeline corretta è questa:
+#   CSV (stringhe) -> salto header -> conversione numerica -> calcolo NumPy
+# Se dimentichi la conversione, NumPy lavora con testo e la statistica si rompe.
+#
+# Esempio rapido:
+#
+#   righe = [["altezza", "peso", "eta"], ["180", "75", "30"], ["170", "68", "28"]]
+#   # righe[1:] elimina l'header testuale
+#   X = np.array(righe[1:], dtype=float)
+#   print(X.shape)         # (2, 3)
+#   print(X.mean(axis=0))  # statistiche reali su numeri
+#
+# Micro-check:
+# 1) Se il CSV ha 100 righe dati e 3 colonne, shape = ?
+# 2) Se usi dtype=int ma nel CSV trovi "49.99", cosa succede?
+#
 # ==========================================================================
 # PARTE 1: Le Dimensioni dei Tensor — Dal Semplice al Complesso
 # ==========================================================================
@@ -101,6 +164,12 @@ print(f"\nTENSOR 3D:")
 print(f"  Valore:\n{tensor_3d}")
 print(f"  Shape: {tensor_3d.shape}")   # (2, 3, 2)
 print(f"  Ndim: {tensor_3d.ndim}")     # 3
+
+# --- MINI-ESERCIZIO 1 — Prova subito! ---
+# 1) Crea un tensor 0D con valore 99 e stampa shape/ndim
+# 2) Crea un vettore 1D con 6 elementi e stampa shape
+# 3) Crea una matrice 2x4 di zeri e stampa ndim
+# 4) Scrivi nei commenti: quando passi da 2D a 3D?
 
 # ==========================================================================
 # PARTE 2: Esempio Reale — Un'Immagine Come Tensor
@@ -151,6 +220,12 @@ print(f"\nFoto Full HD:")
 print(f"  Shape: {foto_hd_shape}")
 print(f"  Numeri totali: {totale_numeri:,}")  # 6,220,800 numeri!
 
+# --- MINI-ESERCIZIO 2 — Prova subito! ---
+# 1) Crea una "mini immagine" casuale di shape (5, 5, 3)
+# 2) Stampa solo il canale verde (indice 1)
+# 3) Stampa il pixel in posizione [2, 2]
+# 4) Verifica quanti numeri totali contiene con .size
+
 # ==========================================================================
 # PARTE 3: Shape — La "Carta d'Identità" del Tensor
 # ==========================================================================
@@ -197,6 +272,11 @@ print(f"  → {altezza}x{larghezza} pixel ciascuna")
 print(f"  → {canali} canale (bianco e nero)")
 print(f"  → Totale numeri: {batch_immagini.size:,}")
 
+# --- MINI-ESERCIZIO 3 — Prova subito! ---
+# 1) Crea un batch RGB con shape (16, 64, 64, 3)
+# 2) Stampa separatamente batch, altezza, larghezza, canali usando gli indici di shape
+# 3) Calcola il totale numeri con una moltiplicazione manuale e confrontalo con .size
+
 # ==========================================================================
 # PARTE 4: Operazioni sui Tensor — Broadcast
 # ==========================================================================
@@ -229,6 +309,12 @@ print(f"\nMedie per canale RGB: {np.round(medie_canali, 1)}")
 immagine_centrata = immagine - medie_canali
 print(f"Immagine centrata (primi pixel): {np.round(immagine_centrata[0, 0], 1)}")
 
+# --- MINI-ESERCIZIO 4 — Prova subito! ---
+# 1) Crea un tensor "audio" shape (2, 5) con valori casuali
+# 2) Crea un vettore offset di shape (5,)
+# 3) Somma tensor + offset e verifica shape risultato
+# 4) Spiega in una riga perché funziona (broadcasting)
+
 # ==========================================================================
 # PARTE 5: Perché i Tensor sono Diversi dalle Liste di Liste?
 # ==========================================================================
@@ -258,6 +344,46 @@ print(f"  Lista Python: {tempo_lista:.4f} secondi")
 print(f"  Array NumPy:  {tempo_numpy:.4f} secondi")
 print(f"  NumPy è {tempo_lista/tempo_numpy:.0f}x più veloce!")
 
+# ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  QUIZ DI VERIFICA — Prima degli esercizi                               ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+#
+# DOMANDA 1 — Prevedi l'output:
+#   x = np.zeros((3, 4, 2))
+#   print(x.ndim, x.shape)
+# La tua risposta:
+#
+# DOMANDA 2 — Vero o Falso?
+# "Un'immagine RGB singola in NumPy ha tipicamente shape (H, W, 3)."
+# La tua risposta (V/F):
+#
+# DOMANDA 3 — Trova l'errore:
+#   batch = np.random.rand(32, 28, 28, 1)
+#   print(batch.shape[4])
+# Che errore produce e perché?
+# La tua risposta:
+#
+# DOMANDA 4 — Definizione:
+# Spiega in parole semplici cosa significa "shape".
+# La tua risposta:
+#
+# DOMANDA 5 — Completa il codice:
+#   img = np.random.randint(0, 256, (8, 8, 3))
+#   gray = img.mean(axis=___)
+#   flat = gray.reshape(___)
+# Riempi i due spazi per ottenere shape (64,)
+#
+# DOMANDA 6 — Prevedi l'output:
+#   a = np.array([[1, 2, 3], [4, 5, 6]])
+#   b = np.array([10, 20, 30])
+#   print(a + b)
+# La tua risposta:
+#
+# DOMANDA 7 — 💬 Spiega con parole tue:
+# Spiega a un collega web developer perché un dataset tabellare sta in 2D
+# e quando invece serve un 3D o 4D.
+# La tua risposta:
+#
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  ESERCIZI — Ora Prova Tu!                                             ║
@@ -331,8 +457,54 @@ print(f"  NumPy è {tempo_lista/tempo_numpy:.0f}x più veloce!")
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  🏗️ PROGETTO INCREMENTALE — Catalogo E-commerce                        ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+#
+# Nel capitolo 07 hai lavorato con una matrice 2D (campioni x feature).
+# In questo capitolo fai il passo in più: rappresentare "mini immagini prodotto"
+# come tensori, per preparare la strada al modulo di Computer Vision.
+#
+# Task (15-25 minuti):
+# 1) Simula 12 "thumbnail prodotto" in scala ridotta con shape (12, 16, 16, 3)
+#    usando valori casuali 0-255 (dtype=np.uint8).
+# 2) Crea una versione normalizzata in [0, 1] dividendo per 255.0.
+# 3) Crea una versione in bianco e nero (media sui canali RGB, axis=3),
+#    mantenendo lo shape batch-first: (12, 16, 16).
+# 4) Appiattisci ogni immagine in vettore 1D:
+#    shape finale attesa (12, 256) usando reshape(batch_size, -1).
+# 5) Stampa shape a ogni passaggio e verifica che il numero di campioni
+#    resti 12 in tutte le trasformazioni.
+#
+# Obiettivo mentale:
+# - 2D per dati tabellari (come nel 07)
+# - 4D per batch immagini (n, h, w, c)
+# - reshape/mean come ponte verso i modelli AI
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+#
+
+# ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  SOLUZIONI — Guardale Solo DOPO Aver Provato!                         ║
 # ╚═════════════════════════════════════════════════════════════════════════╝
+
+# --- RISPOSTE QUIZ D'INGRESSO ---
+# 1) [25. 35. 45.] perché axis=0 calcola la media per colonna
+# 2) Vero
+# 3) randint(1, 20) include anche 20; per 1..19 usa randint(1, 19) oppure randrange(1, 20)
+# 4) append aggiunge un solo elemento; extend aggiunge tutti gli elementi dell'iterabile
+# 5) dtype=float (o int se i dati sono interi); rows[1:] serve a saltare l'header testuale
+# 6) Vero (circa 0 e 1, salvo arrotondamenti)
+#
+# --- RISPOSTE QUIZ DI VERIFICA ---
+# 1) 3 (3, 4, 2)
+# 2) Vero
+# 3) IndexError: tuple index out of range, perché shape ha indici 0..3
+# 4) La shape è la "carta d'identità" del tensor: dice quante dimensioni ha e quanti elementi per ogni dimensione
+# 5) axis=2 e reshape(-1)
+# 6) [[11 22 33]
+#     [14 25 36]]
+# 7) 2D = righe/colonne (tabella); 3D/4D servono quando c'è una dimensione extra reale (canali colore, tempo, batch)
 
 # --- SOLUZIONE ESERCIZIO 1 ---
 # # a) Scalare → shape ()

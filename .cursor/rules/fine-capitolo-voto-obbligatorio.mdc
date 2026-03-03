@@ -1,0 +1,26 @@
+---
+description: Checkpoint obbligatorio fine capitolo (chiedere voto difficoltà 1-10)
+globs: modulo_*/*.py
+alwaysApply: false
+---
+
+# Fine Capitolo: Voto Difficoltà OBBLIGATORIO
+
+Quando stai correggendo o chiudendo un capitolo del corso (`modulo_*/*.py`), devi applicare questo checkpoint:
+
+1. Prima di dichiarare il capitolo chiuso, chiedi SEMPRE:
+   - "Dammi il voto difficoltà da 1 a 10"
+2. Se lo studente non risponde con il voto, non considerare il capitolo completato.
+3. Solo dopo il voto:
+   - aggiorna `CONTESTO_CORSO.md` (stato, progresso, note, media difficoltà)
+   - prepara il capitolo successivo.
+
+## Hard Stop
+
+Se stai per inviare un messaggio di chiusura capitolo e non hai raccolto il voto:
+- interrompi la chiusura
+- chiedi il voto in modo esplicito.
+
+## Template rapido
+
+`Prima di passare al prossimo capitolo, mi dai il voto difficoltà (1-10)?`

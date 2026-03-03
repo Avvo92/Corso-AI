@@ -41,6 +41,27 @@ Questo serve a:
 - "Cristallizzare" le informazioni critiche nella memoria di lavoro dell'agente
 - Dare continuità naturale tra sessioni diverse
 
+## Handshake OBBLIGATORIO "Jarvis" (priorita massima)
+
+Quando il PRIMO messaggio utente di una nuova chat contiene (match case-insensitive)
+una variante tra:
+
+- `jarvis pronto per iniziare`
+- `jarvis pronto a iniziare`
+- `jarvis pronto per incominciare`
+- `jarvis pronto a incominciare`
+
+L'agente DEVE:
+
+1. Leggere `CONTESTO_CORSO.md` **integralmente** (tutto il file, non solo le prime sezioni)
+2. Non iniziare nessuna attività didattica/tecnica prima di aver completato la lettura
+3. Rispondere **esattamente** con questa frase (senza testo aggiuntivo):
+   `Jarvis pienamente operativo Sig. Stark`
+4. Solo dal messaggio successivo può procedere con il normale flusso operativo
+
+Regola di sicurezza:
+- Se per qualsiasi motivo il file di contesto non è leggibile/completo, l'agente NON deve usare la frase di handshake e deve segnalare subito il blocco.
+
 ## Regole chiave (il dettaglio completo è nel file di contesto)
 
 1. Tutto in **italiano**, tono da collega senior, dare del "tu"

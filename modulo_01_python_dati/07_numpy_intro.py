@@ -453,13 +453,42 @@ print(f'Array Flatten =\n{arr_flatten} => {arr_flatten.shape}\n')
 # - medie/std prima della normalizzazione
 # - medie/std dopo la normalizzazione (circa 0 e 1)
 # Checklist:
-# [ ] Dataset creato con shape (100, 3).
-# [ ] Normalizzazione fatta senza loop.
-# [ ] Medie ~0 e std ~1 dopo il transform.
+# [x] Dataset creato con shape (100, 3).
+# [x] Normalizzazione fatta senza loop.
+# [x] Medie ~0 e std ~1 dopo il transform.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+import os
+import csv
+import random
+print(f"\nEsercizio 5\n")
+path_principale = os.path.join(os.path.dirname(__file__), "miei_dati")
+os.makedirs(path_principale, exist_ok=True)
+path_dati = os.path.join(path_principale, "matrice.csv")
+with open(path_dati, "w", encoding="utf-8", newline="") as file:
+  writer = csv.writer(file)
+  header = writer.writerow(['altezza', 'peso', 'eta'])
+  for i in range(1, 101):
+    dati = []
+    dati.extend([random.randint(150, 200), random.randint(50, 100), random.randint(18, 65)])
+    writer.writerow(dati)
+    
+with open(path_dati, "r", encoding="utf-8") as file:
+  reader = list(csv.reader(file))
+  matrice = np.array(reader[1:],dtype=int)
+  print(f"Shape: {matrice.shape}\n")
+  print(f"Mean: {np.round(matrice.mean(axis=0), 2).astype(float)}\n")
+  print(f"Std: {np.round(matrice.std(axis=0), 2).astype(float)}\n")
+  norm_matrice = (matrice - matrice.mean(axis=0)) / matrice.std(axis=0)
+  print(f"Mean_norm: {np.round(norm_matrice.mean(axis=0), 2)}\n")
+  print(f"Std_norm: {np.round(norm_matrice.std(axis=0), 2)}\n")
+  
 
+
+
+# dataset_norm = (dataset - dataset.mean(axis=0)) / dataset.std(axis=0)
+
+    
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  SOLUZIONI — Guardale Solo DOPO Aver Provato!                         ║

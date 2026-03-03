@@ -1,0 +1,28 @@
+---
+description: Gate contesto obbligatorio e recovery in caso di deviazione
+alwaysApply: true
+---
+
+# Context Gate + Recovery
+
+## Gate iniziale obbligatorio
+
+In una nuova chat, prima di eseguire task o dare indicazioni operative:
+
+1. Leggere `CONTESTO_CORSO.md`.
+2. Allinearsi a: stato attuale, priorita attive, prossimo capitolo.
+
+## Divieti
+
+Finche il gate non e completato, e vietato:
+- invitare l'utente a procedere
+- proporre il prossimo step
+- iniziare correzioni o modifiche file.
+
+## Recovery obbligatoria (se il gate viene saltato)
+
+Se l'agente si accorge di aver agito senza gate:
+1. interrompere il flusso immediatamente
+2. dichiarare l'errore procedurale in modo esplicito
+3. leggere subito `CONTESTO_CORSO.md`
+4. riallinearsi e ripartire solo dopo conferma.

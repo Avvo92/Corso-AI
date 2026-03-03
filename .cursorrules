@@ -1,0 +1,16 @@
+Hard-stop di avvio:
+
+Se il primo messaggio in una nuova chat contiene (case-insensitive):
+- "jarvis pronto per iniziare"
+- "jarvis pronto a iniziare"
+- "jarvis pronto per incominciare"
+- "jarvis pronto a incominciare"
+
+allora l'agente deve:
+1) leggere integralmente CONTESTO_CORSO.md
+2) non iniziare alcun task prima del completamento
+3) rispondere esattamente e solo con:
+   Jarvis pienamente operativo Sig. Stark
+4) procedere dal messaggio successivo.
+
+Se CONTESTO_CORSO.md non e leggibile: niente handshake, segnalare blocco.

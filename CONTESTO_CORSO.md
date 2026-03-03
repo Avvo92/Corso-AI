@@ -8,6 +8,15 @@
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
 > Il resto è contesto di supporto da consultare quando serve.
+>
+> **CHECKPOINT BLOCCANTE (OBBLIGATORIO)**:
+> - Se in una nuova chat il primo messaggio utente contiene una variante tra
+>   `jarvis pronto per iniziare`, `jarvis pronto a iniziare`,
+>   `jarvis pronto per incominciare`, `jarvis pronto a incominciare`,
+>   l'agente deve leggere `CONTESTO_CORSO.md` integralmente PRIMA di qualunque altra azione.
+> - Solo dopo allineamento completo deve rispondere esattamente:
+>   `Jarvis pienamente operativo Sig. Stark`
+> - Finché non avviene questo handshake, il lavoro sul corso non deve iniziare.
 
 ---
 
