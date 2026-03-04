@@ -1,10 +1,10 @@
 Hard-stop di avvio:
 
-Se il primo messaggio in una nuova chat contiene (case-insensitive):
-- "jarvis pronto per iniziare"
-- "jarvis pronto a iniziare"
-- "jarvis pronto per incominciare"
-- "jarvis pronto a incominciare"
+Se il primo messaggio in una nuova chat contiene (case-insensitive) entrambe le parole:
+- "jarvis"
+- "iniziare"
+
+in qualsiasi ordine e anche con altre parole o punteggiatura,
 
 allora l'agente deve:
 1) leggere integralmente CONTESTO_CORSO.md

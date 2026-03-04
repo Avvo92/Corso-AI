@@ -211,7 +211,7 @@
 - Sempre la sequenza: **analogia concreta → codice JS/PHP equivalente → codice Python → esercizio**
 - Mai partire dalla teoria astratta. Prima il "a cosa serve nella vita reale", poi il come
 - Ogni metodo nuovo va mostrato con un **mini-esempio isolato** prima di usarlo dentro un esercizio più complesso
-- Usare scenari dal mondo **web ed e-commerce** quando possibile — è il dominio che Gianluca conosce
+- Usare scenari dal mondo **web e controllo documentale** quando possibile — è il dominio più vicino al progetto finale di Gianluca
 - Se un concetto è simile a qualcosa di **Laravel** (es. Eloquent → Pandas, middleware → decoratori), usare quel ponte
 - Nei commenti del codice: integrare **richiami naturali** ai termini già visti (vedi regola 10)
 - **Mai usare abbreviazioni/acronimi senza spiegarli** la prima volta (es. scrivere "ML" senza dire che significa "Machine Learning"). Alla prima occorrenza: nome completo + abbreviazione + spiegazione in una riga. Nelle occorrenze successive: usare l'abbreviazione liberamente
@@ -291,7 +291,7 @@
 26. **Recall cross-modulo**: il primo capitolo di ogni nuovo modulo (dal M3 in poi) deve contenere almeno 1 esercizio etichettato `# 🔄 [RECALL CROSS-MODULO]` che richiede di usare competenze di un modulo precedente nel nuovo contesto. Questo colma il gap di retention tra moduli distanti. Esempi: al M5, riscrivere un endpoint FastAPI dal M1 prima di costruire l'API LLM. Al M6, ripulire un CSV con Pandas come si faceva al M1. Al M9, riscrivere un modello Scikit-Learn dal M2 prima di containerizzarlo.
 27. **Mock interview mensili**: dal Modulo 4 in poi, 1 volta al mese l'AI simula un colloquio tecnico reale. 3 domande, 15 minuti ciascuna, nessun hint, valutazione severa (passeresti / borderline / non passeresti). È l'unico momento in cui l'AI abbandona il tono supportivo. I risultati sono tracciati nella sezione "Mock Interview" di questo file.
 28. **Split file per moduli avanzati**: dal Modulo 2 in poi, se un capitolo supera le ~400 righe, splittare in due file: `XXa_teoria.py` (spiegazione + mini-esercizi) e `XXb_pratica.py` (quiz verifica + esercizi + progetto incrementale + soluzioni). Il quiz d'ingresso resta nel file `a`. Per i moduli M3-M4 dove la visualizzazione inline aiuta (output di training, grafici loss, immagini), valutare l'uso di **Jupyter Notebook** (`.ipynb`) al posto dei file `.py`. La scelta va fatta capitolo per capitolo in base al contenuto.
-29. **Diversificazione dominio**: dal Modulo 5 in poi, almeno 1 esercizio per modulo usa un dominio diverso dall'e-commerce. Il progetto incrementale resta nel dominio e-commerce (per coerenza e riduzione del carico cognitivo), ma gli esercizi singoli ampliano il contesto per preparare ai colloqui dove il dominio può essere qualsiasi. Domini alternativi suggeriti: documenti legali (M6 — RAG), ticket di supporto tecnico (M7 — Agents), dati medici/sanitari (M5 — LLM), logistica/supply chain (M8), analisi finanziaria (M9).
+29. **Diversificazione dominio**: dal Modulo 5 in poi, almeno 1 esercizio per modulo usa un dominio diverso dal controllo documentale. Il progetto incrementale resta nel dominio documentale/fiscale (per coerenza con l'obiettivo finale), ma gli esercizi singoli ampliano il contesto per preparare ai colloqui dove il dominio può essere qualsiasi. Domini alternativi suggeriti: e-commerce (M5 — LLM), ticket di supporto tecnico (M7 — Agents), dati medici/sanitari (M5 — LLM), logistica/supply chain (M8), analisi finanziaria (M9).
 
 ---
 
@@ -337,23 +337,23 @@
 |---|----------|--------|---------------------|---------------|
 | 1 | Predittore prezzo case | M2 | Streamlit Cloud | ML classico, data analysis, Streamlit |
 | 2 | Classificatore immagini | M3 | HuggingFace Spaces | Deep Learning, transfer learning, Gradio |
-| 3 | Analizzatore recensioni e-commerce | M4 | Streamlit Cloud | NLP, embeddings, sentiment analysis |
-| 4 | Assistente e-commerce AI | M5 | Streamlit Cloud | LLM API, function calling, streaming |
-| 5 | RAG documentale | M6 | Streamlit Cloud | RAG, vector DB, evaluation |
+| 3 | Estrattore campi documentali | M4 | Streamlit Cloud | NLP, embeddings, information extraction |
+| 4 | Assistente operatore documentale AI | M5 | Streamlit Cloud | LLM API, function calling, streaming |
+| 5 | RAG normativo-documentale | M6 | Streamlit Cloud | RAG, vector DB, evaluation |
 | 6 | Agente di ricerca e analisi | M7 | Streamlit Cloud | AI agents, tool use, LangGraph |
 | 7 | Demo fine-tuning comparativa | M8 | HuggingFace Spaces | Fine-tuning, LoRA, comparazione base vs fine-tunato |
 | 8 | Prodotto full-stack AI (diamante portfolio) | M10 | Cloud (Railway/Render) | Full-stack: React + FastAPI + RAG + Agent + Docker |
 
-#### Evoluzione del Progetto Incrementale "Catalogo E-commerce"
+#### Evoluzione del Progetto Incrementale "Controllo Documentale AI"
 
 > Il progetto incrementale evolve naturalmente attraverso i moduli, diventando progressivamente il progetto finale.
 
 | Fase | Moduli | Il progetto diventa... |
 |------|--------|-----------------------|
-| **Data Tool** | M1-M2 | Catalogo prodotti con analisi dati, statistiche, previsioni prezzi |
-| **Smart Tool** | M3-M4 | + classificazione immagini prodotto, analisi sentiment recensioni |
-| **AI-Powered** | M5-M6 | + chatbot AI sul catalogo (RAG), ricerca semantica prodotti, function calling |
-| **Autonomous** | M7-M8 | + agente che gestisce ordini/inventario, modello personalizzato per generazione descrizioni |
+| **Data Tool** | M1-M2 | Pipeline documenti con parsing, validazioni base, punteggio rischio e prime metriche |
+| **Smart Tool** | M3-M4 | + classificazione anomalie da immagini/scansioni, estrazione campi testuali da documenti |
+| **AI-Powered** | M5-M6 | + assistente RAG su normative/procedure, ricerca semantica documentale, function calling |
+| **Autonomous** | M7-M8 | + agente che orchestra OCR/controlli/report e modello specializzato per classificazione casi |
 | **Production** | M9-M10 | + containerizzato, deployato, testato, monitorato, con CI/CD — il diamante del portfolio |
 
 ---
@@ -571,6 +571,7 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 | "foreach" | `for elemento in lista` itera sugli elementi | `for...of` in JS / `foreach` in PHP | 02 | Iterazione su array NumPy, righe DataFrame, batch di dati |
 | "Database in RAM" | Pandas DataFrame = tabella SQL in memoria | Query Eloquent / tabella MySQL | Teoria | Pandas, feature engineering, EDA |
 | "Pixel = numero" | Un'immagine è una griglia di numeri | — | Teoria | OpenCV, tensori immagine, input delle reti neurali |
+| "Batch = album di immagini" | Un tensor `N x H x W x C` e un insieme di `N` immagini: prima scegli quale immagine (`N`), poi leggi riga/colonna/canale | Array di oggetti in JS / array di array in PHP (`immagini[i]`) | 08 | Computer Vision, DataLoader, training in mini-batch, slicing su tensori 4D |
 | "Array.slice()" | Slicing `lista[1:3]` estrae una porzione di lista | `.slice(1, 3)` in JS / `array_slice($arr, 1, 2)` in PHP | 04 | Slicing su stringhe, slicing su array NumPy, selezione righe DataFrame |
 | ".push()/.pop()" | `.append()` aggiunge in fondo, `.pop()` rimuove e restituisce | `.push()` / `.pop()` in JS (identico!) | 04 | Strutture dati stack, gestione code |
 | ".map() + .filter()" | List comprehension `[expr for x in lista if cond]` fa entrambi | `.map().filter()` in JS / `array_map()` + `array_filter()` in PHP | 04 | `.apply()` su DataFrame Pandas, trasformazione dati |
@@ -786,7 +787,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 
 ### Domini alternativi per esercizi (dal M5 in poi)
 
-> Almeno 1 esercizio per modulo esce dal dominio e-commerce per ampliare il contesto.
+> Almeno 1 esercizio per modulo esce dal dominio documentale per ampliare il contesto.
 
 | Modulo | Dominio alternativo | Esempio esercizio |
 |--------|---------------------|-------------------|
@@ -795,7 +796,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M7 — Agents | Ticket supporto tecnico | Agente che classifica, prioritizza e assegna ticket di supporto IT |
 | M8 — Fine-Tuning | Logistica/supply chain | Fine-tuning per generare descrizioni di spedizioni nel tono dell'azienda |
 | M9 — MLOps | Analisi finanziaria | Deploy di un servizio che analizza report trimestrali |
-| M10 — Finale | A scelta dello studente | Il progetto finale resta e-commerce, ma il mock interview può usare qualsiasi dominio |
+| M10 — Finale | A scelta dello studente | Il progetto finale resta documentale, ma il mock interview può usare qualsiasi dominio |
 
 ### Come ripassarli
 
@@ -843,47 +844,47 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 
 ---
 
-## Progetto Incrementale — "Catalogo E-commerce"
+## Progetto Incrementale — "Controllo Documentale AI"
 
 > Un progetto unico che cresce capitolo dopo capitolo e attraversa **tutto il corso** (10 moduli).
 > Ogni capitolo aggiunge una funzionalità usando i concetti appena appresi.
 > Alla fine del corso, Gianluca avrà costruito un **prodotto AI completo e deployato** —
 > il diamante del portfolio.
 >
-> Il progetto è pensato per il dominio che Gianluca padroneggia (e-commerce/web), così il contesto
+> Il progetto è pensato per il dominio applicativo reale di Gianluca (controllo documentale/web), così il contesto
 > non aggiunge carico cognitivo e può concentrarsi sulla tecnica.
 
 ### Tema del progetto
 
-**"Catalogo E-commerce"** — Un sistema che parte come semplice lista di prodotti e cresce fino a diventare un prodotto AI full-stack con RAG, agenti, modello personalizzato, e deploy su cloud.
+**"Controllo Documentale AI"** — Un sistema che parte da parsing/validazione di documenti reddituali e cresce fino a diventare un prodotto AI full-stack con RAG, agenti, modello personalizzato, dashboard operatore e deploy su cloud.
 
 ### Roadmap per capitolo — Modulo 1 (Python & Dati)
 
 | Capitolo | Funzionalità da aggiungere | Concetti esercitati |
 |----------|----------------------------|---------------------|
-| 04 — Liste | Lista prodotti: aggiungere, rimuovere, cercare, ordinare per nome/prezzo | Liste, slicing, sorted + lambda, list comprehension |
-| 05 — Dizionari | Prodotti come dizionari con proprietà (nome, prezzo, categoria, stock). Carrello come dizionario. | Dizionari, .get(), .items(), dict comprehension, nesting |
-| 06 — File CSV | Caricare il catalogo da file CSV e salvare gli aggiornamenti su file | Lettura/scrittura CSV, parsing, gestione errori |
-| 07 — NumPy | Calcoli statistici su prezzi: media, deviazione standard, normalizzazione, percentili | Array NumPy, operazioni vettoriali, aggregazioni |
-| 08 — Tensori | Rappresentare immagini prodotto come tensori, operazioni base su batch di immagini | Tensori 2D/3D, reshape, operazioni su assi |
-| 09 — Pandas | Caricare catalogo in DataFrame, filtrare, raggruppare per categoria, pivot table | DataFrame, query, groupby, merge |
-| 10 — Pandas Progetto | Report completo: top seller, margini, trend, export HTML | Analisi completa, apply, multi-aggregation |
-| 11 — Matplotlib | Dashboard visuale: grafico prezzi per categoria, trend vendite, pie chart stock | plot, bar, pie, subplot, styling |
-| 12 — Web Bridge | API endpoint FastAPI che espone il catalogo e le statistiche | FastAPI, endpoint, JSON response |
+| 04 — Liste | Registro pratiche: aggiungere, rimuovere, cercare, ordinare per id/data | Liste, slicing, sorted + lambda, list comprehension |
+| 05 — Dizionari | Pratiche come dizionari (cliente, tipo_doc, periodo, importi, esito_check) | Dizionari, .get(), .items(), dict comprehension, nesting |
+| 06 — File CSV | Caricare pratiche/documenti da CSV e salvare esiti controllo su file | Lettura/scrittura CSV, parsing, gestione errori |
+| 07 — NumPy | Calcoli statistici su importi e score rischio: media, deviazione, normalizzazione, percentili | Array NumPy, operazioni vettoriali, aggregazioni |
+| 08 — Tensori | Rappresentare pagine/scansioni come tensori immagine e introdurre batch documentale | Tensori 2D/3D/4D, reshape, operazioni su assi |
+| 09 — Pandas | Caricare dataset pratiche in DataFrame, filtrare anomalie, groupby per operatore/tipo documento | DataFrame, query, groupby, merge |
+| 10 — Pandas Progetto | Report qualità controlli: tasso anomalie, priorità revisione, export HTML/CSV | Analisi completa, apply, multi-aggregation |
+| 11 — Matplotlib | Dashboard visuale semafori: trend anomalie, distribuzione rischio, volumi per periodo | plot, bar, pie, subplot, styling |
+| 12 — Web Bridge | API FastAPI che espone pratiche, esiti, score rischio e report operativi | FastAPI, endpoint, JSON response |
 
 ### Roadmap per modulo — Moduli 2-10
 
-| Modulo | Funzionalità da aggiungere al Catalogo | Concetti esercitati |
+| Modulo | Funzionalità da aggiungere al sistema documentale | Concetti esercitati |
 |--------|-----------------------------------------|---------------------|
-| M2 — ML | Predittore prezzi prodotti basato su caratteristiche (categoria, brand, stagione) + prima demo Streamlit | Scikit-Learn, train/test, metriche, Streamlit |
-| M3 — DL & CV | Classificatore immagini prodotto (es. categoria da foto) con transfer learning + demo Gradio | PyTorch, CNN, transfer learning, Gradio |
-| M4 — NLP | Analisi sentiment recensioni clienti + ricerca semantica prodotti per significato | Embeddings, sentence-transformers, similarità coseno |
-| M5 — LLM | Chatbot AI del catalogo: risponde a domande sui prodotti, usa function calling per cercare/filtrare/calcolare | OpenAI API, prompt engineering, structured output, function calling |
-| M6 — RAG | Knowledge base del catalogo: carica documentazione/FAQ e risponde con contesto reale, non allucinato | ChromaDB, LangChain, chunking, RAGAS evaluation |
-| M7 — Agents | Agente autonomo che gestisce ordini, controlla inventario, suggerisce riordini, genera report | LangGraph, tool use, agentic RAG, MCP |
-| M8 — Fine-Tuning | Modello personalizzato per generare descrizioni prodotto nel "tono" del brand | LoRA, QLoRA, PEFT, dataset curation |
+| M2 — ML | Classificatore rischio manomissione basato su feature strutturate (coerenza importi/date/campi) + demo Streamlit | Scikit-Learn, train/test, metriche, Streamlit |
+| M3 — DL & CV | Modello CV per individuare segnali di alterazione su scansioni (regioni sospette) + demo Gradio | PyTorch, CNN, transfer learning, Gradio |
+| M4 — NLP | Estrazione campi da testo OCR (CU/730/buste paga) + matching semantico tra documenti correlati | Embeddings, sentence-transformers, similarità coseno |
+| M5 — LLM | Assistente AI per operatore: spiega esiti, propone controlli e usa function calling su pratiche | OpenAI API, prompt engineering, structured output, function calling |
+| M6 — RAG | RAG normativo/procedurale: base conoscenza fiscale e checklist interne con citazioni e contesto | ChromaDB, LangChain, chunking, RAGAS evaluation |
+| M7 — Agents | Agente orchestratore che esegue pipeline OCR -> validazioni -> scoring -> report operatore | LangGraph, tool use, agentic RAG, MCP |
+| M8 — Fine-Tuning | Modello personalizzato per classificazione/triage documenti nel dominio aziendale | LoRA, QLoRA, PEFT, dataset curation |
 | M9 — MLOps | Tutto containerizzato e deployato: Docker + CI/CD + monitoring + semantic caching | Docker, GitHub Actions, Redis, testing |
-| M10 — Finale | Frontend React/Next.js + Backend FastAPI + tutti i servizi AI integrati → deploy live | Full-stack, architettura microservizi, deploy cloud |
+| M10 — Finale | Frontend React/Next.js + Backend FastAPI + servizi AI/RAG integrati per uso operatori -> deploy live | Full-stack, architettura microservizi, deploy cloud |
 
 ### Progresso del progetto
 
@@ -920,6 +921,93 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 
 ---
 
+## Blueprint Operativo — Padroneggiare il Prodotto Finale
+
+> Questa sezione trasforma l'obiettivo "app documentale accurata e usabile" in un percorso pratico con checklist verificabili.
+> L'agente la usa come guida prioritaria quando definisce esercizi, mini-progetti e milestone dei moduli M2-M10.
+
+### Scope MVP vincolante (cosa deve funzionare davvero)
+
+1. Upload PDF/immagini di: estratti conto correnti, estratti previdenziali, buste paga, CU, modelli unici
+2. OCR + estrazione campi chiave per ogni tipo documento
+3. Controlli deterministici di coerenza (formato, date, importi, match campi)
+4. Confronti cross-documento nella stessa pratica
+5. Indicatore `% genuinita` + semaforo verde/giallo/rosso + motivazione breve
+6. RAG normativo/procedurale con citazioni fonte obbligatorie
+7. Dashboard operatore con storico pratiche e report esportabile
+
+### Checklist competenze da padroneggiare (Definition of Mastery)
+
+| Area | Cosa saper fare in autonomia | Evidenza richiesta |
+|------|-------------------------------|--------------------|
+| Data Engineering | Pulire, normalizzare, versionare dataset documentali | Pipeline batch ripetibile + changelog dataset |
+| OCR/Parsing | Estrarre testo e campi strutturati da PDF/scansioni | Field accuracy tracciata per tipo documento |
+| Validazione Regole | Implementare regole fiscali/documentali spiegabili | Motore regole con output "pass/fail + motivo" |
+| ML Scoring | Addestrare/calibrare score di rischio alterazione | Metriche precision/recall/F1 + soglie calibrate |
+| RAG | Retrieval affidabile con fonti normative italiane | Risposte con citazioni e controllo grounding |
+| Backend API | Esposizione endpoint pratiche/esiti/report | OpenAPI + test endpoint principali |
+| Frontend Operatore | Flusso upload -> esito -> dettaglio anomalie | Demo usabile da operatore non tecnico |
+| MLOps/Qualita | Monitoring, regressioni, test automatizzati | Dashboard metriche + test suite minima CI |
+
+### Strategia accuratezza massima (ordine obbligatorio)
+
+1. **Qualita dato prima del modello**: dataset pulito, etichettato, con tassonomia anomalie
+2. **Motore regole forte**: controlli deterministici prima di LLM/RAG
+3. **Cross-check multi-documento**: coerenza tra documenti della stessa persona/pratica
+4. **RAG con fonti**: nessuna valutazione normativa senza citazione esplicita
+5. **Human-in-the-loop**: casi gialli/rossi revisionati e reinseriti come feedback
+6. **Valutazione continua**: soglie aggiornate su set di test indipendente
+
+### Preparazione dataset documentale (processo industriale)
+
+| Fase | Automatico | Manuale |
+|------|------------|---------|
+| Ingestione | Rinomina file, hash, deduplica, conversione formato | Verifica campioni |
+| OCR Batch | Estrazione testo + confidence | Correzione casi bassa confidenza |
+| Classificazione | Tipo documento preliminare | Revisione errori di classe |
+| Estrazione campi | Parser template + fallback LLM strutturato | Validazione gold set |
+| Label anomalie | Pre-label con regole | Conferma etichette critiche |
+| Versionamento | Split train/val/test e report metriche | Sign-off versione dataset |
+
+### Metriche minime da tracciare (obbligatorie)
+
+- **OCR**: confidence media, tasso pagine non leggibili
+- **Extraction**: accuratezza campo per campo (per tipo documento)
+- **Anomaly Detection**: precision, recall, F1 (con focus recall su casi critici)
+- **RAG**: grounding rate (risposte con fonte valida), citation accuracy
+- **Operativo**: tempo medio per pratica, tasso falsi allarmi, casi "non classificabili"
+
+### Soglie semaforo (base iniziale, da calibrare)
+
+| Score genuinita | Stato | Azione operatore |
+|-----------------|-------|------------------|
+| >= 85 | Verde | Verifica rapida e chiusura |
+| 60-84 | Giallo | Revisione manuale mirata |
+| < 60 | Rosso | Blocco pratica + audit completo |
+
+### Milestone pratiche per arrivare al prodotto finale
+
+1. **M1**: base dati, parsing, validazioni elementari, report base
+2. **M2-M3**: score rischio + CV/OCR robusto su scansioni difficili
+3. **M4**: estrazione campi testuali e matching semantico tra documenti
+4. **M5**: assistente operatore con function calling su pratiche
+5. **M6**: RAG normativo con citazioni e motivazioni verificabili
+6. **M7**: agente orchestratore pipeline end-to-end
+7. **M8-M9**: ottimizzazione, fine-tuning mirato, monitoraggio e CI/CD
+8. **M10**: interfaccia finale React + API FastAPI + deploy live + demo portfolio
+
+### Definition of Done — Progetto Finale (M10)
+
+- Upload multiplo PDF/immagini funzionante
+- Estrazione campi chiave per tutti i tipi documento in scope MVP
+- Score genuinita + semaforo + motivazione per ogni pratica
+- RAG normativo con fonti visibili nel report
+- Dashboard operatore con storico, filtri ed export
+- Test minimo end-to-end su dataset di validazione
+- Deploy live stabile con README professionale e guida d'uso
+
+---
+
 ## Note per il Mentor
 
 ### Promemoria automatici
@@ -940,7 +1028,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
   - Ripetere questo processo a fine di ogni modulo successivo (ARCHIVIO_MODULO_02.md, ecc.)
 - **A inizio di ogni nuovo modulo (M2-M10)**: creare la cartella del modulo (`modulo_XX_nome/`) con un `README.md` che segue la struttura del README del Modulo 1
 - **Per i moduli M2-M10**: ogni modulo finale produce una demo deployabile. Il Mentor deve guidare il deploy e verificare che il link sia funzionante
-- **Al modulo M5**: quando i confronti PHP/JS non hanno equivalente diretto (es. embedding, backpropagation), usare analogie dal mondo web/e-commerce. Registrare i nuovi ponti mentali nella sezione apposita
+- **Al modulo M5**: quando i confronti PHP/JS non hanno equivalente diretto (es. embedding, backpropagation), usare analogie dal mondo web/documentale. Registrare i nuovi ponti mentali nella sezione apposita
 - **Al modulo M7**: guidare la costruzione di un MCP server custom. Questo è un meta-skill: Gianluca capirà come funziona Cursor stesso
 - **Al modulo M9**: il primo deploy live. Verificare che il link funzioni e sia inseribile nel CV
 - **Al modulo M10**: guidare la creazione del profilo GitHub professionale (README, pinned repos, link demo)
@@ -974,7 +1062,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 
 ### Adattamento didattico per i moduli AI (M2-M10)
 - **Confronti PHP/JS/Python**: restano obbligatori dove esiste un equivalente (es. `fetch()` → `requests`, `Array.map()` → `map()`, Eloquent → Pandas)
-- **Concetti puramente AI** (embedding, backpropagation, attention, chunking, ecc.): il confronto a tre lingue è sostituito da **analogie dal mondo web/e-commerce** che Gianluca conosce. Esempio:
+- **Concetti puramente AI** (embedding, backpropagation, attention, chunking, ecc.): il confronto a tre lingue è sostituito da **analogie dal mondo web/documentale** che Gianluca conosce. Esempio:
   - Embedding → "Come le coordinate GPS catturano una posizione, un embedding cattura il significato di un testo"
   - Backpropagation → "Come il GPS ricalcola il percorso dopo una svolta sbagliata"
   - ChromaDB → "Come un database SQL, ma cerca per significato invece che per query esatta"
@@ -993,292 +1081,76 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 
 ## Template Struttura File Capitolo
 
-> Quando l'agente crea un NUOVO file di capitolo (.py), DEVE seguire questa struttura.
-> Basata sui file 01-03 già creati e validati dallo studente.
+> Versione compatta: mantiene i vincoli obbligatori senza duplicare esempi lunghi.
+> Le regole complete restano in `Regole Didattiche Concordate` e `Protocollo di Aggiornamento`.
+
+### Struttura minima obbligatoria di un capitolo
+
+1. Docstring iniziale con analogia concreta + confronto PHP/JS/Python
+2. `QUIZ D'INGRESSO` (5-8 domande sul capitolo precedente)
+3. 2-3 sezioni teoria con mini-esercizio dopo ogni sezione
+4. Blocchi `# 🔁 RINFORZO MIRATO` per eventuali lacune aperte (stato 🔴)
+5. `QUIZ DI VERIFICA` (5-8 domande, includendo almeno 1 Feynman)
+6. `ESERCIZI PRATICI` con difficoltà crescente e tag richiesti
+7. `🏗️ PROGETTO INCREMENTALE` (dal cap. 05 in poi)
+8. `🔄 CONFRONTO PRIMA/DOPO` (solo ultimo capitolo del modulo)
+9. Sezione `SOLUZIONI` in fondo
+
+### Scheletro rapido (da copiare)
 
 ```python
 """
-============================================================================
- MODULO X — ESERCIZIO XX: Titolo del Capitolo
- Sottotitolo con concetti chiave
-============================================================================
-
- TEORIA: Nome del Concetto — Analogia con il Mondo Web
-
- [Analogia iniziale con qualcosa che Gianluca conosce: Laravel, JS, HTML, ecc.]
- [Spiegazione del concetto in termini pratici, NON astratti]
-
- Confronto a tre — lo stesso concetto in PHP, JavaScript e Python:
-
-   PHP:
-     [codice PHP con commento che spiega cosa fa ogni parte]
-
-   JavaScript:
-     [codice JS con commento che spiega cosa fa ogni parte]
-
-   Python:
-     [codice Python con commento che spiega cosa fa ogni parte]
-
- [Se ci sono termini nuovi: spiegarli qui con esempio PRIMA di usarli nel codice]
-
-============================================================================
+MODULO X — ESERCIZIO XX
+Analogia concreta + confronto PHP/JS/Python
 """
 
-# ╔═════════════════════════════════════════════════════════════════════════╗
-# ║  QUIZ D'INGRESSO — Rispondi PRIMA di leggere la teoria!              ║
-# ╚═════════════════════════════════════════════════════════════════════════╝
-
-# Queste domande verificano i concetti del capitolo PRECEDENTE.
-# Rispondi senza guardare il codice — servono a capire cosa hai interiorizzato.
-# Le risposte corrette sono in fondo al file nella sezione SOLUZIONI.
-
-# DOMANDA 1 — Prevedi l'output:
-# Cosa stampa questo codice?
-#   [codice]
-# La tua risposta: ___
-
-# DOMANDA 2 — Vero o Falso?
-# "[affermazione]"
-# La tua risposta (V/F): ___
-
-# [... 5-8 domande, mescolando i 5 formati ...]
-
-
-# ============================================================
-# SEZIONE 1: Concetto Base — con esempi commentati
-# ============================================================
-
-# [Spiegazione inline del concetto]
-# [Confronto JS/PHP inline dove utile]
-
-# Esempio 1 — [Descrizione]
-# [Codice con commenti che spiegano ogni passaggio]
-
-# Esempio 2 — [Descrizione]
-# [Codice con commenti]
-
-# RIPASSO: [termine già visto] — ricordi? [breve richiamo con parole diverse]
-# [Esempio che riusa il termine in questo nuovo contesto]
-
-# 🔁 RINFORZO MIRATO — [concetto debole dal quiz precedente]
-# Al quiz del cap. XX hai confuso/sbagliato [breve descrizione errore].
-# Rivediamolo con un esempio diverso:
-# [spiegazione con nuovo esempio, collegato al contesto della sezione corrente]
-#
-# Prova subito:
-# 1) [micro-esercizio focalizzato sulla lacuna]
-# 2) [secondo micro-esercizio, opzionale]
-# Scrivi qui sotto:
-# ...
-# (Questo blocco viene inserito SOLO se ci sono lacune 🔴 nella tabella
-#  "Lacune dai Quiz" di CONTESTO_CORSO.md. Va posizionato dove il concetto
-#  debole si collega naturalmente al nuovo argomento della sezione.)
-
-# --- MINI-ESERCIZIO 1 — Prova subito! ---
-# [2-4 task brevi e focalizzati SOLO sul concetto di questa sezione]
-# [Non devono essere complessi — servono a fissare prima di proseguire]
-# Scrivi qui sotto:
+# QUIZ D'INGRESSO
 # ...
 
-# ============================================================
-# SEZIONE 2: Concetto Intermedio
-# ============================================================
+# SEZIONE 1
+# ...
+# --- MINI-ESERCIZIO 1 ---
 
-# [Stessa struttura della sezione 1, incluso mini-esercizio alla fine]
+# SEZIONE 2
+# ...
+# --- MINI-ESERCIZIO 2 ---
 
-# ============================================================
-# SEZIONE 3: Concetto Avanzato (se presente)
-# ============================================================
+# (opzionale) SEZIONE 3
+# ...
 
-# [Stessa struttura]
+# QUIZ DI VERIFICA (includere 1 domanda Feynman)
+# ...
 
-# ╔═════════════════════════════════════════════════════════════════════════╗
-# ║  QUIZ DI VERIFICA — Hai capito la teoria?                            ║
-# ╚═════════════════════════════════════════════════════════════════════════╝
-
-# Queste domande verificano i concetti di QUESTO capitolo.
-# Rispondi DOPO aver letto la teoria, PRIMA di fare gli esercizi.
-# Le risposte corrette sono in fondo al file nella sezione SOLUZIONI.
-
-# DOMANDA 1 — [formato tra i 5 classici]
-# [domanda]
-# La tua risposta: ___
-
-# [... 5-8 domande, mescolando i 5 formati classici ...]
-
-# DOMANDA X — 💬 Spiega con parole tue (Tecnica Feynman):
-# Spiega come se lo stessi insegnando a un collega: [concetto chiave del capitolo].
-# Non usare codice — solo parole. Se non riesci a spiegarlo chiaramente,
-# quel concetto ha bisogno di rinforzo.
-# La tua spiegazione: ___
-# (Almeno 1 domanda Feynman obbligatoria nel quiz di verifica)
-
-
-# ============================================================
 # ESERCIZI PRATICI
-# ============================================================
+# - almeno 5 esercizi
+# - almeno 1 🎯 [COLLOQUIO]
+# - dal cap.03: 1 🔧 [REFACTORING]
+# - dal cap.04: 1 🔀 [INTERLEAVING] + 1 🧠 [RETRIEVAL]
+# - dal M2: 1 🔍 [DEBUG]
+# - dal M5: 1 🌊 [REAL-WORLD]
 
-### Formato obbligatorio consegne (anti-ambiguita)
-
-Per ogni esercizio dei prossimi capitoli, la consegna deve essere scritta con questa struttura fissa:
-
-1. **Obiettivo in 1 frase**: cosa devo ottenere alla fine (risultato concreto).
-2. **Input disponibili**: quali variabili/file posso usare (es. `dati_csv`, `percorso_output`), con i campi realmente presenti.
-3. **Output atteso**: cosa deve essere stampato/salvato/restituito (formato preciso, esempio incluso).
-4. **Vincoli obbligatori**: cosa DEVO usare e cosa NON posso usare (es. "usa `enumerate` + `if`, non slicing").
-5. **Checklist di verifica**: 3-5 checkbox finali per auto-controllo ("ho filtrato Milano?", "ho scritto header?", "ho contato righe?").
-6. **Criterio di valutazione**: esplicitare se si valuta
-   - aderenza alla consegna (default),
-   - oppure estensioni creative (solo se dichiarato).
-
-Regole aggiuntive per ridurre ambiguita:
-- Se una parola puo creare confusione, specificarla: **"numero ordini" != "somma quantita"**.
-- Se i dati non contengono un campo citato (es. `stato`), la consegna va corretta PRIMA di proporre l'esercizio.
-- Ogni consegna deve includere almeno un esempio mini "input -> output" in 1-2 righe.
-- Nei mini-esercizi, separare chiaramente: **modalita debug** (1 record) vs **modalita consegna** (requisiti completi).
-
-# --- ESERCIZIO 1 (Livello 1 — Leggi e Modifica): ---
-# [Descrizione chiara di cosa fare]
-# [Requisiti numerati: 1. ..., 2. ..., 3. ...]
-
-# --- ESERCIZIO 2 (Livello 2 — Scrivi da Zero): ---
-# [Descrizione + requisiti]
-
-# --- ESERCIZIO 3 (Livello 2): ---
-# # 🎯 [COLLOQUIO] — Questo esercizio replica una domanda reale da colloquio tecnico
-# [Descrizione + requisiti]
-
-# --- ESERCIZIO 4 (Livello 2 — Lambda): ---
-# [Esercizio che usa lambda per rinforzo — obbligatorio fino a che lambda è ⚠️]
-
-# --- ESERCIZIO 5 (Livello 3 — Web Bridge): ---
-# [Esercizio che collega il concetto al mondo web/API]
-
-# --- ESERCIZIO X — 🔧 [REFACTORING]: ---
-# Il codice qui sotto FUNZIONA, ma è scritto male.
-# Riscrivilo usando i concetti di questo capitolo per renderlo più pulito,
-# leggibile e Pythonico.
-# [Codice brutto ma funzionante da riscrivere]
-# Requisiti: [cosa deve migliorare]
-
-# --- ESERCIZIO X — 🔄 [RECALL CROSS-MODULO]: ---
-# (nel primo capitolo di ogni modulo, dal M3 in poi)
-# Prima di affrontare i nuovi concetti, riprendiamo una competenza
-# del Modulo X che ti servirà in questo modulo.
-# [Task che richiede di usare una competenza di un modulo precedente
-#  nel contesto del modulo corrente]
-# Scrivi qui sotto:
+# 🏗️ PROGETTO INCREMENTALE (dal cap.05)
 # ...
 
-# --- ESERCIZIO X — 🌊 [REAL-WORLD]: ---
-# (dal Modulo 5 in poi — almeno 1 per modulo)
-# ⚠️ Questo esercizio simula un task reale: la consegna è vaga,
-# i dati sono sporchi, e non c'è una sola soluzione corretta.
-# Il Mentor valuta il tuo APPROCCIO, non il risultato esatto.
-# [Consegna deliberatamente vaga con dati problematici]
-# Il tuo approccio:
+# 🔄 CONFRONTO PRIMA/DOPO (solo fine modulo)
 # ...
 
-# --- ESERCIZIO X — 🔍 [DEBUG]: ---
-# (dal Modulo 2 in poi)
-# Il codice qui sotto DOVREBBE funzionare, ma produce un errore.
-# Eseguilo, leggi lo stack trace, trova il bug e correggilo.
-# Il Mentor interviene SOLO dopo 2+ tentativi falliti.
-# [Codice buggato con errore realistico]
-# Stack trace atteso: [descrizione dell'errore che vedrai]
-# La tua correzione:
+# SOLUZIONI
 # ...
-
-# --- ESERCIZIO X — 🔀 [INTERLEAVING]: ---
-# (dal capitolo 04 in poi)
-# Questo esercizio mescola concetti di capitoli diversi.
-# [Descrizione che richiede concetti del capitolo corrente + 1-2 precedenti]
-
-# --- ESERCIZIO X — 🧠 [RETRIEVAL]: ---
-# (dal capitolo 04 in poi)
-# Senza guardare il codice del capitolo XX, riscrivi da zero la funzione
-# [nome_funzione] che [descrizione di cosa faceva].
-# Requisiti: [stessi dell'originale, riportati qui]
-
-# Scrivi il tuo codice sotto ogni esercizio ↓
-
-
-# ╔═════════════════════════════════════════════════════════════════════════╗
-# ║  🏗️ PROGETTO INCREMENTALE — Catalogo E-commerce                      ║
-# ╚═════════════════════════════════════════════════════════════════════════╝
-
-# In questo capitolo aggiungi al progetto: [funzionalità specifica]
-# Parti dal codice del capitolo precedente (oppure dal codice base
-# fornito se è la prima volta).
-#
-# Task:
-# 1) [cosa fare, passo passo]
-# 2) [...]
-# 3) [...]
-#
-# Questo progetto attraversa tutto il corso — ogni capitolo aggiunge
-# un pezzo. Alla fine avrai un sistema completo di gestione catalogo.
-
-# Scrivi il tuo codice qui sotto:
-# ...
-
-
-# ============================================================
-# 🔄 CONFRONTO PRIMA/DOPO (solo nell'ultimo capitolo di ogni modulo)
-# ============================================================
-
-# (Questa sezione compare SOLO nell'ultimo capitolo di un modulo)
-# Riguarda il tuo codice del capitolo XX (il primo di questo modulo).
-# Riscrivilo usando TUTTO quello che hai imparato in questo modulo.
-# Confronta il "prima" e il "dopo" — vedrai quanto sei migliorato!
-
-
-# ============================================================
-# SOLUZIONI (NON SBIRCIARE!)
-# ============================================================
-
-# --- RISPOSTE QUIZ D'INGRESSO ---
-# 1. [risposta con spiegazione breve]
-# 2. [risposta con spiegazione breve]
-# [ecc.]
-
-# --- RISPOSTE QUIZ DI VERIFICA ---
-# 1. [risposta con spiegazione breve]
-# 2. [risposta con spiegazione breve]
-# [ecc.]
-
-# --- SOLUZIONE ESERCIZIO 1 ---
-# [Codice commentato]
-
-# --- SOLUZIONE ESERCIZIO 2 ---
-# [Codice commentato]
-
-# [ecc.]
 ```
 
-### Regole per i contenuti dei capitoli
+### Regole per i contenuti dei capitoli (compattate)
 
-1. **Minimo 5 esercizi** per capitolo (almeno 1 Livello 1, almeno 2 Livello 2, almeno 1 con lambda finché è ⚠️, almeno 1 Livello 3)
-2. **Almeno 1 esercizio** con tag `🎯 [COLLOQUIO]`
-3. **Teoria**: massimo 30% del file, il resto è codice ed esercizi
-4. **Ogni metodo/funzione nuova**: mini-esempio isolato PRIMA dell'uso in un esercizio
-5. **Confronto PHP + JS**: obbligatorio nella teoria, consigliato nei commenti degli esercizi
-6. **Soluzioni**: sempre in fondo, commentate (con `#`), con commenti che spiegano il perché
-7. **Ripasso**: inserire almeno 2 richiami a termini del glossario con stato 🔄 o ⚠️
-8. **Difficoltà crescente**: gli esercizi devono salire gradualmente, non fare salti bruschi
-9. **Mini-esercizi inline obbligatori**: dopo OGNI sezione di teoria, aggiungere un mini-esercizio (etichettato `# --- MINI-ESERCIZIO X — Prova subito! ---`) con 2-4 task brevi focalizzati SOLO sul concetto appena spiegato. Servono a fissare il singolo concetto prima di proseguire. Sono SEPARATI dagli esercizi finali che combinano più concetti. Approccio richiesto dallo studente al capitolo 05.
-10. **Due sezioni quiz per capitolo**: (a) Quiz d'ingresso prima della teoria (5-8 domande sul capitolo precedente), (b) Quiz di verifica dopo la teoria e prima degli esercizi (5-8 domande su questo capitolo). 5 formati: prevedi output, V/F, trova errore, definizione, completa codice. Risposte in fondo con le soluzioni.
-11. **Blocchi RINFORZO MIRATO obbligatori**: se nella tabella "Lacune dai Quiz" di CONTESTO_CORSO.md ci sono righe con stato 🔴, il capitolo **DEVE** contenere un blocco `# 🔁 RINFORZO MIRATO — [concetto]` per ciascuna lacuna aperta. Il blocco va posizionato nella sezione di teoria dove il concetto debole si collega naturalmente al nuovo argomento. Formato: etichetta, descrizione dell'errore commesso, spiegazione con esempio diverso da quello del quiz, 1-2 micro-esercizi focalizzati. Questi blocchi sono SEPARATI dai mini-esercizi e dagli esercizi finali.
-12. **Almeno 1 esercizio di refactoring** per capitolo (dal cap. 03 in poi), etichettato `# 🔧 [REFACTORING]`. Fornire codice funzionante ma scritto male, che lo studente deve riscrivere usando i concetti del capitolo. Il codice "brutto" deve contenere pattern riconoscibili (cicli inutili, variabili poco chiare, ripetizioni) migliorabili con gli strumenti appena appresi.
-13. **Almeno 1 esercizio di interleaving** per capitolo (dal cap. 04 in poi), etichettato `# 🔀 [INTERLEAVING]`. L'esercizio deve mescolare concetti del capitolo corrente con concetti di 1-2 capitoli precedenti, costringendo a scegliere lo strumento giusto.
-14. **Almeno 1 esercizio di retrieval practice** per capitolo (dal cap. 04 in poi), etichettato `# 🧠 [RETRIEVAL]`. Lo studente deve riscrivere da zero, senza guardare il codice originale, una funzione/esercizio di un capitolo precedente. L'esercizio specifica cosa riscrivere e da quale capitolo.
-15. **Almeno 1 domanda Feynman** nel quiz di verifica, etichettata `# 💬 Spiega con parole tue`. Lo studente deve riformulare un concetto chiave del capitolo con parole proprie, senza usare codice. Se la spiegazione è confusa o incompleta, il concetto va registrato come lacuna.
-16. **Sezione Progetto Incrementale** obbligatoria in ogni capitolo (dal cap. 05 in poi), etichettata `# 🏗️ PROGETTO INCREMENTALE`. Il task specifico per ogni capitolo è definito nella roadmap della sezione "Progetto Incrementale" di CONTESTO_CORSO.md. Deve durare 15-25 minuti e usare solo concetti visti fino a quel punto.
-17. **Sezione Confronto Prima/Dopo** obbligatoria nell'ULTIMO capitolo di ogni modulo, etichettata `# 🔄 CONFRONTO PRIMA/DOPO`. Lo studente riguarda il proprio codice del primo capitolo del modulo e lo riscrive con le competenze acquisite.
-18. **Almeno 1 esercizio di debug autonomo** per capitolo (dal M2 in poi), etichettato `# 🔍 [DEBUG]`. Fornire codice buggato con stack trace reale. Il mentor NON usa la scala progressiva — lo studente deve trovare il bug da solo. Intervento solo dopo 2+ tentativi falliti.
-19. **Almeno 1 esercizio real-world** per modulo (dal M5 in poi), etichettato `# 🌊 [REAL-WORLD]`. Consegne vaghe, dati sporchi, nessuna soluzione unica. Il mentor valuta l'approccio e il ragionamento, non il risultato esatto.
-20. **Almeno 1 esercizio recall cross-modulo** nel primo capitolo di ogni modulo (dal M3 in poi), etichettato `# 🔄 [RECALL CROSS-MODULO]`. Richiede di usare competenze di un modulo precedente nel nuovo contesto, colmando il gap di retention tra moduli distanti.
-- Sul secondo PC: aiutarlo a clonare la repo e ricreare il venv
+Le regole complete sono gia in `Regole Didattiche Concordate` (punti 1-29). Qui restano solo i vincoli pratici da non dimenticare:
+
+1. Minimo 5 esercizi con difficoltà crescente
+2. Almeno 1 `🎯 [COLLOQUIO]`
+3. Mini-esercizio dopo ogni sezione teoria
+4. Due quiz obbligatori (ingresso + verifica), con almeno 1 domanda Feynman nel quiz verifica
+5. Blocchi `🔁 RINFORZO MIRATO` per ogni lacuna aperta (stato 🔴)
+6. Tag obbligatori per fase corso: `🔧 [REFACTORING]`, `🔀 [INTERLEAVING]`, `🧠 [RETRIEVAL]`, `🔍 [DEBUG]`, `🌊 [REAL-WORLD]`, `🔄 [RECALL CROSS-MODULO]`
+7. Sezione `🏗️ PROGETTO INCREMENTALE` (dal cap. 05) e `🔄 CONFRONTO PRIMA/DOPO` (fine modulo)
+8. Soluzioni sempre in fondo, commentate
 
 ---
 
@@ -1344,104 +1216,27 @@ Regole aggiuntive per ridurre ambiguita:
 
 ## Esempio Completo di Aggiornamento — Template per l'Agente
 
-> Questo esempio mostra ESATTAMENTE come deve apparire ogni aggiornamento.
-> L'agente DEVE seguire questi formati. Scenario: Gianluca ha completato il file 04_liste.py
-> con voto difficoltà 5, ha fatto un errore nuovo (indici negativi), ha usato lambda correttamente
-> una volta, e ha chiesto "cos'è lo slicing?".
+> Versione compatta: riferimento rapido. Il dettaglio operativo resta nel `Protocollo di Aggiornamento — Checklist per l'Agente`.
 
-### Passo 1 — Aggiornamento Stato Attuale
+### Mini-esempio aggiornamento sessione (formato sintetico)
 
 ```markdown
-| Campo | Valore |
-|-------|--------|
-| **Capitolo in corso** | 05_dizionari.py (prossimo da iniziare) |
-| **Ultimo completato** | 04_liste.py (18/02/2026) |
-| **Modulo attuale** | 1 — Python & Dati |
-| **Difficoltà media** | 4.25 (media di 2, 4, 6, 5) |
-| **Priorità attive** | Lambda in miglioramento (⚠️→🟡), slicing da rinforzare |
-| **Sessione corrente** | Sessione 3 |
-```
+Stato Attuale:
+- Ultimo completato: 04_liste.py (18/02/2026)
+- Capitolo in corso: 05_dizionari.py
+- Difficoltà media: 4.25
 
-### Passo 2 — Riga nella tabella Progresso
+Progresso:
+| 04_liste.py | ✅ Completato + Corretto | 18/02/2026 | 5 | Note sintetiche |
 
-```markdown
-| 04_liste.py | ✅ Completato + Corretto | 18/02/2026 | 5 | Ha capito append/extend/slicing. Errore: confusione indici negativi. Lambda usata correttamente in un esercizio con sorted(). |
-```
+Glossario:
+- Aggiungi nuovi termini del capitolo
+- Incrementa 0/3 -> 1/3 solo se uso autonomo corretto
 
-### Passo 2b — Riga nella tabella Valutazioni
-
-```markdown
-| 04_liste | 5 | -1 ↓ (buon segno, la curva si stabilizza) |
-```
-
-### Passo 3 — Nuovi termini nel Glossario (formato esatto della riga)
-
-```markdown
-| `.append()` | Aggiunge UN elemento in fondo alla lista | `.push()` / `array_push()` | 04 | 0/3 | 🔄 |
-| `.extend()` | Aggiunge TUTTI gli elementi di un'altra lista | `.concat()` o spread `[...a, ...b]` / `array_merge()` | 04 | 0/3 | 🔄 |
-| slicing `[1:3]` | Estrae una porzione di lista — il secondo indice è ESCLUSO | `.slice(1, 3)` / `array_slice()` | 04 | 0/3 | 🔄 |
-```
-
-### Passo 3b — Incremento contatore per termine GIÀ esistente
-
-Quando incrementare: Gianluca ha USATO il termine nel suo codice CORRETTAMENTE e senza aiuto.
-
-```markdown
-PRIMA:  | `lambda` | Mini-funzione usa-e-getta... | `() =>` / `fn() =>` | 03 | 0/3 | ⚠️ |
-DOPO:   | `lambda` | Mini-funzione usa-e-getta... | `() =>` / `fn() =>` | 03 | 1/3 | ⚠️ |
-```
-
-NON incrementare se:
-- L'agente ha scritto il codice con lambda e Gianluca l'ha solo letto
-- Gianluca ha usato lambda ma con errori che l'agente ha dovuto correggere
-
-Quando cambiare stato:
-- **0/3 → 1/3**: primo uso corretto autonomo
-- **2/3 → 3/3**: terzo uso corretto → cambiare stato a ✅
-- Se dopo ✅ fa un errore: tornare a 🔄 con contatore 0/3
-
-### Passo 4 — Domande (formato esatto)
-
-```markdown
-### Capitolo 04 — liste
-- "Cos'è lo slicing?" → Non conosceva il concetto di estrarre porzioni di lista. In JS usa `.slice()` ma non sapeva che Python usa la sintassi `[1:3]`
-- "Posso usare indici negativi?" → Curiosità proattiva, buon segno. Concetto spiegato, da rinforzare
-```
-
-### Passo 5 — Nuovo pattern di errore (formato esatto)
-
-```markdown
-| 8 | **Confusione indici negativi**: non intuisce che `lista[-1]` è l'ultimo elemento | 🔴 Attivo | Visto al file 04 |
-```
-
-### Passo 6 — Competenze (formato esatto)
-
-```markdown
-### Dopo il Capitolo 04 — Liste
-- So creare, modificare e accedere a elementi di una lista
-- So usare `.append()`, `.extend()`, `.insert()`, `.remove()`, `.pop()`
-- So estrarre porzioni con lo slicing `[start:end:step]`
-- So iterare con `for`, `enumerate()` e usare `in` per verificare appartenenza
-- So ordinare con `sorted()` e `.sort()`, e conosco la differenza
-- ⚠️ Indici negativi: capisco il concetto ma devo fare più pratica
-```
-
-### Passo 6b — Nuovo ponte mentale (formato esatto)
-
-```markdown
-| "Array.slice()" | Slicing `lista[1:3]` estrae una porzione | `.slice(1, 3)` in JS / `array_slice($arr, 1, 2)` in PHP | 04 | Slicing su stringhe, slicing su array NumPy, selezione righe DataFrame |
-```
-
-### Passo 7 — Esercizio colloquio (formato esatto)
-
-```markdown
-| Rimuovere duplicati da lista | 04 | Junior — classico | Comprensione set(), list comprehension, ordine elementi | ✅ Risolto |
-```
-
-### Passo 8 — Nuova riga checklist (formato esatto)
-
-```markdown
-- [ ] **Ho usato indici negativi?** Ricorda: `lista[-1]` è l'ultimo, `lista[-2]` è il penultimo
+Pattern/Lacune:
+- Nuovo errore ricorrente -> 🔴
+- Lacuna rinforzata -> 🟡
+- Lacuna verificata corretta al quiz successivo -> 🟢
 ```
 
 ### Criteri per le decisioni dell'agente

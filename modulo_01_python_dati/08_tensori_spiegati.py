@@ -171,9 +171,21 @@ print(f"  Ndim: {tensor_3d.ndim}")     # 3
 # 3) Crea una matrice 2x4 di zeri e stampa ndim
 # 4) Scrivi nei commenti: quando passi da 2D a 3D?
 tensor_0d = np.array(99)
-print(f"\nTENSORE 0D\n")
+print(f"\nTENSORE 0D => SCALARE\n")
 print(f"Shape: {tensor_0d.shape}")
 print(f"Ndim: {tensor_0d.ndim}")
+print(f"\nTENSORE 1D => VETTORE\n")
+vettore_1d = np.arange(1, 7)
+print(f"Shape: {vettore_1d.shape}")
+print(f"\nTENSORE 2D => MATRICE\n")
+matrice = np.array([0, 0, 0, 0, 0, 0, 0, 0])
+matrice_2d = matrice.reshape(2, 4)
+print(f"Ndim: {matrice_2d.ndim}")
+#passare a 3d significa dare un ulteriore dimensione a una matrice, quindi dividerla in più livelli, es.:
+# matrice_3d = matrice_2d.reshape(2, 2, 2) => [[[0 0][0 0]][[0 0][0 0]]]
+
+
+
 
 # ==========================================================================
 # PARTE 2: Esempio Reale — Un'Immagine Come Tensor
@@ -229,6 +241,16 @@ print(f"  Numeri totali: {totale_numeri:,}")  # 6,220,800 numeri!
 # 2) Stampa solo il canale verde (indice 1)
 # 3) Stampa il pixel in posizione [2, 2]
 # 4) Verifica quanti numeri totali contiene con .size
+print(f"M\nini-esercizio 2\n")
+test_image = np.random.randint(0, 256, size=(5, 5, 3), dtype=np.uint8)
+test_image[0, 0] = [0, 255, 0]
+print(f"Stampa solo il canale verde")
+print(f"{test_image[:, :, 1]}\n")
+print(f"Stampa solo il pixel in posizione [2, 2]:")
+print(f"{test_image[2, 2]}\n")
+print(f"Size dell'immagine:")
+print(f"{test_image.size}\n")
+
 
 # ==========================================================================
 # PARTE 3: Shape — La "Carta d'Identità" del Tensor
