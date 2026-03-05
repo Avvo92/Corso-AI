@@ -348,6 +348,12 @@ print(f"Immagine centrata (primi pixel): {np.round(immagine_centrata[0, 0], 1)}"
 # 2) Crea un vettore offset di shape (5,)
 # 3) Somma tensor + offset e verifica shape risultato
 # 4) Spiega in una riga perché funziona (broadcasting)
+print("\nMini-esercizio 4\n")
+mio_tensor = np.random.randint(0, 256, size=(2, 5))
+print(f"{mio_tensor}")
+vettore = np.arange(5)
+sum = mio_tensor + vettore
+print(f"{sum}")
 
 # ==========================================================================
 # PARTE 5: Perché i Tensor sono Diversi dalle Liste di Liste?
