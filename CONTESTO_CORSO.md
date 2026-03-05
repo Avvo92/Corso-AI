@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 24/02/2026
+> **Ultimo aggiornamento**: 05/03/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -24,12 +24,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | 07_numpy_intro.py (prossimo da iniziare) |
+| **Capitolo in corso** | 08_tensori_spiegati.py (in corso, PARTE 4) |
 | **Ultimo completato** | 06_file_csv.py (24/02/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
-| **Difficoltà media** | 5.8 (media di 2, 4, 6, 9, 8 — curva si stabilizza) |
-| **Priorità attive** | ✅ Lambda consolidata nell'uso pratico, ✅ enumerate+.items() consolidato, 🟡 Lettura consegne in miglioramento (formato esplicito efficace), 🟡 Dict comprehension da rendere automatica, 🟡 Parsing CSV manuale vs DictReader rinforzato (da verificare nel quiz d'ingresso 07), ⚠️ filter/lambda ordine parametri da monitorare |
-| **Sessione corrente** | Sessione 5 |
+| **Difficoltà media** | 6.2 (media di 2, 4, 6, 9, 8, 8 — curva in assestamento) |
+| **Priorità attive** | ✅ Lacuna #11 verificata nel quiz ingresso 07 (pipeline parsing operativa), 🟡 Lettura consegne in miglioramento (checklist utile), 🟡 Dict comprehension da rendere automatica, 🟡 Consolidare shape/indexing/broadcasting in 3D, ⚠️ filter/lambda ordine parametri da monitorare |
+| **Sessione corrente** | Sessione 6 |
 
 ---
 
@@ -40,10 +40,10 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 24/02/2026 |
-| **Cosa è stato fatto** | Chiuso il capitolo 06_file_csv.py end-to-end: quiz verifica completato (7/8 corrette piene + 1 parziale), tutti i rinforzi mirati svolti, aggiunto e completato rinforzo extra sul parsing (manuale vs DictReader), esercizi 1-7 completati con feedback iterativo, progetto incrementale completato con `salva_catalogo`, `carica_catalogo`, `report_catalogo`, uso corretto di path cross-platform e conversioni tipo. Aggiornata anche la chiarezza delle consegne con formato esplicito anti-ambiguita. |
-| **Errori emersi** | Nessun blocco tecnico. Residui minori: aderenza formale ai nomi firma in alcuni punti, output talvolta poco sintetico, e da consolidare la spiegazione "procedurale" dei passaggi quando il task è aperto/Feynman. |
-| **Cosa fare nella prossima sessione** | Avviare 07_numpy_intro.py: quiz d'ingresso + richiamo rapido su parsing/output concreto (verifica lacuna #11), poi teoria NumPy con focus su slicing/shape/indexing e mini-esercizi progressivi; mantenere checklist consegne esplicite. |
+| **Data** | 05/03/2026 |
+| **Cosa è stato fatto** | Confermato avanzamento oltre il cap.06: nel `07_numpy_intro.py` quiz d'ingresso + esercizi 1-5 compilati; nel `08_tensori_spiegati.py` completate PARTE 1, mini-esercizi 1-2 e mini-esercizio 3 (shape e verifica `.size`). Lacuna quiz #11 (pipeline parsing operativo) confermata come superata nel quiz d'ingresso del cap.07. |
+| **Errori emersi** | Nessun blocco tecnico. Corretto un typo su variabile (`mio_batc` -> `mio_batch`) nel mini-esercizio 3. Da consolidare: continuita sul cap.08 (mini 4 + quiz verifica + esercizi finali). |
+| **Cosa fare nella prossima sessione** | Ripartire da `08_tensori_spiegati.py` MINI-ESERCIZIO 4 (broadcasting), poi completare quiz verifica, esercizi e progetto incrementale; successivamente avvio `09_pandas_intro.py`. |
 | **Stato motivazione** | Alto e stabile — approccio molto attivo, richieste di chiarezza precise, ottima metacognizione su ambiguita delle consegne. |
 
 ---
@@ -73,11 +73,11 @@
 | Dict comprehension | ⚠️ Non interiorizzata | Tende a usare for classico quando la consegna chiede dict comprehension |
 | Tuple/unpacking | ⚠️ → 🟡 In miglioramento | Ponte mentale `.items() = enumerate dei dizionari` ha funzionato |
 
-### Lacune quiz da monitorare — passaggio al capitolo 07
+### Lacune quiz da monitorare — passaggio al capitolo 08
 
 | # | Concetto | Errore commesso |
 |---|----------|-----------------|
-| 11 | Parsing CSV manuale vs spiegazione astratta | Rinforzo aggiunto nel cap.06 e svolto. Da verificare nel quiz d'ingresso cap.07 con una domanda su pipeline operativa completa. |
+| 11 | Parsing CSV manuale vs spiegazione astratta | Verificata nel quiz d'ingresso cap.07 con pipeline operativa completa. Stato: 🟢 superata (tenere richiamo leggero nei capitoli dati). |
 
 ---
 
@@ -87,12 +87,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | 07_numpy_intro.py |
-| **Rinforzi da inserire (🔁)** | Verifica rapida lacuna #11 (parsing operativo) nel quiz d'ingresso; se risposta corretta -> stato 🟢 |
-| **Concetti ⚠️ da ripassare** | Slicing/indexing (trasferimento a NumPy), dict comprehension (automatizzare), `filter()` ordine parametri |
+| **Prossimo capitolo** | 09_pandas_intro.py (dopo chiusura cap.08) |
+| **Rinforzi da inserire (🔁)** | In 09: richiamo naturale su shape/indexing NumPy -> righe/colonne DataFrame; mantenere controllo tipi da CSV a numerico |
+| **Concetti ⚠️ da ripassare** | Shape/axis/broadcasting (con esempi visuali), dict comprehension (automatizzare), `filter()` ordine parametri |
 | **Pattern 🔴 da monitorare** | #5 (tipi nei dizionari/CSV), #6 (lettura consegne), #11 (ordine filter) |
 | **Ponte mentale da riusare** | ".items() = enumerate dei dizionari" (ha funzionato al cap.05) |
-| **Note** | Il cap.06 è stato completato con buona autonomia e correzione iterativa. Prima del cap.07: breve warm-up su output concreto e lettura consegne, poi passaggio a ndarray/shape/index slicing. |
+| **Note** | Stato riallineato al workspace: cap.07 svolto operativamente, cap.08 in corso (parte iniziale svolta). Prima del cap.09 chiudere il cap.08 in modo completo. |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -307,8 +307,8 @@
 | 04_liste.py | ✅ Completato + Corretto | 19/02/2026 | 9 | Difficoltà alta. Ha capito slicing, list comprehension, sorted/filter/map con lambda. **Punti deboli**: enumerate+tuple non interiorizzati (molte domande), range a 3 parametri nuovo, consegne non lette completamente (ex.1 indice sbagliato, ex.2 formato incompleto, ex.3 senza funzione, ex.6 usa [::-1] vietato, ex.9 indice errato). Lambda usate correttamente in ex.4/5/7 — miglioramento reale. |
 | 05_dizionari.py | ✅ Completato + Corretto | 17/02/2026 | 8 | Quiz ingresso 1/8 corretto (slicing, .append None, enumerate vs range persistono). Quiz verifica 4/8 (len con aggiunta chiavi, >= vs >, .get vs .items). Dict comprehension usata correttamente nell'ex.3 (miglioramento dai mini-ex). Lambda consolidate. Contatore città + max() con lambda padroneggiati. Consegne incomplete persistono (ex.1 manca voto, ex.2 manca punto a, ex.5 manca reverse, ex.6 mancano b/c, ex.7 append parziale, ex.8 manca prodotto_più_venduto). Esercizio 4 (colloquio conta_parole) risolto perfettamente al primo tentativo. |
 | 06_file_csv.py | ✅ Completato + Corretto | 24/02/2026 | 8 | Capitolo completato end-to-end. Quiz verifica: 7/8 pienamente corrette (+1 parziale). Esercizi 1-7 e progetto incrementale completati; forte miglioramento su `.get()`/`.items()`, parsing CSV, path handling e refactoring. |
-| 07_numpy_intro.py | ⬜ Da fare | | | Da arricchire prima che ci arrivi |
-| 08_tensori_spiegati.py | ⬜ Da fare | | | Da arricchire prima che ci arrivi |
+| 07_numpy_intro.py | 🟡 In revisione | 03/03/2026 | — | Quiz d'ingresso compilato + esercizi 1-5 svolti. Mancano correzione finale strutturata e voto difficoltà. |
+| 08_tensori_spiegati.py | 🟡 In corso | 05/03/2026 | — | Completate PARTE 1-3 + mini-esercizi 1-3. Prossimo step: MINI-ESERCIZIO 4 (broadcasting), poi quiz verifica/esercizi/progetto incrementale. |
 | 09_pandas_intro.py | ⬜ Da fare | | | |
 | 10_pandas_progetto.py | ⬜ Da fare | | | |
 | 11_matplotlib_grafici.py | ⬜ Da fare | | | |
@@ -370,8 +370,9 @@
 | 03_funzioni | 6 | +2 ↑ |
 | 04_liste | 9 | +3 ↑ (salto preoccupante — enumerate/tuple/combinazione concetti) |
 | 05_dizionari | 8 | -1 ↓ (buon segno: la curva si stabilizza dopo il picco) |
+| 06_file_csv | 8 | = (stabilizzazione confermata) |
 
-**Media attuale**: 5.8 (media di 2, 4, 6, 9, 8). Il calo da 9 a 8 è positivo: il picco al cap.04 era dovuto all'accumulo di concetti nuovi (enumerate, tuple, lambda). Al cap.05 questi concetti si sono consolidati — lambda quasi acquisita, enumerate+.items() padroneggiato. Il problema principale resta la lettura incompleta delle consegne, non la comprensione tecnica.
+**Media attuale**: 6.2 (media di 2, 4, 6, 9, 8, 8). Dopo il picco al cap.04, i capitoli 05-06 hanno stabilizzato la difficoltà su 8: crescita impegnativa ma gestibile. Il punto da monitorare resta la lettura completa delle consegne, più che la comprensione tecnica.
 
 ---
 
@@ -553,6 +554,7 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 - **Sessione 3 (17/02/2026)**: File 05 in corso. Mini-esercizi teoria completati. Miglioramento significativo su enumerate+.items(). Dict comprehension ancora da interiorizzare
 - **Sessione 4 (24/02/2026)**: File 06 in corso avanzato. Rinforzi mirati completati e quiz verifica quasi pieno. Forte miglioramento su `.get()`/`.items()`, sorting con `key`, e gestione path/file. Da consolidare parsing CSV manuale vs `DictReader` e definizione precisa degli output.
 - **Sessione 5 (24/02/2026)**: File 06 completato. Esercizi finali e progetto incrementale chiusi; rinforzo parsing aggiuntivo svolto con confronto manuale vs DictReader. Pronto il passaggio al file 07 (NumPy) con verifica iniziale mirata su output concreto e pipeline operativa.
+- **Sessione 6 (03-05/03/2026)**: Avviato e svolto operativamente il file 07 (quiz ingresso + esercizi 1-5). Avviato file 08 con PARTE 1-3 e mini-esercizi 1-3 completati (shape consolidata). Pausa prima del mini-esercizio 4 (broadcasting).
 - **Ritmo stimato**: 1 file ogni 2 giorni (aggiornato dallo studente)
 - **Tempo totale stimato per il corso**: 5-6 mesi (corso) + 2-3 mesi (MVP app documentale)
 - **Momento migliore per studiare**: ❓ Da chiedere
@@ -724,7 +726,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 8 | len() con aggiunta chiavi al dizionario | Verifica/05 | Ha scritto 2 invece di 3. Non ha contato che `persona["citta"] = "Roma"` aggiunge una NUOVA chiave (da 2 a 3) | 06 | 🟡 |
 | 9 | >= vs > (include o esclude il valore limite) | Verifica/05 | Dict comprehension `if v >= 7`: ha escluso Marco (voto 7) dalla risposta. Non distingue >= (include) da > (esclude) | 06 | 🟡 |
 | 10 | .get() vs .items() — metodi diversi | Verifica/05 | Per contare frequenze ha scritto `.items(lettera, totale)` invece di `.get(lettera, 0)`. Confonde .items() (tutte le coppie) con .get() (una chiave con default) | 06 | 🟡 |
-| 11 | Parsing CSV manuale vs spiegazione astratta | Verifica/06 | Alla domanda Feynman ha descritto il concetto in modo generale ma senza sequenza operativa completa (apertura file -> lettura righe -> header -> split -> dizionario -> append). Rinforzo esplicito aggiunto e svolto nel cap.06; da verificare a inizio cap.07. | 07 | 🟡 |
+| 11 | Parsing CSV manuale vs spiegazione astratta | Verifica/06 | Alla domanda Feynman aveva descritto il concetto in modo generale ma senza sequenza operativa completa (apertura file -> lettura righe -> header -> split -> dizionario -> append). Verificata corretta al quiz d'ingresso cap.07 con passaggi operativi in ordine. | 07 | 🟢 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
@@ -892,9 +894,9 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 |-----------------|-------|------|
 | 04 — Liste | ⬜ Non ancora assegnato (il cap. 04 era già completato prima dell'introduzione del progetto) | |
 | 05 — Dizionari | ⬜ Da fare | Prima volta con il progetto incrementale |
-| 06 — File CSV | ⬜ Da fare | |
-| 07 — NumPy | ⬜ Da fare | |
-| 08 — Tensori | ⬜ Da fare | |
+| 06 — File CSV | ✅ Completato | Progetto incrementale chiuso con funzioni `salva_catalogo`, `carica_catalogo`, `report_catalogo` |
+| 07 — NumPy | ⬜ Da fare | Capitolo svolto a livello esercizi, ma progetto incrementale non ancora tracciato in chiusura formale |
+| 08 — Tensori | 🟡 In corso | Inizio capitolo attivo (parte 1 + mini-esercizi iniziali) |
 | 09 — Pandas | ⬜ Da fare | |
 | 10 — Pandas Progetto | ⬜ Da fare | |
 | 11 — Matplotlib | ⬜ Da fare | |
