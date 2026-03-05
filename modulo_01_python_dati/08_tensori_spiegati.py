@@ -296,12 +296,20 @@ print(f"Batch di immagini: shape = {batch_immagini.shape}")
 print(f"  → {batch_size} immagini")
 print(f"  → {altezza}x{larghezza} pixel ciascuna")
 print(f"  → {canali} canale (bianco e nero)")
-print(f"  → Totale numeri: {batch_immagini.size:,}")
+print(f"  → Totale numeri: {batch_immagini.ndim}")
 
 # --- MINI-ESERCIZIO 3 — Prova subito! ---
 # 1) Crea un batch RGB con shape (16, 64, 64, 3)
 # 2) Stampa separatamente batch, altezza, larghezza, canali usando gli indici di shape
 # 3) Calcola il totale numeri con una moltiplicazione manuale e confrontalo con .size
+mio_batch = np.random.randint(0, 256, size=(16, 64, 64, 3))
+print("\nMini-esercizio 3\n")
+print(f"Batch => {mio_batch.shape}")
+print(f"Altezza => {mio_batch.shape[1]}")
+print(f"Larghezza => {mio_batch.shape[2]}")
+print(f"Canali => {mio_batch.shape[3]}")
+mia_size = mio_batch.shape[0]*mio_batch.shape[1]*mio_batch.shape[2]*mio_batch.shape[3]
+print(f"Confronto sul totale numeri => {mia_size == mio_batch.size}")
 
 # ==========================================================================
 # PARTE 4: Operazioni sui Tensor — Broadcast
