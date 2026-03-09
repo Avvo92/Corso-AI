@@ -24,12 +24,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | 08_tensori_spiegati.py (in corso, PARTE 4) |
-| **Ultimo completato** | 06_file_csv.py (24/02/2026) |
+| **Capitolo in corso** | 09_pandas_intro.py (prossimo avvio) |
+| **Ultimo completato** | 08_tensori_spiegati.py (05/03/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
-| **Difficoltà media** | 6.2 (media di 2, 4, 6, 9, 8, 8 — curva in assestamento) |
-| **Priorità attive** | ✅ Lacuna #11 verificata nel quiz ingresso 07 (pipeline parsing operativa), 🟡 Lettura consegne in miglioramento (checklist utile), 🟡 Dict comprehension da rendere automatica, 🟡 Consolidare shape/indexing/broadcasting in 3D, ⚠️ filter/lambda ordine parametri da monitorare |
-| **Sessione corrente** | Sessione 6 |
+| **Difficoltà media** | 6.3 (media di 2, 4, 6, 9, 8, 8, 7 — curva in assestamento) |
+| **Priorità attive** | ✅ Lacuna #11 verificata nel quiz ingresso 07 (pipeline parsing operativa), ✅ Shape/indexing/broadcasting base consolidati nel cap.08, 🟡 Lettura consegne in miglioramento (checklist utile), 🟡 Distinguere errore sintattico vs errore di shape/logica (emerso nel quiz ingresso 09), 🟡 Dict comprehension da rendere automatica, ⚠️ filter/lambda ordine parametri da monitorare |
+| **Sessione corrente** | Sessione 7 |
 
 ---
 
@@ -41,10 +41,10 @@
 | Campo | Valore |
 |-------|--------|
 | **Data** | 05/03/2026 |
-| **Cosa è stato fatto** | Confermato avanzamento oltre il cap.06: nel `07_numpy_intro.py` quiz d'ingresso + esercizi 1-5 compilati; nel `08_tensori_spiegati.py` completate PARTE 1, mini-esercizi 1-2 e mini-esercizio 3 (shape e verifica `.size`). Lacuna quiz #11 (pipeline parsing operativo) confermata come superata nel quiz d'ingresso del cap.07. |
-| **Errori emersi** | Nessun blocco tecnico. Corretto un typo su variabile (`mio_batc` -> `mio_batch`) nel mini-esercizio 3. Da consolidare: continuita sul cap.08 (mini 4 + quiz verifica + esercizi finali). |
-| **Cosa fare nella prossima sessione** | Ripartire da `08_tensori_spiegati.py` MINI-ESERCIZIO 4 (broadcasting), poi completare quiz verifica, esercizi e progetto incrementale; successivamente avvio `09_pandas_intro.py`. |
-| **Stato motivazione** | Alto e stabile — approccio molto attivo, richieste di chiarezza precise, ottima metacognizione su ambiguita delle consegne. |
+| **Cosa è stato fatto** | Chiuso operativamente il capitolo `08_tensori_spiegati.py` (voto 7/10) e avviato `09_pandas_intro.py` con quiz d'ingresso compilato/corretto (6/7 corrette). |
+| **Errori emersi** | Nel quiz ingresso 09 e emersa una lacuna mirata: in una domanda di debug e stata confusa la natura dell'errore (shape/logica vs sintassi). Rimane da consolidare il riconoscimento rapido del tipo di errore prima della correzione. |
+| **Cosa fare nella prossima sessione** | Proseguire la teoria/esercizi di `09_pandas_intro.py` e rinforzare con micro-debug la distinzione tra errori sintattici e errori di shape/logica. |
+| **Stato motivazione** | Alto e molto collaborativo — ottima perseveranza nei debug e forte attenzione al "perché" pratico dei concetti. |
 
 ---
 
@@ -308,7 +308,7 @@
 | 05_dizionari.py | ✅ Completato + Corretto | 17/02/2026 | 8 | Quiz ingresso 1/8 corretto (slicing, .append None, enumerate vs range persistono). Quiz verifica 4/8 (len con aggiunta chiavi, >= vs >, .get vs .items). Dict comprehension usata correttamente nell'ex.3 (miglioramento dai mini-ex). Lambda consolidate. Contatore città + max() con lambda padroneggiati. Consegne incomplete persistono (ex.1 manca voto, ex.2 manca punto a, ex.5 manca reverse, ex.6 mancano b/c, ex.7 append parziale, ex.8 manca prodotto_più_venduto). Esercizio 4 (colloquio conta_parole) risolto perfettamente al primo tentativo. |
 | 06_file_csv.py | ✅ Completato + Corretto | 24/02/2026 | 8 | Capitolo completato end-to-end. Quiz verifica: 7/8 pienamente corrette (+1 parziale). Esercizi 1-7 e progetto incrementale completati; forte miglioramento su `.get()`/`.items()`, parsing CSV, path handling e refactoring. |
 | 07_numpy_intro.py | 🟡 In revisione | 03/03/2026 | — | Quiz d'ingresso compilato + esercizi 1-5 svolti. Mancano correzione finale strutturata e voto difficoltà. |
-| 08_tensori_spiegati.py | 🟡 In corso | 05/03/2026 | — | Completate PARTE 1-3 + mini-esercizi 1-3. Prossimo step: MINI-ESERCIZIO 4 (broadcasting), poi quiz verifica/esercizi/progetto incrementale. |
+| 08_tensori_spiegati.py | ✅ Completato + Corretto | 05/03/2026 | 7 | Capitolo chiuso con consolidamento su shape, axis, broadcasting e reshape; esercizi e progetto incrementale completati con correzioni iterative e buona autonomia nel debugging. |
 | 09_pandas_intro.py | ⬜ Da fare | | | |
 | 10_pandas_progetto.py | ⬜ Da fare | | | |
 | 11_matplotlib_grafici.py | ⬜ Da fare | | | |
@@ -371,8 +371,9 @@
 | 04_liste | 9 | +3 ↑ (salto preoccupante — enumerate/tuple/combinazione concetti) |
 | 05_dizionari | 8 | -1 ↓ (buon segno: la curva si stabilizza dopo il picco) |
 | 06_file_csv | 8 | = (stabilizzazione confermata) |
+| 08_tensori_spiegati | 7 | -1 ↓ (difficoltà alta ma gestita meglio grazie a pratica guidata su shape/assi/broadcasting) |
 
-**Media attuale**: 6.2 (media di 2, 4, 6, 9, 8, 8). Dopo il picco al cap.04, i capitoli 05-06 hanno stabilizzato la difficoltà su 8: crescita impegnativa ma gestibile. Il punto da monitorare resta la lettura completa delle consegne, più che la comprensione tecnica.
+**Media attuale**: 6.3 (media di 2, 4, 6, 9, 8, 8, 7). Dopo il picco al cap.04, il cap.08 conferma un carico ancora impegnativo ma più controllato: la comprensione tecnica cresce, resta prioritaria la lettura completa delle consegne.
 
 ---
 
@@ -529,6 +530,7 @@ Questi sono gli errori che Gianluca tende a ripetere. Da monitorare nei prossimi
 | 14 | **return print(...)**: usa return con print, che restituisce sempre None | 🟡 Visto più volte | Al file 05 ex.2: tutte le funzioni hanno `return print(...)`. Il print funziona ma il return è inutile |
 | 15 | **Parametro funzione ignorato**: la funzione accetta un parametro ma dentro usa la variabile globale | 🟡 Visto una volta | Al file 05 ex.1: `def stampa(dizionario)` ma dentro usa `film.items()` invece di `dizionario.items()` |
 | 16 | **Docstring mancante quando richiesta**: la consegna chiede "la funzione deve avere una docstring" e non la scrive | 🔴 Attivo | Al file 05 ex.4 e ex.8. Collegato al pattern #6 (lettura consegne) |
+| 17 | **Diagnosi errore non precisa**: identifica come sintassi un errore che in realta e di shape/logica | 🟡 Visto una volta | Quiz d'ingresso 09, domanda reshape: focus sulla firma di `randint` invece che su mismatch elementi (192 vs 64) |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 Superato
 
@@ -727,6 +729,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 9 | >= vs > (include o esclude il valore limite) | Verifica/05 | Dict comprehension `if v >= 7`: ha escluso Marco (voto 7) dalla risposta. Non distingue >= (include) da > (esclude) | 06 | 🟡 |
 | 10 | .get() vs .items() — metodi diversi | Verifica/05 | Per contare frequenze ha scritto `.items(lettera, totale)` invece di `.get(lettera, 0)`. Confonde .items() (tutte le coppie) con .get() (una chiave con default) | 06 | 🟡 |
 | 11 | Parsing CSV manuale vs spiegazione astratta | Verifica/06 | Alla domanda Feynman aveva descritto il concetto in modo generale ma senza sequenza operativa completa (apertura file -> lettura righe -> header -> split -> dizionario -> append). Verificata corretta al quiz d'ingresso cap.07 con passaggi operativi in ordine. | 07 | 🟢 |
+| 12 | Diagnosi mismatch shape in reshape | Ingresso/09 | In una domanda "trova l'errore" su `img.reshape(64,)` ha individuato un dettaglio sintattico secondario, ma non il problema principale: mismatch numero elementi (192 != 64). | 10 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
@@ -896,7 +899,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 05 — Dizionari | ⬜ Da fare | Prima volta con il progetto incrementale |
 | 06 — File CSV | ✅ Completato | Progetto incrementale chiuso con funzioni `salva_catalogo`, `carica_catalogo`, `report_catalogo` |
 | 07 — NumPy | ⬜ Da fare | Capitolo svolto a livello esercizi, ma progetto incrementale non ancora tracciato in chiusura formale |
-| 08 — Tensori | 🟡 In corso | Inizio capitolo attivo (parte 1 + mini-esercizi iniziali) |
+| 08 — Tensori | ✅ Completato | Pipeline tensori completata: normalizzazione batch, grayscale su asse canali e flatten per campione con verifica shape finale `(12, 256)` |
 | 09 — Pandas | ⬜ Da fare | |
 | 10 — Pandas Progetto | ⬜ Da fare | |
 | 11 — Matplotlib | ⬜ Da fare | |
