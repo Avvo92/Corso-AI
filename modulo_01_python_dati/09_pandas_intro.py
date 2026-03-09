@@ -70,6 +70,42 @@ import numpy as np
 import os
 
 # ==========================================================================
+# QUIZ D'INGRESSO — Ripasso dal Capitolo 08 (Tensori)
+# ==========================================================================
+#
+# DOMANDA 1 — Prevedi l'output:
+#   x = np.zeros((12, 16, 16, 3))
+#   print(x.shape[0], x.ndim)
+# 12 4
+#
+# DOMANDA 2 — Vero o Falso?
+# "mean(axis=3) su un batch immagini (n,h,w,c) produce shape (n,h,w)." V
+#
+# DOMANDA 3 — Trova l'errore:
+#   img = np.random.randint(0, 256, (8, 8, 3))
+#   flat = img.reshape(64,)
+# Cosa non torna e perche?
+# la sintassi corretta era: np.random.randint(0, 256, size=(8, 8, 3))
+#
+# DOMANDA 4 — Definizione:
+# Spiega in una riga la differenza tra "traslare" e "ruotare" i dati.
+#traslare come termine si usa per dire "spostare", ad esempio in avanti o indietro, ruotare invece indica un movimento circolare come un loop
+#
+# DOMANDA 5 — Completa il codice:
+#   arr = np.arange(24).reshape(6, 4)
+#   v = arr.reshape(-1)
+# Per ottenere un vettore 1D senza calcolare a mano la lunghezza.
+#
+# DOMANDA 6 — Prevedi l'output:
+#   a = np.array([[1, 2, 3], [4, 5, 6]])
+#   b = np.array([10, 20, 30])
+#   print((a + b).shape)
+#(2, 3)
+# DOMANDA 7 — 💬 Spiega con parole tue:
+# Perche conviene usare shape attese ad ogni passaggio quando fai preprocessing?
+# per avere la certezza di processare la giusta dimensione, utilizzare shape ci aiuta a campire meglio le dimensioni del tensore
+
+# ==========================================================================
 # PARTE 1: Creare un DataFrame
 # ==========================================================================
 
@@ -127,6 +163,29 @@ print(f"\nRighe: {vendite.shape[0]}, Colonne: {vendite.shape[1]}")
 # .dtypes → tipi di ogni colonna
 print(f"\nTipi colonne:\n{vendite.dtypes}")
 
+# 🔁 RINFORZO MIRATO — Shape/Axis: ponte NumPy -> Pandas
+# Nel cap.08 hai consolidato shape/assi sui tensori. Qui il ponte e diretto:
+# - np.array 2D: shape (righe, colonne)
+# - pd.DataFrame: stesso concetto, ma con etichette di colonna.
+# axis=0 = "verticale" (lavori per colonna), axis=1 = "orizzontale" (lavori per riga).
+print("\n--- RINFORZO: asse e shape in Pandas ---")
+print(f"Shape vendite: {vendite.shape}")
+print(f"Media asse 0 (colonne numeriche):\n{vendite.select_dtypes(include='number').mean(axis=0)}")
+
+# --- MINI-ESERCIZIO 1 — Prova subito! ---
+# 1) Stampa numero righe e colonne di vendite in due variabili separate.
+# 2) Stampa solo i tipi delle colonne numeriche.
+# 3) In una riga, spiega: perche axis=0 in Pandas e simile a axis=0 in NumPy?
+#perchè entrambi funzionano basandosi su una logica di griglia multidimensionale, che quindi è fatta sostanzialmente di assi
+print("\nMini-esercizio 1\n")
+file = os.path.join(os.path.dirname(__file__), "dati", "vendite_ecommerce.csv")
+data = pd.read_csv(file)
+num_colonne = data.shape[1]
+num_righe = data.shape[0]
+print(f"{num_colonne}")
+print(f"{num_righe}")
+print(f"\nTipi colonne:\n{data.select_dtypes(include='number').dtypes}")
+
 # ==========================================================================
 # PARTE 3: Selezionare Dati (SELECT in SQL)
 # ==========================================================================
@@ -152,6 +211,14 @@ print(vendite.iloc[5:8])  # iloc = index location (per posizione numerica)
 
 # Selezionare una CELLA specifica
 print(f"\nCella [2, 'prodotto']: {vendite.loc[2, 'prodotto']}")
+
+# 🔁 RINFORZO MIRATO — Lettura consegne (checklist operativa)
+# Pattern visto piu volte: si implementa solo una parte dei requisiti.
+# Applica questa mini-checklist prima di dire "ho finito":
+# - Quanti punti ci sono? (a,b,c,d...)
+# - Ho stampato/verificato ogni output richiesto?
+# - Ho usato esattamente il metodo richiesto (es. groupby, non ciclo for)?
+# - Ho controllato shape/tipi finali?
 
 # ==========================================================================
 # PARTE 4: Filtrare i Dati (WHERE in SQL)
@@ -185,6 +252,23 @@ cuffie = vendite[vendite["prodotto"].str.contains("Cuffie")]
 print(f"\n--- WHERE prodotto LIKE '%Cuffie%': {len(cuffie)} righe ---")
 print(cuffie)
 
+# 🔁 RINFORZO MIRATO — filter/lambda ordine parametri
+# In Python il filter vuole prima la funzione, poi l'iterabile:
+# filter(lambda x: condizione, lista)
+# (NON: filter(lista, lambda ...))
+prezzi_demo = [15, 49, 120, 75, 8]
+solo_alti = list(filter(lambda p: p >= 50, prezzi_demo))
+print(f"\nRINFORZO filter/lambda -> prezzi >= 50: {solo_alti}")
+
+# --- MINI-ESERCIZIO 2 — Prova subito! ---
+# 1) Crea una lista con 6 prezzi.
+# 2) Usa filter + lambda per tenere solo prezzi > 100.
+# 3) Stampa il risultato e la lunghezza.
+print("\nMini-esercizio 2\n")
+import random
+mia_lista = [random.randint(1, 200) for _ in range(6)]
+solo_alti = list(filter(lambda x: x > 100, mia_lista))
+print(f"Prezzi alti: {solo_alti}\nLunghezza lista: {len(solo_alti)}")
 # ==========================================================================
 # PARTE 5: Ordinare i Dati (ORDER BY in SQL)
 # ==========================================================================
@@ -286,6 +370,47 @@ print(vendite["categoria"].value_counts())
 print(f"\nConteggio per metodo pagamento:")
 print(vendite["metodo_pagamento"].value_counts())
 
+# 🔁 RINFORZO MIRATO — Dict comprehension
+# Nel cap.05 era un punto da automatizzare. Qui lo riusiamo su dati Pandas:
+conteggio_categoria = vendite["categoria"].value_counts().to_dict()
+etichette = {k: f"{k} ({v} ordini)" for k, v in conteggio_categoria.items()}
+print(f"\nRINFORZO dict comprehension: {etichette}")
+
+# --- MINI-ESERCIZIO 3 — Prova subito! ---
+# 1) Crea un dizionario "sconti" con 3 categorie e percentuali.
+# 2) Con dict comprehension crea "sconti_testo" tipo "categoria: 15%".
+# 3) Stampa il dizionario finale.
+
+
+# ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  QUIZ DI VERIFICA — Prima degli esercizi                              ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+#
+# DOMANDA 1 — Prevedi l'output:
+#   print(vendite[["prodotto", "prezzo"]].shape)
+#
+# DOMANDA 2 — Vero o Falso?
+# "vendite['categoria'] restituisce un DataFrame."
+#
+# DOMANDA 3 — Trova l'errore:
+#   milano = vendite[vendite["citta"] = "Milano"]
+# Qual e l'errore sintattico?
+#
+# DOMANDA 4 — Definizione:
+# Spiega la differenza tra .loc e .iloc in parole semplici.
+#
+# DOMANDA 5 — Completa il codice:
+#   top = vendite.sort_values("prezzo", ascending=___).head(5)
+# Completa per avere i 5 prezzi piu alti.
+#
+# DOMANDA 6 — Prevedi l'output:
+#   print(vendite["categoria"].nunique())
+# Che tipo di informazione restituisce nunique?
+#
+# DOMANDA 7 — 💬 Spiega con parole tue:
+# Perche un DataFrame e il ponte naturale tra CSV "grezzo" e Machine Learning?
+#
+
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  ESERCIZI — Ora Prova Tu!                                             ║
@@ -354,6 +479,32 @@ print(vendite["metodo_pagamento"].value_counts())
 # Scrivi il tuo codice qui sotto:
 # ...
 
+
+# ╔═════════════════════════════════════════════════════════════════════════╗
+# ║  🏗️ PROGETTO INCREMENTALE — Controllo Documentale (Pandas)            ║
+# ╚═════════════════════════════════════════════════════════════════════════╝
+#
+# Task (20-30 minuti):
+# 1) Carica `case.csv` in un DataFrame chiamato `pratiche`.
+# 2) Crea una colonna `rischio_base`:
+#    - "rosso"  se prezzo_euro > 350000 e distanza_centro_km < 2
+#    - "giallo" se prezzo_euro tra 200000 e 350000
+#    - "verde"  altrimenti
+# 3) Crea un report per citta con:
+#    - pratiche_totali
+#    - prezzo_medio
+#    - metri_quadri_medi
+#    - quota_rosso (percentuale pratiche rosse)
+# 4) Ordina il report per quota_rosso decrescente e stampa top 5.
+# 5) Salva il report in `dati/report_rischio_citta.csv`.
+#
+# Obiettivo mentale:
+# - Da NumPy (shape e assi) a Pandas (righe/colonne etichettate)
+# - Da analisi tecnica a report operativo leggibile
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+#
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  SOLUZIONI — Guardale Solo DOPO Aver Provato!                         ║
@@ -438,3 +589,21 @@ print(vendite["metodo_pagamento"].value_counts())
 # test = case.iloc[24:]
 # print(f"\nTraining shape: {training.shape}")
 # print(f"Test shape: {test.shape}")
+
+# --- RISPOSTE QUIZ D'INGRESSO ---
+# 1) 12 4
+# 2) Vero
+# 3) Errore di shape: (8*8*3)=192, non 64
+# 4) Traslare = spostare i valori; ruotare = cambiare orientamento/assi
+# 5) -1
+# 6) (2, 3)
+# 7) Perche previene bug silenziosi e garantisce che ogni trasformazione sia coerente
+
+# --- RISPOSTE QUIZ DI VERIFICA ---
+# 1) (n_righe, 2) -> nel file corrente (12, 2)
+# 2) Falso (restituisce una Series)
+# 3) Usa "=" invece di "=="
+# 4) .loc usa etichette; .iloc usa posizioni numeriche
+# 5) False
+# 6) Restituisce quante categorie distinte esistono
+# 7) Perche permette pulizia, filtro, aggregazioni e preparazione feature in modo tabellare

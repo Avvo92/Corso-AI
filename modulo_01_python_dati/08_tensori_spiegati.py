@@ -593,7 +593,16 @@ print(f"I risultati{'' if dot_lista == dot_tensore else ' non '} sono identici\n
 # - reshape/mean come ponte verso i modelli AI
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 6 incrementale\n")
+batch_img = np.random.randint(0, 256, size=(12, 16, 16, 3), dtype=np.uint8)
+print(f"{batch_img.shape}")
+norm = batch_img / 255.0
+print(f"{norm.shape}")
+gray_scale = norm.mean(axis=3)
+print(f"{gray_scale.shape}")
+batch_size = gray_scale.shape[0]
+flat = gray_scale.reshape(batch_size, -1)
+print(f"{flat.shape}")
 #
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
