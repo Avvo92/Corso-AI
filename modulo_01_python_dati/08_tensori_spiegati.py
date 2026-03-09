@@ -352,8 +352,8 @@ print("\nMini-esercizio 4\n")
 mio_tensor = np.random.randint(0, 256, size=(2, 5))
 print(f"{mio_tensor}")
 vettore = np.arange(5)
-sum = mio_tensor + vettore
-print(f"{sum}")
+somma = mio_tensor + vettore
+print(f"{somma}")
 
 # ==========================================================================
 # PARTE 5: Perché i Tensor sono Diversi dalle Liste di Liste?
@@ -389,40 +389,42 @@ print(f"  NumPy è {tempo_lista/tempo_numpy:.0f}x più veloce!")
 # ╚═════════════════════════════════════════════════════════════════════════╝
 #
 # DOMANDA 1 — Prevedi l'output:
-#   x = np.zeros((3, 4, 2))
-#   print(x.ndim, x.shape)
-# La tua risposta:
+# x = np.zeros((3, 4, 2))
+# print(x.ndim, x.shape)
+# La tua risposta: 3 (3, 4, 2)
 #
 # DOMANDA 2 — Vero o Falso?
 # "Un'immagine RGB singola in NumPy ha tipicamente shape (H, W, 3)."
-# La tua risposta (V/F):
+# La tua risposta (V/F): V
 #
 # DOMANDA 3 — Trova l'errore:
 #   batch = np.random.rand(32, 28, 28, 1)
 #   print(batch.shape[4])
 # Che errore produce e perché?
-# La tua risposta:
+# La tua risposta: non esiste nulla ad indice 4, l'ultimo dato si trova in posizione 3
 #
 # DOMANDA 4 — Definizione:
 # Spiega in parole semplici cosa significa "shape".
-# La tua risposta:
+# La tua risposta: forma, in pratica restituisce una lista di valori che aiuta a identificare la struttura in cui si trovano i singoli dati: es. (n,h,w,c) dove n 
+# è il numero di immagini all'interno del bacth di immagini, altzza e larghezza e infine i canali presenti all'interno del pixel
 #
 # DOMANDA 5 — Completa il codice:
 #   img = np.random.randint(0, 256, (8, 8, 3))
-#   gray = img.mean(axis=___)
-#   flat = gray.reshape(___)
+#   gray = img.mean(axis=2)
+#   flat = gray.reshape(-1)
 # Riempi i due spazi per ottenere shape (64,)
 #
 # DOMANDA 6 — Prevedi l'output:
 #   a = np.array([[1, 2, 3], [4, 5, 6]])
 #   b = np.array([10, 20, 30])
 #   print(a + b)
-# La tua risposta:
+# La tua risposta: [[11, 22, 33][14, 25, 36]]
 #
 # DOMANDA 7 — 💬 Spiega con parole tue:
 # Spiega a un collega web developer perché un dataset tabellare sta in 2D
 # e quando invece serve un 3D o 4D.
-# La tua risposta:
+# La tua risposta: la tabella è essenzialmente una griglia nelle cui intersezioni si trovano i valori. un modello 3d potrebbe servire se oltre alla posizione degli elementi avessi 
+# bisogno di rappresentare la composizione di ogni singolo elementi (come i canali per i pixel) oppure se avessi un gruppo di tabelle 
 #
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
@@ -437,9 +439,19 @@ print(f"  NumPy è {tempo_lista/tempo_numpy:.0f}x più veloce!")
 # d) Un'immagine Instagram 1080x1080 a colori          → shape?
 # e) 10 immagini Instagram                             → shape?
 # Scrivi le risposte come commenti e verifica creando gli array con np.zeros()
-#
+#preciso che ho preferito stampare le risposte in console e usare randint perchè lo trovavo più coerente con la rappresentazione sia delle temperature che delle immagini rgb
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 1\n")
+temperatura = np.array(25)
+print(f"la temperatura di oggi: {temperatura:.1f}°C => shape {temperatura.ndim}D\n")
+temperature_settimana = np.array([20, 21, 19, 24, 20, 25, 23])
+print(f"le temperature di questa settimana: {temperature_settimana} => shape {temperature_settimana.ndim}D\n")
+temperature_mese = np.random.randint(18, 26, size=(4, 7))
+print(f"le temperature del mese:\n{temperature_mese} => shape {temperature_mese.ndim}D\n")
+img_instagram = np.random.randint(0, 256, size=(1080, 1080, 3))
+print(f"immagine di instagram:\n{img_instagram.shape} => shape {img_instagram.ndim}D\n")
+batch_img_instagram = np.random.randint(0, 256, size=(10, 1080, 1080, 3))
+print(f"batch di immagini instagram:\n{batch_img_instagram.shape} => shape {batch_img_instagram.ndim}D")
 
 
 # ESERCIZIO 2 (Medio):
@@ -451,7 +463,15 @@ print(f"  NumPy è {tempo_lista/tempo_numpy:.0f}x più veloce!")
 # Stampa la shape e il primo pixel di ogni sezione per verificare.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 2\n")
+img = np.zeros((6, 9, 3), dtype=np.uint8)
+img[:, :3] = [0, 128, 0]
+img[:, 3:6] = [255, 255, 255]
+img[:, 6:] = [255, 0, 0]
+print(f"Shape dell'immagine: {img.shape}")
+print(f"primo pixel verde: {img[:1, :1]}")
+print(f"primo pixel bianco: {img[:1, 3:4]}")
+print(F"primo pixel rosso: {img[:1, 6:7]}")
 
 
 # ESERCIZIO 3 (Medio):
@@ -466,7 +486,21 @@ print(f"  NumPy è {tempo_lista/tempo_numpy:.0f}x più veloce!")
 # Stampa medie e std prima e dopo per verificare.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 3\n")
+np.random.seed(42)
+dataset = np.column_stack([
+   np.random.randint(150, 201 , 50),
+   np.random.randint(50, 101 , 50),
+   np.random.randint(18, 66 , 50),
+   np.random.randint(15_000, 80_001, 50)
+]).astype(float)
+print(f"Shape: {dataset.shape}")
+print(f"Medie: {dataset.mean(axis = 0)}")
+print(f"Std: {dataset.std(axis = 0)}")
+norm = ((dataset - dataset.mean(axis=0)) / dataset.std(axis=0))
+print(f"Medie dopo: {norm.mean(axis=0).round(2)}")
+print(f"Std dopo: {norm.std(axis=0)}")
+
 
 
 # ESERCIZIO 4 (Sfida):
@@ -479,7 +513,15 @@ print(f"  NumPy è {tempo_lista/tempo_numpy:.0f}x più veloce!")
 # Shape attese: (8,8,3) → (8,8) → (64,) → (64,)
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 4\n")
+img = np.random.randint(0, 256, size=(8, 8, 3), dtype=np.uint8)
+print(f"img shape: {img.shape}")
+gray = img.mean(axis=2)
+print(f"gray shape: {gray.shape}")
+flat = gray.reshape(-1)
+print(f"flat shape: {flat.shape}")
+norm = (flat / 255)
+print(f"norm shape: {norm.shape}\n{norm.round(2)}")
 
 
 # ESERCIZIO 5 (Sfida — Benchmark):
@@ -493,7 +535,37 @@ print(f"  NumPy è {tempo_lista/tempo_numpy:.0f}x più veloce!")
 # Stampa i tempi e il rapporto di velocità.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 5\n")
+lista = list(range(10_000_000))
+start = time.time()
+totale = sum(lista)
+tempo_1 = time.time() - start
+print(f"{round(tempo_1, 4)}s\n")
+
+tensore = np.arange(10_000_000)
+start = time.time()
+sum_tensore = np.sum(tensore)
+tempo_2 = time.time() - start
+print(f"{round(tempo_2, 4)}s\n")
+print(f"Numpy è stato {(tempo_1 / tempo_2):.0f} volte più veloce!!")
+print(f"I risultati{'' if totale == sum_tensore else ' non '} sono identici\n")
+
+lista = list(range(1_000_000))
+tensore = np.arange(1_000_000)
+
+lista_2 = list(range(1_000_000, 2_000_000))
+start = time.time()
+dot_lista = sum(x * y for x, y in zip(lista, lista_2))
+tempo_3 = time.time() - start
+print(f"{round(tempo_3, 4)}s\n")
+
+tensore_2 = np.arange(1_000_000, 2_000_000)
+start = time.time()
+dot_tensore = np.dot(tensore, tensore_2)
+tempo_4 = time.time() - start
+print(f"{round(tempo_4, 4)}s\n")
+print(f"Numpy è stato {(tempo_3 / tempo_4):.0f} volte più veloce!!")
+print(f"I risultati{'' if dot_lista == dot_tensore else ' non '} sono identici\n")
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
