@@ -532,7 +532,21 @@ print(f"Case con prezzo tra i 100.000 e 200.000:\n {f'Confronto verificato con s
 # e) Ordina il report finale per prezzo medio decrescente
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+
+print(f"\nEsercizio 3\n")
+prezzo_medio_citta = pd_data.groupby('citta')['prezzo_euro'].mean()
+case_per_citta = pd_data.groupby('citta').size()
+pd_data['prezzo_x_mq'] = pd_data['prezzo_euro'] / pd_data['metri_quadri']
+info_citta = pd_data.groupby('citta').agg(
+  prezzo_medio = ("prezzo_euro", "mean"),
+  mq_medi = ("metri_quadri", "mean"),
+  prezzo_massimo = ("prezzo_euro", "max"),
+  prezzo_minimo = ("prezzo_euro", "min"),
+  media_x_mq = ("prezzo_x_mq", "mean")
+).sort_values('media_x_mq', ascending=False)
+
+print(f"{round(prezzo_medio_citta, 2)}\n")
+print(f"{round(info_citta, 0)}")
 
 
 # ESERCIZIO 4 (Sfida — solo Pandas nativo):
