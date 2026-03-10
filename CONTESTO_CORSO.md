@@ -28,7 +28,7 @@
 | **Ultimo completato** | 08_tensori_spiegati.py (05/03/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
 | **Difficoltà media** | 6.3 (media di 2, 4, 6, 9, 8, 8, 7 — curva in assestamento) |
-| **Priorità attive** | ✅ Lacuna #11 verificata nel quiz ingresso 07 (pipeline parsing operativa), ✅ Shape/indexing/broadcasting base consolidati nel cap.08, 🟡 Lettura consegne in miglioramento (checklist utile), 🟡 Distinguere errore sintattico vs errore di shape/logica (emerso nel quiz ingresso 09), 🟡 Dict comprehension da rendere automatica, ⚠️ filter/lambda ordine parametri da monitorare |
+| **Priorità attive** | ✅ Lacuna #11 verificata nel quiz ingresso 07 (pipeline parsing operativa), ✅ Shape/indexing/broadcasting base consolidati nel cap.08, 🟡 Lettura consegne in miglioramento (checklist utile), 🟡 Distinguere errore sintattico vs errore di shape/logica (emerso nel quiz ingresso 09), 🟡 Distinguere Series vs DataFrame in Pandas, 🟡 Interpretare correttamente `.shape` su selezione colonne, 🟡 Dict comprehension da rendere automatica, ⚠️ filter/lambda ordine parametri da monitorare |
 | **Sessione corrente** | Sessione 7 |
 
 ---
@@ -41,9 +41,9 @@
 | Campo | Valore |
 |-------|--------|
 | **Data** | 05/03/2026 |
-| **Cosa è stato fatto** | Chiuso operativamente il capitolo `08_tensori_spiegati.py` (voto 7/10) e avviato `09_pandas_intro.py` con quiz d'ingresso compilato/corretto (6/7 corrette). |
-| **Errori emersi** | Nel quiz ingresso 09 e emersa una lacuna mirata: in una domanda di debug e stata confusa la natura dell'errore (shape/logica vs sintassi). Rimane da consolidare il riconoscimento rapido del tipo di errore prima della correzione. |
-| **Cosa fare nella prossima sessione** | Proseguire la teoria/esercizi di `09_pandas_intro.py` e rinforzare con micro-debug la distinzione tra errori sintattici e errori di shape/logica. |
+| **Cosa è stato fatto** | Chiuso operativamente il capitolo `08_tensori_spiegati.py` (voto 7/10), avviato `09_pandas_intro.py`, completato quiz d'ingresso (6/7) e prima correzione del quiz di verifica. |
+| **Errori emersi** | Oltre alla lacuna su diagnosi errore (shape/logica vs sintassi), nel quiz verifica 09 sono emersi due punti: lettura errata di `.shape` su selezione a due colonne e confusione tra Series e DataFrame (`df["colonna"]`). |
+| **Cosa fare nella prossima sessione** | Proseguire `09_pandas_intro.py` inserendo micro-rinforzi su: a) output di `.shape`, b) differenza Series vs DataFrame, c) checklist rapida di diagnosi errori. |
 | **Stato motivazione** | Alto e molto collaborativo — ottima perseveranza nei debug e forte attenzione al "perché" pratico dei concetti. |
 
 ---
@@ -531,6 +531,7 @@ Questi sono gli errori che Gianluca tende a ripetere. Da monitorare nei prossimi
 | 15 | **Parametro funzione ignorato**: la funzione accetta un parametro ma dentro usa la variabile globale | 🟡 Visto una volta | Al file 05 ex.1: `def stampa(dizionario)` ma dentro usa `film.items()` invece di `dizionario.items()` |
 | 16 | **Docstring mancante quando richiesta**: la consegna chiede "la funzione deve avere una docstring" e non la scrive | 🔴 Attivo | Al file 05 ex.4 e ex.8. Collegato al pattern #6 (lettura consegne) |
 | 17 | **Diagnosi errore non precisa**: identifica come sintassi un errore che in realta e di shape/logica | 🟡 Visto una volta | Quiz d'ingresso 09, domanda reshape: focus sulla firma di `randint` invece che su mismatch elementi (192 vs 64) |
+| 18 | **Confusione Series vs DataFrame**: tratta `df["colonna"]` come DataFrame invece che Series | 🟡 Visto una volta | Quiz verifica 09, domanda su `vendite["categoria"]` (risposto Vero invece di Falso) |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 Superato
 
@@ -730,6 +731,8 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 10 | .get() vs .items() — metodi diversi | Verifica/05 | Per contare frequenze ha scritto `.items(lettera, totale)` invece di `.get(lettera, 0)`. Confonde .items() (tutte le coppie) con .get() (una chiave con default) | 06 | 🟡 |
 | 11 | Parsing CSV manuale vs spiegazione astratta | Verifica/06 | Alla domanda Feynman aveva descritto il concetto in modo generale ma senza sequenza operativa completa (apertura file -> lettura righe -> header -> split -> dizionario -> append). Verificata corretta al quiz d'ingresso cap.07 con passaggi operativi in ordine. | 07 | 🟢 |
 | 12 | Diagnosi mismatch shape in reshape | Ingresso/09 | In una domanda "trova l'errore" su `img.reshape(64,)` ha individuato un dettaglio sintattico secondario, ma non il problema principale: mismatch numero elementi (192 != 64). | 10 | 🔴 |
+| 13 | Interpretazione `.shape` su selezione colonne Pandas | Verifica/09 | Alla domanda su `vendite[["prodotto","prezzo"]].shape` ha risposto `(2,)` invece di `(n_righe, 2)`, confondendo dimensione colonne con shape completa. | 10 | 🔴 |
+| 14 | Distinzione Series vs DataFrame | Verifica/09 | Ha risposto Vero a "vendite['categoria'] restituisce un DataFrame", ma restituisce una Series. | 10 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 

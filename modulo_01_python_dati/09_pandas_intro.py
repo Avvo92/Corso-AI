@@ -375,11 +375,20 @@ print(vendite["metodo_pagamento"].value_counts())
 conteggio_categoria = vendite["categoria"].value_counts().to_dict()
 etichette = {k: f"{k} ({v} ordini)" for k, v in conteggio_categoria.items()}
 print(f"\nRINFORZO dict comprehension: {etichette}")
+print(f"{conteggio_categoria}")
 
 # --- MINI-ESERCIZIO 3 — Prova subito! ---
 # 1) Crea un dizionario "sconti" con 3 categorie e percentuali.
 # 2) Con dict comprehension crea "sconti_testo" tipo "categoria: 15%".
 # 3) Stampa il dizionario finale.
+
+dizionario =  {
+  "elettronica" : 10,
+  "abbigliamento" : 15,
+  "sport" : 25  
+  }
+sconti_testo = {k.capitalize(): f"{k.capitalize()} => {v}%" for k, v in dizionario.items()}
+print(f"{sconti_testo}")
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
@@ -388,27 +397,30 @@ print(f"\nRINFORZO dict comprehension: {etichette}")
 #
 # DOMANDA 1 — Prevedi l'output:
 #   print(vendite[["prodotto", "prezzo"]].shape)
+#(2,)
 #
 # DOMANDA 2 — Vero o Falso?
-# "vendite['categoria'] restituisce un DataFrame."
+# "vendite['categoria'] restituisce un DataFrame." V
 #
 # DOMANDA 3 — Trova l'errore:
 #   milano = vendite[vendite["citta"] = "Milano"]
-# Qual e l'errore sintattico?
+# Qual e l'errore sintattico? l'operatore logico è scritto male : corretto dovrebbe essere "=="
 #
 # DOMANDA 4 — Definizione:
 # Spiega la differenza tra .loc e .iloc in parole semplici.
+#loc va a trovare gli elementi in base alla label, iloc in base a un indice numerico
 #
 # DOMANDA 5 — Completa il codice:
-#   top = vendite.sort_values("prezzo", ascending=___).head(5)
+#   top = vendite.sort_values("prezzo", ascending=False).head(5)
 # Completa per avere i 5 prezzi piu alti.
 #
 # DOMANDA 6 — Prevedi l'output:
 #   print(vendite["categoria"].nunique())
-# Che tipo di informazione restituisce nunique?
+# Che tipo di informazione restituisce nunique? restituisce il numero di categorie presenti all'interno del dataset, ognuna presa una sola volta senza ripetizioni
 #
 # DOMANDA 7 — 💬 Spiega con parole tue:
-# Perche un DataFrame e il ponte naturale tra CSV "grezzo" e Machine Learning?
+# Perche un DataFrame e il ponte naturale tra CSV "grezzo" e Machine Learning? il cvs grezzo è come la materia prima, il data frame è il dato ripulito e per cosi dire
+#raffinato che viene dato nel machine learning, così da essere estremamente ottimizzato per essere assimilato.
 #
 
 
@@ -416,42 +428,115 @@ print(f"\nRINFORZO dict comprehension: {etichette}")
 # ║  ESERCIZI — Ora Prova Tu!                                             ║
 # ╚═════════════════════════════════════════════════════════════════════════╝
 
-# ESERCIZIO 1 (Facile):
-# Carica il file 'case.csv' con pd.read_csv() e:
-# a) Mostra le prime 5 righe
-# b) Mostra la shape del DataFrame
-# c) Mostra le statistiche con .describe()
-# d) Elenca le città uniche presenti nel dataset
+# Approccio didattico del capitolo:
+# - Esercizi 1-2: doppia versione (dict-style + Pandas) per consolidare il ponte mentale.
+# - Esercizi 3-5: solo Pandas nativo, come nel flusso reale di analisi dati.
+#
+# ESERCIZIO 1 (Facile — Ponte Dict -> Pandas):
+# A) Versione "dict-style":
+#    1) Carica `case.csv`.
+#    2) Converti il DataFrame in lista di dizionari con `to_dict(orient="records")`.
+#    3) Mostra: prime 5 righe, numero righe, numero colonne, città uniche.
+# B) Versione Pandas nativa:
+#    Rifai gli stessi 4 punti usando solo: `head`, `shape`, `unique`.
+# C) Confronto finale (3 righe):
+#    scrivi quale versione è più leggibile e quale è più veloce da implementare.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 1\n")
+import os
+path_file = os.path.join(os.path.dirname(__file__),"dati", "case.csv")
+
+"""Metodi nativi dei Dictionary"""
+dict_data = pd.read_csv(path_file).to_dict(orient="records")
+print(f"Primi 5 record:\n")
+for k, v in enumerate(dict_data):
+  if k < 5:
+    print(f"{v}")
+print(f"Città uniche:\n")
+citta_uniche = {}
+for k, v in enumerate(dict_data):
+  citta_uniche[v['citta']] = citta_uniche.get(v['citta'], 0)
+for k, v in citta_uniche.items():
+  print(f"{k}")
+print(f"\nNumero di Dizionari presenti:\n-->{len(dict_data)}")
+print(f"Numero di colonne per record:\n-->{len(dict_data[0])}\n\n")
 
 
-# ESERCIZIO 2 (Medio — SELECT + WHERE):
-# Sempre usando il dataset case.csv:
-# a) Seleziona solo le case a Milano con più di 70 mq
-# b) Seleziona le case costruite dopo il 2000 con garage
-# c) Ordina tutte le case per prezzo decrescente e mostra le top 5
-# d) Seleziona le case con prezzo tra 100,000€ e 300,000€
+
+"""Metodi nativi Pandas"""
+pd_data = pd.read_csv(path_file)
+print(f"Primi 5 record:\n{pd_data.head(5)}")
+print(f"Numero righe nel DataFrame:\n-->{len(pd_data)}")
+print(f"Numero di colonne per riga:\n-->{len(pd_data.columns)}")
+print(f"{pd_data['citta'].unique()}")
+
+
+"""Sicuramente la differenza maggiora la li evince nel momento in cui facciamo
+la selezione dei primi 5 record, o per andare a fare la stampa delle citta' uniche:
+mentre con il dictionary abbiamo eseguito un ciclo for, con pandas abbiamo potuto
+utilizzare il metodo .head(). Per il resto invece sono stati abbastanza equivalenti
+in termini di facilità di implementazione"""
+
+# ESERCIZIO 2 (Medio — Ponte sui filtri):
+# Sempre usando `case.csv`.
+# A) Versione "dict-style" con list comprehension:
+#    a) Case a Milano con più di 70 mq
+#    b) Case costruite dopo il 2000 con garage
+#    c) Case con prezzo tra 100000 e 300000
+# B) Versione Pandas nativa:
+#    rifai a), b), c) con filtri Pandas e:
+#    d) ordina per prezzo decrescente e mostra top 5
+# C) Check di coerenza:
+#    stampa la lunghezza dei risultati dict-style vs Pandas (devono coincidere su a,b,c).
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 2\n")
+
+"""Dict Style"""
+dict_data = pd.read_csv(path_file).to_dict(orient="records")
+case_milano_70 = [v['id'] for v in list(filter(lambda c:  c['citta'] == "Milano" and int(c['metri_quadri']) > 70, dict_data))]
+case_dopo_2000 = [v['id'] for v in list(filter(lambda c: int(c['anno_costruzione']) > 2_000 and c['ha_garage'] == 1, dict_data))]
+case_prezzo_medio =  [v['id'] for v in list(filter(lambda c: int(c['prezzo_euro']) >= 100_000 and int(c['prezzo_euro']) <= 300_000, dict_data))]
+
+print(f"Indici case Milano con più di 70 mq:\n{case_milano_70}")
+print(f"Indici case costruite dopo il 2000 che hanno il garage:\n{case_dopo_2000}")
+print(f"Case con prezzo tra i 100.000 e 200.000 €:\n{case_prezzo_medio}")
+
+"""Pandas Nativa"""
+
+pd_data = dict_data = pd.read_csv(path_file)
+pd_case_milano_70 = pd_data[(pd_data['metri_quadri'] > 70) & (pd_data['citta'] == 'Milano')]
+pd_case_dopo_2000 = pd_data[(pd_data['anno_costruzione'] > 2_000) & (pd_data['ha_garage'] == 1)]
+pd_case_prezzo_medio = pd_data[(pd_data['prezzo_euro'] >= 100_000) & (pd_data['prezzo_euro'] <= 300_000)]
+
+print(f"Case Milano con più di 70 mq con Pandas:\n{pd_case_milano_70.sort_values('prezzo_euro', ascending=False).head(5)}")
+print(f"Case costruite dopo il 2000 che hanno il garage con Pandas:\n{pd_case_dopo_2000.sort_values('prezzo_euro', ascending=False).head(5)}")
+print(f"Case con prezzo tra i 100.000 e 200.000 con Pandas €:\n{pd_case_prezzo_medio.sort_values('prezzo_euro', ascending=False).head(5)}")
+
+"""Confronti"""
+
+print(f"Confronti tra i due metodi:\n")
+print(f"Case a Milano di più di 70 mq:\n {f'Confronto verificato con successo, per entrambi il risultato è: {len(case_milano_70)}' if len(case_milano_70) == pd_case_milano_70.shape[0] else 'Confronto errato'}")
+print(f"Case costruite dopo il 2000 che hanno il garage:\n {f'Confronto verificato con successo, per entrambi il risultato è: {len(case_dopo_2000)}' if len(case_dopo_2000) == pd_case_dopo_2000.shape[0] else 'Confronto errato'}")
+print(f"Case con prezzo tra i 100.000 e 200.000:\n {f'Confronto verificato con successo, per entrambi il risultato è: {len(case_prezzo_medio)}' if len(case_prezzo_medio) == pd_case_prezzo_medio.shape[0] else 'Confronto errato'}")
 
 
-# ESERCIZIO 3 (Medio — GROUP BY):
-# Sempre usando case.csv:
+# ESERCIZIO 3 (Medio — GROUP BY, solo Pandas nativo):
+# Sempre usando `case.csv`:
 # a) Calcola il prezzo medio per città
 # b) Calcola il numero di case per città
 # c) Per ogni città: prezzo medio, mq medi, casa più cara, casa meno cara
 # d) Calcola il prezzo medio al metro quadro per città
 #    (crea prima la colonna prezzo_al_mq = prezzo_euro / metri_quadri)
+# e) Ordina il report finale per prezzo medio decrescente
 #
 # Scrivi il tuo codice qui sotto:
 # ...
 
 
-# ESERCIZIO 4 (Sfida):
-# Usando vendite_ecommerce.csv:
+# ESERCIZIO 4 (Sfida — solo Pandas nativo):
+# Usando `vendite_ecommerce.csv`:
 # a) Trova il giorno con il fatturato più alto
 # b) Calcola il "carrello medio" per ogni metodo di pagamento
 #    (fatturato totale / numero ordini per metodo)
@@ -459,14 +544,16 @@ print(f"\nRINFORZO dict comprehension: {etichette}")
 #    - Ordini totali
 #    - Fatturato totale
 #    - Prodotto più acquistato (per quantità)
+# d) Aggiungi al report una colonna `ticket_medio`:
+#    ticket_medio = fatturato_totale / ordini_totali
 #
 # Scrivi il tuo codice qui sotto:
 # ...
 
 
-# ESERCIZIO 5 (Sfida — Preview ML):
+# ESERCIZIO 5 (Sfida — Preview ML, solo Pandas):
 # Questo esercizio anticipa quello che farai nel Modulo 2 (Machine Learning).
-# Usando case.csv, prepara i dati come farebbe un data scientist:
+# Usando `case.csv`, prepara i dati come farebbe un data scientist:
 # a) Crea una colonna booleana 'is_centro' (True se distanza_centro_km < 3)
 # b) Crea una colonna 'decade' con la decade di costruzione (es. 1970, 1980...)
 #    Suggerimento: (anno // 10) * 10
@@ -475,6 +562,8 @@ print(f"\nRINFORZO dict comprehension: {etichette}")
 #    (un valore vicino a 1 = forte correlazione positiva)
 # d) Dividi il dataset: 80% training, 20% test (prime 24 righe e ultime 6)
 #    Stampa la shape di entrambi
+# e) Check qualità dati:
+#    stampa eventuali valori nulli per colonna e i dtype finali principali
 #
 # Scrivi il tuo codice qui sotto:
 # ...
