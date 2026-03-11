@@ -116,6 +116,38 @@ print(f"Target y shape: {y.shape}")
 
 
 # ==========================================================================
+# PARTE 4: Rinforzo report con .agg (ponte M1 -> M2)
+# ==========================================================================
+#
+# Nel lavoro reale di Machine Learning non fai solo modello:
+# prima devi capire i dati con report sintetici.
+# Il metodo .agg ti permette di costruire report leggibili e veloci.
+
+print("\nPARTE 4 — Report con .agg\n")
+
+case["is_centro"] = case["distanza_centro_km"] < 3
+report_base = (
+    case.groupby("citta", as_index=False).agg(
+        pratiche_totali=("id", "count"),
+        prezzo_medio=("prezzo_euro", "mean"),
+        metri_quadri_medi=("metri_quadri", "mean"),
+        quota_centro=("is_centro", "mean"),
+    )
+)
+report_base["quota_centro"] = (report_base["quota_centro"] * 100).round(2)
+print(report_base.sort_values("prezzo_medio", ascending=False).round(2))
+
+# --- MINI-ESERCIZIO 4 — Rinforzo .agg ---
+# 1) Aggiungi una colonna prezzo_al_mq = prezzo_euro / metri_quadri
+# 2) Crea report per citta con .agg:
+#    - pratiche_totali
+#    - prezzo_massimo
+#    - prezzo_minimo
+#    - prezzo_medio_al_mq
+# 3) Ordina per prezzo_massimo desc e stampa top 3
+
+
+# ==========================================================================
 # QUIZ DI VERIFICA — Prima degli esercizi
 # ==========================================================================
 #
@@ -170,6 +202,35 @@ print(f"Target y shape: {y.shape}")
 # X = case["metri_quadri", "anno_costruzione"]
 # y = case[["prezzo_euro"]]
 # print(X.shape[1], y.shape[1])
+#
+# ESERCIZIO 6 (🔀 [INTERLEAVING] — Pandas + ML):
+# Partendo da `case.csv`:
+# 1) Crea `fascia_prezzo` con 3 classi: basso, medio, alto
+# 2) Costruisci un report con `.agg` per `citta` e `fascia_prezzo`:
+#    - pratiche_totali
+#    - prezzo_medio
+#    - metri_quadri_medi
+# 3) Spiega in 3 righe come useresti questo report per scegliere feature utili.
+#
+# ESERCIZIO 7 (🧠 [RETRIEVAL] — riscrittura da memoria):
+# Senza guardare il capitolo 09, riscrivi da zero:
+# 1) creazione di una mask booleana
+# 2) assegnazione condizionale con `.loc`
+# 3) report con `.groupby(...).agg(...)`
+# Usa sempre `case.csv` e salva il risultato in `dati/report_retrieval_agg.csv`.
+#
+# ESERCIZIO 8 (Rinforzo focus `.agg`):
+# Crea un report "pronto recruiter" con colonne:
+# - citta
+# - pratiche_totali
+# - prezzo_medio
+# - metri_quadri_medi
+# - quota_case_recenti (anno_costruzione >= 2000, in %)
+# - varianza_prezzo
+# Vincoli:
+# - usare `.agg` in modo esplicito
+# - ordinare per `quota_case_recenti` decrescente
+# - stampare top 5 e salvare CSV in `dati/report_rinforzo_agg.csv`
 #
 
 # ==========================================================================

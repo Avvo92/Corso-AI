@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 05/03/2026
+> **Ultimo aggiornamento**: 11/03/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -24,12 +24,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | 09_pandas_intro.py (prossimo avvio) |
-| **Ultimo completato** | 08_tensori_spiegati.py (05/03/2026) |
+| **Capitolo in corso** | 10_pandas_progetto.py (rinforzo reportistica `.agg`) |
+| **Ultimo completato** | 09_pandas_intro.py (11/03/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
-| **Difficoltà media** | 6.3 (media di 2, 4, 6, 9, 8, 8, 7 — curva in assestamento) |
-| **Priorità attive** | ✅ Lacuna #11 verificata nel quiz ingresso 07 (pipeline parsing operativa), ✅ Shape/indexing/broadcasting base consolidati nel cap.08, 🟡 Lettura consegne in miglioramento (checklist utile), 🟡 Distinguere errore sintattico vs errore di shape/logica (emerso nel quiz ingresso 09), 🟡 Distinguere Series vs DataFrame in Pandas, 🟡 Interpretare correttamente `.shape` su selezione colonne, 🟡 Dict comprehension da rendere automatica, ⚠️ filter/lambda ordine parametri da monitorare |
-| **Sessione corrente** | Sessione 7 |
+| **Difficoltà media** | 6.5 (media di 2, 4, 6, 9, 8, 8, 7, 8 — curva in assestamento) |
+| **Priorità attive** | ✅ Lacuna #11 superata, 🟡 Lacune #12/#13/#14 rinforzate (da verificare al quiz d'ingresso del cap.01 M2), 🟡 Lettura consegne in miglioramento, ⚠️ Filter/lambda ordine parametri ancora da monitorare, ⚠️ Reportistica con `.agg` da consolidare in esercizi mirati |
+| **Sessione corrente** | Sessione 8 |
 
 ---
 
@@ -40,11 +40,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 05/03/2026 |
-| **Cosa è stato fatto** | Chiuso operativamente il capitolo `08_tensori_spiegati.py` (voto 7/10), avviato `09_pandas_intro.py`, completato quiz d'ingresso (6/7) e prima correzione del quiz di verifica. |
-| **Errori emersi** | Oltre alla lacuna su diagnosi errore (shape/logica vs sintassi), nel quiz verifica 09 sono emersi due punti: lettura errata di `.shape` su selezione a due colonne e confusione tra Series e DataFrame (`df["colonna"]`). |
-| **Cosa fare nella prossima sessione** | Proseguire `09_pandas_intro.py` inserendo micro-rinforzi su: a) output di `.shape`, b) differenza Series vs DataFrame, c) checklist rapida di diagnosi errori. |
-| **Stato motivazione** | Alto e molto collaborativo — ottima perseveranza nei debug e forte attenzione al "perché" pratico dei concetti. |
+| **Data** | 11/03/2026 |
+| **Cosa è stato fatto** | Corretto e consolidato `09_pandas_intro.py` end-to-end (quiz, esercizi, progetto incrementale). Rafforzata la logica su `groupby`, `mask`, `nunique`, `ticket_medio` e report finale per città. Preparato in anticipo anche un blocco rinforzo `.agg` su `01_cos_e_il_ml.py`, ma il flusso operativo resta nel Modulo 1 con avvio del capitolo 10. |
+| **Errori emersi** | Errore concettuale iniziale tra "quantita" e "numero ordini" risolto; chiarita distinzione tra valore massimo e indice del massimo (`max` vs `idxmax`); bisogno espresso di consolidare costruzione report con `.agg` (priorità didattica attiva). |
+| **Cosa fare nella prossima sessione** | Avviare `10_pandas_progetto.py` e completare il mini-progetto EDA con focus su reportistica `groupby + agg`, includendo esercizi specifici di rinforzo ed export CSV. |
+| **Stato motivazione** | Molto alto: partecipazione costante, domande precise, forte orientamento pratico al "come si usa nel lavoro". |
 
 ---
 
@@ -87,12 +87,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | 09_pandas_intro.py (dopo chiusura cap.08) |
-| **Rinforzi da inserire (🔁)** | In 09: richiamo naturale su shape/indexing NumPy -> righe/colonne DataFrame; mantenere controllo tipi da CSV a numerico |
-| **Concetti ⚠️ da ripassare** | Shape/axis/broadcasting (con esempi visuali), dict comprehension (automatizzare), `filter()` ordine parametri |
-| **Pattern 🔴 da monitorare** | #5 (tipi nei dizionari/CSV), #6 (lettura consegne), #11 (ordine filter) |
-| **Ponte mentale da riusare** | ".items() = enumerate dei dizionari" (ha funzionato al cap.05) |
-| **Note** | Stato riallineato al workspace: cap.07 svolto operativamente, cap.08 in corso (parte iniziale svolta). Prima del cap.09 chiudere il cap.08 in modo completo. |
+| **Prossimo capitolo** | 10_pandas_progetto.py (chiusura Modulo 1 dati) |
+| **Rinforzi da inserire (🔁)** | In 10: consolidare reportistica con `.groupby(...).agg(...)` (metriche multiple + colonne derivate + ordinamento), più richiamo leggero su #12/#13/#14 in forma pratica |
+| **Concetti ⚠️ da ripassare** | Costruzione report tabellari con `.agg`, scelta corretta aggregazioni (`count`/`nunique`/`mean`/`sum`), lettura output `.shape`, distinzione Series vs DataFrame |
+| **Pattern 🔴 da monitorare** | #5 (tipi da CSV), #6 (lettura completa consegne), #11 (ordine filter) |
+| **Ponte mentale da riusare** | SQL `GROUP BY + AVG/COUNT` -> Pandas `.groupby().agg()` |
+| **Note** | 09 chiuso con buon livello operativo; prima del passaggio a M2 viene completato il cap.10 per consolidare EDA/reportistica su dataset reali. |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -309,7 +309,7 @@
 | 06_file_csv.py | ✅ Completato + Corretto | 24/02/2026 | 8 | Capitolo completato end-to-end. Quiz verifica: 7/8 pienamente corrette (+1 parziale). Esercizi 1-7 e progetto incrementale completati; forte miglioramento su `.get()`/`.items()`, parsing CSV, path handling e refactoring. |
 | 07_numpy_intro.py | 🟡 In revisione | 03/03/2026 | — | Quiz d'ingresso compilato + esercizi 1-5 svolti. Mancano correzione finale strutturata e voto difficoltà. |
 | 08_tensori_spiegati.py | ✅ Completato + Corretto | 05/03/2026 | 7 | Capitolo chiuso con consolidamento su shape, axis, broadcasting e reshape; esercizi e progetto incrementale completati con correzioni iterative e buona autonomia nel debugging. |
-| 09_pandas_intro.py | ⬜ Da fare | | | |
+| 09_pandas_intro.py | ✅ Completato + Corretto | 11/03/2026 | 8 | Capitolo completato con buona autonomia su groupby/mask/report. Corrette confusioni su `quantita` vs ordini, `max` vs `idxmax`, distinzione Series/DataFrame in consolidamento; progetto incrementale chiuso con report rischio città salvato in CSV. |
 | 10_pandas_progetto.py | ⬜ Da fare | | | |
 | 11_matplotlib_grafici.py | ⬜ Da fare | | | |
 | 12_web_bridge.py | ⬜ Da fare | | | |
@@ -318,7 +318,7 @@
 
 | Modulo | Focus | Librerie principali | Stato |
 |--------|-------|---------------------|-------|
-| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit | scikit-learn, streamlit | ⬜ Da creare |
+| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit | scikit-learn, streamlit | 🟡 In preparazione (cap.01 pronto con rinforzi) |
 | **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, coseno, gradiente, discesa — tutto in codice + Matplotlib | numpy, matplotlib | ⬜ Da creare |
 | 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | torch, torchvision, gradio | ⬜ Da creare |
 | 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | transformers, sentence-transformers | ⬜ Da creare |
@@ -372,8 +372,9 @@
 | 05_dizionari | 8 | -1 ↓ (buon segno: la curva si stabilizza dopo il picco) |
 | 06_file_csv | 8 | = (stabilizzazione confermata) |
 | 08_tensori_spiegati | 7 | -1 ↓ (difficoltà alta ma gestita meglio grazie a pratica guidata su shape/assi/broadcasting) |
+| 09_pandas_intro | 8 | +1 ↑ (capitolo ampio ma gestito bene; consolidati groupby/mask/reportistica) |
 
-**Media attuale**: 6.3 (media di 2, 4, 6, 9, 8, 8, 7). Dopo il picco al cap.04, il cap.08 conferma un carico ancora impegnativo ma più controllato: la comprensione tecnica cresce, resta prioritaria la lettura completa delle consegne.
+**Media attuale**: 6.5 (media di 2, 4, 6, 9, 8, 8, 7, 8). Dopo il picco al cap.04, la curva si stabilizza: crescita tecnica concreta e buona autonomia; priorità attiva sul rendere automatica la reportistica con `.agg`.
 
 ---
 
@@ -730,9 +731,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 9 | >= vs > (include o esclude il valore limite) | Verifica/05 | Dict comprehension `if v >= 7`: ha escluso Marco (voto 7) dalla risposta. Non distingue >= (include) da > (esclude) | 06 | 🟡 |
 | 10 | .get() vs .items() — metodi diversi | Verifica/05 | Per contare frequenze ha scritto `.items(lettera, totale)` invece di `.get(lettera, 0)`. Confonde .items() (tutte le coppie) con .get() (una chiave con default) | 06 | 🟡 |
 | 11 | Parsing CSV manuale vs spiegazione astratta | Verifica/06 | Alla domanda Feynman aveva descritto il concetto in modo generale ma senza sequenza operativa completa (apertura file -> lettura righe -> header -> split -> dizionario -> append). Verificata corretta al quiz d'ingresso cap.07 con passaggi operativi in ordine. | 07 | 🟢 |
-| 12 | Diagnosi mismatch shape in reshape | Ingresso/09 | In una domanda "trova l'errore" su `img.reshape(64,)` ha individuato un dettaglio sintattico secondario, ma non il problema principale: mismatch numero elementi (192 != 64). | 10 | 🔴 |
-| 13 | Interpretazione `.shape` su selezione colonne Pandas | Verifica/09 | Alla domanda su `vendite[["prodotto","prezzo"]].shape` ha risposto `(2,)` invece di `(n_righe, 2)`, confondendo dimensione colonne con shape completa. | 10 | 🔴 |
-| 14 | Distinzione Series vs DataFrame | Verifica/09 | Ha risposto Vero a "vendite['categoria'] restituisce un DataFrame", ma restituisce una Series. | 10 | 🔴 |
+| 12 | Diagnosi mismatch shape in reshape | Ingresso/09 | In una domanda "trova l'errore" su `img.reshape(64,)` aveva inizialmente guardato la sintassi, non il mismatch elementi (192 != 64). Rinforzo inserito nel cap.01 M2. | 01_M2 | 🟡 |
+| 13 | Interpretazione `.shape` su selezione colonne Pandas | Verifica/09 | Alla domanda su `vendite[["prodotto","prezzo"]].shape` aveva risposto `(2,)` invece di `(n_righe, 2)`. Rinforzo inserito nel cap.01 M2. | 01_M2 | 🟡 |
+| 14 | Distinzione Series vs DataFrame | Verifica/09 | Aveva confuso `df["colonna"]` (Series) con DataFrame. Rinforzo inserito nel cap.01 M2. | 01_M2 | 🟡 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
