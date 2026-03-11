@@ -562,7 +562,32 @@ print(f"{round(info_citta, 0)}")
 #    ticket_medio = fatturato_totale / ordini_totali
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+
+print(f"\nEsercizio 4\n")
+path_file = os.path.join(os.path.dirname(__file__), "dati", "vendite_ecommerce.csv")
+pd_data = pd.read_csv(path_file)
+
+pd_data['tot_fatturato'] = pd_data['prezzo'] * pd_data['quantita']
+giorno_max_fatt = pd_data.groupby("data")['tot_fatturato'].sum().idxmax()
+print(f"{giorno_max_fatt}\n")
+ordini_per_metodo = pd_data.groupby('metodo_pagamento')['id_ordine'].nunique()
+carrello_medio = pd_data.groupby('metodo_pagamento')['tot_fatturato'].sum() / ordini_per_metodo
+print("Carrello Medio\n")
+print(f"{round(carrello_medio, 2).sort_values()}\n")
+print(f"Dati divisi per metodo di pagamento\n")
+for k, v in pd_data.groupby('metodo_pagamento'):
+  print(f"{k} => {v}\n")  
+
+ordini_totali = pd_data.groupby('citta')['quantita'].sum()
+
+for citta in pd_data['citta'].unique():
+  dati_citta = pd_data[pd_data["citta"] == citta]
+  ordini_totali_citta = dati_citta['id_ordine'].nunique()
+  fatt_per_citta = dati_citta['tot_fatturato'].sum()
+  top_prod = dati_citta.groupby('prodotto')['quantita'].sum().idxmax()
+  ticket_medio = fatt_per_citta / ordini_totali_citta
+  print(f"Report {citta}:\n\nTotale Ordini => {ordini_totali_citta}\nFatturato totale città => {round(fatt_per_citta, 3)} €\nProdotto Top => {top_prod}\nTicket medio => {round(ticket_medio, 2)} €\n\n")
+  
 
 
 # ESERCIZIO 5 (Sfida — Preview ML, solo Pandas):
@@ -580,7 +605,24 @@ print(f"{round(info_citta, 0)}")
 #    stampa eventuali valori nulli per colonna e i dtype finali principali
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+
+print(f"\nEsercizio 5\n")
+path_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+dati_case = pd.read_csv(path_file)
+dati_case['is_centro'] = dati_case['distanza_centro_km'] < 3
+dati_case['decade'] = (dati_case['anno_costruzione'] // 10) * 10
+correlazione = dati_case[['metri_quadri', 'prezzo_euro']].corr()
+print(f"{dati_case.head(1)}")
+print(f"{correlazione}")
+training = dati_case[:(dati_case.shape[0]*80) // 100]
+testing = dati_case[(dati_case.shape[0]*80) // 100:]
+print(f"TRAINING:\n{training.shape}")
+print(f"TESTING:\n{testing.shape}")
+print("\nValori nulli per colonna:")
+print(dati_case.isnull().sum())
+print("\nDtype finali:")
+print(dati_case.dtypes)
+
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
@@ -596,7 +638,7 @@ print(f"{round(info_citta, 0)}")
 # 3) Crea un report per citta con:
 #    - pratiche_totali
 #    - prezzo_medio
-#    - metri_quadri_medi
+#    - metri_quadri_mediclear
 #    - quota_rosso (percentuale pratiche rosse)
 # 4) Ordina il report per quota_rosso decrescente e stampa top 5.
 # 5) Salva il report in `dati/report_rischio_citta.csv`.
