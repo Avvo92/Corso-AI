@@ -85,7 +85,7 @@ import os
 #   img = np.random.randint(0, 256, (8, 8, 3))
 #   flat = img.reshape(64,)
 # Cosa non torna e perche?
-# la sintassi corretta era: np.random.randint(0, 256, size=(8, 8, 3))
+# Il problema principale e il reshape: 8*8*3 = 192 elementi, non 64.
 #
 # DOMANDA 4 — Definizione:
 # Spiega in una riga la differenza tra "traslare" e "ruotare" i dati.
@@ -397,10 +397,10 @@ print(f"{sconti_testo}")
 #
 # DOMANDA 1 — Prevedi l'output:
 #   print(vendite[["prodotto", "prezzo"]].shape)
-#(2,)
+#(n_righe, 2)
 #
 # DOMANDA 2 — Vero o Falso?
-# "vendite['categoria'] restituisce un DataFrame." V
+# "vendite['categoria'] restituisce un DataFrame." F
 #
 # DOMANDA 3 — Trova l'errore:
 #   milano = vendite[vendite["citta"] = "Milano"]
@@ -505,7 +505,7 @@ print(f"Case con prezzo tra i 100.000 e 200.000 €:\n{case_prezzo_medio}")
 
 """Pandas Nativa"""
 
-pd_data = dict_data = pd.read_csv(path_file)
+pd_data = pd.read_csv(path_file)
 pd_case_milano_70 = pd_data[(pd_data['metri_quadri'] > 70) & (pd_data['citta'] == 'Milano')]
 pd_case_dopo_2000 = pd_data[(pd_data['anno_costruzione'] > 2_000) & (pd_data['ha_garage'] == 1)]
 pd_case_prezzo_medio = pd_data[(pd_data['prezzo_euro'] >= 100_000) & (pd_data['prezzo_euro'] <= 300_000)]
@@ -578,15 +578,26 @@ print(f"Dati divisi per metodo di pagamento\n")
 for k, v in pd_data.groupby('metodo_pagamento'):
   print(f"{k} => {v}\n")  
 
-ordini_totali = pd_data.groupby('citta')['quantita'].sum()
-
-for citta in pd_data['citta'].unique():
-  dati_citta = pd_data[pd_data["citta"] == citta]
-  ordini_totali_citta = dati_citta['id_ordine'].nunique()
-  fatt_per_citta = dati_citta['tot_fatturato'].sum()
-  top_prod = dati_citta.groupby('prodotto')['quantita'].sum().idxmax()
-  ticket_medio = fatt_per_citta / ordini_totali_citta
-  print(f"Report {citta}:\n\nTotale Ordini => {ordini_totali_citta}\nFatturato totale città => {round(fatt_per_citta, 3)} €\nProdotto Top => {top_prod}\nTicket medio => {round(ticket_medio, 2)} €\n\n")
+report_citta = pd_data.groupby("citta", as_index=False).agg(
+  ordini_totali=("id_ordine", "nunique"),
+  fatturato_totale=("tot_fatturato", "sum")
+)
+top_prodotto_citta = (
+  pd_data.groupby(["citta", "prodotto"], as_index=False)["quantita"]
+  .sum()
+  .sort_values(["citta", "quantita"], ascending=[True, False])
+  .drop_duplicates("citta")
+  .rename(columns={"prodotto": "prodotto_top"})
+  [["citta", "prodotto_top"]]
+)
+report_citta = report_citta.merge(top_prodotto_citta, on="citta", how="left")
+report_citta["ticket_medio"] = report_citta["fatturato_totale"] / report_citta["ordini_totali"]
+print("Report finale per citta:\n")
+print(
+  report_citta.sort_values("fatturato_totale", ascending=False).round(
+    {"fatturato_totale": 2, "ticket_medio": 2}
+  )
+)
   
 
 
@@ -638,7 +649,7 @@ print(dati_case.dtypes)
 # 3) Crea un report per citta con:
 #    - pratiche_totali
 #    - prezzo_medio
-#    - metri_quadri_mediclear
+#    - metri_quadri_medi
 #    - quota_rosso (percentuale pratiche rosse)
 # 4) Ordina il report per quota_rosso decrescente e stampa top 5.
 # 5) Salva il report in `dati/report_rischio_citta.csv`.
@@ -648,8 +659,27 @@ print(dati_case.dtypes)
 # - Da analisi tecnica a report operativo leggibile
 #
 # Scrivi il tuo codice qui sotto:
-# ...
-#
+
+print(f"\nProgetto Incrementale\n")
+path_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+pratiche = pd.read_csv(path_file)
+pratiche['rischio_base'] ="verde"
+mask_rosso = (pratiche['prezzo_euro'] > 350_000) & (pratiche['distanza_centro_km'] < 2)
+mask_giallo = pratiche['prezzo_euro'].between(200_000, 350_000, inclusive="both") & (~mask_rosso)
+pratiche.loc[mask_rosso, "rischio_base"] = "rosso"
+pratiche.loc[mask_giallo, "rischio_base"] = "giallo"
+print(f"{pratiche}\n")
+report = (
+  pratiche.groupby("citta", as_index=False).agg(
+    pratiche_totali = ("id", "nunique"),
+    prezzo_medio = ("prezzo_euro", lambda q: round(q.mean(), 2)),
+    metri_quadri_medi = ("metri_quadri", lambda q: round(q.mean(), 2)),
+    quota_rosso = ("rischio_base", lambda q: round((q == "rosso").mean() * 100, 2))
+  )
+).sort_values("quota_rosso", ascending=False)
+print("Report città\n")
+print(f"{report.head(5)}")
+report.to_csv("dati/report_rischio_citta.csv", index=False)
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  SOLUZIONI — Guardale Solo DOPO Aver Provato!                         ║

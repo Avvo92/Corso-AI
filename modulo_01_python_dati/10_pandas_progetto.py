@@ -34,6 +34,38 @@ import numpy as np
 import os
 
 # ==========================================================================
+# QUIZ D'INGRESSO — Ripasso dal Capitolo 09
+# ==========================================================================
+#
+# DOMANDA 1 — Prevedi l'output:
+#   df[["prodotto", "prezzo"]].shape
+# Se il dataset ha 30 righe, che shape ottieni?
+#
+# DOMANDA 2 — Vero/Falso:
+# "df['categoria'] restituisce un DataFrame."
+#
+# DOMANDA 3 — Trova l'errore:
+#   img = np.random.randint(0, 256, (8, 8, 3))
+#   flat = img.reshape(64,)
+# Qual e il vero problema?
+#
+# DOMANDA 4 — Completa:
+# `idxmax()` restituisce __________ ; `max()` restituisce __________
+#
+# DOMANDA 5 — Prevedi:
+# Se `q = pd.Series([True, False, True])`, quanto vale `q.mean() * 100`?
+#
+# DOMANDA 6 — Scelta multipla:
+# Per contare ordini unici per citta, useresti:
+# a) count()
+# b) nunique()
+# c) sum()
+#
+# DOMANDA 7 — 💬 Spiega con parole tue:
+# Qual e la differenza pratica tra Series e DataFrame quando costruisci un report?
+#
+
+# ==========================================================================
 # STEP 1: CARICARE I DATI
 # ==========================================================================
 
@@ -73,6 +105,15 @@ print("\n--- Valori unici per colonna ---")
 for col in df.columns:
     print(f"  {col}: {df[col].nunique()} valori unici")
 
+# 🔁 RINFORZO MIRATO — `.shape` su selezione colonne
+# Al quiz del cap.09 c'era stata confusione su shape quando selezioni due colonne.
+# Regola pratica:
+# - df["col"] -> Series -> shape a 1 dimensione: (n_righe,)
+# - df[["col1", "col2"]] -> DataFrame -> shape a 2 dimensioni: (n_righe, 2)
+print("\nRINFORZO shape/Series/DataFrame:")
+print(f"df['prodotto'] shape -> {df['prodotto'].shape}")
+print(f"df[['prodotto','prezzo']] shape -> {df[['prodotto', 'prezzo']].shape}")
+
 # ==========================================================================
 # STEP 3: PULIZIA E PREPARAZIONE
 # ==========================================================================
@@ -93,6 +134,12 @@ df["giorno_settimana"] = df["data"].dt.day_name()  # Lunedì, Martedì...
 print("Tipi dopo la pulizia:")
 print(df.dtypes)
 print(f"\nColonne aggiunte: 'fatturato', 'giorno_settimana'")
+
+# 🔁 RINFORZO MIRATO — leggere il risultato, non solo il codice
+# Per non confondere valore massimo e "chi lo ha prodotto":
+fatturato_per_data = df.groupby("data")["fatturato"].sum()
+print(f"Giorno top (idxmax): {fatturato_per_data.idxmax().date()}")
+print(f"Valore top (max): {fatturato_per_data.max():.2f}€")
 
 # ==========================================================================
 # STEP 4: ANALISI
@@ -186,6 +233,33 @@ RISULTATI DELL'ANALISI:
 """)
 
 
+# ==========================================================================
+# QUIZ DI VERIFICA — Prima degli esercizi
+# ==========================================================================
+#
+# DOMANDA 1 — Vero/Falso:
+# "count() e nunique() sono equivalenti in tutti i report."
+#
+# DOMANDA 2 — Prevedi l'output:
+#   report = df.groupby("citta").agg(ordini=("id_ordine", "nunique"))
+#   print(report.shape)
+# Quante colonne ha il report?
+#
+# DOMANDA 3 — Trova l'errore:
+#   report = df.groupby("citta").agg(
+#       fatturato=("fatturato", "sum"),
+#       ticket_medio=("fatturato", "sum") / ("id_ordine", "nunique")
+#   )
+# Perche non funziona?
+#
+# DOMANDA 4 — Completa:
+# Per aggiungere una colonna derivata dopo `.agg`, uso:
+# `report["nuova_col"] = ______________________________`
+#
+# DOMANDA 5 — 💬 Spiega con parole tue:
+# Perche `.agg` e utile per creare report "da business" e non solo output tecnici?
+#
+
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  ESERCIZI — Ora Prova Tu!                                             ║
 # ╚═════════════════════════════════════════════════════════════════════════╝
@@ -218,6 +292,38 @@ RISULTATI DELL'ANALISI:
 #   nomi = [f"Utente_{i}" for i in range(50)]
 #   eta = np.random.randint(16, 65, 50)
 #   piani = np.random.choice(["free", "premium"], 50, p=[0.7, 0.3])
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+
+
+# ESERCIZIO 3 (Rinforzo mirato `.agg` — Report Operativo):
+# Sempre su `vendite_ecommerce.csv`, crea un report per citta con:
+# - ordini_totali (id_ordine unici)
+# - fatturato_totale (somma fatturato)
+# - prezzo_medio (media prezzo)
+# - quantita_totale (somma quantita)
+# - ticket_medio (fatturato_totale / ordini_totali)
+# Vincoli:
+# 1) usare `groupby(...).agg(...)` per costruire il report base
+# 2) aggiungere `ticket_medio` come colonna derivata
+# 3) ordinare per `fatturato_totale` desc
+# 4) salvare in `dati/report_citta_agg.csv`
+#
+# Scrivi il tuo codice qui sotto:
+# ...
+
+
+# ESERCIZIO 4 (Rinforzo `.agg` + Debug logico):
+# Sul file `case.csv` crea un report per citta:
+# - pratiche_totali
+# - prezzo_medio
+# - metri_quadri_medi
+# - quota_case_recenti (anno_costruzione >= 2000, in percentuale)
+# Poi rispondi in 3 righe:
+# a) Perche `count()` e diverso da `nunique()` in un report?
+# b) Quando useresti `size()` invece di `count()`?
+# c) Perche conviene tenere i nomi colonna del report espliciti in `.agg`?
 #
 # Scrivi il tuo codice qui sotto:
 # ...
