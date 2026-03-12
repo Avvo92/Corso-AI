@@ -39,31 +39,31 @@ import os
 #
 # DOMANDA 1 — Prevedi l'output:
 #   df[["prodotto", "prezzo"]].shape
-# Se il dataset ha 30 righe, che shape ottieni?
+# Se il dataset ha 30 righe, che shape ottieni? (30, 2)
 #
 # DOMANDA 2 — Vero/Falso:
-# "df['categoria'] restituisce un DataFrame."
+# "df['categoria'] restituisce un DataFrame." Falso restituisce una Series
 #
 # DOMANDA 3 — Trova l'errore:
 #   img = np.random.randint(0, 256, (8, 8, 3))
 #   flat = img.reshape(64,)
-# Qual e il vero problema?
+# Qual e il vero problema? il problema è il volore che si è impostato per la reshape, in quanto 8*8*3 da 192, non 64
 #
 # DOMANDA 4 — Completa:
-# `idxmax()` restituisce __________ ; `max()` restituisce __________
+# `idxmax()` restituisce l'elemento con il valore massimo ; `max()` restituisce il valore massimo
 #
 # DOMANDA 5 — Prevedi:
-# Se `q = pd.Series([True, False, True])`, quanto vale `q.mean() * 100`?
+# Se `q = pd.Series([True, False, True])`, quanto vale `q.mean() * 100`? 66.6666666 periodico
 #
 # DOMANDA 6 — Scelta multipla:
 # Per contare ordini unici per citta, useresti:
 # a) count()
-# b) nunique()
+# b) nunique() x
 # c) sum()
 #
 # DOMANDA 7 — 💬 Spiega con parole tue:
 # Qual e la differenza pratica tra Series e DataFrame quando costruisci un report?
-#
+#il dataframe è tutto il set di dati, nella sua interezza, la Series invece è un qualsiasi sottoinsieme del dataframe
 
 # ==========================================================================
 # STEP 1: CARICARE I DATI
@@ -279,8 +279,72 @@ RISULTATI DELL'ANALISI:
 # 5. Scrivi 3 "insight" conclusivi
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 1\n")
 
+"""Caricamento dei dati"""
+
+path_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+data = pd.read_csv(path_file)
+
+"""Esplorazione preliminare"""
+
+print("---- Esplorazione ----")
+print(f"Shape:\nRighe =>{data.shape[0]}\nColonne =>{data.shape[1]}\n")
+print("Info generali:\n")
+print(f"{data.info()}\n")
+print("Descrizione:\n")
+print(f"{data.describe()}\n")
+print("Numero valori nulli:")
+print(f"{data.isnull().sum()}\n")
+
+"""Pulizia e aggiunta di colonne utili"""
+
+data[["metri_quadri", "num_stanze", "piano", "ha_balcone", "ha_garage", "anno_costruzione"]] = data[["metri_quadri", "num_stanze", "piano", "ha_balcone", "ha_garage", "anno_costruzione"]].astype(int)
+data[["distanza_centro_km", "prezzo_euro"]] = data[["distanza_centro_km", "prezzo_euro"]].astype(float)
+data["prezzo_al_metro"] = round(data["prezzo_euro"] / data["metri_quadri"], 2)
+data["eta_immobile"] = 2026 - data["anno_costruzione"]
+
+"""Analisi dei dati"""
+
+print("\nOverview generale\n")
+print(f"Anni di costruzione: dal {data["anno_costruzione"].min()} al {data["anno_costruzione"].max()}")
+print(f"Totale numero di immobili: {data.shape[0]}")
+print(f"Totale valore degli immobili analizzati: {round(data["prezzo_euro"].sum(), 2):.2f} €")
+
+"""Aggregazione dei dati"""
+
+prezzo_medio_citta = data.groupby("citta")["prezzo_al_metro"].mean().round(2)
+data["decade"] = data["anno_costruzione"] // 10 * 10
+prezze_medio_decade = data.groupby("decade")["prezzo_al_metro"].mean().round(2)
+print(f"\nPresso medio per città")
+print(f"{prezzo_medio_citta}")
+print(f"\nPresso medio per decade:")
+print(f"{prezze_medio_decade}")
+
+print("\nImpatto del garage sul prezzo\n")
+impatto_garage = data.groupby("ha_garage").agg(
+    prezzo_medio_mq = ("prezzo_al_metro", "mean"),
+    prezzo_mediano_mq = ("prezzo_al_metro", "median"),
+    prezzo_medio = ("prezzo_euro", "mean"),
+    prezzo_mediano = ("prezzo_euro", "median")
+)
+print(f"Prezzo medio al mq immobili senza garage:\n{impatto_garage.loc[0, "prezzo_medio_mq"].round(2):.2f} €\n")
+print(f"Prezzo medio al mq immobili con garage:\n{impatto_garage.loc[1, "prezzo_medio_mq"].round(2):.2f} €\n")
+delta = impatto_garage.loc[1, "prezzo_medio_mq"] - impatto_garage.loc[0, "prezzo_medio_mq"]
+percentuale_delta = ((impatto_garage.loc[1, "prezzo_medio_mq"] / impatto_garage.loc[0, "prezzo_medio_mq"]) - 1) * 100
+print(f"Delta => {delta.round(2)}")
+print(f"Percentuale Delta => {percentuale_delta.round(2)} %")
+
+
+print("\nImpatto del balcone sul prezzo\n")
+
+# print("\n📊 OVERVIEW")
+# print(f"  Periodo: dal {df['data'].min().date()} al {df['data'].max().date()}")
+# print(f"  Ordini totali: {len(df)}")
+# print(f"  Fatturato totale: {df['fatturato'].sum():,.2f}€")
+# print(f"  Ordine medio: {df['fatturato'].mean():,.2f}€")
+# print(f"  Prodotti unici: {df['prodotto'].nunique()}")
+# print(f"  Città servite: {df['citta'].nunique()}")
 
 # ESERCIZIO 2 (Sfida — Crea il Tuo Dataset):
 # Crea da zero un DataFrame con dati inventati di un'app di streaming:
