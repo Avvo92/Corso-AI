@@ -291,8 +291,8 @@ data = pd.read_csv(path_file)
 print("---- Esplorazione ----")
 print(f"Shape:\nRighe =>{data.shape[0]}\nColonne =>{data.shape[1]}\n")
 print("Info generali:\n")
-print(f"{data.info()}\n")
-print("Descrizione:\n")
+print(data.info())
+print("\nDescrizione:\n")
 print(f"{data.describe()}\n")
 print("Numero valori nulli:")
 print(f"{data.isnull().sum()}\n")
@@ -307,19 +307,19 @@ data["eta_immobile"] = 2026 - data["anno_costruzione"]
 """Analisi dei dati"""
 
 print("\nOverview generale\n")
-print(f"Anni di costruzione: dal {data["anno_costruzione"].min()} al {data["anno_costruzione"].max()}")
+print(f"Anni di costruzione: dal {data['anno_costruzione'].min()} al {data['anno_costruzione'].max()}")
 print(f"Totale numero di immobili: {data.shape[0]}")
-print(f"Totale valore degli immobili analizzati: {round(data["prezzo_euro"].sum(), 2):.2f} €")
+print(f"Totale valore degli immobili analizzati: {round(data['prezzo_euro'].sum(), 2):.2f} €")
 
 """Aggregazione dei dati"""
 
 prezzo_medio_citta = data.groupby("citta")["prezzo_al_metro"].mean().round(2)
 data["decade"] = data["anno_costruzione"] // 10 * 10
-prezze_medio_decade = data.groupby("decade")["prezzo_al_metro"].mean().round(2)
+prezzo_medio_decade = data.groupby("decade")["prezzo_al_metro"].mean().round(2)
 print(f"\nPresso medio per città")
 print(f"{prezzo_medio_citta}")
 print(f"\nPresso medio per decade:")
-print(f"{prezze_medio_decade}")
+print(f"{prezzo_medio_decade}")
 
 print("\nImpatto del garage sul prezzo\n")
 impatto_garage = data.groupby("ha_garage").agg(
@@ -328,8 +328,8 @@ impatto_garage = data.groupby("ha_garage").agg(
     prezzo_medio = ("prezzo_euro", "mean"),
     prezzo_mediano = ("prezzo_euro", "median")
 )
-print(f"Prezzo medio al mq immobili senza garage:\n{impatto_garage.loc[0, "prezzo_medio_mq"].round(2):.2f} €\n")
-print(f"Prezzo medio al mq immobili con garage:\n{impatto_garage.loc[1, "prezzo_medio_mq"].round(2):.2f} €\n")
+print(f"Prezzo medio al mq immobili senza garage:\n{impatto_garage.loc[0, 'prezzo_medio_mq'].round(2):.2f} €\n")
+print(f"Prezzo medio al mq immobili con garage:\n{impatto_garage.loc[1, 'prezzo_medio_mq'].round(2):.2f} €\n")
 delta = impatto_garage.loc[1, "prezzo_medio_mq"] - impatto_garage.loc[0, "prezzo_medio_mq"]
 percentuale_delta = ((impatto_garage.loc[1, "prezzo_medio_mq"] / impatto_garage.loc[0, "prezzo_medio_mq"]) - 1) * 100
 print(f"Delta => {delta.round(2)}")
@@ -337,28 +337,132 @@ print(f"Percentuale Delta => {percentuale_delta.round(2)} %")
 
 
 print("\nImpatto del balcone sul prezzo\n")
+impatto_balcone = data.groupby("ha_balcone").agg(
+    prezzo_medio_mq = ("prezzo_al_metro", "mean"),
+    prezzo_mediano_mq = ("prezzo_al_metro", "median"),
+    prezzo_medio = ("prezzo_euro", "mean"),
+    prezzo_mediano = ("prezzo_euro", "median")    
+)
+print(f"Prezzo medio al mq immobili senza balcone:\n{impatto_balcone.loc[0, 'prezzo_medio_mq'].round(2):.2f} €\n")
+print(f"Prezzo medio al mq immobili con balcone:\n{impatto_balcone.loc[1, 'prezzo_medio_mq'].round(2):.2f} €\n")
+delta_2 = impatto_balcone.loc[1, "prezzo_medio_mq"] - impatto_balcone.loc[0, "prezzo_medio_mq"]
+percentuale_delta_2 = ((impatto_balcone.loc[1, "prezzo_medio_mq"] / impatto_balcone.loc[0, "prezzo_medio_mq"]) - 1) * 100
+print(f"Delta => {delta_2.round(2)}")
+print(f"Percentuale Delta => {percentuale_delta_2.round(2)} %")
 
-# print("\n📊 OVERVIEW")
-# print(f"  Periodo: dal {df['data'].min().date()} al {df['data'].max().date()}")
-# print(f"  Ordini totali: {len(df)}")
-# print(f"  Fatturato totale: {df['fatturato'].sum():,.2f}€")
-# print(f"  Ordine medio: {df['fatturato'].mean():,.2f}€")
-# print(f"  Prodotti unici: {df['prodotto'].nunique()}")
-# print(f"  Città servite: {df['citta'].nunique()}")
+print("\nCorrelazione tra distanza dal centro e prezzo")
+correlazione_prezzo_distanza = data["prezzo_euro"].corr(data["distanza_centro_km"])
+print(f"{correlazione_prezzo_distanza}")
+
+print("\nInsights generici")
+print(f"La casa più costosa in vendita:\n\n{data.loc[data['prezzo_al_metro'].idxmax()]}\n")
+print(f"La casa più economica in vendita:\n{data.loc[data['prezzo_al_metro'].idxmin()]}\n")
+print(f"Città più costosa:\n{data.groupby('citta')['prezzo_al_metro'].mean().idxmax()}")
+
 
 # ESERCIZIO 2 (Sfida — Crea il Tuo Dataset):
 # Crea da zero un DataFrame con dati inventati di un'app di streaming:
 # - 50 righe (utenti)
 # - Colonne: nome, eta, piano (free/premium), ore_ascolto_mese,
 #            genere_preferito, citta
-# Poi fai un'analisi completa come quella sopra.
-# Suggerimento per generare dati:
-#   nomi = [f"Utente_{i}" for i in range(50)]
-#   eta = np.random.randint(16, 65, 50)
-#   piani = np.random.choice(["free", "premium"], 50, p=[0.7, 0.3])
 #
-# Scrivi il tuo codice qui sotto:
-# ...
+# Poi esegui QUESTE analisi (una per una):
+#
+# 1) Esplorazione base
+#    a) shape (righe, colonne)
+#    b) info()
+#    c) describe() per colonne numeriche
+#    d) valori nulli per colonna
+#
+# 2) Pulizia/trasformazioni
+#    a) verifica e conversione tipi (eta int, ore_ascolto_mese numerico)
+#    b) crea fascia_eta (es. 16-24, 25-34, 35-44, 45-54, 55+)
+#    c) crea ore_giornaliere_medie = ore_ascolto_mese / 30
+#
+# 3) Analisi descrittive principali
+#    a) utenti totali, età media, ore medie mensili
+#    b) conteggio utenti per piano (free/premium)
+#    c) ore medie mensili per piano
+#    d) ore medie mensili per città
+#    e) ore medie mensili per genere_preferito
+#    f) piano più usato in assoluto
+#    g) città con più utenti
+#
+# 4) Analisi avanzate (stile mini-report)
+#    a) confronto free vs premium: differenza assoluta e percentuale delle ore medie
+#    b) top 5 utenti per ore_ascolto_mese
+#    c) distribuzione utenti per fascia_eta
+#    d) correlazione tra eta e ore_ascolto_mese (.corr())
+#
+# 5) Insight finali (obbligatori)
+#    Scrivi 3 insight in linguaggio business, ad esempio:
+#    - quale piano ascolta di più e quanto
+#    - quale città è più attiva
+#    - se l'età sembra influenzare (o no) le ore di ascolto
+
+
+print("\nEsercizio 2\n")
+n = 50
+nomi = [f"Utente_{i}" for i in range(1, 51)]
+eta = np.random.randint(16, 65, n)
+piano =  np.random.choice(["free", "premium"], n, p=[0.7, 0.3])
+genere_preferito = np.random.choice(["pop", "rock", "jazz", "classica"], n)
+citta = np.random.choice(["roma", "milano", "bologna", "firenze", "torino"], n)
+ore_ascolto_mese = np.random.randint(10, 45, n)
+
+df_streaming = pd.DataFrame({
+    "nome": nomi,
+    "eta": eta,
+    "piano": piano,
+    "genere": genere_preferito,
+    "citta": citta,
+    "ore_ascolto_mese": ore_ascolto_mese 
+})
+
+print(f"\nAnalisi preliminare")
+print(f"Shape:\n{df_streaming.shape}")
+print("\nInfo Generali\n")
+df_streaming.info()
+print(f"\nStatistica;\n{df_streaming.describe()}")
+print(f"Valori null:\n{df_streaming.isnull().sum()}")
+
+print(f"\nPulizia e trasformazioni")
+df_streaming["eta"] = df_streaming["eta"].astype(int)
+df_streaming["ore_ascolto_mese"] = df_streaming["ore_ascolto_mese"].astype(int)
+df_streaming["ore_ascolto_giornaliere"] = df_streaming["ore_ascolto_mese"] / 30
+bins = [16, 24, 34, 44, 54, 120]
+labels = ["16-24", "25-34", "35-44", "45-54", "55+"]
+df_streaming["fascia_eta"] = pd.cut(
+    df_streaming["eta"],
+    bins = bins,
+    labels = labels,
+    include_lowest = True
+)
+print("\nAnalisi descrittive principali\n")
+print(f"Numero Utenti:\n{df_streaming.shape[0]}")
+print(f"Età media:\n{df_streaming['eta'].mean().round(0):.0f}")
+print(f"Media ore mensili:\n{df_streaming['ore_ascolto_mese'].mean().round(2):.2f}\n")
+print(f"Numero utenti per piano:\n{df_streaming.groupby('piano').size()}\n")
+print(f"Ore medie mensili per piano:\n{df_streaming.groupby('piano')['ore_ascolto_mese'].mean().round(2)}\n")
+print(f"Ore medie mensili per genere:\n{df_streaming.groupby('genere')['ore_ascolto_mese'].mean().round(2)}\n")
+print(f"Piano più utilizzato:\n{df_streaming.groupby('piano')['ore_ascolto_mese'].sum().idxmax()}\n")
+print(f"Citta con più utenti:\n{df_streaming.groupby('citta').size().sort_values(ascending=False)}")
+
+print("\nAnalisi avanzate\n")
+medie = df_streaming.groupby('piano')['ore_ascolto_mese'].mean().sort_values(ascending=False)
+print(f"Piano {medie.index[0]} - {medie.index[1]} => differenza di {round(medie.iloc[0] - medie.iloc[1], 2)} ore\n")
+print(f"Top 5 utenti per ore di ascolto del mese:\n{df_streaming.sort_values(by='ore_ascolto_mese', ascending=False)[['nome', 'ore_ascolto_mese']].head(5)}\n")
+print(f"Distribuzione utenti per fascia d'età:\n{df_streaming.groupby('fascia_eta').size().sort_values(ascending=False)}\n")
+print(f"Correlazione tra età e ore di ascolto:\n{df_streaming['eta'].corr(df_streaming['ore_ascolto_mese']):.2f}")
+
+print(f"\nInsight finali\n")
+medie = df_streaming.groupby('piano')['ore_ascolto_mese'].mean().sort_values(ascending=False)
+print(f"Il piano che ascolta di più:\n{medie.index[0]} => {medie.iloc[0]}\n")
+print(f"La citta più attiva è:\n{df_streaming.groupby('citta')['ore_ascolto_mese'].sum().sort_values(ascending=False).idxmax()}")
+corr = df_streaming['eta'].corr(df_streaming['ore_ascolto_mese'])
+print(f"l'età sembra {'non' if  -0.5 < corr < 0.5 else ''} influenzare le ore di ascolto\n")
+
+
 
 
 # ESERCIZIO 3 (Rinforzo mirato `.agg` — Report Operativo):
@@ -375,7 +479,19 @@ print("\nImpatto del balcone sul prezzo\n")
 # 4) salvare in `dati/report_citta_agg.csv`
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+print("\nEsercizio 4\n")
+path_file = os.path.join(os.path.dirname(__file__), "dati", "vendite_ecommerce.csv")
+data = pd.read_csv(path_file)
+data['fatturato'] = data['prezzo'] * data['quantita']
+report = data.groupby('citta').agg(
+    ordini_totali = ("id_ordine", "size"),
+    totale_fatturato = ("fatturato", "sum"),
+    prezzo_medio = ("prezzo", "mean"),
+    quantita_tot = ("quantita", "sum")
+)
+report["ticket_medio"] = report["totale_fatturato"] / report["ordini_totali"]
+
+print(report.sort_values(by='totale_fatturato', ascending=False))
 
 
 # ESERCIZIO 4 (Rinforzo `.agg` + Debug logico):
