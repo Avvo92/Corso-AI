@@ -329,10 +329,48 @@ plt.close()
 # ESERCIZIO 2 (Medio):
 # Crea un grafico a barre che confronta il prezzo medio delle case
 # CON e SENZA garage, per ogni città (barre affiancate).
-# Suggerimento: usa due chiamate plt.bar() con posizioni leggermente diverse.
-#
-# Scrivi il tuo codice qui sotto:
-# ...
+
+path_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+case = pd.read_csv(path_file)
+
+# prezzo al metro quadro
+case["prezzo_mq"] = case["prezzo_euro"] / case["metri_quadri"]
+
+# media €/mq per città e presenza garage
+# -> trasformo in tabella "wide": righe=città, colonne=[False, True]
+tab = (
+    case.groupby(["citta", "ha_garage"])["prezzo_mq"]
+    .mean()
+    .round(2)
+    .unstack("ha_garage")
+)
+
+# assicuro l'ordine colonne: senza garage (False) poi con garage (True)
+tab = tab.reindex(columns=[False, True])
+
+print(tab)
+
+fig, ax = plt.subplots(figsize=(12, 6))
+ax.set_title("Prezzo medio €/mq per città (con/senza garage)", fontsize=14)
+ax.set_xlabel("Città")
+ax.set_ylabel("Prezzo medio €/mq")
+ax.grid(True, alpha=0.3)
+
+# posizioni delle barre (una posizione per città)
+x = np.arange(len(tab.index))
+width = 0.4
+
+# due barre affiancate: sinistra=senza garage, destra=con garage
+ax.bar(x - width / 2, tab[False].values, width=width, label="Senza garage", color="#03A9F4")
+ax.bar(x + width / 2, tab[True].values,  width=width, label="Con garage",  color="#FF9800")
+
+ax.set_xticks(x)
+ax.set_xticklabels(tab.index, rotation=30, ha="right")
+ax.legend()
+fig.tight_layout()
+
+plt.savefig(os.path.join(output_dir, "es2_presenza_garage.png"), dpi=100, bbox_inches="tight")
+plt.close()
 
 
 # ESERCIZIO 3 (Medio):
@@ -344,6 +382,138 @@ plt.close()
 # Suggerimento: plt.scatter(..., c=case["num_stanze"], cmap="viridis")
 #
 # Scrivi il tuo codice qui sotto:
+# ...
+
+
+# ==========================================================================
+# ESERCIZI GUIDATI EXTRA (RINFORZO) — Difficoltà crescente
+# ==========================================================================
+#
+# Nota: questi esercizi servono a fissare i concetti del capitolo 11.
+# Strategia: prima costruisci il "report giusto" con Pandas (groupby/agg),
+# poi lo plotti con Matplotlib (subplots/ax.*).
+#
+# Ponte mentale Web:
+# - Pandas `groupby().agg()` = una query SQL `GROUP BY ... SELECT AVG/SUM/COUNT`
+# - Matplotlib `fig, ax = plt.subplots()` = creare il "container" (come un <div>)
+#   e poi disegnare dentro (come aggiungere elementi UI + stile).
+#
+
+# --- ESERCIZIO EXTRA 3A (Facile) — Linea + media mobile ---
+# Obiettivo: sul dataset vendite, disegna:
+# - linea del fatturato giornaliero
+# - linea della media mobile a 7 giorni (rolling mean)
+#
+# Hint (Pandas): rolling è come fare una "finestra" di 7 giorni.
+# In JS sarebbe come calcolare una media su una slice dell'array ad ogni i.
+#
+# Requisiti:
+# - titolo, label assi, griglia, legenda
+# - salva: "extra3a_linea_media_mobile.png"
+#
+# Scrivi qui sotto:
+# vendite = pd.read_csv(...)
+# vendite["data"] = pd.to_datetime(...)
+# fatt = vendite.groupby("data")["fatturato"].sum().sort_index()
+# fatt_mm7 = fatt.rolling(7).mean()
+# fig, ax = plt.subplots(...)
+# ax.plot(...)
+# ax.plot(...)
+# plt.savefig(...)
+
+
+# --- ESERCIZIO EXTRA 3B (Facile/Medio) — Barre ordinate + etichette valori ---
+# Obiettivo: barre orizzontali (barh) dei TOP 8 prodotti per fatturato.
+#
+# Focus concetto: scegliere l'aggregazione GIUSTA.
+# - "fatturato per prodotto" = sum del fatturato
+#
+# Requisiti:
+# - ordina decrescente, prendi top 8
+# - usa `ax.barh(...)`
+# - scrivi il valore su ogni barra (con un for sulle barre)
+# - salva: "extra3b_top_prodotti_barh.png"
+#
+# Scrivi qui sotto:
+# ...
+
+
+# --- ESERCIZIO EXTRA 3C (Medio) — Scatter + soglia (outlier) ---
+# Obiettivo: scatter "metri_quadri" vs "prezzo_euro" (case.csv) e evidenzia
+# le case sopra una soglia di prezzo (es. > 400000) con un colore diverso.
+#
+# Ponte JS/PHP: è come fare un if dentro un loop e pushare su 2 array diversi.
+# In Pandas lo fai con una mask booleana.
+#
+# Requisiti:
+# - 2 scatter: uno per "normali", uno per "sopra soglia"
+# - legenda, griglia
+# - salva: "extra3c_scatter_soglia.png"
+#
+# Scrivi qui sotto:
+# ...
+
+
+# 🎯 [COLLOQUIO] ESERCIZIO EXTRA 3D (Medio/Difficile) — Groupby doppio + barre affiancate (MultiIndex) ---
+# Domanda tipica: "Mi fai un grafico che confronta due categorie per ogni gruppo?"
+#
+# Obiettivo: per ogni città, confronta:
+# - prezzo medio €/mq per (ha_garage == False)
+# - prezzo medio €/mq per (ha_garage == True)
+#
+# Vincolo: DEVI passare da una struttura "lunga" (MultiIndex) a una "wide".
+# - `unstack()` (oppure `pivot_table`) ti porta `ha_garage` nelle colonne.
+#
+# Requisiti:
+# - 2 chiamate `ax.bar(...)` con posizioni sfalsate
+# - tick X = città, rotazione etichette
+# - salva: "extra3d_barre_affiancate_garage.png"
+#
+# Scrivi qui sotto:
+# ...
+
+
+# 🔧 [REFACTORING] ESERCIZIO EXTRA 3E (Difficile) — Da pyplot a OO (fig, ax) ---
+# Ti lascio qui sotto un codice "pyplot style" funzionante ma poco scalabile.
+# Refactor: riscrivilo in stile object-oriented usando `fig, ax = plt.subplots()`
+# e SOLO metodi `ax.*` (niente plt.title/plt.grid/plt.xlabel...).
+#
+# Codice da refactorare (NON modificarlo: riscrivilo sotto):
+# plt.figure(figsize=(10, 4))
+# plt.plot(fatturato_per_giorno.index, fatturato_per_giorno.values, color="blue")
+# plt.title("Fatturato per giorno")
+# plt.xlabel("Data")
+# plt.ylabel("€")
+# plt.grid(True, alpha=0.3)
+# plt.savefig(os.path.join(output_dir, "extra3e_refactor_oo.png"), dpi=100, bbox_inches="tight")
+# plt.close()
+#
+# Scrivi qui sotto la versione refactor:
+# ...
+
+
+# 🔀 [INTERLEAVING] ESERCIZIO EXTRA 3F (Difficile) — 2 grafici, 1 figura (subplots) ---
+# Obiettivo: in una figura 1x2 (una riga, due colonne), metti:
+# - sinistra: istogramma di `prezzo_euro` (case.csv) + linea della media
+# - destra: pie chart con percentuali case con/senza garage
+#
+# Requisiti:
+# - `fig, axes = plt.subplots(1, 2, ...)`
+# - titolo generale `fig.suptitle(...)`
+# - salva: "extra3f_istogramma_pie.png"
+#
+# Scrivi qui sotto:
+# ...
+
+
+# 🧠 [RETRIEVAL] ESERCIZIO EXTRA 3G (Sfida) — Riscrivi da memoria (Pandas report → plot) ---
+# Senza guardare il codice sopra nel file, riscrivi DA ZERO:
+# - un report `ordini_unici_per_citta` corretto (usa `nunique` su id_ordine)
+# - e un grafico a barre (top 6 città) salvato come "extra3g_retrieval_top_citta.png"
+#
+# Se ti blocchi: prima stampa il report, poi plotti.
+#
+# Scrivi qui sotto:
 # ...
 
 
