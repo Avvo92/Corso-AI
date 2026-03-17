@@ -273,7 +273,7 @@ giorno_top = fatturato_per_giorno.idxmax()
 valore_top = fatturato_per_giorno.max()
 print("\nRINFORZO idxmax/max:")
 print(f"Giorno col fatturato top: {giorno_top.date()}")
-print(f"Valore fatturato top: {valore_top:,.2f}€")
+print(f"Valore fatturato top: {valore_top:,.2f}€\n")
 
 
 # ==========================================================================
@@ -288,7 +288,17 @@ print(f"Valore fatturato top: {valore_top:,.2f}€")
 # 4) Stampa le prime 3 righe del report
 #
 # Scrivi qui sotto:
-# report_citta = ...
+path_file = os.path.join(os.path.dirname(__file__), "dati", "vendite_ecommerce.csv")
+ordini = pd.read_csv(path_file)
+ordini['fatturato_totale'] = ordini['prezzo'] * ordini['quantita']
+print(ordini)
+report_citta = ordini.groupby('citta').agg(
+  ordini_unici = ('id_ordine', 'nunique'),
+  fatturato = ('fatturato_totale', 'sum')
+)
+report_citta['ticket_medio'] = (report_citta['fatturato'] / report_citta['ordini_unici']).round(2)
+report_citta = report_citta.sort_values(by='fatturato', ascending=False)
+print(f"{report_citta.head(3)}\n")
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
@@ -301,8 +311,20 @@ print(f"Valore fatturato top: {valore_top:,.2f}€")
 # Salva come "es1_fatturato_giorno.png" nella cartella grafici.
 #
 # Scrivi il tuo codice qui sotto:
-# ...
-
+fatturato_per_giorno = ordini.groupby('data').agg(
+  fatturato = ("fatturato_totale", "sum")
+)
+print(fatturato_per_giorno)
+fig, ax = plt.subplots(figsize=(10, 5))
+fatturato_per_giorno["fatturato"].plot(
+    kind="line", ax=ax, color="#673AB7"
+)
+ax.set_title("Fatturato per Giorno", fontsize=14)
+ax.set_xlabel("Gionro")
+ax.set_ylabel("Fatturato")
+ax.grid(True, alpha=0.3)
+plt.savefig(os.path.join(output_dir, "es1_fatturato_giorno.png"), dpi=100, bbox_inches="tight")
+plt.close()
 
 # ESERCIZIO 2 (Medio):
 # Crea un grafico a barre che confronta il prezzo medio delle case

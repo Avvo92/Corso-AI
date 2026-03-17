@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 11/03/2026
+> **Ultimo aggiornamento**: 17/03/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -24,12 +24,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | 10_pandas_progetto.py (rinforzo reportistica `.agg`) |
+| **Capitolo in corso** | 11_matplotlib_grafici.py (grafici + rinforzi su report pre-plot) |
 | **Ultimo completato** | 09_pandas_intro.py (11/03/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
-| **Difficoltà media** | 6.5 (media di 2, 4, 6, 9, 8, 8, 7, 8 — curva in assestamento) |
-| **Priorità attive** | ✅ Lacuna #11 superata, 🟡 Lacune #12/#13/#14 rinforzate (da verificare al quiz d'ingresso del cap.01 M2), 🟡 Lettura consegne in miglioramento, ⚠️ Filter/lambda ordine parametri ancora da monitorare, ⚠️ Reportistica con `.agg` da consolidare in esercizi mirati |
-| **Sessione corrente** | Sessione 8 |
+| **Difficoltà media** | 6.6 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7 — curva in assestamento) |
+| **Priorità attive** | ✅ Lacuna #11 superata, 🟡 Lacune #12/#13/#14 rinforzate (da verificare al quiz d'ingresso del cap.01 M2), 🟡 Lettura consegne in miglioramento, ⚠️ Filter/lambda ordine parametri ancora da monitorare, ⚠️ Reportistica con `.agg` da consolidare (specie `nunique` vs `size` e export CSV), ⚠️ `idxmax()` vs `max()` da tenere d'occhio nei report |
+| **Sessione corrente** | Sessione 9 |
 
 ---
 
@@ -40,11 +40,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 11/03/2026 |
-| **Cosa è stato fatto** | Corretto e consolidato `09_pandas_intro.py` end-to-end (quiz, esercizi, progetto incrementale). Rafforzata la logica su `groupby`, `mask`, `nunique`, `ticket_medio` e report finale per città. Preparato in anticipo anche un blocco rinforzo `.agg` su `01_cos_e_il_ml.py`, ma il flusso operativo resta nel Modulo 1 con avvio del capitolo 10. |
-| **Errori emersi** | Errore concettuale iniziale tra "quantita" e "numero ordini" risolto; chiarita distinzione tra valore massimo e indice del massimo (`max` vs `idxmax`); bisogno espresso di consolidare costruzione report con `.agg` (priorità didattica attiva). |
-| **Cosa fare nella prossima sessione** | Avviare `10_pandas_progetto.py` e completare il mini-progetto EDA con focus su reportistica `groupby + agg`, includendo esercizi specifici di rinforzo ed export CSV. |
-| **Stato motivazione** | Molto alto: partecipazione costante, domande precise, forte orientamento pratico al "come si usa nel lavoro". |
+| **Data** | 17/03/2026 |
+| **Cosa è stato fatto** | Valutato `10_pandas_progetto.py` esercizio per esercizio: workflow EDA ok, ma individuati requisiti mancanti e bug concettuali nei report (`nunique` vs `size`, export CSV, colonna `prezzo_medio`, coerenza naming). Aggiornato `11_matplotlib_grafici.py` inserendo rinforzi mirati “pre-plot” su aggregazioni corrette e richiamo `idxmax()` vs `max()` + mini-esercizio extra. |
+| **Errori emersi** | Inversione concettuale `idxmax()`/`max()` nel quiz; uso di `size()` dove la consegna richiede ordini unici (`nunique()`); mancanza export `to_csv` in un esercizio; in report `case.csv` manca una metrica richiesta (`prezzo_medio`). |
+| **Cosa fare nella prossima sessione** | Chiudere il cap.10 correggendo ES.3 e ES.4 (report `.agg` completo + export). Poi partire dagli esercizi del cap.11 costruendo prima i report “giusti” e solo dopo i grafici. |
+| **Stato motivazione** | Molto alto: orientato a workflow reale e consolidamento su reportistica. |
 
 ---
 
@@ -87,12 +87,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | 10_pandas_progetto.py (chiusura Modulo 1 dati) |
-| **Rinforzi da inserire (🔁)** | In 10: consolidare reportistica con `.groupby(...).agg(...)` (metriche multiple + colonne derivate + ordinamento), più richiamo leggero su #12/#13/#14 in forma pratica |
-| **Concetti ⚠️ da ripassare** | Costruzione report tabellari con `.agg`, scelta corretta aggregazioni (`count`/`nunique`/`mean`/`sum`), lettura output `.shape`, distinzione Series vs DataFrame |
+| **Prossimo capitolo** | 11_matplotlib_grafici.py (visualizzazione + dashboard) |
+| **Rinforzi da inserire (🔁)** | In 11: usare report corretti prima dei plot (focus `nunique` vs `size`, colonna derivata `ticket_medio`, ordinamenti) + richiamo `idxmax()` vs `max()` |
+| **Concetti ⚠️ da ripassare** | Aggregazioni corrette per “ordini” (unici), colonne derivate post-`agg`, export CSV, lettura output `.shape` e differenza Series/DataFrame |
 | **Pattern 🔴 da monitorare** | #5 (tipi da CSV), #6 (lettura completa consegne), #11 (ordine filter) |
 | **Ponte mentale da riusare** | SQL `GROUP BY + AVG/COUNT` -> Pandas `.groupby().agg()` |
-| **Note** | 09 chiuso con buon livello operativo; prima del passaggio a M2 viene completato il cap.10 per consolidare EDA/reportistica su dataset reali. |
+| **Note** | Il cap.10 è in chiusura: sistemare ES.3/ES.4 per allineare ai requisiti (ordini unici, export, metriche mancanti). Il cap.11 è stato già arricchito con rinforzi operativi per evitare di “plottare aggregazioni sbagliate”. |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -310,7 +310,7 @@
 | 07_numpy_intro.py | 🟡 In revisione | 03/03/2026 | — | Quiz d'ingresso compilato + esercizi 1-5 svolti. Mancano correzione finale strutturata e voto difficoltà. |
 | 08_tensori_spiegati.py | ✅ Completato + Corretto | 05/03/2026 | 7 | Capitolo chiuso con consolidamento su shape, axis, broadcasting e reshape; esercizi e progetto incrementale completati con correzioni iterative e buona autonomia nel debugging. |
 | 09_pandas_intro.py | ✅ Completato + Corretto | 11/03/2026 | 8 | Capitolo completato con buona autonomia su groupby/mask/report. Corrette confusioni su `quantita` vs ordini, `max` vs `idxmax`, distinzione Series/DataFrame in consolidamento; progetto incrementale chiuso con report rischio città salvato in CSV. |
-| 10_pandas_progetto.py | ⬜ Da fare | | | |
+| 10_pandas_progetto.py | 🟡 In revisione | 17/03/2026 | 7 | Workflow EDA completo; da chiudere correzioni su report `.agg` (ordini unici `nunique` vs `size`, export CSV, metriche richieste mancanti, coerenza naming). |
 | 11_matplotlib_grafici.py | ⬜ Da fare | | | |
 | 12_web_bridge.py | ⬜ Da fare | | | |
 
@@ -373,8 +373,9 @@
 | 06_file_csv | 8 | = (stabilizzazione confermata) |
 | 08_tensori_spiegati | 7 | -1 ↓ (difficoltà alta ma gestita meglio grazie a pratica guidata su shape/assi/broadcasting) |
 | 09_pandas_intro | 8 | +1 ↑ (capitolo ampio ma gestito bene; consolidati groupby/mask/reportistica) |
+| 10_pandas_progetto | 7 | -1 ↓ (capitolo progetto: EDA ok, ma report `.agg` richiede precisione su requisiti e metriche) |
 
-**Media attuale**: 6.5 (media di 2, 4, 6, 9, 8, 8, 7, 8). Dopo il picco al cap.04, la curva si stabilizza: crescita tecnica concreta e buona autonomia; priorità attiva sul rendere automatica la reportistica con `.agg`.
+**Media attuale**: 6.6 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7). Dopo il picco al cap.04, la curva si stabilizza: crescita tecnica concreta e buona autonomia; priorità attiva sul rendere automatica la reportistica con `.agg`.
 
 ---
 
