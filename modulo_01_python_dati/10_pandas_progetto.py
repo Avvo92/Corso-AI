@@ -491,7 +491,7 @@ report = data.groupby('citta').agg(
 )
 report["ticket_medio"] = report["totale_fatturato"] / report["ordini_totali"]
 
-print(report.sort_values(by='totale_fatturato', ascending=False))
+print(f"{report.sort_values(by='totale_fatturato', ascending=False)}\n\n")
 
 
 # ESERCIZIO 4 (Rinforzo `.agg` + Debug logico):
@@ -502,12 +502,20 @@ print(report.sort_values(by='totale_fatturato', ascending=False))
 # - quota_case_recenti (anno_costruzione >= 2000, in percentuale)
 # Poi rispondi in 3 righe:
 # a) Perche `count()` e diverso da `nunique()` in un report?
-# b) Quando useresti `size()` invece di `count()`?
-# c) Perche conviene tenere i nomi colonna del report espliciti in `.agg`?
+# risposta: count() conta gli elementi presenti in un dataframe, nunique() conta il numero di unici, ossia dati che non si ripetono
+# b) Quando useresti `size()` invece di `count()`? in base e voglio o meno considerare nel totale i valori Nan
+# c) Perche conviene tenere i nomi colonna del report espliciti in `.agg`? per una più facile lettura e cosultazione
 #
 # Scrivi il tuo codice qui sotto:
-# ...
 
+path_file = os.path.join(os.path.dirname(__file__),"dati", "case.csv")
+case = pd.read_csv(path_file)
+case['costr_dopo_2000'] = case['anno_costruzione'] >= 2_000
+report_case = case.groupby('citta').agg(
+    pratiche_totali = ("id", "size"),
+    metri_quadri_medi = ("metri_quadri", lambda x: x.mean().round(2)),
+    quota_case_recenti = ("costr_dopo_2000", lambda x : f"{100*x.mean().round(2):.2f} %")
+)
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  SOLUZIONI — Guardale Solo DOPO Aver Provato!                         ║

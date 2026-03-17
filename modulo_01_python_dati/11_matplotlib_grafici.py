@@ -43,6 +43,23 @@ output_dir = os.path.join(os.path.dirname(__file__), "grafici")
 os.makedirs(output_dir, exist_ok=True)
 
 # ==========================================================================
+# 🔁 RINFORZO MIRATO — Report "puliti" prima dei grafici
+# ==========================================================================
+#
+# Errore tipico quando si passa da analisi a grafici:
+# - confondere `size()` / `count()` / `nunique()` e quindi disegnare un grafico "sbagliato"
+#
+# Regola pratica (business):
+# - **ordini totali**: quante righe ho nel gruppo -> `size()` (conta anche eventuali NaN)
+# - **valori presenti in una colonna**: `count()` (NON conta i NaN in quella colonna)
+# - **ordini unici / clienti unici**: `nunique()` (conteggia solo i distinti)
+#
+# Mini-check veloce su vendite:
+# - `id_ordine` spesso si ripete (più righe per lo stesso ordine), quindi per gli "ordini"
+#   quasi sempre vuoi `nunique()`, non `size()`.
+#
+
+# ==========================================================================
 # PARTE 1: Il Primo Grafico — Grafico a Linea
 # ==========================================================================
 
@@ -214,6 +231,22 @@ percorso_vendite = os.path.join(os.path.dirname(__file__), "dati", "vendite_ecom
 vendite = pd.read_csv(percorso_vendite)
 vendite["fatturato"] = vendite["prezzo"].astype(float) * vendite["quantita"].astype(int)
 
+# 🔁 RINFORZO MIRATO — "preparo il DataFrame GIUSTO" per il grafico
+#
+# Quando fai un grafico, l'errore più comune non è Matplotlib: è l'aggregazione.
+# Qui sotto costruiamo 2 serie corrette, pronte da plottare:
+# - fatturato per giorno (line chart)
+# - ordini UNICI per città (bar chart)
+#
+vendite["data"] = pd.to_datetime(vendite["data"])
+fatturato_per_giorno = vendite.groupby("data")["fatturato"].sum().sort_index()
+ordini_unici_per_citta = vendite.groupby("citta")["id_ordine"].nunique().sort_values(ascending=False)
+print("\nRINFORZO report per grafici:")
+print("Fatturato per giorno (prime 3 righe):")
+print(fatturato_per_giorno.head(3))
+print("\nOrdini UNICI per città:")
+print(ordini_unici_per_citta)
+
 fig, ax = plt.subplots(figsize=(10, 5))
 vendite.groupby("categoria")["fatturato"].sum().sort_values().plot(
     kind="barh", ax=ax, color="#673AB7"
@@ -227,6 +260,35 @@ print("Salvato: 06_pandas_plot.png")
 
 print(f"\nTutti i grafici salvati nella cartella: {output_dir}")
 print("Aprili con un qualsiasi visualizzatore di immagini per vederli!")
+
+
+# ==========================================================================
+# 🔁 RINFORZO MIRATO — `idxmax()` vs `max()` (utile anche nei grafici)
+# ==========================================================================
+#
+# - `.max()` ti dà IL VALORE massimo
+# - `.idxmax()` ti dà L'INDICE (es. la data o la città) dove quel massimo avviene
+#
+giorno_top = fatturato_per_giorno.idxmax()
+valore_top = fatturato_per_giorno.max()
+print("\nRINFORZO idxmax/max:")
+print(f"Giorno col fatturato top: {giorno_top.date()}")
+print(f"Valore fatturato top: {valore_top:,.2f}€")
+
+
+# ==========================================================================
+# --- MINI-ESERCIZIO EXTRA (prima degli esercizi ufficiali) — Prova subito! ---
+# ==========================================================================
+#
+# 1) Crea `report_citta` con `.groupby('citta').agg(...)` che contenga:
+#    - ordini_unici: nunique su id_ordine
+#    - fatturato_totale: sum su fatturato
+# 2) Aggiungi `ticket_medio = fatturato_totale / ordini_unici`
+# 3) Ordina per fatturato_totale desc
+# 4) Stampa le prime 3 righe del report
+#
+# Scrivi qui sotto:
+# report_citta = ...
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗
