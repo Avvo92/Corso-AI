@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 17/03/2026
+> **Ultimo aggiornamento**: 18/03/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -190,6 +190,186 @@
 2. **Monitoraggio**: dopo ogni sessione che usa API a pagamento, aggiornare il tracker e segnalare se si sta superando il budget allocato per quel modulo
 3. **Skill professionale**: il monitoraggio costi è una competenza AI Engineer — insegnarlo come skill, non solo come vincolo economico
 4. **Semantic caching**: dal M5 in poi, quando si ripete una query già fatta, NON richiamare l'API — usare la risposta precedente
+
+---
+
+## 🧭 Allineamento Mercato 2026 (per M2 → M10)
+
+> Sezione operativa per la produzione dei moduli successivi al Modulo 1.
+> Obiettivo: mantenere il corso aderente a hiring trend reali (non hype) e massimizzare spendibilità portfolio.
+
+### Stato sintetico (18/03/2026)
+
+- Il percorso attuale è **fortemente allineato** all'obiettivo occupazionale (Python + AI + full-stack + progetto finale deployabile).
+- Le evidenze più solide disponibili restano 2024-2025 (Stack Overflow Survey, GitHub Octoverse, WEF, report AI engineering).
+- I segnali 2026 confermano la direzione, ma molte fonti 2026 sono blog/newsletter: utili come trend, da trattare con cautela.
+
+### Fonti da considerare "ad alta affidabilità"
+
+1. Stack Overflow Developer Survey (ultima disponibile: 2025)
+2. GitHub Octoverse (ultima disponibile: 2024, con articoli trend successivi)
+3. WEF Future of Jobs (ultima disponibile: 2025)
+4. Report AI engineering con campione esplicito (es. Amplify 2025)
+
+### Regola qualità fonti (OBBLIGATORIA per nuovi moduli)
+
+- Non basare nuove parti di programma su una sola fonte.
+- Applicare triangolazione minima:
+  - 1 fonte "macro" (mercato/skills),
+  - 1 fonte "developer ecosystem",
+  - 1 fonte "pratiche di produzione AI".
+- Se una informazione arriva solo da blog non istituzionali, marcarla come "trend da validare" e NON come requisito hard.
+
+### Gap da coprire nei moduli successivi (priorità alta)
+
+1. **Cloud reale**: deploy ripetibile su cloud (AWS/Azure/GCP o equivalenti), non solo locale.
+2. **Valutazione e monitoring AI**: dataset di eval, regression check, tracciamento qualità/latency/costi.
+3. **Sicurezza & compliance**: gestione PII/documenti, minimizzazione dati, policy logging/accessi.
+4. **Packaging portfolio**: README orientati business, demo live, video breve, metriche chiare.
+
+### Criteri di progettazione modulo (dal M2 in poi)
+
+- Ogni modulo deve includere almeno un output "portfolio-ready" verificabile (repo pulita + demo + test minimo).
+- Ogni progetto con AI deve includere esplicitamente:
+  - metrica/e di qualità,
+  - vincolo costi,
+  - fallback (es. modello locale / modalità degradata),
+  - nota rischi (allucinazioni, drift, errori silenziosi).
+- I capitoli devono distinguere sempre:
+  - **prototipo** (veloce),
+  - **produzione minima** (monitorabile e testabile).
+
+### Direzione consigliata per i moduli futuri (senza cambiare roadmap)
+
+- M2-M4: mantenere forte base dati/modello + prime pratiche di test e validazione.
+- M5-M7: enfatizzare LLM/RAG/Agents ma con guardrail di costo, qualità e sicurezza.
+- M8-M10: consolidare MLOps/deploy/observability e trasformare il progetto finale nel "diamante portfolio".
+
+---
+
+## 🛡️ Protocollo Anti-Perdita Contesto (multi-mentore / multi-agente)
+
+> Questa sezione e obbligatoria per evitare regressioni quando cambia mentore/agente.
+> Se non viene rispettata, la sessione NON e considerata valida come "continua".
+
+### A) Pacchetto di handoff obbligatorio (fine di OGNI sessione)
+
+Al termine di ogni sessione, il mentor deve aggiornare in `CONTESTO_CORSO.md` queste 8 voci:
+
+1. **Stato reale del capitolo** (completato / in revisione / bloccato)
+2. **Cosa e stato fatto oggi** (max 5 bullet concreti)
+3. **Errori ricorrenti emersi** (con riferimento a pattern gia noti o nuovo pattern)
+4. **Decisioni prese** (es. naming, standard, strumenti scelti)
+5. **Prossimo passo immediato** (prima azione da fare nella prossima chat)
+6. **Rischi aperti** (es. concetto fragile, debito tecnico, test mancanti)
+7. **Evidenze** (file toccati, output prodotti, eventuali grafici/report salvati)
+8. **Definizione di "fatto" non ancora soddisfatta** (se manca qualcosa, esplicitarlo)
+
+### B) Handoff di inizio sessione (obbligatorio prima di produrre nuovo contenuto)
+
+Ogni nuovo mentor/agente deve:
+
+1. Leggere integralmente:
+   - Stato Attuale
+   - Ultima Sessione
+   - Priorita Attive
+   - Prossimo Capitolo
+   - sezione "Allineamento Mercato 2026"
+   - questa sezione "Protocollo Anti-Perdita Contesto"
+2. Scrivere un mini "check di allineamento mentale" interno:
+   - dove siamo
+   - cosa NON rifare
+   - cosa fare subito
+3. Solo dopo puo iniziare lavoro operativo.
+
+### C) Definition of Done (DoD) per modulo — standard elite
+
+Un modulo e "chiuso" solo se tutti i criteri sono soddisfatti:
+
+1. Quiz ingresso + quiz verifica completati e corretti
+2. Esercizi richiesti completati (inclusi tag obbligatori: REFACTORING, INTERLEAVING, RETRIEVAL, DEBUG dove previsti)
+3. Progetto incrementale aggiornato e funzionante
+4. Almeno 1 output portfolio-ready per modulo
+5. README modulo aggiornato con:
+   - obiettivo,
+   - dataset/tool,
+   - metriche minime,
+   - limiti noti,
+   - next step
+6. Errori/lacune registrati in questo file (nessuna dipendenza dalla memoria chat)
+7. Voto difficolta registrato (1-10)
+
+### D) Rubrica di qualita (score 0-100) per ogni modulo
+
+Ogni modulo riceve punteggio con queste pesature:
+
+- **Comprensione concetti (20)**
+- **Correttezza implementazione (20)**
+- **Debug/autonomia (15)**
+- **Qualita codice e naming (10)**
+- **Qualita spiegazione tecnica (10)**
+- **Output portfolio (15)**
+- **Produzione minima: test/monitoring/costi/sicurezza (10)**
+
+Soglie:
+- <70: modulo non chiuso
+- 70-84: chiuso con rinforzo obbligatorio nel modulo successivo
+- >=85: chiuso pieno
+
+### E) Regola "mai perdere lo stato"
+
+- Se emerge una lacuna nuova, va registrata subito.
+- Se un errore viene corretto, va aggiornato subito lo stato (da rosso a giallo/verde).
+- Se una decisione didattica cambia (es. ordine argomenti, strumenti), documentarla nello stesso giorno.
+- Vietato affidarsi solo alla memoria della chat corrente.
+
+### F) Guardrail per i moduli avanzati (M5+)
+
+Per ogni progetto AI dal M5 in poi devono essere espliciti:
+
+1. metrica di qualita (anche semplice ma misurabile),
+2. controllo costi (token/tempo/chiamate),
+3. fallback operativo,
+4. rischio principale + mitigazione,
+5. nota sicurezza dati (soprattutto dominio documentale).
+
+### G) Template rapido di aggiornamento sessione (da copiare)
+
+Usare questo blocco a fine sessione:
+
+```
+DATA:
+CAPITOLO:
+STATO: (completato / in revisione / bloccato)
+
+FATTO OGGI:
+- ...
+
+ERRORI/LACUNE EMERSE:
+- ...
+
+DECISIONI PRESE:
+- ...
+
+PROSSIMO PASSO IMMEDIATO:
+- ...
+
+RISCHI APERTI:
+- ...
+
+EVIDENZE:
+- file:
+- output:
+
+DoD modulo:
+- [ ] quiz
+- [ ] esercizi
+- [ ] progetto incrementale
+- [ ] output portfolio
+- [ ] README/metriche/limiti
+- [ ] contesto aggiornato
+- [ ] voto difficolta
+```
 
 ---
 
