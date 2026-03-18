@@ -609,7 +609,20 @@ plt.close()
 # plt.close()
 #
 # Scrivi qui sotto la versione refactor:
-# ...
+path_file = os.path.join(os.path.dirname(__file__), "dati", "vendite_ecommerce.csv")
+vendite = pd.read_csv(path_file)
+vendite['data'] = pd.to_datetime(vendite['data'])
+vendite['fatturato'] = vendite['prezzo'] * vendite['quantita']
+fatturato_giorno = vendite.groupby('data')['fatturato'].sum()
+fig, ax = plt.subplots(figsize=(12, 6))
+ax.set_title("Fatturato in base al giorno", fontsize=14)
+ax.set_xlabel("Data")
+ax.set_ylabel("Fatturato €")
+ax.grid(True, alpha=0.3)
+fatturato_giorno.plot(kind="line", ax=ax, color="#673AB7")
+plt.savefig(os.path.join(output_dir, "extra3e_refactor_oo.png"), dpi=100, bbox_inches="tight")
+plt.close()
+
 
 
 # 🔀 [INTERLEAVING] ESERCIZIO EXTRA 3F (Difficile) — 2 grafici, 1 figura (subplots) ---
@@ -622,8 +635,54 @@ plt.close()
 # - titolo generale `fig.suptitle(...)`
 # - salva: "extra3f_istogramma_pie.png"
 #
+# Passi consigliati (senza soluzione):
+# 1) Carica `case.csv` e identifica le 2 serie che ti servono:
+#    - prezzi: `prezzo_euro`
+#    - composizione garage: conteggi di `ha_garage`
+# 2) Crea la figura 1x2:
+#    - `axes[0]` = pannello sinistro
+#    - `axes[1]` = pannello destro
+# 3) Pannello sinistro:
+#    - disegna l'istogramma dei prezzi
+#    - calcola la media dei prezzi e aggiungi una linea verticale
+#    - aggiungi titolo subplot + label assi + griglia
+# 4) Pannello destro:
+#    - calcola i conteggi di case con/senza garage
+#    - disegna la pie chart con etichette e percentuali
+#    - aggiungi titolo subplot
+# 5) Rifinitura:
+#    - `fig.suptitle(...)`
+#    - `fig.tight_layout(...)` (lascia spazio al titolo generale)
+#    - salva e chiudi figura
+#
+# Checklist veloce:
+# - [ ] 2 subplot nella stessa figura
+# - [ ] istogramma + linea media a sinistra
+# - [ ] pie con percentuali a destra
+# - [ ] titolo generale presente
+# - [ ] nome file corretto
+#
+# Errori tipici da evitare:
+# - usare `plt.*` senza specificare il subplot giusto (`axes[0]` / `axes[1]`)
+# - passare la colonna raw `ha_garage` alla pie senza prima fare i conteggi
+# - dimenticare spazio per `suptitle` (titolo tagliato nel PNG)
+#
 # Scrivi qui sotto:
-# ...
+path_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+case = pd.read_csv(path_file)
+media = case['prezzo_euro'].mean()
+width = 0.4
+fig, axes = plt.subplots(1, 2, figsize=(25, 8))
+bars_axes_0 = axes[0].hist(case['prezzo_euro'].values, bins=7, density=True, color="#03A9F4")
+axes[0].set_title("Prezzo case", fontsize=12)
+axes[0].set_xlabel("Prezzo")
+axes[0].set_ylabel("Numero case")
+axes[0].axvline(media, color="red", linestyle="--", linewidth=2, label="Media")
+axes[0].legend()
+  
+  
+plt.savefig(os.path.join(output_dir, "extra3f_istogramma_pie.png"), dpi=100, bbox_inches="tight")
+plt.close()
 
 
 # 🧠 [RETRIEVAL] ESERCIZIO EXTRA 3G (Sfida) — Riscrivi da memoria (Pandas report → plot) ---
