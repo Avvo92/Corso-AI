@@ -382,8 +382,21 @@ plt.close()
 # Suggerimento: plt.scatter(..., c=case["num_stanze"], cmap="viridis")
 #
 # Scrivi il tuo codice qui sotto:
-# ...
-
+plt.scatter(
+  x = case["metri_quadri"],
+  y = case["prezzo_euro"],
+  c = case["num_stanze"],
+  cmap = "viridis",
+  s = 80,
+  alpha = 0.8,
+  edgecolors = "white"
+  )
+plt.xlabel("Metri quadri")
+plt.ylabel("Prezzo euro")
+plt.title("Scatter: metri quadri vs prezzo")
+plt.grid(True, alpha=0.3)
+plt.savefig(os.path.join(output_dir, "es3_rapporto_prezzo_mq.png"), dpi=100, bbox_inches="tight")
+plt.close()
 
 # ==========================================================================
 # ESERCIZI GUIDATI EXTRA (RINFORZO) — Difficoltà crescente
@@ -422,6 +435,33 @@ plt.close()
 # plt.savefig(...)
 
 
+path_file = os.path.join(os.path.dirname(__file__), "dati", "vendite_ecommerce.csv")
+vendite = pd.read_csv(path_file)
+vendite['data'] = pd.to_datetime(vendite['data'])
+vendite['fatturato'] = vendite['prezzo'] * vendite['quantita']
+report_fatturato = vendite.groupby('data')['fatturato'].sum().sort_index()
+report_fatturato_mm7 = report_fatturato.rolling(7).mean()
+
+fig, ax = plt.subplots(figsize=(16, 8))
+ax.set_title("Media mobile 7 giorni fatturato", fontsize=14)
+ax.set_xlabel("Giorno")
+ax.set_ylabel("Media mobile fatturato")
+ax.grid(True, alpha=0.3)
+
+usable_fatturato_mm7 = report_fatturato_mm7.iloc[6:]
+
+len_x = np.arange(len(usable_fatturato_mm7))
+bar_width = 0.4
+
+ax.bar(len_x, usable_fatturato_mm7.values, width=bar_width )
+ax.set_xticks(len_x)
+ax.set_xticklabels(usable_fatturato_mm7.index.strftime("%Y-%m-%d"), rotation=30, ha="right")
+fig.tight_layout()
+
+plt.savefig(os.path.join(output_dir, "es3a_report_media_mobile.png"), dpi=100, bbox_inches="tight")
+plt.close()
+
+
 # --- ESERCIZIO EXTRA 3B (Facile/Medio) — Barre ordinate + etichette valori ---
 # Obiettivo: barre orizzontali (barh) dei TOP 8 prodotti per fatturato.
 #
@@ -435,7 +475,26 @@ plt.close()
 # - salva: "extra3b_top_prodotti_barh.png"
 #
 # Scrivi qui sotto:
-# ...
+path_file = os.path.join(os.path.dirname(__file__), "dati", "vendite_ecommerce.csv")
+vendite = pd.read_csv(path_file)
+vendite['fatturato'] = vendite['prezzo'] * vendite['quantita']
+top_vendite = vendite.groupby('prodotto')['fatturato'].sum().sort_values(ascending=False).head(8).sort_values(ascending=True)
+
+fig, ax = plt.subplots(figsize=(18, 10))
+bars = ax.barh(top_vendite.index, top_vendite.values)
+ax.set_title("Fatturato top 8 prodotti", fontsize=14)
+ax.set_xlabel("fatturato totale")
+ax.set_ylabel("prodotti")
+ax.grid(True, alpha=0.3)
+
+for bar in bars:
+  w = bar.get_width()
+  ax.text(w + 5, bar.get_y() + bar.get_height() / 2, f"{w:.0f}€", va="center")
+
+fig.tight_layout()
+
+plt.savefig(os.path.join(output_dir, "es3b_top_8_prodotti.png"), dpi=100, bbox_inches="tight")
+plt.close()
 
 
 # --- ESERCIZIO EXTRA 3C (Medio) — Scatter + soglia (outlier) ---
@@ -451,7 +510,45 @@ plt.close()
 # - salva: "extra3c_scatter_soglia.png"
 #
 # Scrivi qui sotto:
-# ...
+path_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+case = pd.read_csv(path_file)
+
+soglia = 400000
+mask_outlier = case["prezzo_euro"] > soglia
+
+fig, ax = plt.subplots(figsize=(12, 7))
+ax.set_title("Scatter: metri quadri vs prezzo (soglia outlier)", fontsize=14)
+ax.set_xlabel("Metri quadri")
+ax.set_ylabel("Prezzo euro")
+ax.grid(True, alpha=0.3)
+
+# Case normali
+ax.scatter(
+    x=case.loc[~mask_outlier, "metri_quadri"],
+    y=case.loc[~mask_outlier, "prezzo_euro"],
+    s=80,
+    alpha=0.8,
+    color="#4CAF50",
+    edgecolors="white",
+    label=f"Normali (<= {soglia:,}€)"
+)
+
+# Case sopra soglia
+ax.scatter(
+    x=case.loc[mask_outlier, "metri_quadri"],
+    y=case.loc[mask_outlier, "prezzo_euro"],
+    s=110,
+    alpha=0.9,
+    color="#F44336",
+    edgecolors="black",
+    label=f"Sopra soglia (> {soglia:,}€)"
+)
+
+ax.legend()
+fig.tight_layout()
+
+plt.savefig(os.path.join(output_dir, "extra3c_scatter_soglia.png"), dpi=100, bbox_inches="tight")
+plt.close()
 
 
 # 🎯 [COLLOQUIO] ESERCIZIO EXTRA 3D (Medio/Difficile) — Groupby doppio + barre affiancate (MultiIndex) ---
@@ -470,8 +567,31 @@ plt.close()
 # - salva: "extra3d_barre_affiancate_garage.png"
 #
 # Scrivi qui sotto:
-# ...
 
+case['prezzo_mq'] = case['prezzo_euro'] / case['metri_quadri']
+report_citta = case.groupby(['citta', 'ha_garage'])['prezzo_mq'].mean().round(2).unstack('ha_garage')
+report_citta['media_reale'] = report_citta.mean(axis=1).round(2)
+report_citta = report_citta.sort_values(by="media_reale", ascending=False)
+report_citta = report_citta.reindex(columns=[False, True])
+print(f"\n\n{report_citta}")
+
+fig, ax = plt.subplots(figsize=(12, 6))
+ax.set_title("Prezzo medio €/mq per città (con/senza garage)", fontsize=14)
+ax.set_xlabel("Città")
+ax.set_ylabel("Prezzo medio €/mq")
+ax.grid(True, alpha=0.3)
+report_len = np.arange(len(report_citta.index))
+width = 0.3
+ax.bar(report_len - width / 2, report_citta[False].values, width=width, label="senza garage", color="#03A9F4") 
+ax.bar(report_len + width / 2, report_citta[True].values, width=width, label="con garage", color="#FF9800")
+
+ax.set_xticks(report_len)
+ax.set_xticklabels(report_citta.index, rotation=30, ha="right")
+ax.legend()
+fig.tight_layout()
+
+plt.savefig(os.path.join(output_dir, "extra3d_barre_affiancate_garage.png"), dpi=100, bbox_inches="tight")
+plt.close()
 
 # 🔧 [REFACTORING] ESERCIZIO EXTRA 3E (Difficile) — Da pyplot a OO (fig, ax) ---
 # Ti lascio qui sotto un codice "pyplot style" funzionante ma poco scalabile.
