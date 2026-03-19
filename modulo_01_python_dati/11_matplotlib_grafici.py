@@ -576,6 +576,7 @@ report_citta = report_citta.reindex(columns=[False, True])
 print(f"\n\n{report_citta}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
+
 ax.set_title("Prezzo medio €/mq per città (con/senza garage)", fontsize=14)
 ax.set_xlabel("Città")
 ax.set_ylabel("Prezzo medio €/mq")
@@ -588,7 +589,9 @@ ax.bar(report_len + width / 2, report_citta[True].values, width=width, label="co
 ax.set_xticks(report_len)
 ax.set_xticklabels(report_citta.index, rotation=30, ha="right")
 ax.legend()
-fig.tight_layout()
+
+fig.suptitle("Distribuzione prezzi e presenza garage", fontsize=16, fontweight="bold")
+fig.tight_layout(rect=[0, 0.03, 1, 0.95])
 
 plt.savefig(os.path.join(output_dir, "extra3d_barre_affiancate_garage.png"), dpi=100, bbox_inches="tight")
 plt.close()
@@ -656,11 +659,11 @@ plt.close()
 #    - salva e chiudi figura
 #
 # Checklist veloce:
-# - [ ] 2 subplot nella stessa figura
-# - [ ] istogramma + linea media a sinistra
-# - [ ] pie con percentuali a destra
-# - [ ] titolo generale presente
-# - [ ] nome file corretto
+# - [x] 2 subplot nella stessa figura
+# - [x] istogramma + linea media a sinistra
+# - [x] pie con percentuali a destra
+# - [x] titolo generale presente
+# - [x] nome file corretto
 #
 # Errori tipici da evitare:
 # - usare `plt.*` senza specificare il subplot giusto (`axes[0]` / `axes[1]`)
@@ -679,7 +682,21 @@ axes[0].set_xlabel("Prezzo")
 axes[0].set_ylabel("Numero case")
 axes[0].axvline(media, color="red", linestyle="--", linewidth=2, label="Media")
 axes[0].legend()
-  
+
+garage_count = case.groupby('ha_garage').size()
+labels = garage_count.index.map({
+  0: "non ha il garage",
+  1: "ha il garage"
+})
+
+axes[1].set_title("Garage vs no garage", fontsize=12)
+axes[1].pie(
+  garage_count.values,
+  labels = labels,
+  autopct="%1.1f%%"  
+)
+
+fig.tight_layout()
   
 plt.savefig(os.path.join(output_dir, "extra3f_istogramma_pie.png"), dpi=100, bbox_inches="tight")
 plt.close()
@@ -693,7 +710,25 @@ plt.close()
 # Se ti blocchi: prima stampa il report, poi plotti.
 #
 # Scrivi qui sotto:
-# ...
+path_file = os.path.join(os.path.dirname(__file__), "dati", "vendite_ecommerce.csv")
+vendite = pd.read_csv(path_file)
+ordini_unici_per_citta = vendite.groupby('citta')['id_ordine'].nunique().sort_values(ascending=False).head(6)
+print(ordini_unici_per_citta)
+
+fig, ax = plt.subplots(figsize=(18, 7))
+ax.set_title("Ordini unici per citta")
+ax.set_xlabel("citta") 
+ax.set_ylabel("numero ordini unici")
+ax.grid(alpha= 0.3)
+ax.tick_params(axis="x", rotation=45, labelsize=5)
+ax.bar(ordini_unici_per_citta.index, ordini_unici_per_citta.values, width=.4, color="#03A9F4")
+
+my_dir = os.path.join(os.path.dirname(__file__), "grafici")
+os.makedirs(my_dir, exist_ok=True)
+
+
+plt.savefig(os.path.join(my_dir, "extra3g_retrieval_top_citta.png"), dpi=100, bbox_inches="tight")
+plt.close()
 
 
 # ESERCIZIO 4 (Sfida — Dashboard Completa):
@@ -708,7 +743,31 @@ plt.close()
 # Salva come "es4_dashboard_completa.png"
 #
 # Scrivi il tuo codice qui sotto:
-# ...
+path_file = os.path.join(os.path.dirname(__file__), "dati", "vendite_ecommerce.csv")
+vendite = pd.read_csv(path_file)
+vendite['fatturato'] = vendite['prezzo'] * vendite['quantita']
+fig, axes = plt.subplots(2, 3, figsize=(50, 25))
+
+fatturato_per_data = vendite.groupby('data')['fatturato'].sum()
+axes[0, 0].set_title("Fatturato per data", fontsize=25)
+axes[0, 0].set_xlabel("data", fontsize=20) 
+axes[0, 0].set_ylabel("totale fatturato", fontsize=20)
+axes[0, 0].plot(fatturato_per_data.index, fatturato_per_data.values)
+axes[0, 0].tick_params(axis="x", rotation=45)
+
+ordini_per_citta = vendite.groupby('citta')['id_ordine'].nunique()
+axes[0, 1].set_title("Ordini per città", fontsize=25)
+axes[0, 1].set_xlabel("citta", fontsize=20) 
+axes[0, 1].set_ylabel("Numero totale di ordini", fontsize=20)
+axes[0, 1].bar(ordini_per_citta.index, ordini_per_citta.values)
+axes[0, 1].tick_params(axis="x", rotation=45)
+
+
+fig.suptitle("Dashboard", fontsize=32, fontweight="bold")
+fig.tight_layout(rect=[0, 0, 1, 0.97])
+plt.savefig(os.path.join(my_dir, "es4_dashboard_completa.png"), dpi=100, bbox_inches="tight")
+plt.close()
+
 
 
 # ╔═════════════════════════════════════════════════════════════════════════╗

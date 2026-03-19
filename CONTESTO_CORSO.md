@@ -28,7 +28,7 @@
 | **Ultimo completato** | 09_pandas_intro.py (11/03/2026) |
 | **Modulo attuale** | 1 — Python & Dati |
 | **Difficoltà media** | 6.6 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7 — curva in assestamento) |
-| **Priorità attive** | ✅ Lacuna #11 superata, 🟡 Lacune #12/#13/#14 rinforzate (da verificare al quiz d'ingresso del cap.01 M2), 🟡 Lettura consegne in miglioramento, ⚠️ Filter/lambda ordine parametri ancora da monitorare, ⚠️ Reportistica con `.agg` da consolidare (specie `nunique` vs `size` e export CSV), ⚠️ `idxmax()` vs `max()` da tenere d'occhio nei report |
+| **Priorità attive** | ✅ Lacuna #11 superata, 🟡 Lacune #12/#13/#14 rinforzate (da verificare al quiz d'ingresso del cap.01 M2), 🟡 Lettura consegne in miglioramento, 🟡 Teoria potenziata nei prossimi moduli (struttura estesa prima della pratica), 🟡 Doppio obiettivo corso attivo: competenze AI Engineering + costruzione prodotto reale capitolo per capitolo, ⚠️ Filter/lambda ordine parametri ancora da monitorare, ⚠️ Reportistica con `.agg` da consolidare (specie `nunique` vs `size` e export CSV), ⚠️ `idxmax()` vs `max()` da tenere d'occhio nei report |
 | **Sessione corrente** | Sessione 9 |
 
 ---
@@ -472,6 +472,9 @@ DoD modulo:
 27. **Mock interview mensili**: dal Modulo 4 in poi, 1 volta al mese l'AI simula un colloquio tecnico reale. 3 domande, 15 minuti ciascuna, nessun hint, valutazione severa (passeresti / borderline / non passeresti). È l'unico momento in cui l'AI abbandona il tono supportivo. I risultati sono tracciati nella sezione "Mock Interview" di questo file.
 28. **Split file per moduli avanzati**: dal Modulo 2 in poi, se un capitolo supera le ~400 righe, splittare in due file: `XXa_teoria.py` (spiegazione + mini-esercizi) e `XXb_pratica.py` (quiz verifica + esercizi + progetto incrementale + soluzioni). Il quiz d'ingresso resta nel file `a`. Per i moduli M3-M4 dove la visualizzazione inline aiuta (output di training, grafici loss, immagini), valutare l'uso di **Jupyter Notebook** (`.ipynb`) al posto dei file `.py`. La scelta va fatta capitolo per capitolo in base al contenuto.
 29. **Diversificazione dominio**: dal Modulo 5 in poi, almeno 1 esercizio per modulo usa un dominio diverso dal controllo documentale. Il progetto incrementale resta nel dominio documentale/fiscale (per coerenza con l'obiettivo finale), ma gli esercizi singoli ampliano il contesto per preparare ai colloqui dove il dominio può essere qualsiasi. Domini alternativi suggeriti: e-commerce (M5 — LLM), ticket di supporto tecnico (M7 — Agents), dati medici/sanitari (M5 — LLM), logistica/supply chain (M8), analisi finanziaria (M9).
+30. **Teoria potenziata obbligatoria (richiesta studente)**: mantenere invariati quiz d'ingresso e ampiezza esercizi, ma aumentare la profondità teorica in ogni capitolo, soprattutto nei moduli avanzati. Prima della pratica, inserire SEMPRE un blocco teoria estesa con questa sequenza: (a) intuizione/analogia concreta, (b) meccanismo interno "come funziona", (c) esempio guidato passo-passo, (d) errori tipici e anti-pattern, (e) quando usarlo vs quando evitarlo, (f) mini-checklist concettuale pre-esercizi (5-8 punti). Obiettivo: evitare apprendimento solo operativo e rafforzare comprensione per debugging, colloqui e moduli complessi.
+31. **Dual-track obbligatorio (richiesta studente)**: il corso ha DUE obiettivi simultanei e non separabili: (1) sviluppare competenze solide di AI Engineering, (2) costruire progressivamente il prodotto "Controllo Documentale AI". In ogni capitolo di ogni modulo, oltre agli esercizi di routine, inserire quando coerente almeno un task esplicitamente collegato al prodotto finale (feature, componente, regola, dataset, test, monitoraggio, UI o integrazione). Il task deve indicare: output atteso, criterio di completamento e collegamento alla roadmap del prodotto.
+32. **Uso dataset reale dello studente (obbligatorio quando coerente)**: lo studente dispone di centinaia di documenti reali misti originali/non originali. Nei prossimi capitoli, quando coerente con i concetti trattati e con i vincoli privacy/compliance, usare questi dati reali come base per esercizi e deliverable del progetto (sampling controllato, anonimizzazione/pseudonimizzazione, metadatazione, split train/validation/test per pratica/persona). Evitare uso indiscriminato "tutto insieme": preferire subset progressivi con obiettivi didattici chiari.
 
 ---
 
@@ -1108,6 +1111,9 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 5. La soluzione va nella sezione SOLUZIONI come gli altri esercizi
 6. Se è il primo capitolo con il progetto, fornire il codice base da cui partire
 7. Nei moduli avanzati (M2-M10): il progetto incrementale di fine modulo produce una **demo deployabile** (Streamlit, Gradio, o cloud). Il deploy è parte del task.
+8. In ogni capitolo (M1-M10), quando coerente con i concetti trattati, aggiungere un micro-task "prodotto reale" oltre agli esercizi standard, anche se la sezione progetto incrementale completa non è prevista in quel capitolo.
+9. Ogni micro-task di prodotto deve dichiarare esplicitamente: (a) componente del prodotto toccata, (b) deliverable concreto (file/output), (c) Definition of Done minima verificabile.
+10. Quando il task riguarda dati documentali, usare preferibilmente un sottoinsieme del dataset reale dello studente (se disponibile e conforme privacy) invece di soli dataset sintetici/demo.
 
 ---
 

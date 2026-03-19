@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema_canonico_v01.json",
+  "title": "Schema Canonico v0.1 - Controllo Documentale AI",
+  "description": "Contratto dati minimo per i documenti P0 del pilot.",
+  "type": "object",
+  "required": [
+    "pratica_id",
+    "documento_id",
+    "tipo_documento",
+    "data_documento",
+    "intestatario_nome",
+    "fonte_estrazione",
+    "campi_documento"
+  ],
+  "properties": {
+    "pratica_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "documento_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tipo_documento": {
+      "type": "string",
+      "enum": [
+        "busta_paga",
+        "cu",
+        "estratto_conto_corrente"
+      ]
+    },
+    "data_documento": {
+      "type": "string",
+      "format": "date"
+    },
+    "intestatario_nome": {
+      "type": "string",
+      "minLength": 1
+    },
+    "intestatario_cf": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{11,16}$"
+    },
+    "fonte_estrazione": {
+      "type": "string",
+      "enum": [
+        "ocr",
+        "parser",
+        "manuale"
+      ]
+    },
+    "confidence_media": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "campi_documento": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/BustaPaga"
+        },
+        {
+          "$ref": "#/$defs/CU"
+        },
+        {
+          "$ref": "#/$defs/EstrattoContoCorrente"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "tipo_documento": {
+            "const": "busta_paga"
+          }
+        },
+        "required": [
+          "tipo_documento"
+        ]
+      },
+      "then": {
+        "properties": {
+          "campi_documento": {
+            "$ref": "#/$defs/BustaPaga"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "tipo_documento": {
+            "const": "cu"
+          }
+        },
+        "required": [
+          "tipo_documento"
+        ]
+      },
+      "then": {
+        "properties": {
+          "campi_documento": {
+            "$ref": "#/$defs/CU"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "tipo_documento": {
+            "const": "estratto_conto_corrente"
+          }
+        },
+        "required": [
+          "tipo_documento"
+        ]
+      },
+      "then": {
+        "properties": {
+          "campi_documento": {
+            "$ref": "#/$defs/EstrattoContoCorrente"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "BustaPaga": {
+      "type": "object",
+      "required": [
+        "datore_lavoro",
+        "periodo_competenza",
+        "retribuzione_lorda",
+        "retribuzione_netta"
+      ],
+      "properties": {
+        "datore_lavoro": {
+          "type": "string",
+          "minLength": 1
+        },
+        "periodo_competenza": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retribuzione_lorda": {
+          "type": "number",
+          "minimum": 0
+        },
+        "retribuzione_netta": {
+          "type": "number",
+          "minimum": 0
+        },
+        "trattenute_totali": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "CU": {
+      "type": "object",
+      "required": [
+        "anno_fiscale",
+        "sostituto_imposta",
+        "redditi_lavoro_dipendente"
+      ],
+      "properties": {
+        "anno_fiscale": {
+          "type": "integer",
+          "minimum": 2000
+        },
+        "sostituto_imposta": {
+          "type": "string",
+          "minLength": 1
+        },
+        "redditi_lavoro_dipendente": {
+          "type": "number",
+          "minimum": 0
+        },
+        "ritenute_irpef": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "EstrattoContoCorrente": {
+      "type": "object",
+      "required": [
+        "iban_parziale",
+        "periodo_da",
+        "periodo_a"
+      ],
+      "properties": {
+        "iban_parziale": {
+          "type": "string",
+          "minLength": 4
+        },
+        "periodo_da": {
+          "type": "string",
+          "format": "date"
+        },
+        "periodo_a": {
+          "type": "string",
+          "format": "date"
+        },
+        "saldo_iniziale": {
+          "type": "number"
+        },
+        "saldo_finale": {
+          "type": "number"
+        },
+        "accrediti_stipendio_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -14,3 +14,26 @@ allora l'agente deve:
 4) procedere dal messaggio successivo.
 
 Se CONTESTO_CORSO.md non e leggibile: niente handshake, segnalare blocco.
+
+---
+
+Handshake di chiusura capitolo:
+
+Se un messaggio utente contiene (case-insensitive):
+- la frase "correzione capitolo"
+- e un numero di capitolo (es. 10, 11, 12)
+
+allora l'agente deve:
+1) leggere integralmente CONTESTO_CORSO.md
+2) leggere integralmente APPUNTI_APPLICATIVO.md
+3) non iniziare la chiusura/correzione del capitolo prima del completamento delle due letture
+4) procedere con la chiusura del capitolo in modo coerente con:
+   - regole didattiche e protocollo nel CONTESTO_CORSO.md
+   - roadmap prodotto e deliverable nel APPUNTI_APPLICATIVO.md
+5) oltre agli esercizi di routine, includere quando coerente task/deliverable legati al prodotto
+   (componente toccata, output atteso, Definition of Done minima)
+6) prima di iniziare la correzione, inviare una conferma esplicita di allineamento con questa formula:
+   Allineamento capitolo <NUMERO> completato: contesto e appunti riletti integralmente.
+   (sostituire <NUMERO> con il capitolo richiesto nel messaggio utente)
+
+Se uno dei due file non e leggibile: bloccare handshake di chiusura e segnalare il problema.
