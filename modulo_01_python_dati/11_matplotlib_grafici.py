@@ -762,6 +762,29 @@ axes[0, 1].set_ylabel("Numero totale di ordini", fontsize=20)
 axes[0, 1].bar(ordini_per_citta.index, ordini_per_citta.values)
 axes[0, 1].tick_params(axis="x", rotation=45)
 
+axes[0, 2].set_title("Distribuzione dei prezzi", fontsize=25)
+axes[0, 2].set_xlabel("fasce di prezzo", fontsize=20) 
+axes[0, 2].set_ylabel("Quantità prodotti", fontsize=20)
+axes[0, 2].hist(vendite['prezzo'], bins=3, color="#03A9F4", edgecolor="black")
+
+metodi_pagamento = vendite.groupby('metodo_pagamento').size()
+labels = metodi_pagamento.index
+axes[1, 0].set_title("Metodi di pagamento", fontsize=25)
+axes[1, 0].pie(metodi_pagamento, labels= labels, autopct="%1.1f%%",)
+axes[1, 0].axis('equal')
+
+top_prodotti = vendite.groupby('prodotto')['fatturato'].sum().sort_values(ascending=False).head(5)
+axes[1, 1].set_title("Top 5 prodotti per fatturato", fontsize=25)
+axes[1, 1].set_xlabel("totale fatturato", fontsize=20) 
+axes[1, 1].set_ylabel("prodotti", fontsize=20)
+axes[1, 1].barh(top_prodotti.index, top_prodotti.values)
+
+quantita_venduti = vendite.groupby('prodotto')['quantita'].sum()
+axes[1, 2].set_title("Top 5 prodotti per quantità", fontsize=25)
+axes[1, 2].set_xlabel("prodotti", fontsize=20) 
+axes[1, 2].set_ylabel("numero venduti", fontsize=20)
+axes[1, 2].bar(quantita_venduti.sort_index().index, quantita_venduti.sort_index().values)
+
 
 fig.suptitle("Dashboard", fontsize=32, fontweight="bold")
 fig.tight_layout(rect=[0, 0, 1, 0.97])

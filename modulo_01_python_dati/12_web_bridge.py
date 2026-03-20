@@ -62,6 +62,37 @@
 ============================================================================
 """
 
+# ==========================================================================
+# QUIZ D'INGRESSO (dal capitolo 11 — Matplotlib + report pre-plot)
+# ==========================================================================
+#
+# 1) [Definizione] Differenza tra `size()`, `count()` e `nunique()` in Pandas?
+#    Scrivi un esempio pratico su "ordini unici".
+# in un dataframe, .size() conta le righe di uno specifico gruppo,  .count() conta tutte le righe che non hanno valore null
+# e infine nunique conta gli elementi con valore unico
+#
+# 2) [Trova l'errore] In un esercizio hai scritto:
+#    `quantita = vendite.groupby("prodotto")["quantita"].sum()`
+#    ma la consegna chiedeva "quantità per categoria".
+#    Qual è l'errore concettuale? avrei dovuto raggruppare per categoria e non per prodotto
+#
+# 3) [Vero/Falso] `sort_index()` ordina i valori della Series. 
+# falso, ordine in base all'indice, e non per valore
+#
+# 4) [Prevedi output] Se `s = pd.Series([10, 20], index=["b", "a"])`,
+#    cosa produce `s.sort_index()`?
+# { a: 20, b: 10 }
+#
+# 5) [Completa codice] Completa:
+#    `ordini_unici = vendite.groupby("citta")["id_ordine"].nunique()`
+#
+# 6) [Vero/Falso] Con `density=True` in `hist()`, l'asse Y rappresenta il conteggio righe. 
+# falso, riporta il dato normalizzato per rappresentare il peso di un dato
+#
+# 7) [Spiega con parole tue - opzionale ingresso]
+#    Perché "report corretto prima del grafico" evita errori anche nelle API?
+# perchè fare un controllo sulla qualità, in generale evita che qualcosa posso bloccarsi
+
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
@@ -109,6 +140,41 @@ case = pd.read_csv(os.path.join(percorso_dati, "case.csv"))
 vendite["prezzo"] = vendite["prezzo"].astype(float)
 vendite["quantita"] = vendite["quantita"].astype(int)
 vendite["fatturato"] = vendite["prezzo"] * vendite["quantita"]
+
+# --- MINI-ESERCIZIO 1 — Prova subito! ---
+# 1) Stampa `vendite.shape` e `case.shape`
+# 2) Stampa quante città uniche ci sono in `vendite`
+# 3) Verifica il tipo di `vendite["fatturato"]`
+# Scrivi qui sotto:
+# ...
+
+# ==========================================================================
+# 🔁 RINFORZO MIRATO — Dal grafico all'API: stessa logica, stessi errori
+# ==========================================================================
+#
+# Nel capitolo 11 sono emerse 3 fragilita importanti:
+# 1) metrica giusta ma asse/label sbagliati
+# 2) groupby sulla dimensione sbagliata (es. prodotto vs categoria)
+# 3) consegna letta parzialmente (manca un requisito)
+#
+# In API succede UGUALE:
+# - endpoint = "grafico senza grafico"
+# - se l'aggregazione e sbagliata, restituisci JSON "formalmente valido" ma concettualmente errato
+#
+# Mini-regola pratica prima di ogni endpoint:
+# - COSA devi contare?
+#   * ordini unici -> nunique("id_ordine")
+#   * righe/documenti -> size() o count()
+#   * quantita venduta -> sum("quantita")
+# - SU QUALE dimensione?
+#   * per citta / per categoria / per prodotto (non confonderle)
+# - NOME CHIAVI JSON coerente con la metrica (es. "ordini_unici", non solo "ordini")
+#
+# Mini-check di consegna (obbligatorio):
+# [ ] ho tutti i campi richiesti in output
+# [ ] ho i tipi giusti (int/float/string)
+# [ ] il nome campo descrive davvero il valore
+# [ ] il sorting richiesto e applicato
 
 # ==========================================================================
 # ENDPOINT 1: Home — Benvenuto
@@ -171,7 +237,7 @@ def vendite_per_citta():
     Come: SELECT citta, COUNT(*), SUM(fatturato) GROUP BY citta
     """
     report = vendite.groupby("citta").agg(
-        ordini=("id_ordine", "count"),
+        ordini_unici=("id_ordine", "nunique"),
         fatturato=("fatturato", "sum"),
         ordine_medio=("fatturato", "mean")
     ).round(2)
@@ -180,7 +246,7 @@ def vendite_per_citta():
     for citta, dati in report.iterrows():
         risultato.append({
             "citta": citta,
-            "ordini": int(dati["ordini"]),
+            "ordini_unici": int(dati["ordini_unici"]),
             "fatturato": float(dati["fatturato"]),
             "ordine_medio": float(dati["ordine_medio"])
         })
@@ -231,6 +297,13 @@ def cerca_ordini(
         "risultati": int(len(risultato)),
         "data": risultato.to_dict(orient="records")
     }
+
+# --- MINI-ESERCIZIO 2 — Prova subito! ---
+# 1) Aggiungi un filtro opzionale `quantita_min` all'endpoint cerca_ordini
+# 2) Se presente, tieni solo righe con `quantita >= quantita_min`
+# 3) Testa da browser: /vendite/cerca?quantita_min=2
+# Scrivi qui sotto:
+# ...
 
 # ==========================================================================
 # ENDPOINT 5: Overview Case
@@ -339,6 +412,25 @@ def stats_per_grafici():
     }
 
 
+# ==========================================================================
+# 🔁 RINFORZO MIRATO — Coerenza requisito -> output API
+# ==========================================================================
+#
+# Se la consegna dice: "quantita vendute PER CATEGORIA"
+# NON devi raggruppare per prodotto.
+#
+# Esempio corretto:
+# quantita_categoria = vendite.groupby("categoria")["quantita"].sum().sort_values(ascending=False)
+# output:
+# {
+#   "labels": [...categorie...],
+#   "values": [...quantita...]
+# }
+#
+# Questo rinforzo serve a evitare l'errore emerso nel cap.11 dashboard:
+# richiesta = per categoria, implementazione = per prodotto.
+
+
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  COME TESTARE                                                         ║
 # ╚═════════════════════════════════════════════════════════════════════════╝
@@ -362,7 +454,32 @@ def stats_per_grafici():
 # ║  ESERCIZI — Ora Prova Tu!                                             ║
 # ╚═════════════════════════════════════════════════════════════════════════╝
 
-# ESERCIZIO 1 (Facile):
+# ==========================================================================
+# QUIZ DI VERIFICA (capitolo 12 — FastAPI Web Bridge)
+# ==========================================================================
+#
+# 1) [Definizione] Cosa fa `@app.get("/path")` in FastAPI?
+#
+# 2) [Vero/Falso] FastAPI genera automaticamente docs interattive su `/docs`.
+#
+# 3) [Trova l'errore] In un endpoint di filtro usi:
+#    `if prezzo_max:` invece di `if prezzo_max is not None:`
+#    perché può essere un problema?
+#
+# 4) [Prevedi output] Se chiami `/vendite/cerca?limit=2`, cosa limita quel parametro?
+#
+# 5) [Completa codice] Completa:
+#    `@app.get("/ping")`
+#    `def ping():`
+#    `    return {"status": "____"}`
+#
+# 6) [Spiega con parole tue - Feynman]
+#    Spiega a un collega Laravel la differenza tra endpoint "controller-like"
+#    e funzione FastAPI decorata.
+#
+# Scrivi le risposte qui sotto (nei commenti) prima degli esercizi.
+
+# 🎯 [COLLOQUIO] ESERCIZIO 1 (Facile):
 # Aggiungi un endpoint GET /vendite/top-prodotti che restituisca
 # i top 5 prodotti per fatturato.
 # Deve restituire: [{"prodotto": "...", "fatturato": 123.45, "quantita": 10}, ...]
@@ -371,7 +488,7 @@ def stats_per_grafici():
 # ...
 
 
-# ESERCIZIO 2 (Medio):
+# 🔀 [INTERLEAVING] ESERCIZIO 2 (Medio):
 # Aggiungi un endpoint GET /case/cerca che accetti parametri:
 # - citta (opzionale)
 # - mq_min e mq_max (opzionali)
@@ -383,7 +500,7 @@ def stats_per_grafici():
 # ...
 
 
-# ESERCIZIO 3 (Sfida — Connetti React):
+# 🔧 [REFACTORING] ESERCIZIO 3 (Sfida — Connetti React):
 # Se conosci React, crea un semplice componente che:
 # 1. Fa una fetch() a http://localhost:8000/vendite/overview
 # 2. Mostra i dati in una card con stile moderno
@@ -398,9 +515,79 @@ def stats_per_grafici():
 # }, []);
 
 
+# 🧠 [RETRIEVAL] ESERCIZIO 4 (Memoria attiva):
+# Senza guardare gli endpoint sopra, riscrivi da zero un endpoint GET
+# `/vendite/per-categoria` che restituisca:
+# - categoria
+# - ordini_unici (nunique su id_ordine)
+# - fatturato_totale
+# ordinato per fatturato_totale decrescente.
+#
+# Vincolo: usa naming coerente e tipi JSON puliti (int/float/string).
+
+
+# 🏗️ PRODOTTO REALE (micro-task capitolo 12) — Bridge verso app documentale
+# Obiettivo: aggiungi un endpoint preview "semaforo operativo" riusando i dati disponibili.
+#
+# Task:
+# 1) Crea GET /pratiche/semaforo-preview
+# 2) Restituisci una lista di record con:
+#    - id_pratica (puo essere id_ordine nel mock)
+#    - score_genuinita (mock semplice 0-100)
+#    - semaforo (verde/giallo/rosso in base a soglie)
+#    - motivo_top1
+#
+# Deliverable atteso:
+# - endpoint funzionante e visibile in /docs
+# - JSON coerente con naming prodotto (score/semaforo/motivo)
+#
+# Definition of Done minima:
+# - almeno 5 record in output
+# - semaforo coerente con score
+# - naming chiavi allineato a APPUNTI_APPLICATIVO.md
+
+
+# 🏗️ PROGETTO INCREMENTALE — Modulo 1 / Capitolo 12
+# Obiettivo capitolo: esporre via API il primo "ponte web" del progetto documentale.
+#
+# Task:
+# - crea endpoint `/progetto/overview` che ritorni:
+#   - totale_pratiche_mock
+#   - score_medio_mock
+#   - distribuzione_semaforo_mock
+# - crea endpoint `/progetto/pratiche` con filtro opzionale `semaforo`
+# - usa naming allineato al prodotto (`id_pratica`, `score_genuinita`, `semaforo`, `motivo_top1`)
+#
+# Deliverable:
+# - endpoint testabili da `/docs`
+# - JSON coerente con schema deciso negli appunti
+#
+# Definition of Done:
+# - almeno 1 endpoint overview + 1 endpoint lista filtrabile
+# - filtro `semaforo` funzionante
+# - output pronto per consumo frontend (React)
+
+
 # ╔═════════════════════════════════════════════════════════════════════════╗
 # ║  SOLUZIONI                                                             ║
 # ╚═════════════════════════════════════════════════════════════════════════╝
+
+# --- SOLUZIONI QUIZ D'INGRESSO (sintesi) ---
+# 1) size=righe del gruppo, count=non-null della colonna, nunique=valori distinti
+# 2) Errore dimensione: richiesta per categoria, implementato per prodotto
+# 3) Falso (sort_index ordina indice)
+# 4) indice ordinato: a->20, b->10
+# 5) nunique
+# 6) Falso (density=True -> densita/probabilita, non conteggio puro)
+# 7) Perche l'API espone la stessa aggregazione usata nel report/grafico
+
+# --- SOLUZIONI QUIZ DI VERIFICA (sintesi) ---
+# 1) Collega una route GET a una funzione Python
+# 2) Vero
+# 3) Perde il caso prezzo_max=0, serve controllo esplicito su None
+# 4) Limita il numero massimo di record restituiti
+# 5) {"status": "ok"}
+# 6) In FastAPI la funzione decorata e insieme route+handler con validazione automatica
 
 # --- SOLUZIONE ESERCIZIO 1 ---
 # @app.get("/vendite/top-prodotti")
