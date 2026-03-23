@@ -133,20 +133,25 @@ app.add_middleware(
 
 # Carichiamo i dataset all'avvio (come un "singleton" in Laravel)
 percorso_dati = os.path.join(os.path.dirname(__file__), "dati")
-vendite = pd.read_csv(os.path.join(percorso_dati, "vendite_ecommerce.csv"))
 case = pd.read_csv(os.path.join(percorso_dati, "case.csv"))
+vendite = pd.read_csv(os.path.join(percorso_dati, "vendite_ecommerce.csv"))
 
 # Prepariamo i dati
 vendite["prezzo"] = vendite["prezzo"].astype(float)
 vendite["quantita"] = vendite["quantita"].astype(int)
 vendite["fatturato"] = vendite["prezzo"] * vendite["quantita"]
 
+case['prezzo_euro'] = case['prezzo_euro'].astype(float)
+
 # --- MINI-ESERCIZIO 1 — Prova subito! ---
 # 1) Stampa `vendite.shape` e `case.shape`
 # 2) Stampa quante città uniche ci sono in `vendite`
 # 3) Verifica il tipo di `vendite["fatturato"]`
 # Scrivi qui sotto:
-# ...
+print(f"{vendite.shape}")
+print(f"{case.shape}")
+print(f"{vendite['citta'].nunique()}")
+print(f"{type(vendite['fatturato'])}")
 
 # ==========================================================================
 # 🔁 RINFORZO MIRATO — Dal grafico all'API: stessa logica, stessi errori
@@ -253,6 +258,7 @@ def vendite_per_citta():
 
     return {"data": sorted(risultato, key=lambda x: x["fatturato"], reverse=True)}
 
+    
 # ==========================================================================
 # ENDPOINT 4: Cerca Ordini (con Query Parameters)
 # ==========================================================================
@@ -263,7 +269,8 @@ def cerca_ordini(
     categoria: str = Query(None, description="Filtra per categoria"),
     prezzo_min: float = Query(None, description="Prezzo minimo"),
     prezzo_max: float = Query(None, description="Prezzo massimo"),
-    limit: int = Query(10, description="Numero massimo di risultati", le=100)
+    limit: int = Query(10, description="Numero massimo di risultati", le=100),
+    quantita_min: int = Query(None, description="quantità minima")
 ):
     """
     Cerca ordini con filtri opzionali.
@@ -284,6 +291,8 @@ def cerca_ordini(
         risultato = risultato[risultato["prezzo"] >= prezzo_min]
     if prezzo_max is not None:
         risultato = risultato[risultato["prezzo"] <= prezzo_max]
+    if quantita_min:
+        risultato = risultato[risultato['quantita'] >= quantita_min]
 
     risultato = risultato.head(limit)
 
@@ -303,7 +312,50 @@ def cerca_ordini(
 # 2) Se presente, tieni solo righe con `quantita >= quantita_min`
 # 3) Testa da browser: /vendite/cerca?quantita_min=2
 # Scrivi qui sotto:
-# ...
+@app.get("/vendite/cerca")
+def cerca_ordini(
+    citta: str = Query(None, description="Filtra per città"),
+    categoria: str = Query(None, description="Filtra per categoria"),
+    prezzo_min: float = Query(None, description="Prezzo minimo"),
+    prezzo_max: float = Query(None, description="Prezzo massimo"),
+    limit: int = Query(10, description="Numero massimo di risultati", le=100),
+    quantita_min: int = Query(None, description="quantità minima")
+):
+    """
+    Cerca ordini con filtri opzionali.
+    Come: SELECT * FROM vendite WHERE ... LIMIT n
+
+    Esempi:
+    - /vendite/cerca?citta=Milano
+    - /vendite/cerca?categoria=Elettronica&prezzo_min=50
+    - /vendite/cerca?prezzo_max=30&limit=5
+    """
+    risultato = vendite.copy()
+
+    if citta:
+        risultato = risultato[risultato["citta"] == citta]
+    if categoria:
+        risultato = risultato[risultato["categoria"] == categoria]
+    if prezzo_min is not None:
+        risultato = risultato[risultato["prezzo"] >= prezzo_min]
+    if prezzo_max is not None:
+        risultato = risultato[risultato["prezzo"] <= prezzo_max]
+    if quantita_min is not None:
+        risultato = risultato[risultato['quantita'] >= quantita_min]
+
+    risultato = risultato.head(limit)
+
+    return {
+        "filtri_applicati": {
+            "citta": citta,
+            "categoria": categoria,
+            "prezzo_min": prezzo_min,
+            "prezzo_max": prezzo_max,
+            "quantita_min": quantita_min
+        },
+        "risultati": int(len(risultato)),
+        "data": risultato.to_dict(orient="records")
+    }
 
 # ==========================================================================
 # ENDPOINT 5: Overview Case
@@ -312,6 +364,9 @@ def cerca_ordini(
 @app.get("/case/overview")
 def case_overview():
     """Overview del dataset immobiliare."""
+    case_per_citta = case.groupby('citta')
+    per_citta = {}
+
     return {
         "totale_case": int(len(case)),
         "prezzo_medio": round(float(case["prezzo_euro"].mean()), 0),
@@ -319,15 +374,15 @@ def case_overview():
         "prezzo_max": int(case["prezzo_euro"].max()),
         "mq_medi": round(float(case["metri_quadri"].mean()), 0),
         "citta": list(case["citta"].unique()),
-        "per_citta": {
-            citta: {
-                "case": int(count),
-                "prezzo_medio": round(float(case[case["citta"]==citta]["prezzo_euro"].mean()), 0)
+        "per_citta":
+        {
+            c: {
+            "case": int(len(d)),
+            "prezzo_medio": float(round(d['prezzo_euro'].mean(), 2))
             }
-            for citta, count in case["citta"].value_counts().items()
+            for c, d in case_per_citta
         }
     }
-
 # ==========================================================================
 # ENDPOINT 6: Stima Prezzo Casa (Preview di Machine Learning!)
 # ==========================================================================
