@@ -53,6 +53,30 @@ import os
 #
 # Non scrivi a mano tutte le regole:
 # il modello le apprende dai dati.
+#
+# Fermiamoci un momento sul senso profondo.
+# Con la programmazione classica scrivi tu tutte le regole: "se succede A, fai B".
+# Funziona bene quando il problema e piccolo e stabile.
+# Con il Machine Learning ribalti il flusso: dai esempi al sistema e lasci che
+# apprenda da solo una regola numerica che minimizza l'errore.
+#
+# In pratica il modello fa un ciclo: osserva dati (X), prova a prevedere y,
+# misura quanto sbaglia, corregge i propri pesi e riprova. Questo processo
+# ripetuto molte volte fa emergere pattern che con if/else diventerebbero
+# troppo numerosi o fragili da mantenere.
+#
+# Non e una bacchetta magica: ML conviene quando il problema e predittivo,
+# i dati sono decenti e vuoi generalizzare su casi nuovi.
+# Se invece hai una regola semplice, deterministica e stabile, spesso la
+# soluzione classica resta la scelta migliore.
+#
+# Tieni a mente tre anti-pattern molto comuni:
+# 1) credere che il modello "indovini" anche con dati sporchi;
+# 2) confondere correlazione e causalita;
+# 3) valutare sul training e pensare che sia performance reale.
+#
+# Prima di andare avanti, checklist mentale rapida:
+# input/target chiari, dati controllati, metrica adatta, test separato.
 
 print("\nPARTE 1 — Cos'e il ML\n")
 print("ML = apprendere pattern dai dati per fare previsioni.")
@@ -75,6 +99,22 @@ print("ML = apprendere pattern dai dati per fare previsioni.")
 #
 # 3) Reinforcement Learning:
 #    agente che impara da ricompense/penalita.
+#
+# Qui facciamo una distinzione che in pratica vale oro.
+# Nel supervisionato hai una risposta storica affidabile: sai gia "come e andata"
+# e alleni il modello a riprodurre quella logica su nuovi casi.
+# Nel non supervisionato la risposta non c'e: il lavoro e scoprire struttura,
+# gruppi nascosti, segmenti o anomalie.
+# Nel reinforcement learning, infine, il sistema non studia un dataset statico:
+# prende decisioni in sequenza e impara da premi/penalita.
+#
+# Tradotto sul tuo prodotto:
+# supervisionato = predire score/esito da pratiche storiche;
+# non supervisionato = trovare cluster di pratiche simili;
+# reinforcement = agente che ottimizza il prossimo passo operativo.
+#
+# La regola da professionista e semplice: non scegliere l'approccio "di moda".
+# Parti sempre dalla domanda: "ho un target affidabile oppure devo prima scoprire pattern?"
 
 print("\nPARTE 2 — Tipi di ML\n")
 print("Supervisionato, non supervisionato, reinforcement.")
@@ -89,6 +129,23 @@ print("Supervisionato, non supervisionato, reinforcement.")
 # ==========================================================================
 # PARTE 3: Dataset, Feature, Target (ponte con Pandas)
 # ==========================================================================
+#
+# Adesso mettiamo ordine nei tre oggetti fondamentali:
+# dataset, feature, target.
+# Il dataset e il contenitore completo dei casi storici.
+# Le feature sono i segnali che usi per spiegare il fenomeno.
+# Il target e cio che vuoi prevedere.
+#
+# Nel progetto documentale, ad esempio, puoi usare come feature la confidence OCR,
+# il numero di incoerenze e alcuni indicatori economici; il target puo essere
+# lo score di genuinita o la classe semaforo.
+#
+# Attenzione a un errore classico ma devastante: il leakage.
+# Se metti (direttamente o indirettamente) il target dentro le feature,
+# il modello sembra eccellente ma e un falso positivo metodologico.
+#
+# Ripasso tecnico importante: X di solito e un DataFrame (2D), y una Series (1D).
+# Questa distinzione non e solo teoria: evita bug quando passeremo a train/test e metriche.
 
 percorso_case = os.path.join(os.path.dirname(__file__), "..", "modulo_01_python_dati", "dati", "case.csv")
 case = pd.read_csv(percorso_case)
@@ -122,6 +179,18 @@ print(f"Target y shape: {y.shape}")
 # Nel lavoro reale di Machine Learning non fai solo modello:
 # prima devi capire i dati con report sintetici.
 # Il metodo .agg ti permette di costruire report leggibili e veloci.
+#
+# Questa parte e meno "glamour", ma in azienda fa la differenza tra modello solido
+# e progetto fragile. Prima di allenare devi capire il territorio: distribuzioni,
+# estremi, sbilanciamenti e differenze tra gruppi.
+#
+# `.agg` e il tuo ponte naturale da SQL a ML: con poche righe ottieni una vista
+# ad alta densita informativa. In altre parole, stai trasformando "dati grezzi"
+# in insight operativi che guidano feature engineering e scelte modellistiche.
+#
+# Qui nascono anche molti errori silenziosi: metrica sbagliata (size/count/nunique),
+# proporzioni non rese leggibili, ordinamenti incoerenti con la domanda business.
+# Per questo la regola e: prima allinei la domanda, poi costruisci l'aggregazione.
 
 print("\nPARTE 4 — Report con .agg\n")
 
@@ -148,6 +217,67 @@ print(report_base.sort_values("prezzo_medio", ascending=False).round(2))
 
 
 # ==========================================================================
+# PARTE 5: Workflow professionale minimo (dal dato alla previsione)
+# ==========================================================================
+#
+# Ti lascio una sequenza che voglio diventi il tuo "pilota automatico" professionale.
+# Parti sempre da una frase business chiara, definisci target e metrica, fai EDA minima,
+# costruisci X/y senza leakage, separi train/test, alleni una baseline, interpreti errori
+# e solo dopo iteri. Questo ordine riduce tantissimo il rischio di autoinganno.
+#
+# In questo capitolo fissiamo i mattoni. Nei prossimi entreremo con metodo in training,
+# validazione e metrica, ma con una base concettuale gia stabile.
+#
+# --- MINI-ESERCIZIO 6 — Workflow in 8 righe ---
+# Scrivi 8 righe (una per step) su come applicheresti il workflow sopra
+# al progetto "Controllo Documentale AI" (usa parole semplici, niente teoria astratta).
+#
+
+# ==========================================================================
+# 🔁 RINFORZO MIRATO — Dal Web Bridge al ML (API, filtri, payload)
+# ==========================================================================
+#
+# Nel capitolo 12 sono emersi 4 punti chiave da consolidare subito:
+# 1) Query params URL: "?" una sola volta, poi "&"
+# 2) Parametri opzionali numerici/bool:
+#    - numerici: usare `is not None`
+#    - bool opzionali: usare `is not None` (False e un valore valido)
+# 3) Conteggi/percentuali per categoria:
+#    - non usare `.sum()` per contare righe filtrate
+#    - usare `len(masked_df)` o `value_counts(normalize=True)`
+# 4) Naming JSON coerente:
+#    - evitare chiavi diverse tra endpoint (es. score_genuinita sempre uguale)
+#
+# Micro-esempio operativo (stesso pattern del progetto semaforo):
+demo = pd.DataFrame(
+    {
+        "id_pratica": ["P1", "P2", "P3", "P4", "P5"],
+        "score_genuinita": [91, 76, 54, 43, 84],
+    }
+)
+
+def mappa_semaforo(score: int) -> str:
+    if score >= 80:
+        return "verde"
+    if score >= 50:
+        return "giallo"
+    return "rosso"
+
+demo["semaforo"] = demo["score_genuinita"].apply(lambda x: mappa_semaforo(int(x)))
+dist = (demo["semaforo"].value_counts(normalize=True) * 100).round(2)
+print("\nRINFORZO — Distribuzione semaforo (%)")
+print(dist)
+
+# --- MINI-ESERCIZIO 5 — Rinforzo cap.12 -> cap.01 M2 ---
+# 1) Calcola il numero pratiche verdi senza usare `.sum()` sul DataFrame intero.
+# 2) Calcola percentuale verdi/gialli/rossi con `value_counts(normalize=True)`.
+# 3) Scrivi una riga: perche `if ha_garage:` e pericoloso se il parametro e bool opzionale?
+# 4) Scrivi URL corretta (con query params) per:
+#    endpoint `/progetto/pratiche`, filtro `semaforo=giallo` e `limit=5`
+#    (nota: "?" una volta, poi "&").
+#
+
+# ==========================================================================
 # QUIZ DI VERIFICA — Prima degli esercizi
 # ==========================================================================
 #
@@ -165,6 +295,11 @@ print(report_base.sort_values("prezzo_medio", ascending=False).round(2))
 #
 # DOMANDA 5 — 💬 Spiega con parole tue:
 # differenza pratica tra scrivere regole a mano e farle apprendere al modello.
+#
+# DOMANDA 6 — Errori tipici:
+# Cita 2 anti-pattern reali:
+# - uno legato alla preparazione dei dati
+# - uno legato alla valutazione del modello
 
 
 # ==========================================================================
@@ -231,6 +366,12 @@ print(report_base.sort_values("prezzo_medio", ascending=False).round(2))
 # - usare `.agg` in modo esplicito
 # - ordinare per `quota_case_recenti` decrescente
 # - stampare top 5 e salvare CSV in `dati/report_rinforzo_agg.csv`
+#
+# ESERCIZIO 9 (Teoria applicata, no codice lungo):
+# In massimo 12 righe:
+# - descrivi un caso in cui useresti regole manuali e NON ML
+# - descrivi un caso in cui useresti ML e NON sole regole
+# - spiega per ciascuno: rischio principale + mitigazione
 #
 
 # ==========================================================================

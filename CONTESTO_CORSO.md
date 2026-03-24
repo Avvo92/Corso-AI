@@ -371,6 +371,31 @@ DoD modulo:
 - [ ] voto difficolta
 ```
 
+### H) Chiusura capitolo — procedura VINCOLANTE (anti-errore agente)
+
+Quando l'utente richiede la chiusura/correzione di un capitolo (es. "chiusura capitolo 12"),
+l'agente deve seguire questo ordine senza eccezioni:
+
+1. **Non modificare piu il file del capitolo in chiusura** durante la fase di chiusura.
+   - Il capitolo in chiusura si puo solo leggere/valutare.
+   - Sono vietate modifiche "last minute" al file appena corretto.
+2. **Usare il capitolo chiuso come input diagnostico**:
+   - raccogliere errori ricorrenti,
+   - individuare lacune concettuali residue,
+   - identificare quali pattern vanno rinforzati subito.
+3. **Applicare i rinforzi direttamente nel capitolo successivo** (non in un pacchetto separato):
+   - inserire blocchi `# 🔁 RINFORZO MIRATO` nel punto teorico naturale,
+   - aggiungere mini-esercizi mirati alle lacune emerse,
+   - allineare il task prodotto alla roadmap in `APPUNTI_APPLICATIVO.md`.
+4. **Confermare in chat cosa e stato aggiornato nel capitolo successivo**.
+5. **Eccezione unica**: se il capitolo in chiusura ha un bug bloccante che impedisce esecuzione base,
+   l'agente deve fermarsi e chiedere autorizzazione esplicita prima di toccarlo.
+
+Obiettivo di questa regola:
+- evitare regressioni durante la chiusura,
+- rendere la chiusura un vero handoff didattico verso il capitolo successivo,
+- prevenire errori operativi multi-agente.
+
 ---
 
 ## Linee di Comportamento per il Mentor
@@ -390,6 +415,7 @@ DoD modulo:
 
 - Sempre la sequenza: **analogia concreta → codice JS/PHP equivalente → codice Python → esercizio**
 - Mai partire dalla teoria astratta. Prima il "a cosa serve nella vita reale", poi il come
+- Stile spiegazione: **discorsivo e progressivo**, non didascalico a elenco. Il tono deve sembrare quello di un docente esperto che guida il ragionamento passo-passo, mantenendo ritmo chiaro e coinvolgente
 - Ogni metodo nuovo va mostrato con un **mini-esempio isolato** prima di usarlo dentro un esercizio più complesso
 - Usare scenari dal mondo **web e controllo documentale** quando possibile — è il dominio più vicino al progetto finale di Gianluca
 - Se un concetto è simile a qualcosa di **Laravel** (es. Eloquent → Pandas, middleware → decoratori), usare quel ponte
@@ -475,6 +501,7 @@ DoD modulo:
 30. **Teoria potenziata obbligatoria (richiesta studente)**: mantenere invariati quiz d'ingresso e ampiezza esercizi, ma aumentare la profondità teorica in ogni capitolo, soprattutto nei moduli avanzati. Prima della pratica, inserire SEMPRE un blocco teoria estesa con questa sequenza: (a) intuizione/analogia concreta, (b) meccanismo interno "come funziona", (c) esempio guidato passo-passo, (d) errori tipici e anti-pattern, (e) quando usarlo vs quando evitarlo, (f) mini-checklist concettuale pre-esercizi (5-8 punti). Obiettivo: evitare apprendimento solo operativo e rafforzare comprensione per debugging, colloqui e moduli complessi.
 31. **Dual-track obbligatorio (richiesta studente)**: il corso ha DUE obiettivi simultanei e non separabili: (1) sviluppare competenze solide di AI Engineering, (2) costruire progressivamente il prodotto "Controllo Documentale AI". In ogni capitolo di ogni modulo, oltre agli esercizi di routine, inserire quando coerente almeno un task esplicitamente collegato al prodotto finale (feature, componente, regola, dataset, test, monitoraggio, UI o integrazione). Il task deve indicare: output atteso, criterio di completamento e collegamento alla roadmap del prodotto.
 32. **Uso dataset reale dello studente (obbligatorio quando coerente)**: lo studente dispone di centinaia di documenti reali misti originali/non originali. Nei prossimi capitoli, quando coerente con i concetti trattati e con i vincoli privacy/compliance, usare questi dati reali come base per esercizi e deliverable del progetto (sampling controllato, anonimizzazione/pseudonimizzazione, metadatazione, split train/validation/test per pratica/persona). Evitare uso indiscriminato "tutto insieme": preferire subset progressivi con obiettivi didattici chiari.
+33. **Metodo espositivo per i prossimi capitoli (vincolante)**: la teoria va scritta in forma narrativa e ragionata, non come lista meccanica di punti. Struttura obbligatoria: (1) base teorica discorsiva con intuizione e contesto pratico, (2) chiarimento del meccanismo interno con linguaggio semplice ma tecnico, (3) esempio guidato corto, (4) mini-esercizio immediato sul concetto appena spiegato, (5) progressione graduale verso esercizi più completi. Obiettivo: mantenere alta comprensione e attenzione prima della pratica.
 
 ---
 

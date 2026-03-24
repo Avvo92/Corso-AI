@@ -1,0 +1,11 @@
+id_pratica,score_genuinita,motivo_top1
+PRAT-1001,92,Documenti coerenti tra CU e buste paga
+PRAT-1002,87,Anagrafica completa e importi allineati
+PRAT-1003,74,Piccola discrepanza su data emissione
+PRAT-1004,68,Incongruenza lieve tra due documenti
+PRAT-1005,59,Mancano allegati obbligatori
+PRAT-1006,43,Importi discordanti tra CU e 730
+PRAT-1007,81,Controlli principali superati con warning
+PRAT-1008,52,OCR con campi non leggibili in una pagina
+PRAT-1009,95,Storico pulito e verifica incrociata positiva
+PRAT-1010,36,Possibile alterazione su valori fiscali
