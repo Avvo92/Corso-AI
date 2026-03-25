@@ -3,20 +3,28 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 18/03/2026
+> **Ultimo aggiornamento**: 25/03/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
 > Il resto è contesto di supporto da consultare quando serve.
 >
-> **CHECKPOINT BLOCCANTE (OBBLIGATORIO)**:
-> - Se in una nuova chat il primo messaggio utente contiene una variante tra
->   `jarvis pronto per iniziare`, `jarvis pronto a iniziare`,
->   `jarvis pronto per incominciare`, `jarvis pronto a incominciare`,
->   l'agente deve leggere `CONTESTO_CORSO.md` integralmente PRIMA di qualunque altra azione.
+> **HANDSHAKE DI AVVIO (OBBLIGATORIO)**:
+> - Se il primo messaggio in una nuova chat contiene (case-insensitive) le parole
+>   "jarvis" e "iniziare" in qualsiasi ordine (anche con altre parole o punteggiatura),
+>   l'agente deve leggere integralmente `CONTESTO_CORSO.md`, `APPUNTI_APPLICATIVO.md`
+>   e l'archivio del modulo precedente (se esiste) PRIMA di qualunque altra azione.
 > - Solo dopo allineamento completo deve rispondere esattamente:
 >   `Jarvis pienamente operativo Sig. Stark`
-> - Finché non avviene questo handshake, il lavoro sul corso non deve iniziare.
+> - La procedura completa e definita in `.cursorrules` (fonte di verita per i trigger).
+>
+> **HANDSHAKE DI CHIUSURA CAPITOLO (OBBLIGATORIO)**:
+> - Se un messaggio contiene "jarvis", "chiusura" (o "correzione") e "capitolo" + numero,
+>   l'agente deve leggere integralmente `CONTESTO_CORSO.md`, `APPUNTI_APPLICATIVO.md`,
+>   il file del capitolo da chiudere, e il file del capitolo successivo.
+> - Poi esegue la procedura di chiusura (Fasi A-B-C-D) definita in `.cursorrules`
+>   e nella sezione H) di questo file.
+> - La procedura completa e definita in `.cursorrules` (fonte di verita per i trigger).
 
 ---
 
@@ -24,12 +32,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | 11_matplotlib_grafici.py (grafici + rinforzi su report pre-plot) |
-| **Ultimo completato** | 09_pandas_intro.py (11/03/2026) |
-| **Modulo attuale** | 1 — Python & Dati |
-| **Difficoltà media** | 6.6 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7 — curva in assestamento) |
-| **Priorità attive** | ✅ Lacuna #11 superata, 🟡 Lacune #12/#13/#14 rinforzate (da verificare al quiz d'ingresso del cap.01 M2), 🟡 Lettura consegne in miglioramento, 🟡 Teoria potenziata nei prossimi moduli (struttura estesa prima della pratica), 🟡 Doppio obiettivo corso attivo: competenze AI Engineering + costruzione prodotto reale capitolo per capitolo, ⚠️ Filter/lambda ordine parametri ancora da monitorare, ⚠️ Reportistica con `.agg` da consolidare (specie `nunique` vs `size` e export CSV), ⚠️ `idxmax()` vs `max()` da tenere d'occhio nei report |
-| **Sessione corrente** | Sessione 9 |
+| **Capitolo in corso** | modulo_02_ml/01_cos_e_il_ml.py (Cos'è il ML — teoria + primi esercizi) |
+| **Ultimo completato** | 12_web_bridge.py (25/03/2026) — **Modulo 1 completato integralmente** |
+| **Modulo attuale** | 2 — Machine Learning Fundamentals |
+| **Difficoltà media** | 6.5 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7, 7, 6 — cap 07 escluso, senza voto) |
+| **Priorità attive** | 🟡 Lacune #12/#13/#14 rinforzate in cap.01 M2 (da verificare al quiz d'ingresso cap.02 M2), 🟡 Data leakage: concetto introdotto, da consolidare con esercizi pratici, 🟡 Feature engineering: prime nozioni, da tradurre in pratica con dataset documentale, 🟡 Coerenza pipeline prodotto: terminologia concordata (score_genuinita, prob_alterato, anomaly_score, semaforo), 🟡 Dual-track attivo: competenze AI Engineering + costruzione prodotto reale, ⚠️ `if var:` vs `is not None` per parametri numerici opzionali (emerso al cap.12), ⚠️ Confusione Series/DataFrame residua (da monitorare) |
+| **Sessione corrente** | Sessione 10 |
 
 ---
 
@@ -40,11 +48,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 17/03/2026 |
-| **Cosa è stato fatto** | Valutato `10_pandas_progetto.py` esercizio per esercizio: workflow EDA ok, ma individuati requisiti mancanti e bug concettuali nei report (`nunique` vs `size`, export CSV, colonna `prezzo_medio`, coerenza naming). Aggiornato `11_matplotlib_grafici.py` inserendo rinforzi mirati “pre-plot” su aggregazioni corrette e richiamo `idxmax()` vs `max()` + mini-esercizio extra. |
-| **Errori emersi** | Inversione concettuale `idxmax()`/`max()` nel quiz; uso di `size()` dove la consegna richiede ordini unici (`nunique()`); mancanza export `to_csv` in un esercizio; in report `case.csv` manca una metrica richiesta (`prezzo_medio`). |
-| **Cosa fare nella prossima sessione** | Chiudere il cap.10 correggendo ES.3 e ES.4 (report `.agg` completo + export). Poi partire dagli esercizi del cap.11 costruendo prima i report “giusti” e solo dopo i grafici. |
-| **Stato motivazione** | Molto alto: orientato a workflow reale e consolidamento su reportistica. |
+| **Data** | 25/03/2026 |
+| **Cosa è stato fatto** | Completati cap 10-12 M1 (Modulo 1 chiuso). Avviato cap.01 M2: teoria supervised/unsupervised, feature/target, EDA, train/test, baseline, metriche. Discussione architetturale: pipeline dual-model, feature engineering, data leakage, CV documenti, RAG normative. Aggiornamento massivo CONTESTO_CORSO.md: sezione Pipeline ML, regole 34-36, glossario ML, roadmap riallineata. Hardening contesto: archivio M1, changelog, self-check agente. |
+| **Errori emersi** | Cap 12: if var vs is not None per numeri opzionali, confusione Series/DataFrame, errori iterazione GroupBy, riassegnazione DataFrame a Series. Cap 01 M2: quiz domanda 4 (loc vs iloc) fragile. |
+| **Cosa fare nella prossima sessione** | Proseguire cap.01 M2: completare esercizi e quiz verifica. Preparare cap.02 M2 con rinforzi su lacune 12-14 e leakage. Verificare assorbimento lacune al quiz ingresso cap.02. |
+| **Stato motivazione** | Molto alto: entusiasta della pipeline prodotto e architettura dual-model. Ownership sul progetto in crescita. |
 
 ---
 
@@ -54,30 +62,38 @@
 > tenere presenti ADESSO. È un "cruscotto" — il dettaglio completo è nelle sezioni
 > dedicate più in basso.
 
-### Pattern di errore attivi (🔴)
+### Pattern di errore attivi — transizione M1 → M2
 
-| # | Pattern | Ripetuto in |
-|---|---------|-------------|
-| 1 | Sintassi JS in Python (`? :` invece di ternario Python) | file 01 |
-| 2 | `range()` / slicing fine escluso | file 02, 04, quiz 05 |
-| 5 | Tipi nei dizionari: stringhe dove servono numeri | file 03, 05 |
-| 6 | Lettura incompleta delle consegne | file 02, 03, 04, 05 |
-| 10 | Vincoli esercizio ignorati | file 04 |
-| 11 | Ordine parametri `filter()`: mette lista prima di lambda | file 05 |
+| # | Pattern | Stato | Note |
+|---|---------|-------|------|
+| 6 | Lettura incompleta delle consegne | 🟡 In miglioramento | Persistito nel M1, da monitorare nel M2 |
+| 18 | Confusione Series vs DataFrame | ⚠️ Attivo | Emerso cap 09 e 12, rinforzato in cap.01 M2 |
+| 19 | `if var:` vs `is not None` per numeri opzionali | ⚠️ Nuovo | Emerso cap 12 — 0 e falsy, rischio parametri FastAPI/ML |
 
-### Concetti da rinforzare (⚠️)
+### Concetti da rinforzare per M2 (⚠️)
 
 | Concetto | Stato | Note breve |
 |----------|-------|------------|
-| Lambda | ⚠️ In miglioramento | Usata correttamente con sorted, ma ordine parametri filter fragile |
-| Dict comprehension | ⚠️ Non interiorizzata | Tende a usare for classico quando la consegna chiede dict comprehension |
-| Tuple/unpacking | ⚠️ → 🟡 In miglioramento | Ponte mentale `.items() = enumerate dei dizionari` ha funzionato |
+| Data leakage | ⚠️ Introdotto | Concetto compreso a livello teorico, da consolidare con esercizi pratici |
+| Feature engineering | ⚠️ Introdotto | Prime nozioni, da tradurre in pratica su dataset documentale |
+| loc vs iloc | ⚠️ Fragile | Quiz domanda 4 cap.01 M2 — concetto non ancora solido |
+| Series vs DataFrame | ⚠️ In miglioramento | Rinforzato in cap.01 M2, da verificare al quiz ingresso cap.02 |
 
-### Lacune quiz da monitorare — passaggio al capitolo 08
+### Lacune quiz attive — da verificare al prossimo quiz
 
-| # | Concetto | Errore commesso |
-|---|----------|-----------------|
-| 11 | Parsing CSV manuale vs spiegazione astratta | Verificata nel quiz d'ingresso cap.07 con pipeline operativa completa. Stato: 🟢 superata (tenere richiamo leggero nei capitoli dati). |
+| # | Concetto | Stato | Rinforzo in |
+|---|----------|-------|-------------|
+| 12 | Diagnosi mismatch shape in reshape | 🟡 Rinforzato | cap.01 M2 |
+| 13 | Interpretazione .shape su selezione colonne Pandas | 🟡 Rinforzato | cap.01 M2 |
+| 14 | Distinzione Series vs DataFrame | 🟡 Rinforzato | cap.01 M2 |
+
+### Anomalia aperta — Cap 07 (NumPy)
+
+> Il cap 07_numpy_intro.py risulta "In revisione" senza voto e senza chiusura formale.
+> Quiz d'ingresso ed esercizi 1-5 svolti, ma manca la correzione strutturata finale.
+> **Azione richiesta**: alla prima occasione utile (es. quiz ingresso di un capitolo M2 che tocca NumPy),
+> proporre a Gianluca un mini-quiz di recupero su shape/broadcasting/reshape per chiudere
+> formalmente il cap 07 e assegnare il voto. Non blocca il progresso M2, ma va sanata.
 
 ---
 
@@ -87,12 +103,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | 11_matplotlib_grafici.py (visualizzazione + dashboard) |
-| **Rinforzi da inserire (🔁)** | In 11: usare report corretti prima dei plot (focus `nunique` vs `size`, colonna derivata `ticket_medio`, ordinamenti) + richiamo `idxmax()` vs `max()` |
-| **Concetti ⚠️ da ripassare** | Aggregazioni corrette per “ordini” (unici), colonne derivate post-`agg`, export CSV, lettura output `.shape` e differenza Series/DataFrame |
-| **Pattern 🔴 da monitorare** | #5 (tipi da CSV), #6 (lettura completa consegne), #11 (ordine filter) |
-| **Ponte mentale da riusare** | SQL `GROUP BY + AVG/COUNT` -> Pandas `.groupby().agg()` |
-| **Note** | Il cap.10 è in chiusura: sistemare ES.3/ES.4 per allineare ai requisiti (ordini unici, export, metriche mancanti). Il cap.11 è stato già arricchito con rinforzi operativi per evitare di “plottare aggregazioni sbagliate”. |
+| **Prossimo capitolo** | modulo_02_ml/02 (da definire — secondo capitolo M2, probabilmente train/test split e primo modello) |
+| **Rinforzi da inserire (🔁)** | Lacune #12/#13/#14 (shape, selezione colonne, Series vs DataFrame) — da verificare al quiz ingresso. Leakage: richiamo pratico in ogni esercizio su feature/target. is not None vs if var: per parametri numerici. |
+| **Concetti ⚠️ da ripassare** | loc vs iloc (fragile), feature engineering pratico, workflow EDA completo, train/test split (per pratica e per tempo nel dominio documentale) |
+| **Pattern 🔴 da monitorare** | #6 (lettura consegne), #18 (Series/DataFrame), #19 (is not None) |
+| **Ponte mentale da riusare** | X maiuscolo = DataFrame 2D, y minuscolo = Series 1D. Feature = ingredienti, modello = chef. Data leakage = risposte dell’esame. |
+| **Note** | Modulo 1 completato integralmente. Cap.01 M2 avviato con teoria e primi esercizi. Pipeline ML del prodotto consolidata nel contesto. Ogni capitolo M2 deve collegare i concetti alla pipeline reale (regola 34-36). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -106,7 +122,7 @@
 - **Python installato**: 3.14.3
 - **IDE**: Cursor
 - **Version control**: Git + GitHub (il corso è già in una repository)
-- **Obiettivo finale**: Entrare nel mondo del lavoro tech con competenze solide in Python, AI/ML e web development. Il progetto finale deve essere il **diamante del portfolio**: una full web app (React + Laravel + FastAPI) con IA integrata — bella, reattiva, funzionale — da mostrare ai recruiter come prova concreta di competenza.
+- **Obiettivo finale**: Entrare nel mondo del lavoro tech con competenze solide in Python, AI/ML e web development. Il progetto finale deve essere il **diamante del portfolio**: una full web app (React + FastAPI, con eventuale layer Laravel — decisione aperta D1 in APPUNTI_APPLICATIVO.md) con IA integrata — bella, reattiva, funzionale — da mostrare ai recruiter come prova concreta di competenza.
 - **Obiettivo applicativo concreto**: Costruire un'app di **controllo documentale** per la sua società di consulenze. L'app deve verificare l'integrità di buste paga e documenti reddituali (CU, 730) dei clienti: OCR per leggere i documenti, NLP/LLM per estrarre i campi, regole fiscali per validazione incrociata, dashboard con semafori verde/giallo/rosso. Approccio ibrido: regole locali + API con dati anonimizzati o modello locale. Ha già molto materiale documentale a disposizione per il training/RAG. Questo obiettivo può influenzare gli esercizi dei moduli avanzati (M5-M6: usare dominio fiscale/documentale).
 
 ---
@@ -274,13 +290,16 @@ Ogni nuovo mentor/agente deve:
    - Ultima Sessione
    - Priorita Attive
    - Prossimo Capitolo
+   - sezione "Pipeline ML del Prodotto — Decisioni Architetturali Consolidate"
    - sezione "Allineamento Mercato 2026"
    - questa sezione "Protocollo Anti-Perdita Contesto"
 2. Scrivere un mini "check di allineamento mentale" interno:
    - dove siamo
    - cosa NON rifare
    - cosa fare subito
+   - quale componente della pipeline ML il modulo corrente sta costruendo
 3. Solo dopo puo iniziare lavoro operativo.
+4. Compilare il self-check della sezione I) prima di produrre contenuto capitolo.
 
 ### C) Definition of Done (DoD) per modulo — standard elite
 
@@ -373,28 +392,52 @@ DoD modulo:
 
 ### H) Chiusura capitolo — procedura VINCOLANTE (anti-errore agente)
 
-Quando l'utente richiede la chiusura/correzione di un capitolo (es. "chiusura capitolo 12"),
-l'agente deve seguire questo ordine senza eccezioni:
+> **Trigger**: "jarvis chiusura capitolo X" (o "jarvis correzione capitolo X").
+> La procedura completa con le 4 fasi (A-B-C-D) e definita in `.cursorrules`.
+> Questa sezione documenta i vincoli e le motivazioni.
 
-1. **Non modificare piu il file del capitolo in chiusura** durante la fase di chiusura.
-   - Il capitolo in chiusura si puo solo leggere/valutare.
-   - Sono vietate modifiche "last minute" al file appena corretto.
-2. **Usare il capitolo chiuso come input diagnostico**:
-   - raccogliere errori ricorrenti,
-   - individuare lacune concettuali residue,
-   - identificare quali pattern vanno rinforzati subito.
-3. **Applicare i rinforzi direttamente nel capitolo successivo** (non in un pacchetto separato):
-   - inserire blocchi `# 🔁 RINFORZO MIRATO` nel punto teorico naturale,
-   - aggiungere mini-esercizi mirati alle lacune emerse,
-   - allineare il task prodotto alla roadmap in `APPUNTI_APPLICATIVO.md`.
-4. **Confermare in chat cosa e stato aggiornato nel capitolo successivo**.
-5. **Eccezione unica**: se il capitolo in chiusura ha un bug bloccante che impedisce esecuzione base,
-   l'agente deve fermarsi e chiedere autorizzazione esplicita prima di toccarlo.
+**Vincoli inviolabili**:
 
-Obiettivo di questa regola:
+1. **Non modificare il file del capitolo in chiusura** — si puo solo leggere e valutare.
+2. **Non sovrascrivere le risposte dello studente** nei quiz o negli esercizi.
+3. **I rinforzi vanno nel capitolo SUCCESSIVO**, non in un pacchetto separato:
+   - blocchi `# 🔁 RINFORZO MIRATO` nel punto teorico naturale,
+   - mini-esercizi mirati alle lacune emerse,
+   - task prodotto allineato alla roadmap in `APPUNTI_APPLICATIVO.md`.
+4. **Aggiornare CONTESTO_CORSO.md** seguendo tutti i 13 passi del Protocollo di Aggiornamento.
+5. **Confermare in chat** cosa e stato aggiornato (contesto + capitolo successivo).
+6. **Eccezione unica**: bug bloccante nel capitolo → fermarsi e chiedere autorizzazione.
+
+**Ordine delle 4 fasi** (dettaglio in `.cursorrules`):
+- **Fase A**: Diagnosi (leggere il capitolo, correggere in chat, raccogliere errori, chiedere voto)
+- **Fase B**: Aggiornamento CONTESTO_CORSO.md (Passi 1-13)
+- **Fase C**: Preparazione capitolo successivo (rinforzi, mini-esercizi, task prodotto)
+- **Fase D**: Conferma in chat (elenco aggiornamenti, anomalie, decisioni)
+
+**Obiettivo**:
 - evitare regressioni durante la chiusura,
 - rendere la chiusura un vero handoff didattico verso il capitolo successivo,
 - prevenire errori operativi multi-agente.
+
+### I) Self-check agente — obbligatorio prima di produrre contenuto capitolo
+
+Prima di creare o modificare un capitolo (M2-M10), l'agente DEVE scrivere in chat:
+
+```
+SELF-CHECK COMPLETATO:
+- Capitolo target: [nome file]
+- Modulo: [numero e nome]
+- Componente pipeline costruita: [dalla tabella Mapping Moduli → Componenti]
+- Lacune rosse da rinforzare: [lista IDs o "nessuna"]
+- Pattern errore attivi da monitorare: [lista o "nessuno"]
+- Terminologia prodotto verificata: score_genuinita, prob_alterato, anomaly_score, semaforo, motivi_top3, evidenze, azione_consigliata
+- Regola H (chiusura) letta: si
+- Ultimo stato verificato: [da sezione Stato Attuale]
+```
+
+Se un campo risulta "non so" o mancante, l'agente DEVE rileggere la sezione
+corrispondente prima di procedere. Lo studente puo verificare la
+completezza del self-check e chiedere correzioni.
 
 ---
 
@@ -465,7 +508,7 @@ Obiettivo di questa regola:
 4. **Confronto a tre lingue**: ogni spiegazione deve includere PHP + JavaScript + Python. Il confronto PHP deve essere PARTICOLARMENTE dettagliato perché Gianluca ha una conoscenza base di PHP — spiegare cosa fanno fopen, fgetcsv, explode, trim ecc. come se fosse un ripasso, non darli per scontati
 5. **Spiegare i metodi usati negli esempi**: se un esempio usa `.reduce()`, `array_map()`, ecc., spiegare cosa fanno
 6. **Essere esaustivi, mai sintetici**: meglio una spiegazione in più che una in meno
-7. **File 07-08 (NumPy/Tensori) e Modulo 4 (Deep Learning)**: livello di dettaglio extra con più esempi visivi, analogie e mini-esercizi intermedi
+7. **File 07-08 (NumPy/Tensori) e Modulo 3 (Deep Learning & CV)**: livello di dettaglio extra con più esempi visivi, analogie e mini-esercizi intermedi
 8. **Suggerimenti autocomplete disattivati** durante lo studio per favorire la memorizzazione
 9. **Voto difficoltà obbligatorio**: dopo ogni capitolo Gianluca deve dare un voto da 1 a 10. Se dimentica, **ricordarglielo esplicitamente**
 10. **Ripasso intelligente dei termini appresi**: nei capitoli successivi, quando si usa un termine già visto (es. `enumerate`, `lambda`, `*args`), non limitarsi a usarlo — reinserire una breve spiegazione contestuale come se fosse un "richiamo naturale". Non deve sembrare una ripetizione forzata, ma un promemoria organico integrato nel flusso della lezione. Esempio: invece di scrivere solo `sorted(lista, key=lambda x: x["prezzo"])`, aggiungere un commento tipo: *"Usiamo `sorted()` — ricordi? Crea una NUOVA lista ordinata senza modificare l'originale — con una `lambda` come chiave: una mini-funzione usa-e-getta che dice 'ordina in base a questo campo'"*
@@ -502,69 +545,74 @@ Obiettivo di questa regola:
 31. **Dual-track obbligatorio (richiesta studente)**: il corso ha DUE obiettivi simultanei e non separabili: (1) sviluppare competenze solide di AI Engineering, (2) costruire progressivamente il prodotto "Controllo Documentale AI". In ogni capitolo di ogni modulo, oltre agli esercizi di routine, inserire quando coerente almeno un task esplicitamente collegato al prodotto finale (feature, componente, regola, dataset, test, monitoraggio, UI o integrazione). Il task deve indicare: output atteso, criterio di completamento e collegamento alla roadmap del prodotto.
 32. **Uso dataset reale dello studente (obbligatorio quando coerente)**: lo studente dispone di centinaia di documenti reali misti originali/non originali. Nei prossimi capitoli, quando coerente con i concetti trattati e con i vincoli privacy/compliance, usare questi dati reali come base per esercizi e deliverable del progetto (sampling controllato, anonimizzazione/pseudonimizzazione, metadatazione, split train/validation/test per pratica/persona). Evitare uso indiscriminato "tutto insieme": preferire subset progressivi con obiettivi didattici chiari.
 33. **Metodo espositivo per i prossimi capitoli (vincolante)**: la teoria va scritta in forma narrativa e ragionata, non come lista meccanica di punti. Struttura obbligatoria: (1) base teorica discorsiva con intuizione e contesto pratico, (2) chiarimento del meccanismo interno con linguaggio semplice ma tecnico, (3) esempio guidato corto, (4) mini-esercizio immediato sul concetto appena spiegato, (5) progressione graduale verso esercizi più completi. Obiettivo: mantenere alta comprensione e attenzione prima della pratica.
+34. **Coerenza pipeline prodotto in ogni capitolo (vincolante dal M2)**: ogni capitolo dei moduli M2-M10 deve contenere almeno un esercizio o mini-task che costruisce concretamente un pezzo della pipeline ML del prodotto (vedi sezione "Pipeline ML del Prodotto — Decisioni Architetturali Consolidate"). L'agente deve consultare quella sezione e il mapping "Moduli → Componenti Pipeline" per capire quale pezzo del sistema il modulo sta costruendo. L'esercizio deve usare terminologia coerente (`score_genuinita`, `prob_alterato`, `anomaly_score`, `semaforo`, `motivi_top3`, `evidenze`, `azione_consigliata`) e collegare esplicitamente il concetto studiato al suo ruolo nella pipeline reale.
+35. **Data leakage — rinforzo trasversale (vincolante dal M2)**: il concetto di data leakage (il target y non deve mai apparire nelle feature X, nemmeno indirettamente) deve essere richiamato in ogni capitolo M2 dove si lavora su feature, dataset o modelli. Non basta spiegarlo una volta: serve un richiamo pratico ogni volta che si costruisce un dataset o si selezionano feature, con un esempio concreto dal dominio documentale. Ponte mentale consolidato: "È come dare le risposte dell'esame insieme alle domande — il modello non prevede, copia."
+36. **Collegamento esercizi → workflow reale del prodotto (vincolante dal M2)**: quando un esercizio introduce un concetto (es. train/test split, metriche, feature scaling), l'agente deve **sempre** aggiungere un commento o paragrafo che spiega come quel concetto si applica al prodotto documentale. Esempio: "Nella nostra app, il train/test split si farà per pratica e per tempo — non mescoleremo documenti della stessa pratica tra train e test, perché sarebbe leakage." Questo trasforma ogni concetto da astratto a concreto.
+37. **Testing AI come skill trasversale (dal M2)**: il testing non va confinato al M9 — va introdotto gradualmente come mentalità. Dal M2: scrivere almeno 1 assert per verificare che il modello batte la baseline. Dal M3-M4: test di regressione semplice (output shape corretta, prediction nel range atteso). Dal M5-M6: eval set fisso per confrontare qualità risposte LLM/RAG tra versioni. Dal M7: test end-to-end dell'agente su 3-5 casi noti. Il M9 consolida e automatizza, ma il "muscolo del testing" si costruisce prima. Ogni modulo deve produrre almeno 1 test verificabile salvato come file/script.
+38. **Primo deploy anticipato al M2**: alla fine del Modulo 2, la demo Streamlit del classificatore deve essere deployata su Streamlit Cloud (gratuito) o Render. Obiettivo: rompere la barriera psicologica del deploy il prima possibile. Non serve essere perfetto — serve essere live. Questo micro-deploy diventa il primo URL nel portfolio. Nei moduli successivi, ogni demo aggiorna/sostituisce la precedente.
 
 ---
 
 ## Progresso del Corso
 
-### Modulo 1 — Python & Dati
+### Modulo 1 — Python & Dati (COMPLETATO)
 
-| File | Stato | Data | Difficoltà (1-10) | Note |
-|------|-------|------|--------------------|------|
-| 01_benvenuto_python.py | ✅ Completato + Corretto | 17/02/2026 | 2 | Buon primo approccio. Errori tipici da JS: ternario con `?:`, nomi variabili in inglese misto. Ha capito f-string, tipi, casting. |
-| 02_condizioni_e_cicli.py | ✅ Completato + Corretto | 17/02/2026 | 4 | FizzBuzz: `range(1,20)` invece di `range(1,21)`. Password: `elif` dove servivano due `if`, `== True` ridondante. Scacchiera perfetta. Temperature incompleto (mancava la media). |
-| 03_funzioni.py | ✅ Completato + Corretto | 17/02/2026 | 6 | Ha capito *args, return multipli, sorted. **Lambda ancora poco chiare** — da rinforzare nei prossimi capitoli. Errori: lista vs parametri separati a *args, count come stringa, mancava `reverse=True`, mancava parametro `decimali`. Tutti corretti. |
-| 04_liste.py | ✅ Completato + Corretto | 19/02/2026 | 9 | Difficoltà alta. Ha capito slicing, list comprehension, sorted/filter/map con lambda. **Punti deboli**: enumerate+tuple non interiorizzati (molte domande), range a 3 parametri nuovo, consegne non lette completamente (ex.1 indice sbagliato, ex.2 formato incompleto, ex.3 senza funzione, ex.6 usa [::-1] vietato, ex.9 indice errato). Lambda usate correttamente in ex.4/5/7 — miglioramento reale. |
-| 05_dizionari.py | ✅ Completato + Corretto | 17/02/2026 | 8 | Quiz ingresso 1/8 corretto (slicing, .append None, enumerate vs range persistono). Quiz verifica 4/8 (len con aggiunta chiavi, >= vs >, .get vs .items). Dict comprehension usata correttamente nell'ex.3 (miglioramento dai mini-ex). Lambda consolidate. Contatore città + max() con lambda padroneggiati. Consegne incomplete persistono (ex.1 manca voto, ex.2 manca punto a, ex.5 manca reverse, ex.6 mancano b/c, ex.7 append parziale, ex.8 manca prodotto_più_venduto). Esercizio 4 (colloquio conta_parole) risolto perfettamente al primo tentativo. |
-| 06_file_csv.py | ✅ Completato + Corretto | 24/02/2026 | 8 | Capitolo completato end-to-end. Quiz verifica: 7/8 pienamente corrette (+1 parziale). Esercizi 1-7 e progetto incrementale completati; forte miglioramento su `.get()`/`.items()`, parsing CSV, path handling e refactoring. |
-| 07_numpy_intro.py | 🟡 In revisione | 03/03/2026 | — | Quiz d'ingresso compilato + esercizi 1-5 svolti. Mancano correzione finale strutturata e voto difficoltà. |
-| 08_tensori_spiegati.py | ✅ Completato + Corretto | 05/03/2026 | 7 | Capitolo chiuso con consolidamento su shape, axis, broadcasting e reshape; esercizi e progetto incrementale completati con correzioni iterative e buona autonomia nel debugging. |
-| 09_pandas_intro.py | ✅ Completato + Corretto | 11/03/2026 | 8 | Capitolo completato con buona autonomia su groupby/mask/report. Corrette confusioni su `quantita` vs ordini, `max` vs `idxmax`, distinzione Series/DataFrame in consolidamento; progetto incrementale chiuso con report rischio città salvato in CSV. |
-| 10_pandas_progetto.py | 🟡 In revisione | 17/03/2026 | 7 | Workflow EDA completo; da chiudere correzioni su report `.agg` (ordini unici `nunique` vs `size`, export CSV, metriche richieste mancanti, coerenza naming). |
-| 11_matplotlib_grafici.py | ⬜ Da fare | | | |
-| 12_web_bridge.py | ⬜ Da fare | | | |
+> Dettaglio per capitolo migrato in `ARCHIVIO_MODULO_01.md`.
+
+| Riepilogo | Valore |
+|-----------|--------|
+| Capitoli completati | 11/12 (cap 07 senza chiusura formale) |
+| Media difficoltà | 6.5 |
+| Periodo | 17/02/2026 – 25/03/2026 |
+| Pattern portati al M2 | #6 (consegne), #18 (Series/DataFrame), #19 (is not None) |
 
 ### Moduli Successivi
 
-| Modulo | Focus | Librerie principali | Stato |
-|--------|-------|---------------------|-------|
-| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit | scikit-learn, streamlit | 🟡 In preparazione (cap.01 pronto con rinforzi) |
-| **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, coseno, gradiente, discesa — tutto in codice + Matplotlib | numpy, matplotlib | ⬜ Da creare |
-| 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | torch, torchvision, gradio | ⬜ Da creare |
-| 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | transformers, sentence-transformers | ⬜ Da creare |
-| 5 — LLM Integration & Prompt Engineering | API OpenAI, prompt engineering, structured output, function calling, Pydantic, Ollama, multimodale, sicurezza AI | openai, pydantic-ai, ollama | ⬜ Da creare |
-| 6 — RAG Systems | ChromaDB, LangChain, chunking, hybrid search, RAGAS evaluation, LangSmith observability | langchain, chromadb, ragas, langsmith | ⬜ Da creare |
-| 7 — AI Agents & Automation | LangGraph, tool use, multi-agent, MCP server custom, agentic RAG | langgraph, crewai | ⬜ Da creare |
-| 8 — Fine-Tuning & Personalizzazione | LoRA, QLoRA, PEFT, dataset preparation, valutazione modello | peft, bitsandbytes, trl | ⬜ Da creare |
-| 9 — MLOps, Testing, Docker & Deploy | Async Python, Docker, testing AI, CI/CD, deploy cloud, semantic caching | docker, redis, pytest | ⬜ Da creare |
-| 10 — Progetto Finale: Full-Stack AI Product | React + FastAPI + RAG + Agent + Docker + Deploy live | Tutto il corso | ⬜ Da creare |
+> **Cross-ref**: dettaglio componenti pipeline per modulo → vedi "Pipeline ML del Prodotto — Mapping Moduli → Componenti Pipeline".
+
+| Modulo | Focus | Componente pipeline prodotto | Librerie principali | Stato |
+|--------|-------|------------------------------|---------------------|-------|
+| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore supervisionato (vero/alterato) + anomaly detector + `score_genuinita` + `anomaly_score` + **primo test verificabile** + **deploy Streamlit Cloud** | scikit-learn, streamlit | 🟡 In preparazione (cap.01 pronto con rinforzi) |
+| **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, coseno, gradiente, discesa — tutto in codice + Matplotlib | Fondamenta per embedding e backpropagation | numpy, matplotlib | ⬜ Da creare |
+| 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | ⬜ Da creare |
+| 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | ⬜ Da creare |
+| 5 — LLM Integration & Prompt Engineering | API OpenAI, prompt engineering, structured output, function calling, Pydantic, Ollama, multimodale, sicurezza AI | Interfaccia intelligente: assistente operatore + structured extraction documenti variabili | openai, pydantic-ai, ollama | ⬜ Da creare |
+| 6 — RAG Systems | ChromaDB, LangChain, chunking, hybrid search, RAGAS evaluation, LangSmith observability | Compliance normativa: RAG su norme fiscali versionate con citazioni fonte | langchain, chromadb, ragas, langsmith | ⬜ Da creare |
+| 7 — AI Agents & Automation | LangGraph, tool use, multi-agent, MCP server custom, agentic RAG | Orchestratore: agente che coordina intera pipeline end-to-end | langgraph, crewai | ⬜ Da creare |
+| 8 — Fine-Tuning & Personalizzazione | LoRA, QLoRA, PEFT, dataset preparation, valutazione modello | Specializzazione dominio: fine-tuning sul contesto aziendale specifico | peft, bitsandbytes, trl | ⬜ Da creare |
+| 9 — MLOps, Testing, Docker & Deploy | Async Python, Docker, testing AI, CI/CD, deploy cloud, semantic caching | Produzione stabile: containerizzazione + monitoring + testing + alert | docker, redis, pytest | ⬜ Da creare |
+| 10 — Progetto Finale: Full-Stack AI Product | React + FastAPI + RAG + Agent + Docker + Deploy live | Prodotto completo: frontend + backend + AI integrati + feedback loop + deploy | Tutto il corso | ⬜ Da creare |
 
 #### Portfolio — Demo deployate per modulo
 
-> Ogni modulo produce un progetto deployabile. Alla fine del corso avrai 8 demo live nel portfolio.
+> Ogni modulo (dal M2) produce un progetto deployabile. Alla fine del corso avrai 9 demo live nel portfolio.
 
 | # | Progetto | Modulo | Piattaforma deploy | Cosa dimostra |
 |---|----------|--------|---------------------|---------------|
-| 1 | Predittore prezzo case | M2 | Streamlit Cloud | ML classico, data analysis, Streamlit |
+| 1 | Classificatore genuinità documenti + anomaly detector | M2 | Streamlit Cloud | ML classico (supervisionato + non supervisionato), feature engineering, metriche, Streamlit |
 | 2 | Classificatore immagini | M3 | HuggingFace Spaces | Deep Learning, transfer learning, Gradio |
-| 3 | Estrattore campi documentali | M4 | Streamlit Cloud | NLP, embeddings, information extraction |
+| 3 | Estrattore campi documentali + matching semantico cross-doc | M4 | Streamlit Cloud | NLP, embeddings, information extraction, coerenza semantica |
 | 4 | Assistente operatore documentale AI | M5 | Streamlit Cloud | LLM API, function calling, streaming |
 | 5 | RAG normativo-documentale | M6 | Streamlit Cloud | RAG, vector DB, evaluation |
 | 6 | Agente di ricerca e analisi | M7 | Streamlit Cloud | AI agents, tool use, LangGraph |
 | 7 | Demo fine-tuning comparativa | M8 | HuggingFace Spaces | Fine-tuning, LoRA, comparazione base vs fine-tunato |
-| 8 | Prodotto full-stack AI (diamante portfolio) | M10 | Cloud (Railway/Render) | Full-stack: React + FastAPI + RAG + Agent + Docker |
+| 8 | Dashboard MLOps + test suite | M9 | Streamlit Cloud | Monitoring, drift detection, test automatizzati, CI/CD |
+| 9 | Prodotto full-stack AI (diamante portfolio) | M10 | Cloud (Railway/Render) | Full-stack: React + FastAPI + dual-model ML + RAG + Agent + feedback loop + Docker |
 
 #### Evoluzione del Progetto Incrementale "Controllo Documentale AI"
 
 > Il progetto incrementale evolve naturalmente attraverso i moduli, diventando progressivamente il progetto finale.
+> Ogni fase aggiunge un livello alla pipeline ML consolidata nella sezione "Pipeline ML del Prodotto".
+>
+> **Cross-ref**: output tecnici dettagliati → vedi "Pipeline ML del Prodotto — Output combinato per pratica".
 
-| Fase | Moduli | Il progetto diventa... |
-|------|--------|-----------------------|
-| **Data Tool** | M1-M2 | Pipeline documenti con parsing, validazioni base, punteggio rischio e prime metriche |
-| **Smart Tool** | M3-M4 | + classificazione anomalie da immagini/scansioni, estrazione campi testuali da documenti |
-| **AI-Powered** | M5-M6 | + assistente RAG su normative/procedure, ricerca semantica documentale, function calling |
-| **Autonomous** | M7-M8 | + agente che orchestra OCR/controlli/report e modello specializzato per classificazione casi |
-| **Production** | M9-M10 | + containerizzato, deployato, testato, monitorato, con CI/CD — il diamante del portfolio |
+| Fase | Moduli | Il progetto diventa... | Output concreti aggiunti |
+|------|--------|-----------------------|--------------------------|
+| **Data Tool** | M1-M2 | Pipeline documenti con parsing, feature engineering, modello supervisionato (vero/alterato) + anomaly detection, demo Streamlit con score e semaforo | `score_genuinita`, `prob_alterato`, `anomaly_score`, `semaforo`, metriche P/R/F1 |
+| **Smart Tool** | M3-M4 | + classificatore visivo CNN per segnali grafici di alterazione + estrazione campi da OCR + matching semantico cross-documento | Feature CV integrata nel modello, campi estratti da testo, coerenza semantica |
+| **AI-Powered** | M5-M6 | + assistente LLM operatore (spiega esiti, function calling su pratiche) + RAG normativo con citazioni obbligatorie + structured extraction per documenti variabili | Spiegazioni naturali, compliance normativa verificabile, estrazione intelligente |
+| **Autonomous** | M7-M8 | + agente orchestratore pipeline end-to-end (OCR → parsing → feature → modelli → regole → report) + modello fine-tunato sul dominio aziendale specifico | Pipeline orchestrata automaticamente, precisione massima su documenti aziendali |
+| **Production** | M9-M10 | + containerizzato, deployato, testato, monitorato, con CI/CD + frontend React + feedback loop revisore → retraining — il diamante del portfolio | Prodotto completo usabile da operatori, con monitoring e miglioramento continuo |
 
 ---
 
@@ -583,9 +631,11 @@ Obiettivo di questa regola:
 | 06_file_csv | 8 | = (stabilizzazione confermata) |
 | 08_tensori_spiegati | 7 | -1 ↓ (difficoltà alta ma gestita meglio grazie a pratica guidata su shape/assi/broadcasting) |
 | 09_pandas_intro | 8 | +1 ↑ (capitolo ampio ma gestito bene; consolidati groupby/mask/reportistica) |
-| 10_pandas_progetto | 7 | -1 ↓ (capitolo progetto: EDA ok, ma report `.agg` richiede precisione su requisiti e metriche) |
+| 10_pandas_progetto | 7 | -1 ↓ (capitolo progetto: EDA ok, reportistica consolidata) |
+| 11_matplotlib_grafici | 7 | = (grafici e dashboard gestiti bene, rinforzi pre-plot assorbiti) |
+| 12_web_bridge | 6 | -1 ↓ (FastAPI + Pandas: buona comprensione endpoint/query, errori su is not None e Series/DataFrame) |
 
-**Media attuale**: 6.6 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7). Dopo il picco al cap.04, la curva si stabilizza: crescita tecnica concreta e buona autonomia; priorità attiva sul rendere automatica la reportistica con `.agg`.
+**Media attuale**: 6.5 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7, 7, 6 — cap 07 escluso perché senza voto formale). Modulo 1 completato. Curva stabilizzata dopo il picco al cap.04: crescita tecnica concreta, buona autonomia, pronto per il salto al Machine Learning.
 
 ---
 
@@ -659,120 +709,82 @@ Obiettivo di questa regola:
 | dict comprehension | `{k: v for k, v in ...}` — crea dizionari in modo compatto — ⚠️ **DA RINFORZARE** | Non diretto / Non diretto | 05 | 0/3 | ⚠️ |
 | `in` (su dizionari) | Verifica se una CHIAVE esiste nel dizionario (non i valori!) | `"key" in obj` / `array_key_exists()` | 05 | 0/3 | 🔄 |
 
-### Concetti Generali
+### Concetti Generali e ML (File M1 teoria + M2-01)
 
-| Termine | Significato | Capitolo |
-|---------|-------------|----------|
-| Tensor | Array multidimensionale — il "mattoncino" dei dati nell'AI | Spiegato in teoria, pratica al file 08 |
-| Dataset | Insieme di dati organizzati (come una tabella SQL) | Spiegato in teoria |
-| Feature | Una colonna/proprietà dei dati (come un campo di un form) | Spiegato in teoria |
-| Target | Il valore che vogliamo prevedere | Spiegato in teoria |
-| Overfitting | Quando il modello "memorizza" i dati invece di imparare il pattern | Spiegato in teoria |
+| Termine | Significato | Capitolo | Ripassi | Stato |
+|---------|-------------|----------|---------|-------|
+| Tensor | Array multidimensionale — il "mattoncino" dei dati nell'AI | 08 | 0/3 | 🔄 |
+| Dataset | Insieme di dati organizzati (come una tabella SQL) | Teoria | 0/3 | 🔄 |
+| Feature (X) | Le colonne/proprietà dei dati che descrivono il fenomeno — "gli ingredienti preparati per il modello". In un DataFrame 2D, X contiene tutte le colonne tranne il target | M2-01 | 0/3 | 🔄 |
+| Target (y) | Il valore che vogliamo prevedere — una Series 1D. Nel prodotto: `genuino` / `alterato` (binario) | M2-01 | 0/3 | 🔄 |
+| Overfitting | Quando il modello "memorizza" i dati invece di imparare il pattern | Teoria | 0/3 | 🔄 |
+| Data leakage | Quando il target (y) finisce nelle feature (X), anche indirettamente — il modello "copia le risposte" invece di prevedere | M2-01 | 0/3 | 🔄 |
+| Supervised learning | Apprendimento con etichette note — il modello impara a mappare X → y | M2-01 | 0/3 | 🔄 |
+| Unsupervised learning | Apprendimento senza etichette — il modello impara la distribuzione "normale" e segnala anomalie | M2-01 | 0/3 | 🔄 |
+| Anomaly detection | Tecnica non supervisionata per trovare pattern che si discostano dalla norma — nel prodotto: `anomaly_score` | M2-01 | 0/3 | 🔄 |
+| Train/test split | Divisione del dataset in parte per addestrare e parte per valutare — mai mescolare dati della stessa pratica | M2-01 | 0/3 | 🔄 |
+| EDA | Exploratory Data Analysis — analisi esplorativa dei dati prima di addestrare un modello (distribuzioni, correlazioni, anomalie) | M2-01 | 0/3 | 🔄 |
+| Feature engineering | Processo di creazione delle feature a partire dai dati grezzi — decise dall'umano, calcolate con codice | M2-01 | 0/3 | 🔄 |
+| `score_genuinita` | Punteggio 0-100 che indica la probabilità di genuinità di un documento: `(1 - prob_alterato) * 100` | M2-01 | 0/3 | 🔄 |
+| `prob_alterato` | Probabilità (0.0-1.0) che il documento sia alterato — output del modello supervisionato | M2-01 | 0/3 | 🔄 |
+| `anomaly_score` | Score del modello non supervisionato — quanto un documento è statisticamente anomalo rispetto alla norma | M2-01 | 0/3 | 🔄 |
+| `semaforo` | Indicatore visivo verde/giallo/rosso derivato dal `score_genuinita` con soglie calibrabili | M2-01 | 0/3 | 🔄 |
+| Baseline model | Modello semplice di partenza usato come punto di confronto — se un modello complesso non batte la baseline, non serve | M2-01 | 0/3 | 🔄 |
+| Precision / Recall / F1 | Metriche per valutare un classificatore: precision = "quanti dei positivi trovati sono veri?", recall = "quanti dei veri positivi ho trovato?", F1 = media armonica | M2-01 | 0/3 | 🔄 |
+| Endpoint | Una URL associata a una funzione che restituisce dati (tipicamente JSON) — `@app.get("/pratiche")` | 12 | 0/3 | 🔄 |
+| Query parameter | Parametro passato nell'URL dopo `?` per filtrare/configurare la risposta — `?semaforo=rosso` | 12 | 0/3 | 🔄 |
+| Payload | Il corpo dei dati inviati in una richiesta HTTP (tipicamente POST/PUT) | 12 | 0/3 | 🔄 |
+| `loc` / `iloc` | `loc`: selezione per etichette (nomi colonne/indice); `iloc`: selezione per posizione numerica (come indici di matrice) | M2-01 | 0/3 | 🔄 |
+| Boolean mask | Filtro booleano su DataFrame — `df[df['colonna'] > valore]` restituisce solo le righe dove la condizione è vera | M2-01 | 0/3 | 🔄 |
 
 ---
 
 ## Domande Fatte Durante i Capitoli
 
-> Le domande che Gianluca fa spontaneamente durante gli esercizi.
-> Rivelano quali concetti hanno bisogno di rinforzo.
-
-### Capitolo 01 — benvenuto_python
-- "A cosa serve `\n`?" → Concetto di caratteri di escape, non ovvio per chi viene da HTML
-- "Come fare il simbolo dell'euro in Cursor?" → Questione pratica di tastiera/encoding
-
-### Capitolo 02 — condizioni_e_cicli
-- "Spiegami meglio `enumerate()`" → L'idea che una funzione restituisca indice+valore insieme non era intuitiva
-- "Se al metodo passo due parametri, lui capisce da solo quale è l'indice e quale il valore?" → Confusione su unpacking/destructuring automatico
-- "Esiste un metodo per avere la lunghezza di una lista?" → Non conosceva `len()` — veniva da `.length` e `count()`
-- "Serve effettivamente un ciclo per questo esercizio?" → Buon istinto: stava cercando approcci più semplici
-- "Come gestire lo scope delle variabili?" → Lo scope in Python (senza `{}`) è meno visibile che in JS/PHP
-
-### Capitolo 03 — funzioni
-- "Che differenza c'è tra passare `[1,2,3]` e `1,2,3` a *args?" → Confusione lista vs parametri separati
-- Chiarimenti su f-string con doppi apici annidati
-- "Questa formula è corretta? K = C + 273.15" → Verifica proattiva delle formule, buon segno
-
-### Capitolo 04 — liste
-- "Spiegami questa funzione (appiattisci_2 con list comprehension doppia)" → Il doppio `for` in una list comprehension non era intuitivo
-- "Ma elem cosa è?" → Non capiva che `elem` è solo un nome di variabile scelto dal programmatore, non una keyword
-- "Il primo elem rappresenta gli elementi che entrano nell'array?" → Aveva bisogno di capire che l'espressione a sinistra è l'output della list comprehension
-- "Non riesco a capire il funzionamento del ciclo for usando enumerate" → enumerate + unpacking ancora non naturale
-- "Non capisco dove era la tupla" → Non vedeva la tupla nel codice perché è enumerate a crearla implicitamente — concetto astratto
-- "La tupla ed enumerate non mi rendono molto sicuro" → **Autodichiarato**: tuple ed enumerate sono punti deboli consapevoli
-- "Perché range ha tre parametri?" → Non sapeva che range() accetta start, stop, step
-- "Come funziona enumerate?" → Ha chiesto una spiegazione completa da zero
-- "Funzione per lunghezza lista python" → Aveva bisogno di ricordare `len()` — ponte da `.length` e `count()`
-- "La tupla la decidiamo noi, basta dividere in due variabili?" → Stava capendo l'unpacking, ma serviva conferma
-- "Come fare per evitare che tu possa scordarti queste cose?" → Consapevolezza meta-cognitiva, buon segno — ha portato alla creazione della Cursor Rule
-
-### Capitolo 05 — dizionari (mini-esercizi, teoria in corso)
-- "Il metodo zip cosa restituisce?" → Non conosceva zip(), spiegato come "cerniera" che accoppia due liste
-- "prezzi.items() cosa restituisce? Lo stesso metodo poteva essere usato nelle liste?" → Distinzione liste vs dizionari non ancora ovvia. Ha portato al ponte mentale ".items() = enumerate dei dizionari"
-- ".items() è il corrispettivo di enumerate per i dictionary?" → **Ponte mentale confermato**: ha capito l'analogia e chiesto di registrarla
-- "Il metodo append funziona per le dictionary?" → Confusione sui metodi specifici di liste vs dizionari
-- "Metodo per inserire un elemento alla fine di una lista" → Cercava `.append()` — lo conosce ma non lo ricorda al volo
-- "Operatore ternario in Python" → Chiesto 2 volte — la sintassi `valore if condizione else altro` non è intuitiva venendo da `? :` in JS/PHP
-- "**p rispiegami questa sintassi" → Il doppio asterisco `**` per spread dei dizionari non era chiaro
-- "Come inserire chiave e valore in una lista python?" → Confusione tra lista e dizionario — ha capito che le liste non hanno chiavi
-- Errore di sintassi su filter(): `filter(studenti, lambda s: ...)` — ordine parametri invertito, confonde con sorted(lista, key=lambda)
-- Errore f-string: doppi apici dentro doppi apici `f"{s["nome"]}"` → errore già visto al cap.03
-- Errore negazione: `if (!(n in lista))` → sintassi JS, in Python è `if n not in lista`
+> Storico completo M1 migrato in `ARCHIVIO_MODULO_01.md`.
+> Qui si registrano solo le domande dal M2 in poi.
 
 ---
 
-## Pattern di Errore Ricorrenti
+## Pattern di Errore Ricorrenti — Solo Attivi
 
-Questi sono gli errori che Gianluca tende a ripetere. Da monitorare nei prossimi esercizi:
+> Storico completo M1 migrato in `ARCHIVIO_MODULO_01.md`.
+> Qui restano solo i pattern ancora attivi o emersi nella transizione M1 → M2.
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 1 | **Sintassi JS in Python**: usa `? :` invece di `if...else` ternario | 🔴 Attivo | Visto al file 01 |
-| 2 | **`range()` / slicing fine escluso**: dimentica che il secondo numero è escluso | 🔴 Attivo | Visto al file 02. Ripetuto al file 04: `dati[17:]` invece di `dati[16:]` |
-| 3 | **`== True` ridondante**: scrive `if valore == True` | 🟡 Corretto una volta | Visto al file 02, corretto dopo feedback |
-| 4 | **Calcoli dentro le f-string**: espressioni troppo lunghe nelle `{}` | 🟡 Corretto una volta | Visto al file 01, corretto dopo feedback |
-| 5 | **Tipi nei dizionari**: mette stringhe dove servono numeri | 🔴 Attivo | Visto al file 03 (`count` come stringa). **Ripetuto al file 05** mini-ex.2: `auto['km'] = "10000"` (stringa invece di numero) |
-| 6 | **Lettura incompleta delle consegne**: non implementa tutti i requisiti | 🔴 Attivo | Visto ai file 02, 03, 04, **05**. Al file 05: mini-ex.4 (2 piatti invece di 3, mancano i print), mini-ex.6 (manca punto 3 max), mini-ex.7 (manca modifica lingua nella copia) |
-| 7 | **Lambda poco chiare**: non ha ancora interiorizzato la sintassi e l'uso delle funzioni lambda | 🟡 → quasi 🟢 | Al file 05: usate correttamente in ex.2 (max), ex.3 (sorted), ex.5 (sorted/filter/min/map), ex.7 (contatore), ex.8 (max .items()). Glossario 2/3. Ordine parametri filter corretto. **Quasi acquisita** |
-| 8 | **enumerate/tuple/unpacking**: non capisce che enumerate crea tuple e che l'unpacking le spacchetta | 🟡 In miglioramento | **Miglioramento significativo al file 05**: mini-ex.3 usato correttamente `for i, (key, value) in enumerate(.items(), 1)`. Ponte mentale ".items() = enumerate dei dizionari" ha fatto click |
-| 9 | **Codice superfluo**: aggiunge espressioni inutili (`== l` dopo `.insert()`) | 🟡 Corretto una volta | Visto al file 04 ex.6 |
-| 10 | **Vincoli esercizio ignorati**: usa metodi vietati dalla consegna (es. `[::-1]` quando esplicitamente proibito) | 🔴 Attivo | Visto al file 04 ex.6. Collegato al pattern #6 (lettura consegne) |
-| 11 | **Ordine parametri filter()**: mette la lista prima della lambda (`filter(lista, lambda)` invece di `filter(lambda, lista)`) | 🔴 Attivo | Visto al file 05 durante le domande. Confonde con sorted() che ha `key=lambda` come parametro con nome |
-| 12 | **Variabile sbagliata nel contesto**: usa una variabile di un altro scope/esempio | 🟡 Visto una volta | Al file 05 mini-ex.7: `'tema' in config` invece di `'tema' in preferenze` |
-| 13 | **Dict comprehension evitata**: quando la consegna chiede dict comprehension, usa il ciclo for classico | 🟡 In miglioramento | Mini-ex.5: usato for classico. Ma ex.3a: usata correttamente! Miglioramento parziale |
-| 14 | **return print(...)**: usa return con print, che restituisce sempre None | 🟡 Visto più volte | Al file 05 ex.2: tutte le funzioni hanno `return print(...)`. Il print funziona ma il return è inutile |
-| 15 | **Parametro funzione ignorato**: la funzione accetta un parametro ma dentro usa la variabile globale | 🟡 Visto una volta | Al file 05 ex.1: `def stampa(dizionario)` ma dentro usa `film.items()` invece di `dizionario.items()` |
-| 16 | **Docstring mancante quando richiesta**: la consegna chiede "la funzione deve avere una docstring" e non la scrive | 🔴 Attivo | Al file 05 ex.4 e ex.8. Collegato al pattern #6 (lettura consegne) |
-| 17 | **Diagnosi errore non precisa**: identifica come sintassi un errore che in realta e di shape/logica | 🟡 Visto una volta | Quiz d'ingresso 09, domanda reshape: focus sulla firma di `randint` invece che su mismatch elementi (192 vs 64) |
-| 18 | **Confusione Series vs DataFrame**: tratta `df["colonna"]` come DataFrame invece che Series | 🟡 Visto una volta | Quiz verifica 09, domanda su `vendite["categoria"]` (risposto Vero invece di Falso) |
+| 6 | **Lettura incompleta delle consegne** | 🟡 In miglioramento | Persistito nel M1, da monitorare nel M2 |
+| 18 | **Confusione Series vs DataFrame** | ⚠️ Attivo | Emerso cap 09 e 12, rinforzato in cap.01 M2 |
+| 19 | **`if var:` vs `is not None` per numeri opzionali** | ⚠️ Nuovo | Emerso cap 12 — 0 è falsy, rischio parametri opzionali |
 
-Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 Superato
+Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠️ Da consolidare | 🟢 Superato
 
 ---
 
 ## Punti di Forza
 
-1. **Capisce velocemente le analogie** PHP/JS → Python
-2. **Corregge subito** dopo il feedback — non ripete lo stesso errore due volte
-3. **Chiede chiarimenti** quando non capisce (enumerate, *args, reduce)
-4. **Sa già ragionare in termini di funzioni, parametri, return** — il background Laravel si sente
-5. **Motivato e orientato al risultato** — vuole capire il perché, non solo il come
-6. **Verifica proattivamente** — controlla formule e logica prima di fidarsi
-7. **Sa creare funzioni riutilizzabili** — nell'ex.1 del cap.05 ha creato spontaneamente una funzione stampa() invece di ripetere il codice
-8. **Pattern contatore padroneggiato** — .get(chiave, 0) + 1 e not in + inizializzazione usati correttamente
+> Confermati nel M1, da continuare a sfruttare nel M2+.
+
+1. Capisce velocemente le analogie PHP/JS → Python
+2. Corregge subito dopo il feedback
+3. Chiede chiarimenti quando non capisce
+4. Sa ragionare in termini di funzioni, parametri, return (background Laravel)
+5. Motivato e orientato al risultato — vuole capire il perché, non solo il come
+6. Verifica proattivamente formule e logica
+7. Sa creare funzioni riutilizzabili spontaneamente
+8. Pattern contatore padroneggiato
+9. **Nuovo (M2)**: ownership sul prodotto — vuole capire come la teoria si traduce nella pipeline reale
 
 ---
 
 ## Ritmo di Studio
 
-- **Sessione 1 (17/02/2026)**: File 01, 02, 03 completati in una sessione
-- **Sessione 2 (19/02/2026)**: File 04 completato. Difficoltà 9 — il salto maggiore finora. Enumerate/tuple e combinazione di concetti sono stati i punti più difficili
-- **Sessione 3 (17/02/2026)**: File 05 in corso. Mini-esercizi teoria completati. Miglioramento significativo su enumerate+.items(). Dict comprehension ancora da interiorizzare
-- **Sessione 4 (24/02/2026)**: File 06 in corso avanzato. Rinforzi mirati completati e quiz verifica quasi pieno. Forte miglioramento su `.get()`/`.items()`, sorting con `key`, e gestione path/file. Da consolidare parsing CSV manuale vs `DictReader` e definizione precisa degli output.
-- **Sessione 5 (24/02/2026)**: File 06 completato. Esercizi finali e progetto incrementale chiusi; rinforzo parsing aggiuntivo svolto con confronto manuale vs DictReader. Pronto il passaggio al file 07 (NumPy) con verifica iniziale mirata su output concreto e pipeline operativa.
-- **Sessione 6 (03-05/03/2026)**: Avviato e svolto operativamente il file 07 (quiz ingresso + esercizi 1-5). Avviato file 08 con PARTE 1-3 e mini-esercizi 1-3 completati (shape consolidata). Pausa prima del mini-esercizio 4 (broadcasting).
-- **Ritmo stimato**: 1 file ogni 2 giorni (aggiornato dallo studente)
-- **Tempo totale stimato per il corso**: 5-6 mesi (corso) + 2-3 mesi (MVP app documentale)
-- **Momento migliore per studiare**: ❓ Da chiedere
+> Dettaglio sessioni M1 migrato in `ARCHIVIO_MODULO_01.md`.
+
+- **Durata M1**: 17/02/2026 – 25/03/2026 (~5 settimane, 12 capitoli)
+- **Ritmo effettivo**: ~1 file ogni 2-3 giorni
+- **Tempo totale stimato per il corso**: 7-9 mesi (corso + MVP)
+- **Sessione corrente**: 10
 
 ---
 
@@ -795,6 +807,11 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | 🟢 
 | ".items() = enumerate dei dizionari" | `.items()` restituisce tuple `(chiave, valore)` da spacchettare — stessa meccanica di `enumerate()` che dà `(indice, valore)` | `Object.entries()` in JS / `foreach($arr as $k => $v)` in PHP | 05 | `.iterrows()` su DataFrame Pandas, iterazione su qualsiasi struttura chiave-valore |
 | "** = spread per dizionari" | `{**dict1, **dict2}` unisce dizionari | `{...obj1, ...obj2}` in JS / `array_merge()` in PHP | 05 | Merging config, parametri opzionali, kwargs |
 | "Modalità open() = sicura permessi" | `'r'`, `'w'`, `'a'` definiscono i permessi del file object (sola lettura, scrittura con reset, append) | HTTP method/permessi endpoint (GET vs POST/PUT) | 06 | File CSV, logging su file, gestione configurazioni persistenti |
+| "X maiuscolo = DataFrame 2D, y minuscolo = Series 1D" | X (feature) è un DataFrame (molte colonne), y (target) è una Series (una sola colonna) | Tabella SQL (X) vs singola colonna (y) | M2-01 | Tutto il ML: train/test split, fit, predict, valutazione |
+| "Data leakage = risposte dell'esame" | Se il target (y) finisce nelle feature (X), il modello copia le risposte invece di imparare | Come avere le risposte di un compito in classe | M2-01 | Feature engineering, feature selection, validazione modelli |
+| "if var: vs if var is not None:" | `if var:` è falsy per 0/""/None/False/[]; per numeri opzionali (che possono valere 0) usare `is not None` | `if ($var)` vs `isset($var)` / `!== null` in PHP | 12 | Parametri opzionali FastAPI, validazione input, configurazione |
+| "Feature = ingredienti, modello = chef" | Le feature sono i dati preparati e pronti; il modello li "cucina" per produrre una previsione | Come preparare gli ingredienti prima di cucinare | M2-01 | Feature engineering, pipeline ML, preprocessing |
+| "Anomaly detection = allarme antifurto" | Non sa chi è il ladro, ma riconosce che qualcosa è fuori posto rispetto alla norma | Sistema di allarme che rileva movimenti anomali | M2-01 | Unsupervised learning, anomaly_score, pattern sconosciuti |
 
 ### Come usare questa sezione
 Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente:
@@ -805,59 +822,16 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 ## Cosa So Fare Adesso — Competenze Acquisite
 
-> Dopo ogni capitolo, una descrizione concreta di cosa Gianluca sa fare.
-> Diventa la base per il CV tecnico e per misurare il progresso reale.
+> Dettaglio capitolo-per-capitolo M1 migrato in `ARCHIVIO_MODULO_01.md`.
+> Qui restano il riepilogo M1 e le competenze dal M2 in poi.
 
-### Dopo il Capitolo 01 — Python Base
-- So dichiarare variabili in Python senza `let`/`var`/`$`
-- So usare f-string per stampare output formattati
-- So convertire tra tipi con `int()`, `float()`, `str()`
-- So verificare il tipo di una variabile con `type()`
-- Conosco la differenza tra `=` (assegnazione) e `==` (confronto)
-
-### Dopo il Capitolo 02 — Controllo di Flusso
-- So scrivere condizionali `if/elif/else` senza parentesi graffe
-- So usare `for...in` per iterare su liste (equivalente di `foreach`)
-- So usare `range()` per generare sequenze numeriche (ricordando: fine escluso!)
-- So usare `while` con condizione di uscita
-- So usare `enumerate()` per avere indice + valore contemporaneamente
-- So verificare proprietà dei caratteri con `.isdigit()`, `.isupper()`
-
-### Dopo il Capitolo 03 — Funzioni
-- So definire funzioni con `def`, parametri obbligatori e opzionali (default)
-- So restituire più valori con `return` multiplo (tuple unpacking)
-- So usare `*args` per parametri variabili (come lo spread operator)
-- So usare `**kwargs` per parametri con nome variabili
-- So ordinare liste con `sorted()` e una funzione `key`
-- So scrivere docstring per documentare le funzioni
-- ⚠️ Lambda: conosco la sintassi ma non mi viene ancora naturale usarle
-
-### Dopo il Capitolo 04 — Liste
-- So creare, modificare e accedere a elementi di una lista con `.append()`, `.insert()`, `.remove()`, `.pop()`
-- So estrarre porzioni con lo slicing `[start:end:step]`, incluso il reverse `[::-1]`
-- So usare `in` per verificare se un elemento è nella lista
-- So usare list comprehension per trasformare e filtrare: `[expr for x in lista if cond]`
-- So ordinare con `sorted()` + `lambda` come key, anche con `reverse=True`
-- So usare `filter()` e `map()` con lambda (avvolgendo con `list()`)
-- So lavorare con liste di liste (matrici) e accedere con doppio indice `lista[r][c]`
-- So usare `.count()` per contare occorrenze e `max()` con lambda per trovare l'elemento più frequente
-- So dividere dati in training/test con slicing e creare batch con `range(start, stop, step)`
-- ⚠️ enumerate() e tuple/unpacking: capisco il concetto ma non mi viene ancora naturale
-- ⚠️ Lambda: in miglioramento — usate correttamente con sorted, filter, map, ma serve ancora pratica
-
-### Dopo il Capitolo 05 — Dizionari (parziale — mini-esercizi teoria)
-- So creare dizionari con `{}` e accedere ai valori con `dizionario["chiave"]`
-- So aggiungere/modificare valori: `dizionario["nuova_chiave"] = valore`
-- So iterare con `.keys()`, `.values()`, `.items()`
-- ✅ So combinare `.items()` + `enumerate()` per avere indice + chiave + valore — **grande miglioramento**
-- So usare `.get()` con valore di default per evitare errori su chiavi inesistenti
-- So usare `.setdefault()` per aggiungere solo se la chiave non esiste
-- So usare `.copy()` per creare copie indipendenti
-- So usare `in` per verificare l'esistenza di una chiave
-- So ordinare una lista di dizionari con `sorted()` + `lambda` per una chiave specifica
-- So filtrare dizionari con `filter()` + `lambda` (⚠️ ordine parametri: prima lambda, poi lista)
-- ⚠️ Dict comprehension: conosco il concetto ma tendo ancora a usare il for classico
-- ⚠️ Dizionari annidati: so accedervi ma dimentico di implementare tutti i livelli richiesti
+### Riepilogo M1 — Python & Dati (completato)
+- Python base: variabili, tipi, casting, f-string, condizionali, cicli, funzioni, *args/**kwargs, lambda, sorted
+- Strutture dati: liste (slicing, comprehension, filter/map), dizionari (.get, .items, dict comprehension), tuple/unpacking
+- File e dati: lettura/scrittura CSV, NumPy (array, shape, broadcasting, reshape), tensori (2D/3D/4D)
+- Pandas: DataFrame, groupby, mask, agg, report, EDA, merge, apply, sort_values, to_dict
+- Visualizzazione: Matplotlib (plot, bar, pie, subplot, styling)
+- Web: FastAPI (endpoint, query parameters, JSON response, CORSMiddleware, Swagger)
 
 ---
 
@@ -911,6 +885,22 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | filter(), map() | 19/02 | 🟡 file 05 mini-ex.6 (filter+sorted combinati, ma ordine param fragile) | file 07 | file 10 | ⚠️ Ordine parametri filter da rinforzare |
 | dict comprehension | 17/02 (cap.05) | ✅ file 05 ex.3a (usata correttamente per filtrare promossi!) | file 08 | file 11 | 🟡 Migliorata — usata nell'ex.3 ma non nell'ex.6c |
 | .items() + unpacking | 17/02 (cap.05) | file 06 | file 08 | file 11 | ✅ Usato correttamente al primo tentativo |
+
+### Concetti M2 — Machine Learning (da popolare man mano)
+
+| Concetto | Appreso il | Rivisto (3gg) | Rivisto (7gg) | Rivisto (14gg) | Stato |
+|----------|-----------|---------------|---------------|----------------|-------|
+| Feature vs Target (X/y) | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
+| Data leakage | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
+| Train/test split | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
+| Supervised vs Unsupervised | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
+| Baseline model | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
+| Precision / Recall / F1 | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
+| loc vs iloc | 25/03 (cap.01 M2) | — | — | — | ⚠️ Fragile al quiz |
+
+> **Regola per l'agente**: questa tabella va estesa a ogni nuovo capitolo M2+.
+> I concetti M1 con stato OK/Consolidato restano come riferimento ma non richiedono piu ripasso attivo.
+> Al Passo 13 (fine modulo), i concetti del modulo chiuso in stato OK vengono rimossi da qui e migrati nell'archivio.
 
 ⚠️ = Il concetto richiede rinforzo attivo (non solo uso passivo, ma esercizio dedicato)
 
@@ -988,22 +978,24 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | Conta frequenze parole | 05 | Junior/Mid — classico | Dizionari, `.get()` per contare, `.lower().split()`, iterazione | ✅ Risolto perfettamente al primo tentativo |
 | Raggruppare per chiave (GROUP BY) | 05 | Mid — data manipulation | `not in` + lista vuota + `.append()`, funzione generica con parametro chiave | ✅ Risolto (append parziale: solo nome invece di dizionario intero) |
 
-### Cosa aspettarsi nei prossimi capitoli e moduli
+### Esercizi colloquio — roadmap per capitolo/modulo
 
-| Capitolo/Modulo | Esercizi colloquio previsti |
-|------------------|-----------------------------|
-| 05 — Dizionari | Contare frequenze di parole, raggruppare dati per chiave, merge di due dizionari, anagrammi |
-| 06 — File CSV | Parsing manuale di CSV, trovare anomalie nei dati, aggregazioni per gruppo |
-| 07 — NumPy | Normalizzazione di un array, distanza euclidea, operazioni su matrici |
-| 09 — Pandas | Pulizia dati con valori mancanti, group by + aggregazione, pivot table |
-| M2 — ML | Train/test split manuale, calcolo accuratezza, feature scaling, "spiega overfitting" |
-| M3 — DL & CV | Spiegare backpropagation a parole, costruire un modello semplice, leggere una loss curve |
-| M4 — NLP | "Cos'è un embedding?", "Come funziona un Transformer?", similarità coseno a mano |
-| M5 — LLM | "Progetta un chatbot con function calling", prompt engineering sotto pressione, "cos'è il prompt injection?" |
-| M6 — RAG | "Progetta un RAG per 10M documenti", "che chunking strategy useresti?", "come valuti la qualità del RAG?" |
-| M7 — Agents | "Progetta un agente che gestisce ordini", "quando workflow vs agente?", "cos'è il MCP?" |
-| M8 — Fine-Tuning | "Quando fine-tuning vs RAG vs prompt engineering?", "cos'è LoRA e perché funziona?" |
-| M9 — MLOps | "Come deployeresti un servizio LLM?", "come gestisci i costi?", "come testi un'app AI?" |
+> Capitoli M1 completati: gli esercizi sotto sono stati svolti. Da M2 in poi: guida per l'agente.
+
+| Capitolo/Modulo | Esercizi colloquio | Stato |
+|------------------|---------------------|-------|
+| 05 — Dizionari | Contare frequenze di parole, raggruppare dati per chiave, merge di due dizionari, anagrammi | ✅ |
+| 06 — File CSV | Parsing manuale di CSV, trovare anomalie nei dati, aggregazioni per gruppo | ✅ |
+| 07 — NumPy | Normalizzazione di un array, distanza euclidea, operazioni su matrici | ✅ |
+| 09 — Pandas | Pulizia dati con valori mancanti, group by + aggregazione, pivot table | ✅ |
+| M2 — ML | Train/test split manuale, calcolo accuratezza, feature scaling, "spiega overfitting" | ⬜ |
+| M3 — DL & CV | Spiegare backpropagation a parole, costruire un modello semplice, leggere una loss curve | ⬜ |
+| M4 — NLP | "Cos'è un embedding?", "Come funziona un Transformer?", similarità coseno a mano | ⬜ |
+| M5 — LLM | "Progetta un chatbot con function calling", prompt engineering sotto pressione, "cos'è il prompt injection?" | ⬜ |
+| M6 — RAG | "Progetta un RAG per 10M documenti", "che chunking strategy useresti?", "come valuti la qualità del RAG?" | ⬜ |
+| M7 — Agents | "Progetta un agente che gestisce ordini", "quando workflow vs agente?", "cos'è il MCP?" | ⬜ |
+| M8 — Fine-Tuning | "Quando fine-tuning vs RAG vs prompt engineering?", "cos'è LoRA e perché funziona?" | ⬜ |
+| M9 — MLOps | "Come deployeresti un servizio LLM?", "come gestisci i costi?", "come testi un'app AI?" | ⬜ |
 
 ### Domini alternativi per esercizi (dal M5 in poi)
 
@@ -1094,17 +1086,17 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 
 ### Roadmap per modulo — Moduli 2-10
 
-| Modulo | Funzionalità da aggiungere al sistema documentale | Concetti esercitati |
-|--------|-----------------------------------------|---------------------|
-| M2 — ML | Classificatore rischio manomissione basato su feature strutturate (coerenza importi/date/campi) + demo Streamlit | Scikit-Learn, train/test, metriche, Streamlit |
-| M3 — DL & CV | Modello CV per individuare segnali di alterazione su scansioni (regioni sospette) + demo Gradio | PyTorch, CNN, transfer learning, Gradio |
-| M4 — NLP | Estrazione campi da testo OCR (CU/730/buste paga) + matching semantico tra documenti correlati | Embeddings, sentence-transformers, similarità coseno |
-| M5 — LLM | Assistente AI per operatore: spiega esiti, propone controlli e usa function calling su pratiche | OpenAI API, prompt engineering, structured output, function calling |
-| M6 — RAG | RAG normativo/procedurale: base conoscenza fiscale e checklist interne con citazioni e contesto | ChromaDB, LangChain, chunking, RAGAS evaluation |
-| M7 — Agents | Agente orchestratore che esegue pipeline OCR -> validazioni -> scoring -> report operatore | LangGraph, tool use, agentic RAG, MCP |
-| M8 — Fine-Tuning | Modello personalizzato per classificazione/triage documenti nel dominio aziendale | LoRA, QLoRA, PEFT, dataset curation |
-| M9 — MLOps | Tutto containerizzato e deployato: Docker + CI/CD + monitoring + semantic caching | Docker, GitHub Actions, Redis, testing |
-| M10 — Finale | Frontend React/Next.js + Backend FastAPI + servizi AI/RAG integrati per uso operatori -> deploy live | Full-stack, architettura microservizi, deploy cloud |
+| Modulo | Componente pipeline | Funzionalità da aggiungere al sistema documentale | Concetti esercitati |
+|--------|--------------------|-----------------------------------------|---------------------|
+| M2 — ML | **Cuore predittivo** | Classificatore supervisionato vero/alterato su feature strutturate (delta importi, coerenza date, ratio trattenute) + anomaly detector non supervisionato per pattern sconosciuti + calcolo `score_genuinita = (1 - prob_alterato) * 100` + `anomaly_score` + `semaforo` + demo Streamlit | Scikit-Learn, train/test split (per pratica/tempo), feature engineering, metriche (precision/recall/F1 con focus recall), data leakage prevention, Streamlit |
+| M3 — DL & CV | **Ramo visivo** | Classificatore CNN su immagini di documenti per rilevare segnali grafici di alterazione (font inconsistenti, pixel editati, artefatti compressione) — output diventa feature aggiuntiva nel modello supervisionato + demo Gradio | PyTorch, CNN, transfer learning, Gradio, image preprocessing |
+| M4 — NLP | **Ramo testuale** | Estrazione campi da testo OCR (buste paga, CU, estratti conto) + matching semantico tra documenti correlati della stessa pratica (il CF sulla busta paga corrisponde a quello sulla CU?) | Embeddings, sentence-transformers, similarità coseno, information extraction |
+| M5 — LLM | **Interfaccia intelligente** | Assistente AI per operatore: spiega esiti con linguaggio naturale, propone controlli mirati, usa function calling per interrogare pratiche/esiti/score; estrazione campi strutturata da documenti con layout variabile (structured output) | OpenAI API, prompt engineering, structured output, function calling, Pydantic |
+| M6 — RAG | **Compliance normativa** | Base conoscenza normativa/procedurale (norme fiscali, checklist aziendali) con citazioni fonte obbligatorie; il sistema verifica la coerenza dei documenti rispetto alle norme vigenti e versionate | ChromaDB, LangChain, chunking, hybrid search, RAGAS evaluation, LangSmith |
+| M7 — Agents | **Orchestratore pipeline** | Agente che coordina l'intera pipeline: OCR → parsing → feature engineering → modelli (supervisionato + non supervisionato) → regole deterministiche → output combinato → report operatore + MCP server custom | LangGraph, tool use, agentic RAG, MCP, multi-agent |
+| M8 — Fine-Tuning | **Specializzazione dominio** | Modello personalizzato sul dominio documentale aziendale: fine-tuning per classificazione/triage documenti con dati specifici del contesto lavorativo di Gianluca | LoRA, QLoRA, PEFT, dataset curation, valutazione base vs fine-tunato |
+| M9 — MLOps | **Produzione stabile** | Tutto containerizzato e deployato: Docker + CI/CD + monitoring metriche modello + semantic caching + testing AI + alert su drift/regressioni | Docker, GitHub Actions, Redis, pytest, monitoring |
+| M10 — Finale | **Prodotto completo** | Frontend React + Backend FastAPI + servizi AI/RAG integrati + feedback loop revisore → nuove label → retraining — deploy live per uso operatori reali | Full-stack, architettura microservizi, deploy cloud, workflow team |
 
 ### Progresso del progetto
 
@@ -1113,12 +1105,12 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 04 — Liste | ⬜ Non ancora assegnato (il cap. 04 era già completato prima dell'introduzione del progetto) | |
 | 05 — Dizionari | ⬜ Da fare | Prima volta con il progetto incrementale |
 | 06 — File CSV | ✅ Completato | Progetto incrementale chiuso con funzioni `salva_catalogo`, `carica_catalogo`, `report_catalogo` |
-| 07 — NumPy | ⬜ Da fare | Capitolo svolto a livello esercizi, ma progetto incrementale non ancora tracciato in chiusura formale |
+| 07 — NumPy | 🟡 Parziale | Esercizi svolti; progetto incrementale non tracciato formalmente in chiusura (anomalia cap 07 — vedi Priorita Attive) |
 | 08 — Tensori | ✅ Completato | Pipeline tensori completata: normalizzazione batch, grayscale su asse canali e flatten per campione con verifica shape finale `(12, 256)` |
-| 09 — Pandas | ⬜ Da fare | |
-| 10 — Pandas Progetto | ⬜ Da fare | |
-| 11 — Matplotlib | ⬜ Da fare | |
-| 12 — Web Bridge | ⬜ Da fare | |
+| 09 — Pandas | ✅ Completato | Report rischio pratica con groupby/mask, export CSV |
+| 10 — Pandas Progetto | ✅ Completato | Report qualità controlli con EDA completa, multi-aggregation |
+| 11 — Matplotlib | ✅ Completato | Dashboard visuale semafori, trend anomalie, distribuzione rischio |
+| 12 — Web Bridge | ✅ Completato | API FastAPI: endpoint /progetto/pratiche con filtro semaforo e output JSON strutturato |
 | M2 — ML | ⬜ Da fare | |
 | M3 — DL & CV | ⬜ Da fare | |
 | M4 — NLP | ⬜ Da fare | |
@@ -1141,6 +1133,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 8. In ogni capitolo (M1-M10), quando coerente con i concetti trattati, aggiungere un micro-task "prodotto reale" oltre agli esercizi standard, anche se la sezione progetto incrementale completa non è prevista in quel capitolo.
 9. Ogni micro-task di prodotto deve dichiarare esplicitamente: (a) componente del prodotto toccata, (b) deliverable concreto (file/output), (c) Definition of Done minima verificabile.
 10. Quando il task riguarda dati documentali, usare preferibilmente un sottoinsieme del dataset reale dello studente (se disponibile e conforme privacy) invece di soli dataset sintetici/demo.
+11. **Coerenza con la pipeline ML consolidata**: dal M2, ogni task prodotto deve essere allineato alla sezione "Pipeline ML del Prodotto — Decisioni Architetturali Consolidate". Usare la terminologia concordata (`score_genuinita`, `prob_alterato`, `anomaly_score`, `semaforo`, `motivi_top3`, `evidenze`, `azione_consigliata`) e riferirsi al mapping "Moduli → Componenti Pipeline" per sapere quale pezzo del sistema quel capitolo deve costruire. Non inventare output o nomi diversi da quelli definiti.
+12. **Progressione verticale**: ogni modulo deve produrre un output che si integra con quello del modulo precedente. Esempio: il classificatore CNN di M3 produce un output che diventa una feature in input al modello supervisionato di M2; l'estrazione campi di M4 alimenta il feature engineering; il RAG di M6 fornisce contesto normativo al motore regole. L'agente deve esplicitare questa integrazione nei task.
 
 ---
 
@@ -1155,9 +1149,13 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 2. OCR + estrazione campi chiave per ogni tipo documento
 3. Controlli deterministici di coerenza (formato, date, importi, match campi)
 4. Confronti cross-documento nella stessa pratica
-5. Indicatore `% genuinita` + semaforo verde/giallo/rosso + motivazione breve
+5. **Dual-model output**:
+   - `score_genuinita` (0-100) da modello supervisionato: `(1 - prob_alterato) * 100`
+   - `anomaly_score` da modello non supervisionato (anomaly detection)
+   - Semaforo verde/giallo/rosso + `motivi_top3` + `evidenze` + `azione_consigliata`
 6. RAG normativo/procedurale con citazioni fonte obbligatorie
 7. Dashboard operatore con storico pratiche e report esportabile
+8. Feedback loop: revisore umano valida casi gialli/rossi → nuove label → retraining periodico
 
 ### Checklist competenze da padroneggiare (Definition of Mastery)
 
@@ -1166,20 +1164,22 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | Data Engineering | Pulire, normalizzare, versionare dataset documentali | Pipeline batch ripetibile + changelog dataset |
 | OCR/Parsing | Estrarre testo e campi strutturati da PDF/scansioni | Field accuracy tracciata per tipo documento |
 | Validazione Regole | Implementare regole fiscali/documentali spiegabili | Motore regole con output "pass/fail + motivo" |
-| ML Scoring | Addestrare/calibrare score di rischio alterazione | Metriche precision/recall/F1 + soglie calibrate |
+| ML Scoring (Dual-Model) | Addestrare classificatore supervisionato (vero/alterato) + anomaly detector non supervisionato; calibrare soglie semaforo | Metriche precision/recall/F1 sul supervisionato + anomaly_score distribution sul non supervisionato; soglie calibrate con feedback loop |
 | RAG | Retrieval affidabile con fonti normative italiane | Risposte con citazioni e controllo grounding |
 | Backend API | Esposizione endpoint pratiche/esiti/report | OpenAPI + test endpoint principali |
 | Frontend Operatore | Flusso upload -> esito -> dettaglio anomalie | Demo usabile da operatore non tecnico |
-| MLOps/Qualita | Monitoring, regressioni, test automatizzati | Dashboard metriche + test suite minima CI |
+| MLOps/Qualità | Monitoring, regressioni, test automatizzati | Dashboard metriche + test suite minima CI |
 
 ### Strategia accuratezza massima (ordine obbligatorio)
 
 1. **Qualita dato prima del modello**: dataset pulito, etichettato, con tassonomia anomalie
-2. **Motore regole forte**: controlli deterministici prima di LLM/RAG
-3. **Cross-check multi-documento**: coerenza tra documenti della stessa persona/pratica
-4. **RAG con fonti**: nessuna valutazione normativa senza citazione esplicita
-5. **Human-in-the-loop**: casi gialli/rossi revisionati e reinseriti come feedback
-6. **Valutazione continua**: soglie aggiornate su set di test indipendente
+2. **Data leakage prevention**: le feature (X) non devono mai contenere informazioni sul target (y) — verificare a ogni iterazione di feature engineering
+3. **Motore regole forte**: controlli deterministici prima di LLM/RAG
+4. **Cross-check multi-documento**: coerenza tra documenti della stessa persona/pratica
+5. **Dual-model approach**: supervisionato (classificazione vero/alterato) + non supervisionato (anomaly detection per pattern sconosciuti) — i due modelli si completano
+6. **RAG con fonti**: nessuna valutazione normativa senza citazione esplicita
+7. **Human-in-the-loop + active learning**: casi gialli/rossi revisionati e reinseriti come nuove label per migliorare il modello nel tempo
+8. **Valutazione continua**: soglie aggiornate su set di test indipendente, metriche tracciate per ogni versione del modello
 
 ### Preparazione dataset documentale (processo industriale)
 
@@ -1196,9 +1196,11 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 
 - **OCR**: confidence media, tasso pagine non leggibili
 - **Extraction**: accuratezza campo per campo (per tipo documento)
-- **Anomaly Detection**: precision, recall, F1 (con focus recall su casi critici)
+- **Feature Engineering**: copertura feature (% documenti con tutte le feature calcolabili), verifica anti-leakage per ogni nuova feature
+- **Modello Supervisionato**: precision, recall, F1 sulla classificazione vero/alterato (focus recall su casi critici per non lasciar passare documenti alterati)
+- **Modello Non Supervisionato**: distribuzione anomaly_score, tasso di falsi allarmi, correlazione con casi noti
 - **RAG**: grounding rate (risposte con fonte valida), citation accuracy
-- **Operativo**: tempo medio per pratica, tasso falsi allarmi, casi "non classificabili"
+- **Operativo**: tempo medio per pratica, tasso falsi allarmi complessivo, casi "non classificabili", tasso di feedback revisore riusato
 
 ### Soglie semaforo (base iniziale, da calibrare)
 
@@ -1210,24 +1212,169 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 
 ### Milestone pratiche per arrivare al prodotto finale
 
-1. **M1**: base dati, parsing, validazioni elementari, report base
-2. **M2-M3**: score rischio + CV/OCR robusto su scansioni difficili
-3. **M4**: estrazione campi testuali e matching semantico tra documenti
-4. **M5**: assistente operatore con function calling su pratiche
-5. **M6**: RAG normativo con citazioni e motivazioni verificabili
-6. **M7**: agente orchestratore pipeline end-to-end
-7. **M8-M9**: ottimizzazione, fine-tuning mirato, monitoraggio e CI/CD
-8. **M10**: interfaccia finale React + API FastAPI + deploy live + demo portfolio
+> **Cross-ref**: architettura dettagliata → vedi "Pipeline ML del Prodotto". Questa è una vista sintetica.
+
+1. **M1**: base dati, parsing, validazioni elementari, report base, API FastAPI per esporre pratiche/esiti
+2. **M2**: cuore predittivo — modello supervisionato (classificazione vero/alterato → `score_genuinita` + `semaforo`) + anomaly detector (→ `anomaly_score`) + feature engineering su dati documentali + metriche P/R/F1 + demo Streamlit
+3. **M3**: ramo visivo — classificatore CNN su scansioni documenti per segnali grafici di alterazione; output integrato come feature nel modello M2
+4. **M4**: ramo testuale — estrazione campi da OCR + matching semantico cross-documento (CF, importi, date coerenti tra busta paga e CU)
+5. **M5**: interfaccia intelligente — assistente LLM operatore (spiega esiti, propone controlli) + structured extraction per documenti con layout variabile + function calling su pratiche
+6. **M6**: compliance normativa — RAG su norme fiscali versionate, citazioni obbligatorie, verifica coerenza documenti rispetto a normativa vigente
+7. **M7**: orchestratore — agente che coordina l'intera pipeline (OCR → parsing → feature → modelli → regole → output → report) + MCP server custom
+8. **M8**: specializzazione — fine-tuning modello sul dominio aziendale specifico (dati reali di Gianluca) per massima precisione
+9. **M9**: produzione — Docker, CI/CD, monitoring metriche modello, testing AI, alert su drift, semantic caching
+10. **M10**: prodotto completo — frontend React + backend FastAPI + tutti i servizi AI integrati + feedback loop revisore → retraining + deploy live
 
 ### Definition of Done — Progetto Finale (M10)
 
+**Funzionali**:
 - Upload multiplo PDF/immagini funzionante
 - Estrazione campi chiave per tutti i tipi documento in scope MVP
-- Score genuinita + semaforo + motivazione per ogni pratica
-- RAG normativo con fonti visibili nel report
+- Pipeline ML completa: `score_genuinita` (supervisionato) + `anomaly_score` (non supervisionato) + `semaforo` + `motivi_top3` + `evidenze` + `azione_consigliata`
+- Classificatore visivo (CNN) integrato come feature nel modello principale
+- RAG normativo con fonti visibili nel report e citazioni obbligatorie
 - Dashboard operatore con storico, filtri ed export
-- Test minimo end-to-end su dataset di validazione
+- Feedback loop revisore → nuove label → retraining funzionante
+- Agente orchestratore pipeline end-to-end operativo
 - Deploy live stabile con README professionale e guida d'uso
+
+**Criteri quantitativi minimi (soglie da calibrare durante il corso)**:
+- Recall su classe "alterato" >= 90% sul test set (priorita: non lasciar passare documenti alterati)
+- Precision su classe "alterato" >= 70% (falsi allarmi tollerabili ma non dominanti)
+- F1 complessivo >= 80%
+- Tempo medio pipeline per pratica (upload → esito) < 30 secondi
+- RAG grounding rate >= 85% (risposte con citazione fonte verificabile) — soglia minima DoD; il target operativo pilot in APPUNTI_APPLICATIVO.md e >= 95%
+- Anomaly detection: tasso falsi allarmi < 15% su dataset di validazione
+- Test suite automatizzata: >= 20 test (unit + integration + end-to-end) con CI green
+- Uptime demo deployata: URL raggiungibile e funzionante al momento della presentazione
+
+> **Nota**: queste soglie sono obiettivi iniziali. Verranno calibrate man mano che il dataset
+> reale e i modelli prendono forma. L'importante e che siano MISURATE, non che siano perfette.
+
+---
+
+## Pipeline ML del Prodotto — Decisioni Architetturali Consolidate
+
+> Questa sezione documenta le decisioni tecniche emerse durante il corso riguardo alla pipeline ML
+> del prodotto "Controllo Documentale AI". L'agente DEVE consultarla quando progetta esercizi,
+> mini-task prodotto e capitoli dei moduli M2-M10, per garantire che ogni attività didattica sia
+> coerente con l'architettura reale del sistema.
+>
+> **Ultima revisione**: 25/03/2026
+
+### Architettura Dual-Model (supervisionato + non supervisionato)
+
+Il sistema usa **due modelli complementari**, non alternativi:
+
+1. **Modello supervisionato** (classificazione binaria):
+   - **Target (y)**: etichetta `genuino` / `alterato` (binario, noto per ogni documento nel dataset)
+   - **Feature (X)**: caratteristiche numeriche estratte dai documenti (delta netto-lordo, coerenza date, ratio trattenute, numero anomalie cross-documento, ecc.)
+   - **Output**: `prob_alterato` (probabilità che il documento sia alterato, 0.0-1.0)
+   - **Score derivato**: `score_genuinita = (1 - prob_alterato) * 100`
+   - **Semaforo derivato**: verde (>= 85), giallo (60-84), rosso (< 60) — soglie calibrabili
+
+2. **Modello non supervisionato** (anomaly detection):
+   - **Nessun target**: il modello impara la distribuzione "normale" dei documenti e segnala quelli che se ne discostano
+   - **Output**: `anomaly_score` (quanto un documento è statisticamente anomalo)
+   - **Scopo**: scoprire pattern sospetti **non ancora noti** — anomalie che nessuna regola umana copre oggi
+   - **Valore aggiunto**: cattura incongruenze che il modello supervisionato non può vedere perché nessuno le ha mai etichettate
+
+3. **Output combinato per pratica**:
+   - `score_genuinita` (0-100, dal supervisionato)
+   - `prob_alterato` (0.0-1.0, dal supervisionato)
+   - `semaforo` (verde/giallo/rosso, derivato da score_genuinita)
+   - `anomaly_score` (dal non supervisionato)
+   - `motivo_top1` / `motivi_top3` (motivazioni principali dell'esito)
+   - `evidenze` (dettagli dei controlli superati/falliti)
+   - `azione_consigliata` (per l'operatore)
+
+### Workflow Pipeline End-to-End
+
+```
+Documento PDF/immagine
+    │
+    ▼
+OCR + Parsing ──► JSON strutturato (campi chiave per tipo documento)
+    │
+    ▼
+Feature Engineering ──► Tabella numerica (X = DataFrame, una riga per documento/pratica)
+    │                    Features decise dall'umano, calcolate deterministicamente
+    │
+    ├──► Modello Supervisionato ──► prob_alterato ──► score_genuinita + semaforo
+    │
+    ├──► Modello Non Supervisionato ──► anomaly_score
+    │
+    ├──► Motore Regole Deterministiche ──► controlli pass/fail + motivazioni
+    │
+    ▼
+Output Combinato ──► Dashboard Operatore + Report + API
+    │
+    ▼
+Feedback Loop ──► Revisore conferma/corregge ──► nuove label ──► retraining
+```
+
+### Feature Engineering — Strategia
+
+- **Chi decide le feature**: l'umano (il domain expert — Gianluca), basandosi sulla conoscenza del dominio documentale
+- **Esempi di feature concrete**:
+  - `delta_netto_lordo`: differenza tra retribuzione netta e lorda (deve rispettare range plausibili)
+  - `ratio_trattenute`: trattenute / lordo (proporzione attesa)
+  - `coerenza_date`: le date dei documenti sono coerenti tra loro nella stessa pratica?
+  - `match_cf_cross_doc`: il codice fiscale è lo stesso su tutti i documenti?
+  - `accrediti_stipendio_presenti`: l'estratto conto mostra accrediti coerenti con la busta paga?
+  - `confidence_ocr_media`: qualità media dell'estrazione OCR
+- **Chi estrae i dati grezzi**: OCR + AI assistita (per grandi volumi)
+- **Chi calcola le feature**: codice deterministico (Python/Pandas), non il modello
+- **Regola anti-leakage**: le feature NON devono mai contenere informazioni sulla genuinità del documento — devono descrivere caratteristiche osservabili, non il verdetto
+
+### Data Leakage — Regole Vincolanti
+
+Il data leakage è il rischio principale nei primi capitoli ML. Regole per l'agente:
+
+1. **Ogni capitolo M2 deve contenere almeno un richiamo al concetto di leakage** contestualizzato all'esercizio
+2. **Nei mini-task prodotto**: verificare sempre che le feature proposte non contengano il target (y non deve essere in X)
+3. **Esempio concreto da riusare**: "Se tra le feature metti `esito_verifica = alterato`, il modello non prevede — copia. È come dare le risposte dell'esame insieme alle domande."
+4. **Errore tipico da prevenire**: usare colonne derivate dal target (es. `semaforo` calcolato dal `score_genuinita` che è il target stesso) come feature
+
+### Computer Vision nel Prodotto (ramo M3)
+
+Il modello supervisionato lavora su feature numeriche strutturate. Ma i documenti hanno anche una componente **visiva**:
+- font inconsistenti, pixel editati, artefatti da copia-incolla grafico, compressione anomala
+- queste anomalie richiedono un modello CNN/DL che analizza l'immagine del documento
+- al Modulo 3 (DL & CV): il progetto incrementale deve costruire un classificatore visivo che, dato un documento scansionato, rileva segnali grafici di alterazione
+- l'output del modello CV si integra come feature aggiuntiva nel modello supervisionato principale
+
+### AI-Assisted Feature Extraction (per volumi reali)
+
+Quando il dataset cresce a centinaia/migliaia di documenti, l'estrazione manuale non scala:
+- **OCR → JSON**: ogni documento viene convertito in un JSON strutturato con i campi chiave
+- **AI assiste l'estrazione**: per documenti con layout variabile, un LLM con structured output (M5) può estrarre campi che un parser rigido non cattura
+- **Le feature restano deterministiche**: anche se i dati grezzi sono estratti con AI, le feature finali (delta, ratio, match) sono calcolate con codice, non dal modello
+- **RAG per regole normative**: la base conoscenza RAG (M6) permette di verificare coerenza rispetto a norme fiscali aggiornate
+- **Agente orchestratore (M7)**: l'agente coordina l'intera pipeline (OCR → parsing → feature → modelli → output → report)
+
+### Mapping Moduli → Componenti Pipeline
+
+| Modulo | Componente pipeline che costruisce | Contributo al prodotto |
+|--------|-------------------------------------|------------------------|
+| M2 — ML | Modello supervisionato + anomaly detection + metriche + demo Streamlit | Il cuore predittivo: classificazione vero/alterato + anomaly_score |
+| M3 — DL & CV | Classificatore visivo documenti + feature CV | Ramo visivo: rileva alterazioni grafiche non visibili a occhio |
+| M4 — NLP | Estrazione campi da testo OCR + matching semantico | Ramo testuale: parsing intelligente + coerenza semantica tra documenti |
+| M5 — LLM | Assistente operatore + structured extraction + function calling | Interfaccia intelligente + estrazione campi da layout variabili |
+| M6 — RAG | Base conoscenza normativa + citazioni + evaluation | Verifica compliance con norme fiscali aggiornate e versionate |
+| M7 — Agents | Orchestratore pipeline end-to-end + agentic RAG + MCP | Il "cervello" che coordina OCR → parsing → scoring → report |
+| M8 — Fine-Tuning | Modello specializzato per il dominio aziendale | Precisione massima su documenti specifici del contesto lavorativo |
+| M9 — MLOps | Containerizzazione + CI/CD + monitoring + caching | Tutto in produzione: stabile, monitorato, testato |
+| M10 — Finale | Frontend React + Backend FastAPI + servizi AI integrati | Il prodotto completo, deployato e usabile da operatori reali |
+
+### Regola per l'agente — Coerenza pipeline in ogni capitolo
+
+Quando l'agente prepara un capitolo (M2-M10), DEVE:
+1. Consultare questa sezione per capire quale componente della pipeline il modulo costruisce
+2. Assicurarsi che gli esercizi e i mini-task prodotto siano **coerenti con il workflow reale** descritto sopra
+3. Usare terminologia coerente: `score_genuinita`, `prob_alterato`, `anomaly_score`, `semaforo`, `motivi_top3`, `evidenze`, `azione_consigliata` — non inventare nomi diversi
+4. Quando introduce un concetto nuovo (es. train/test split), **collegarlo esplicitamente** alla pipeline del prodotto con un esempio concreto dal dominio documentale
+5. Rinforzare il concetto di data leakage ogni volta che si lavora su feature/target
 
 ---
 
@@ -1239,16 +1386,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 - **Prima del Modulo 3 (DL & CV)**: preparare un notebook Google Colab con PyTorch + torchvision pre-installati, istruzioni per connettere GPU, e un test rapido per verificare che CUDA funzioni su Colab. Idem per il Modulo 8 (Fine-Tuning) con PEFT + bitsandbytes
 - **Prima del file 07**: arricchire con più esempi visivi e mini-esercizi intermedi
 - **Prima del file 08**: aggiungere rappresentazioni ASCII di tensori 2D/3D/4D
-- **⚠️ A FINE MODULO 1** (completamento file 12_web_bridge.py): creare `ARCHIVIO_MODULO_01.md` e migrare il dettaglio storico del M1:
-  - Progresso dettagliato dei 12 capitoli (tabella con date, voti, note)
-  - Pattern di errore con stato 🟢 (risolti)
-  - Lacune quiz con stato 🟢 (superate)
-  - Domande fatte nei capitoli del M1 (storico)
-  - Glossario: i termini ✅ (acquisiti con 3/3) vengono COPIATI (non spostati) nell'archivio. Restano anche nel file principale per il ripasso naturale, ma contrassegnati come acquisiti
-  - Competenze M1 complete → archiviate come "Cosa Sapevo Fare Dopo il Modulo 1"
-  - **Regola**: quando l'agente prepara un capitolo del M2+ e deve fare rinforzo su concetti del M1, DEVE consultare `ARCHIVIO_MODULO_01.md` per il contesto storico completo
-  - **Regola**: il file principale CONTESTO_CORSO.md mantiene: sezioni in cima (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), Profilo, Regole Didattiche, Glossario completo, Pattern attivi, Lacune attive, e tutto ciò che è ATTIVO. Obiettivo: mantenerlo sotto le ~800 righe dopo la migrazione
-  - Ripetere questo processo a fine di ogni modulo successivo (ARCHIVIO_MODULO_02.md, ecc.)
+- **✅ MODULO 1 ARCHIVIATO** (25/03/2026): `ARCHIVIO_MODULO_01.md` creato con progresso dettagliato, domande cap 01-05, pattern storico, competenze, ritmo studio, lacune quiz. Regola: per rinforzi su concetti M1, consultare l'archivio. **Il Passo 13 del Protocollo di Aggiornamento formalizza questo processo per ogni modulo futuro.**
+  - **Regola file size**: il file principale CONTESTO_CORSO.md mantiene solo contenuto ATTIVO. Obiettivo: restare sotto le ~1600 righe; se supera, migrare contenuto storico nell'archivio del modulo (vedi Passo 13)
 - **A inizio di ogni nuovo modulo (M2-M10)**: creare la cartella del modulo (`modulo_XX_nome/`) con un `README.md` che segue la struttura del README del Modulo 1
 - **Per i moduli M2-M10**: ogni modulo finale produce una demo deployabile. Il Mentor deve guidare il deploy e verificare che il link sia funzionante
 - **Al modulo M5**: quando i confronti PHP/JS non hanno equivalente diretto (es. embedding, backpropagation), usare analogie dal mondo web/documentale. Registrare i nuovi ponti mentali nella sezione apposita
@@ -1292,10 +1431,14 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
   - RAG → "Come una ricerca su Google: prima trovi i risultati rilevanti, poi li leggi per rispondere"
   - Docker → "Come `node_modules` ma per l'intero sistema operativo"
   - LoRA → "Invece di ristrutturare tutta la casa, aggiungi solo una stanza"
+  - Data leakage → "Come dare le risposte dell'esame insieme alle domande — il modello copia, non prevede"
+  - Feature engineering → "Come preparare gli ingredienti prima di cucinare — il modello è lo chef, le feature sono gli ingredienti già tagliati e pronti"
+  - Anomaly detection → "Come un allarme antifurto che non sa chi è il ladro, ma riconosce che qualcosa è fuori posto"
 - Registrare i nuovi ponti mentali nella sezione "Ponti Mentali" quando funzionano
 - **Concetti durevoli prima, framework dopo**: in ogni modulo avanzato, la soluzione viene prima costruita "a mano" (puro Python + libreria minima), poi riscritta con il framework. Questo garantisce che i concetti sopravvivano ai cambi di API dei framework
 - **Approccio "visualizzazione-prima" per la matematica**: quando un concetto AI richiede una base matematica (gradienti, spazi vettoriali, decomposizione matriciale), seguire sempre la sequenza: analogia concreta → codice Python → grafico Matplotlib → formula (solo come etichetta finale). Mai partire dalla formula. I 2 capitoli del Ponte Matematico (tra M2 e M3) stabiliscono le fondamenta; nei moduli successivi si richiamano e si estendono
 - **Esercizi `[SYSTEM DESIGN]`** (dal M5 in poi): nuovo tag per esercizi dove Gianluca progetta un'architettura AI. Formato: scenario reale → requisiti → disegno architettura → discussione trade-off. Non c'è una sola soluzione giusta — l'obiettivo è ragionare sui compromessi
+- **Ogni concetto nuovo → collegamento alla pipeline prodotto**: quando si introduce un concetto (train/test split, metriche, feature scaling, ecc.), l'agente deve sempre accompagnarlo con un paragrafo che spiega dove quel concetto si colloca nella pipeline reale del prodotto documentale. Questo trasforma ogni lezione da astratta a concreta e mantiene la motivazione dello studente
 
 ### Ripresa contesto
 - Se apre una nuova chat: fargli dire "sono al file X" e leggere questo file
@@ -1364,7 +1507,7 @@ Analogia concreta + confronto PHP/JS/Python
 
 ### Regole per i contenuti dei capitoli (compattate)
 
-Le regole complete sono gia in `Regole Didattiche Concordate` (punti 1-29). Qui restano solo i vincoli pratici da non dimenticare:
+Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui restano solo i vincoli pratici da non dimenticare:
 
 1. Minimo 5 esercizi con difficoltà crescente
 2. Almeno 1 `🎯 [COLLOQUIO]`
@@ -1434,6 +1577,40 @@ Le regole complete sono gia in `Regole Didattiche Concordate` (punti 1-29). Qui 
 - [ ] Se il capitolo conteneva un esercizio 🔧 [REFACTORING]: annotare nelle Note del Progresso se Gianluca ha migliorato effettivamente il codice e come
 - [ ] Se il capitolo conteneva un esercizio 🧠 [RETRIEVAL]: se Gianluca è riuscito a riscrivere la funzione senza errori, incrementare il contatore ripasso del concetto corrispondente nel Glossario. Se ha avuto difficoltà, annotare e programmare un nuovo retrieval nel capitolo dopo
 - [ ] Se è l'ultimo capitolo del modulo e conteneva 🔄 CONFRONTO PRIMA/DOPO: annotare le osservazioni di Gianluca sul proprio miglioramento nella sezione "Cosa So Fare Adesso"
+
+### Passo 12 — Coerenza Roadmap/Pipeline (vincolante dal M2)
+- [ ] Se hai modificato la roadmap o la pipeline in qualsiasi sezione: verificare coerenza in TUTTE le sezioni che la riportano (Blueprint Milestone, Moduli Successivi, Evoluzione Progetto, Pipeline ML del Prodotto)
+- [ ] Registrare la modifica nel Changelog Regole e Decisioni
+
+### Passo 13 — Archiviazione e Pulizia (a fine modulo)
+- [ ] Se e l'ultimo capitolo del modulo: creare `ARCHIVIO_MODULO_XX.md` con lo stesso pattern di ARCHIVIO_MODULO_01.md (progresso dettagliato, domande, pattern errore storico, competenze per capitolo, ritmo studio, lacune quiz)
+- [ ] Nel file principale: sostituire il dettaglio del modulo chiuso con tabella riepilogativa (come fatto per M1)
+- [ ] Migrare nell'archivio le lacune quiz con stato 🟢 (superate) e i pattern di errore con stato 🟢 (superati da 3+ capitoli)
+- [ ] Aggiornare il Ripasso Programmato: aggiungere i concetti chiave del nuovo modulo, rimuovere quelli del modulo chiuso che sono in stato OK stabile
+- [ ] Verificare che il file principale resti sotto le ~1600 righe; se supera, cercare altro contenuto storico da migrare
+
+---
+
+## Changelog Regole e Decisioni
+
+> Ogni modifica significativa a regole, procedure o architettura viene registrata qui.
+> L'agente consulta questa sezione per capire il PERCHE' di una regola, non solo il COSA.
+
+| Data | Modifica | Motivo | Sezione toccata |
+|------|----------|--------|-----------------|
+| 25/03/2026 | Audit coerenza: Regola 7 M4→M3, punti 1-29→1-38, ~800→~1600 target unificato, motivo_top→motivi_top3 unificato, self-check completato, M9 aggiunto a portfolio, cap07 stato corretto, versionote→versionate, archivio M1 marcato come eseguito, sezione colloquio aggiornata | Eliminare incoerenze che potevano confondere agenti futuri | Regole, Self-check, Portfolio, Progetto, Archivio |
+| 25/03/2026 | Handshake canonizzati: .cursorrules riscritto con trigger avvio ("jarvis"+"iniziare") e chiusura ("jarvis chiusura capitolo X"), procedura 4 fasi (A-B-C-D), lettura obbligatoria 3 file | Canonizzare l'utilizzo del corso per studente e agenti | .cursorrules, Header CONTESTO, Sezione H) |
+| 25/03/2026 | Regole 37-38 (testing AI trasversale + primo deploy M2) + Passo 13 (archiviazione) + DoD M10 quantitativa + anomalia cap 07 + ripasso M2 | Chiudere i margini di miglioramento dalla valutazione qualita corso | Regole, Protocollo, Blueprint, Ripasso, Priorita |
+| 25/03/2026 | Hardening contesto: archivio M1, changelog, self-check, puntatori cross-ref | Rendere il file robusto e quasi-autonomo per agenti futuri | Tutto il file |
+| 25/03/2026 | Regole 34-36 aggiunte (coerenza pipeline, leakage, workflow reale) | Consolidare decisioni architetturali ML emerse nella discussione | Regole Didattiche |
+| 25/03/2026 | Sezione "Pipeline ML del Prodotto" creata | Fissare architettura dual-model, terminologia e workflow pipeline | Nuova sezione |
+| 25/03/2026 | Regole progetto incrementale 11-12 aggiunte | Coerenza terminologia pipeline e progressione verticale tra moduli | Progetto Incrementale |
+| 25/03/2026 | Blueprint Operativo aggiornato (dual-model, metriche, milestone) | Allineare il Blueprint alla pipeline ML consolidata | Blueprint Operativo |
+| 18/03/2026 | Regola H (chiusura capitolo vincolante) | Errore agente: modificava il capitolo in chiusura durante la correzione | Protocollo Anti-Perdita |
+| 18/03/2026 | Regola 33 (metodo espositivo narrativo) | Richiesta studente: teoria discorsiva e ragionata, non a lista | Regole Didattiche |
+| 18/03/2026 | Regola 32 (dataset reale studente) | Disponibilita dati reali per esercizi e deliverable prodotto | Regole Didattiche |
+| 17/03/2026 | Regola 31 (dual-track obbligatorio) | Corso = competenze AI + prodotto reale in parallelo | Regole Didattiche |
+| 17/03/2026 | Regola 30 (teoria potenziata) | Richiesta studente: profondita teorica prima della pratica | Regole Didattiche |
 
 ---
 

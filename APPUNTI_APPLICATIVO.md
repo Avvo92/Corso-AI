@@ -64,15 +64,19 @@ Note:
 
 ## 5) Output attesi (per pratica)
 
-- Punteggio genuinita (0-100)
-- Semaforo:
+> Nomi campo tra parentesi = terminologia pipeline canonica (fonte: CONTESTO_CORSO.md, sezione "Pipeline ML del Prodotto").
+
+- Punteggio genuinita 0-100 (`score_genuinita`, derivato da `prob_alterato`: `(1 - prob_alterato) * 100`)
+- Probabilita di alterazione 0.0-1.0 (`prob_alterato`, output modello supervisionato)
+- Score anomalia (`anomaly_score`, output modello non supervisionato)
+- Semaforo (`semaforo`, derivato da `score_genuinita` con soglie calibrabili):
   - Verde: ok preliminare
   - Giallo: revisione manuale mirata
   - Rosso: blocco e audit completo
-- Top motivazioni dell'esito
-- Controlli superati/falliti
-- Evidenze e fonti usate
-- Azione consigliata all'operatore
+- Top 3 motivazioni dell'esito (`motivi_top3`)
+- Controlli superati/falliti (`check_results`, lista strutturata regole deterministiche)
+- Evidenze e fonti usate (`evidenze`)
+- Azione consigliata all'operatore (`azione_consigliata`)
 
 ---
 
@@ -371,7 +375,7 @@ Target da calibrare dopo i primi dati reali:
 
 - tempo medio analisi pratica: < 5 minuti
 - riduzione revisione manuale completa: >= 40%
-- grounding risposte normative con fonte: >= 95%
+- grounding risposte normative con fonte: >= 95% (target aspirazionale; la soglia minima DoD corso in CONTESTO_CORSO.md e >= 85%)
 - tasso falsi positivi su casi verdi: soglia da definire in pilot
 - copertura documentale MVP: >= 80% dei casi reali trattati
 
@@ -551,8 +555,10 @@ Scopo:
 
 ### Output obbligatorio per decisione
 
-- `score`
-- `semaforo`
+> Nomi campo allineati alla terminologia pipeline in CONTESTO_CORSO.md.
+
+- `score_genuinita` (0-100)
+- `semaforo` (verde/giallo/rosso)
 - `motivi_top3`
 - `evidenze`
 - `azione_consigliata`

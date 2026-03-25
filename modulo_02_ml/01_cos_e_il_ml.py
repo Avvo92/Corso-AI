@@ -23,21 +23,21 @@ import os
 # ==========================================================================
 #
 # DOMANDA 1 — Vero/Falso:
-# "df['colonna'] restituisce un DataFrame."
+# "df['colonna'] restituisce un DataFrame." Falso, restituisce una Series
 #
 # DOMANDA 2 — Prevedi l'output:
 #   print(df[["a", "b"]].shape)
-# Se df ha 30 righe, cosa stampa?
+# Se df ha 30 righe, cosa stampa? (30, 2)
 #
 # DOMANDA 3 — Trova l'errore:
-#   top = df[df["prezzo"] = 100]
+#   top = df[df["prezzo"] = 100] l'operatore logico è sbagliato sintaticamente, sarebbe corretto "=="
 #
 # DOMANDA 4 — Definizione:
 # Differenza tra `.loc` e `.iloc` in una frase.
-#
+# loc selezione per etichetta, iloc per indice
 # DOMANDA 5 — Completa:
-#   righe = df.shape[___]
-#   colonne = df.shape[___]
+#   righe = df.shape[0]
+#   colonne = df.shape[1]
 #
 
 # ==========================================================================
@@ -83,8 +83,13 @@ print("ML = apprendere pattern dai dati per fare previsioni.")
 
 # --- MINI-ESERCIZIO 1 — Prova subito! ---
 # 1) Scrivi un esempio reale (tuo dominio) di problema predittivo.
+# Un problema predittivo nel mio dominio è, data una serie di documenti reddituali reali o alterati, capire se la pratica nuova che mi hanno portato è più probabilmente vera o falsa in qualcosa
 # 2) Scrivi input (feature) e output (target).
+# l'input deve essere un insieme di documenti reddituali che vanno analizzati in termini di coerenza tra loro, alterazioni grafiche, incongruenze numeriche e difformità nei metadati,
+# e l'output deve essere un analisi che comprende, un semaforo che dia indicazione chiara della zona di genuinità in cui ci troviamo, uno scoring da 1 a 100 , e un riassunto sulle motivazione
+# che hanno portato a quella valutazioni
 # 3) Spiega in 1 riga perche conviene ML invece di if/else fissi.
+# Perchè il campo delle possibilità è troppo vasto, e sarebbe impensabile senza l'aiuto dell'IA e del machine learnig avere un programma che gestisca tutte le casistiche.
 
 
 # ==========================================================================
@@ -121,9 +126,9 @@ print("Supervisionato, non supervisionato, reinforcement.")
 
 # --- MINI-ESERCIZIO 2 — Prova subito! ---
 # Classifica questi casi:
-# a) Predire abbandono cliente (si/no)
-# b) Raggruppare utenti per comportamento acquisto
-# c) Agente che impara a giocare
+# a) Predire abbandono cliente (si/no) supervisionato
+# b) Raggruppare utenti per comportamento acquisto non supervisionato
+# c) Agente che impara a giocare reinforcement learning
 
 
 # ==========================================================================
@@ -170,6 +175,9 @@ print(f"Target y shape: {y.shape}")
 # 1) Aggiungi `ha_garage` alle feature X.
 # 2) Stampa shape nuova di X.
 # 3) Scrivi in una riga: perche y e Series e non DataFrame?
+X['ha_garage'] = case['ha_garage']
+print(f"\nFeature X shape: {X.shape}")
+# y prendi in considerazione solo la colonna prezzo euro contenuta in case, mentre x , prendendo in considerazione più colonne, costituisce un dataframe
 
 
 # ==========================================================================
@@ -214,6 +222,16 @@ print(report_base.sort_values("prezzo_medio", ascending=False).round(2))
 #    - prezzo_minimo
 #    - prezzo_medio_al_mq
 # 3) Ordina per prezzo_massimo desc e stampa top 3
+print("\nMini-esercizio 4\n")
+case['prezzo_al_mq'] = case['prezzo_euro'] / case['metri_quadri']
+report = case.groupby('citta').agg(
+    pratiche_totali = ('id', "count"),
+    prezzo_massimo = ('prezzo_euro', 'max'),
+    prezzo_minimo = ('prezzo_euro', 'min'),
+    prezzo_medio_al_mq = ('prezzo_al_mq', lambda x: x.mean().round(2))    
+    ).sort_values(by='prezzo_massimo', ascending=False)
+
+print(report.head(3))
 
 
 # ==========================================================================
@@ -231,7 +249,11 @@ print(report_base.sort_values("prezzo_medio", ascending=False).round(2))
 # --- MINI-ESERCIZIO 6 — Workflow in 8 righe ---
 # Scrivi 8 righe (una per step) su come applicheresti il workflow sopra
 # al progetto "Controllo Documentale AI" (usa parole semplici, niente teoria astratta).
-#
+#Frase di Business: "il mio applicativo deve fornire un supporto di facile interpretazione e chiaro nelle spiegazioni che fornisce, per aiutare nella valutazione di genuinità dei documenti forniti dai clienti che richiedono finanziamenti o mutui"
+#Target: un semaforo verde giallo o rosso, uno scoring da 1 a 100 per grafica, coerenza anagrafica, coerenza numerica, coerenza fiscale e metedati e per ogni aspetto analizzato una sintessi chiara e puntuale sulle eventuali anomalie riscontrate, e in che modo e quanto pesantemente hanno contribuito alla valutazione finale.
+#EDA: analisi dei documenti forniti, per capire le metriche principali che possono essere fornite dai dati
+#X/y e train/test: costruisco un dataframe di feature che riassumano gli aspetti sopracitati, quindi coerenza anagrafica, numerica, fiscale, grafica e metadati,e divido la parte che utilizzerò in fase di test da quella che usero per il training ( 30%, 70%).
+
 
 # ==========================================================================
 # 🔁 RINFORZO MIRATO — Dal Web Bridge al ML (API, filtri, payload)
