@@ -291,37 +291,69 @@ print("\nRINFORZO — Distribuzione semaforo (%)")
 print(dist)
 
 # --- MINI-ESERCIZIO 5 — Rinforzo cap.12 -> cap.01 M2 ---
+# Dati: `dati/pratiche_semaforo.csv` (cwd = cartella `modulo_02_ml`)
 # 1) Calcola il numero pratiche verdi senza usare `.sum()` sul DataFrame intero.
 # 2) Calcola percentuale verdi/gialli/rossi con `value_counts(normalize=True)`.
 # 3) Scrivi una riga: perche `if ha_garage:` e pericoloso se il parametro e bool opzionale?
 # 4) Scrivi URL corretta (con query params) per:
 #    endpoint `/progetto/pratiche`, filtro `semaforo=giallo` e `limit=5`
 #    (nota: "?" una volta, poi "&").
-#
+path_file = os.path.join(os.path.dirname(__file__), "dati", "pratiche_semaforo.csv")
+pratiche = pd.read_csv(path_file)
+conta_per_semaforo = pratiche['semaforo'].value_counts()
+perc_semafori = (pratiche['semaforo'].value_counts(normalize=True) * 100).round(2)
+# perchè False e null, essendo entrambi valori "falsy", qualora di dovesse fare un contenggio, il risultato dei risultati
+#che effettivamente non hanno un garage sarebbe falsato. Qui, nel momento in cui si procede con il calcolo, si potrebbe ad
+# esempio usare una mask del tipo "filtro_null = pratiche['ha_garage'] != null"
+
+from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
+app = FastAPI(
+    title="Modulo 2 — ML",
+    version="1.0.0"
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In produzione metti il dominio del frontend
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/progetto/pratiche")
+def filtro(
+    semaforo: str | None = Query(None, description="Indicare il semaforo scelto"),
+    limit: int = Query(5, description="Quanti risultati vuoi visualizzare", ge=1, le=5)
+):
+    if semaforo:
+        return pratiche.loc[pratiche['semaforo'] == semaforo].head(limit).to_dict(orient="records")
+    return pratiche.head(2).to_dict(orient="records")
+
+
+
 
 # ==========================================================================
 # QUIZ DI VERIFICA — Prima degli esercizi
 # ==========================================================================
 #
 # DOMANDA 1 — Vero/Falso:
-# "Nel supervisionato il target e noto nel training."
+# "Nel supervisionato il target e noto nel training." Vero
 #
 # DOMANDA 2 — Completa:
-# `X` contiene ______ ; `y` contiene ______
+# `X` contiene il DataFrame con le feature ; `y` contiene il target
 #
 # DOMANDA 3 — Trova l'errore:
-#   X = case["metri_quadri", "prezzo_euro"]
+#   X = case["metri_quadri", "prezzo_euro"] => X = case[["metri_quadri", "prezzo_euro"]]
 #
 # DOMANDA 4 — Prevedi:
-# Se X ha shape (30, 4), quante feature per campione ha?
+# Se X ha shape (30, 4), quante feature per campione ha? 4
 #
 # DOMANDA 5 — 💬 Spiega con parole tue:
 # differenza pratica tra scrivere regole a mano e farle apprendere al modello.
-#
+# la differenza è che scrivendo le regole a mano non si riescono a gestire in maniera efficiente un gran numero di variabili, in quanto ogni condizione deve essere specificata. Facendole apprendere al modello, sarà lui a trovare tramite prove mirata ad allinearsi al target a trovare la strada giusta per trovare, in base alla richiesta il risultato previsto nel target
 # DOMANDA 6 — Errori tipici:
 # Cita 2 anti-pattern reali:
-# - uno legato alla preparazione dei dati
-# - uno legato alla valutazione del modello
+# - uno legato alla preparazione dei dati => Inserire, anche in maniera indiretta, il target nelle feature (leakage)
+# - uno legato alla valutazione del modello => usare delle feature che non rappresentano in modo coerente i dati utili a raggiungere il nostro target (data misinterpretation)
 
 
 # ==========================================================================
@@ -333,19 +365,33 @@ print(dist)
 # - feature candidate
 # - target candidate
 # Stampa shape e tipi (`type`) di entrambe.
-#
+print("\nEsercizio 1\n")
+path_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+houses = pd.read_csv(path_file)
+feature_candidates = houses[['metri_quadri', 'num_stanze', 'piano', 'ha_balcone', 'ha_garage','distanza_centro_km', 'citta', 'anno_costruzione']]
+target_candidate = houses['prezzo_euro']
+print(feature_candidates.columns.to_list())
+print(target_candidate.name)
+
 # ESERCIZIO 2 (Medio):
 # Crea 2 versioni di X:
 # a) X_base con 3 feature
 # b) X_plus con 5 feature
-# Confronta shape e scrivi quale versione useresti e perche.
-#
+#scrivi quale versione useresti e perche.
+X_base = houses[['metri_quadri', 'num_stanze', 'ha_garage']]
+X_plus = houses[['metri_quadri', 'num_stanze', 'ha_garage', 'ha_balcone', 'distanza_centro_km']]
+print(X_base.shape)
+print(X_plus.shape)
+# userei X_plus perchè avere il 66 % in più di variabili, da sicuramente un visione più chiara e accurata sulla realtà della composizione del prezzo delle case, e dunque crea dei modelli più affidabili per arrivare a una previsione il più possibile vicina alla realtà
+
 # ESERCIZIO 3 (🎯 [COLLOQUIO]):
 # Spiega in 8-10 righe:
 # - differenza regressione vs classificazione
 # - un esempio reale per ciascuna
 # - quale metrica useresti per valutarle
-#
+# la regressione si una per i valori numerici, ossia partendo dalle feature la macchina produce in output un valore numerico
+# la classificazione invece in sostanza, sempre partendo da delle feature, da un etichetta all'oggetto che si sta analizzando
+
 # ESERCIZIO 4 (🔧 [REFACTORING]):
 # Riscrivi questo codice "brutto" in modo pulito:
 # dati = pd.read_csv(...)
@@ -354,12 +400,19 @@ print(dist)
 # print(a.shape); print(b.shape)
 # (usa nomi espliciti + output leggibili)
 #
+case = pd.read_csv(path_file)
+variabili_case = case[['metri_quadri','anno_costruzione','distanza_centro_km']]
+obiettivo_case = case['prezzo_euro']
+print(f"Shape delle variabili:\n{variabili_case.shape}")
+print(f"Shape dell'obiettivo:\n{obiettivo_case.shape}")
+
+
 # ESERCIZIO 5 (🔍 [DEBUG]):
 # Correggi questo blocco e spiega l'errore:
 # X = case["metri_quadri", "anno_costruzione"]
 # y = case[["prezzo_euro"]]
 # print(X.shape[1], y.shape[1])
-#
+
 # ESERCIZIO 6 (🔀 [INTERLEAVING] — Pandas + ML):
 # Partendo da `case.csv`:
 # 1) Crea `fascia_prezzo` con 3 classi: basso, medio, alto
