@@ -409,9 +409,11 @@ print(f"Shape dell'obiettivo:\n{obiettivo_case.shape}")
 
 # ESERCIZIO 5 (🔍 [DEBUG]):
 # Correggi questo blocco e spiega l'errore:
-# X = case["metri_quadri", "anno_costruzione"]
-# y = case[["prezzo_euro"]]
-# print(X.shape[1], y.shape[1])
+# X = case["metri_quadri", "anno_costruzione"] => X = case[["metri_quadri", "anno_costruzione"]]
+# y = case[["prezzo_euro"]] => y = case["prezzo_euro"]
+# print(X.shape[1], y.shape)
+# Nella versione sbagliata, per la X si sarebbe prodotto un key error, mentre la y cosi scritta avrebbe prodotto un dataframe 
+# con una sola colonna, e non una series
 
 # ESERCIZIO 6 (🔀 [INTERLEAVING] — Pandas + ML):
 # Partendo da `case.csv`:
@@ -421,14 +423,56 @@ print(f"Shape dell'obiettivo:\n{obiettivo_case.shape}")
 #    - prezzo_medio
 #    - metri_quadri_medi
 # 3) Spiega in 3 righe come useresti questo report per scegliere feature utili.
+# userei questo report per capire il potenziale per citta rispetto case di fascie di prezzo differenti, potendo vedere
+# più chiaramente il numero per città, metri quadri medi e media dei prezzi
+case["fascia_prezzo"] = pd.cut(
+    case["prezzo_euro"],
+    bins=[0, 150_000, 300_000, 1_000_000_000],
+    labels=["basso", "medio", "alto"],
+    include_lowest=True,
+    right=False,  # opzionale: come trattare i bordi
+)
+
+case_citta_fascia = case.groupby(['citta', 'fascia_prezzo']).agg(
+    pratiche_totali = ('id', 'count'),
+    prezzo_medio = ('prezzo_euro', 'mean'),
+    metri_quadri_medi = ('metri_quadri', 'mean')
+).round({'prezzo_medio': 2, 'metri_quadri_medi': 2}).reset_index()
+
+print(case_citta_fascia)
 #
 # ESERCIZIO 7 (🧠 [RETRIEVAL] — riscrittura da memoria):
-# Senza guardare il capitolo 09, riscrivi da zero:
-# 1) creazione di una mask booleana
-# 2) assegnazione condizionale con `.loc`
-# 3) report con `.groupby(...).agg(...)`
-# Usa sempre `case.csv` e salva il risultato in `dati/report_retrieval_agg.csv`.
+# Senza guardare il capitolo 09, riscrivi da zero (solo dalla memoria + questo testo):
 #
+# 1) Mask booleana (specifica):
+#    Crea una variabile `mask` che sia True per le righe in cui `anno_costruzione >= 2000`
+#    (case “recenti”). Opzionale: verifica con `mask.sum()` quante righe sono True.
+
+mask = case['anno_costruzione'] >= 2_000
+print(case['id'].loc[mask].count())
+# 2) Assegnazione condizionale con `.loc`:
+#    Aggiungi una colonna `eta_casa` (stringa) al DataFrame `case`:
+#    - dove `mask` è True  -> `eta_casa = "recente"`
+#    - dove `mask` è False -> `eta_casa = "non_recente"`
+#    Usa `.loc[mask, ...]` e `.loc[~mask, ...]` (o un unico `.loc` con due passaggi).
+case.loc[mask, 'eta_casa'] = 'recente'
+case.loc[~mask, 'eta_casa'] = 'non_recente'
+# 3) Report con `.groupby(...).agg(...)`:
+#    Raggruppa per `citta` e `eta_casa` e calcola almeno:
+#    - `pratiche_totali` (conteggio righe)
+#    - `prezzo_medio` (media di `prezzo_euro`)
+#    - `metri_quadri_medi` (media di `metri_quadri`)
+#    Arrotonda se serve, usa `reset_index()` per una tabella piatta.
+report = case.groupby(['citta', 'eta_casa']).agg(
+    pratiche_totali = ("id", "count"),
+    prezzo_medio = ('prezzo_euro', 'mean'),
+    metri_quadri_medi = ('metri_quadri', 'mean')
+).round({'prezzo_medio': 2, 'metri_quadri_medi': 2}).reset_index()
+# Carica sempre `dati/case.csv`, poi salva il report finale in `dati/report_retrieval_agg.csv`
+# (es. `report.to_csv(..., index=False)`).
+report.to_csv(os.path.join(os.path.dirname(__file__), "dati", "report_retrieval_agg.csv"), index=False)
+#
+
 # ESERCIZIO 8 (Rinforzo focus `.agg`):
 # Crea un report "pronto recruiter" con colonne:
 # - citta
@@ -441,28 +485,41 @@ print(f"Shape dell'obiettivo:\n{obiettivo_case.shape}")
 # - usare `.agg` in modo esplicito
 # - ordinare per `quota_case_recenti` decrescente
 # - stampare top 5 e salvare CSV in `dati/report_rinforzo_agg.csv`
-#
+
+case['eta_casa'] = (case['anno_costruzione'] >= 2_000).astype(int)
+
+report = case.groupby('citta').agg(
+    pratiche_totali = ('id', 'count'),
+    prezzo_medio = ('prezzo_euro', 'mean'),
+    metri_quadri_medi = ('metri_quadri', 'mean'),
+    quota_case_recenti = ('eta_casa', lambda x: x.mean()*100),
+    varianza_prezzo = ('prezzo_euro', 'var')
+).round({'prezzo_medio': 2, 'metri_quadri_medi': 2, 'quota_case_recenti': 2, 'varianza_prezzo': 2}).reset_index().sort_values(by='quota_case_recenti', ascending=False)
+
+print(report.head(5))
+report.head(5).to_csv(os.path.join(os.path.dirname(__file__), "dati", "report_rinforzo_agg.csv"), index=False)
+
+
 # ESERCIZIO 9 (Teoria applicata, no codice lungo):
 # In massimo 12 righe:
 # - descrivi un caso in cui useresti regole manuali e NON ML
 # - descrivi un caso in cui useresti ML e NON sole regole
 # - spiega per ciascuno: rischio principale + mitigazione
-#
 
-# ==========================================================================
-# 🏗️ PROGETTO INCREMENTALE — Predittore Prezzo Casa (fase 1)
-# ==========================================================================
+# CASO 1 — Regole manuali, NON ML:
+# Validazione codice fiscale: la struttura è fissa (16 caratteri, pattern noto),
+# basta un controllo deterministico con regex + checksum.
+# Rischio: se il formato cambia (es. nuovo standard), le regole vanno aggiornate a mano.
+# Mitigazione: versionare le regole con validità temporale e test automatici.
 #
-# Task:
-# 1) Carica `case.csv`
-# 2) Definisci X e y (scegli almeno 4 feature)
-# 3) Stampa:
-#    - numero campioni
-#    - numero feature
-#    - prime 3 righe di X
-#    - primi 3 valori di y
-# 4) Salva un mini report testuale in `dati/report_fase1_ml.txt`
-#
+# CASO 2 — ML, NON sole regole:
+# Riconoscere se una busta paga è stata alterata graficamente:
+# i pattern di manipolazione sono troppi e troppo sottili per scrivere if/else esaustivi.
+# Un modello addestrato su esempi storici (genuini vs alterati) generalizza meglio.
+# Rischio: il modello può non riconoscere un tipo di alterazione mai visto (falso negativo).
+# Mitigazione: monitorare il recall in produzione e aggiungere nuovi casi al training
+# quando emergono pattern non coperti (feedback loop con il revisore).
+
 
 # ==========================================================================
 # SOLUZIONI — Solo dopo aver provato

@@ -1,0 +1,7 @@
+citta,pratiche_totali,prezzo_medio,metri_quadri_medi,quota_case_recenti,varianza_prezzo
+Firenze,4,325000.0,89.5,50.0,25350000000.0
+Napoli,5,214000.0,72.6,40.0,26580000000.0
+Roma,6,291666.67,78.5,33.33,24436666666.67
+Milano,6,272500.0,73.83,33.33,17527500000.0
+Bologna,4,176750.0,64.25,25.0,11428916666.67
+Torino,5,200600.0,75.8,20.0,8219300000.0

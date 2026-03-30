@@ -1,0 +1,13 @@
+citta,eta_casa,pratiche_totali,prezzo_medio,metri_quadri_medi
+Bologna,non_recente,3,129000.0,54.0
+Bologna,recente,1,320000.0,95.0
+Firenze,non_recente,2,227500.0,70.0
+Firenze,recente,2,422500.0,109.0
+Milano,non_recente,4,191250.0,59.5
+Milano,recente,2,435000.0,102.5
+Napoli,non_recente,3,111666.67,52.67
+Napoli,recente,2,367500.0,102.5
+Roma,non_recente,4,208750.0,63.25
+Roma,recente,2,457500.0,109.0
+Torino,non_recente,4,165750.0,67.25
+Torino,recente,1,340000.0,110.0

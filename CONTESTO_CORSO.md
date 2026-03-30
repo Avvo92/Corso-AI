@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 25/03/2026
+> **Ultimo aggiornamento**: 30/03/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -32,12 +32,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_02_ml/01_cos_e_il_ml.py (Cos'è il ML — teoria + primi esercizi) |
-| **Ultimo completato** | 12_web_bridge.py (25/03/2026) — **Modulo 1 completato integralmente** |
+| **Capitolo in corso** | modulo_02_ml/02_ciclo_ml.py (Ciclo completo ML — da preparare) |
+| **Ultimo completato** | 01_cos_e_il_ml.py (30/03/2026) — Primo capitolo M2, fondamenti ML |
 | **Modulo attuale** | 2 — Machine Learning Fundamentals |
-| **Difficoltà media** | 6.5 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7, 7, 6 — cap 07 escluso, senza voto) |
-| **Priorità attive** | 🟡 Lacune #12/#13/#14 rinforzate in cap.01 M2 (da verificare al quiz d'ingresso cap.02 M2), 🟡 Data leakage: concetto introdotto, da consolidare con esercizi pratici, 🟡 Feature engineering: prime nozioni, da tradurre in pratica con dataset documentale, 🟡 Coerenza pipeline prodotto: terminologia concordata (score_genuinita, prob_alterato, anomaly_score, semaforo), 🟡 Dual-track attivo: competenze AI Engineering + costruzione prodotto reale, ⚠️ `if var:` vs `is not None` per parametri numerici opzionali (emerso al cap.12), ⚠️ Confusione Series/DataFrame residua (da monitorare) |
-| **Sessione corrente** | Sessione 10 |
+| **Difficoltà media** | 6.5 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7, 7, 6, 6 — cap 07 escluso, senza voto) |
+| **Priorità attive** | 🔴 Lacuna #15 anti-pattern valutazione (da rinforzare in cap.02), 🟡 Lacune #12/#13/#14 da confermare al quiz ingresso cap.02, 🟡 Data leakage: da consolidare con esercizi pratici, 🟡 Feature engineering: da tradurre in pratica su dataset documentale, 🟡 Progetto incrementale fase 1 non svolto (da recuperare nel cap.02), ⚠️ Pattern #20 (anti-pattern valutazione ≠ feature engineering), ⚠️ loc/iloc: .loc padroneggiato, iloc non testato |
+| **Sessione corrente** | Sessione 11 |
 
 ---
 
@@ -48,11 +48,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 25/03/2026 |
-| **Cosa è stato fatto** | Completati cap 10-12 M1 (Modulo 1 chiuso). Avviato cap.01 M2: teoria supervised/unsupervised, feature/target, EDA, train/test, baseline, metriche. Discussione architetturale: pipeline dual-model, feature engineering, data leakage, CV documenti, RAG normative. Aggiornamento massivo CONTESTO_CORSO.md: sezione Pipeline ML, regole 34-36, glossario ML, roadmap riallineata. Hardening contesto: archivio M1, changelog, self-check agente. |
-| **Errori emersi** | Cap 12: if var vs is not None per numeri opzionali, confusione Series/DataFrame, errori iterazione GroupBy, riassegnazione DataFrame a Series. Cap 01 M2: quiz domanda 4 (loc vs iloc) fragile. |
-| **Cosa fare nella prossima sessione** | Proseguire cap.01 M2: completare esercizi e quiz verifica. Preparare cap.02 M2 con rinforzi su lacune 12-14 e leakage. Verificare assorbimento lacune al quiz ingresso cap.02. |
-| **Stato motivazione** | Molto alto: entusiasta della pipeline prodotto e architettura dual-model. Ownership sul progetto in crescita. |
+| **Data** | 30/03/2026 |
+| **Cosa è stato fatto** | Cap.01 M2 completato: quiz ingresso 5/5, quiz verifica 5.5/6, esercizi 1-9 media 9.1/10, progetto incrementale non svolto. Audit coerenza file corso (16 fix). Creato CSV `pratiche_semaforo.csv` e copiato `case.csv` in `modulo_02_ml/dati/`. Molte domande concettuali: modelli ML, train/validation/test, precision/recall, Transformer, feature categoriche, metriche. |
+| **Errori emersi** | Pattern #6 (consegne): esercizio 3 incompleto, esercizio 2 nome colonna sbagliato. Pattern #19: risposta bool usa "null" invece di "None". Nuovo pattern #20: anti-pattern valutazione confuso con feature engineering. Pattern #18: in netto miglioramento (quiz ingresso perfetto). |
+| **Cosa fare nella prossima sessione** | Preparare cap.02 M2 (ciclo ML completo). Inserire rinforzi su: anti-pattern valutazione (lacuna #15), loc/iloc (ancora fragile), progetto incrementale fase 1 (non svolto nel cap.01 — da recuperare nel cap.02). Verificare lacune #12-14 al quiz ingresso. |
+| **Stato motivazione** | Molto alto: fa domande profonde (tipi modelli, Transformer, metriche), vuole capire il "perché". Ownership sul progetto confermata. |
 
 ---
 
@@ -68,7 +68,8 @@
 |---|---------|-------|------|
 | 6 | Lettura incompleta delle consegne | 🟡 In miglioramento | Persistito nel M1, da monitorare nel M2 |
 | 18 | Confusione Series vs DataFrame | ⚠️ Attivo | Emerso cap 09 e 12, rinforzato in cap.01 M2 |
-| 19 | `if var:` vs `is not None` per numeri opzionali | ⚠️ Nuovo | Emerso cap 12 — 0 e falsy, rischio parametri FastAPI/ML |
+| 19 | `if var:` vs `is not None` per numeri opzionali | 🟡 In miglioramento | Concetto compreso (cap.01 M2), ma usa ancora "null" (JS) invece di "None" (Python) |
+| 20 | Anti-pattern valutazione confuso con feature engineering | ⚠️ Nuovo | Quiz verifica cap.01 M2: alla domanda "anti-pattern valutazione" ha descritto un errore di feature selection, non di evaluation (valutare su training/test contaminato) |
 
 ### Concetti da rinforzare per M2 (⚠️)
 
@@ -77,15 +78,17 @@
 | Data leakage | ⚠️ Introdotto | Concetto compreso a livello teorico, da consolidare con esercizi pratici |
 | Feature engineering | ⚠️ Introdotto | Prime nozioni, da tradurre in pratica su dataset documentale |
 | loc vs iloc | ⚠️ Fragile | Quiz domanda 4 cap.01 M2 — concetto non ancora solido |
-| Series vs DataFrame | ⚠️ In miglioramento | Rinforzato in cap.01 M2, da verificare al quiz ingresso cap.02 |
+| Series vs DataFrame | 🟡 In miglioramento | Quiz ingresso cap.01 M2 perfetto — da confermare al quiz cap.02 |
+| Anti-pattern valutazione modello | ⚠️ Nuovo | Confuso con errore feature engineering — rinforzare in cap.02 |
 
 ### Lacune quiz attive — da verificare al prossimo quiz
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 12 | Diagnosi mismatch shape in reshape | 🟡 Rinforzato | cap.01 M2 |
-| 13 | Interpretazione .shape su selezione colonne Pandas | 🟡 Rinforzato | cap.01 M2 |
-| 14 | Distinzione Series vs DataFrame | 🟡 Rinforzato | cap.01 M2 |
+| 12 | Diagnosi mismatch shape in reshape | 🟡 Rinforzato | cap.01 M2 — da verificare al quiz ingresso cap.02 |
+| 13 | Interpretazione .shape su selezione colonne Pandas | 🟡 Rinforzato | cap.01 M2 — da verificare al quiz ingresso cap.02 |
+| 14 | Distinzione Series vs DataFrame | 🟡 Rinforzato | cap.01 M2 — quiz ingresso perfetto, da confermare al cap.02 |
+| 15 | Anti-pattern di valutazione modello | 🔴 Da rinforzare | Da inserire nel cap.02 M2 |
 
 ### Anomalia aperta — Cap 07 (NumPy)
 
@@ -103,12 +106,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_02_ml/02 (da definire — secondo capitolo M2, probabilmente train/test split e primo modello) |
-| **Rinforzi da inserire (🔁)** | Lacune #12/#13/#14 (shape, selezione colonne, Series vs DataFrame) — da verificare al quiz ingresso. Leakage: richiamo pratico in ogni esercizio su feature/target. is not None vs if var: per parametri numerici. |
-| **Concetti ⚠️ da ripassare** | loc vs iloc (fragile), feature engineering pratico, workflow EDA completo, train/test split (per pratica e per tempo nel dominio documentale) |
-| **Pattern 🔴 da monitorare** | #6 (lettura consegne), #18 (Series/DataFrame), #19 (is not None) |
-| **Ponte mentale da riusare** | X maiuscolo = DataFrame 2D, y minuscolo = Series 1D. Feature = ingredienti, modello = chef. Data leakage = risposte dell’esame. |
-| **Note** | Modulo 1 completato integralmente. Cap.01 M2 avviato con teoria e primi esercizi. Pipeline ML del prodotto consolidata nel contesto. Ogni capitolo M2 deve collegare i concetti alla pipeline reale (regola 34-36). |
+| **Prossimo capitolo** | modulo_02_ml/02_ciclo_ml.py (Ciclo completo ML: preprocessing → split → train → evaluate) |
+| **Rinforzi da inserire (🔁)** | Lacuna #15 (anti-pattern valutazione confuso con feature engineering). Lacune #12/#13/#14 da verificare al quiz ingresso. Leakage: richiamo pratico. loc/iloc: mini-esercizio mirato. is not None: usa ancora "null" — correggere la terminologia. Progetto incrementale: fase 1 non svolta nel cap.01, da recuperare come task iniziale del cap.02. |
+| **Concetti ⚠️ da ripassare** | Anti-pattern di valutazione (valutare su training, tuning su test), loc vs iloc (fragile), feature engineering pratico su dataset documentale, train/test split (per pratica e per tempo) |
+| **Pattern 🔴 da monitorare** | #6 (lettura consegne — ancora presente), #19 (is not None — migliorato), #20 (anti-pattern valutazione — nuovo) |
+| **Ponte mentale da riusare** | X maiuscolo = DataFrame 2D, y minuscolo = Series 1D. Feature = ingredienti, modello = chef. Data leakage = risposte dell’esame. Train/validation/test = prove, simulazione, esame. |
+| **Note** | Cap.01 M2 chiuso con media 9.1/10. Studente fa molte domande concettuali profonde (tipi modelli, Transformer, metriche) — segnale positivo di ownership. Il cap.02 introduce il primo modello pratico e le metriche: è il ponte verso la pratica ML vera. Ogni capitolo M2 deve collegare i concetti alla pipeline reale (regola 34-36). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -634,8 +637,9 @@ completezza del self-check e chiedere correzioni.
 | 10_pandas_progetto | 7 | -1 ↓ (capitolo progetto: EDA ok, reportistica consolidata) |
 | 11_matplotlib_grafici | 7 | = (grafici e dashboard gestiti bene, rinforzi pre-plot assorbiti) |
 | 12_web_bridge | 6 | -1 ↓ (FastAPI + Pandas: buona comprensione endpoint/query, errori su is not None e Series/DataFrame) |
+| M2-01_cos_e_il_ml | 6 | = (primo capitolo ML: teoria ben assorbita, media esercizi 9.1/10, nessun salto di difficoltà percepito) |
 
-**Media attuale**: 6.5 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7, 7, 6 — cap 07 escluso perché senza voto formale). Modulo 1 completato. Curva stabilizzata dopo il picco al cap.04: crescita tecnica concreta, buona autonomia, pronto per il salto al Machine Learning.
+**Media attuale**: 6.5 (media di 2, 4, 6, 9, 8, 8, 7, 8, 7, 7, 6, 6 — cap 07 escluso perché senza voto formale). Curva stabile: il passaggio al ML non ha causato aumento di difficoltà, segnale positivo di base solida.
 
 ---
 
@@ -736,6 +740,12 @@ completezza del self-check e chiedere correzioni.
 | Payload | Il corpo dei dati inviati in una richiesta HTTP (tipicamente POST/PUT) | 12 | 0/3 | 🔄 |
 | `loc` / `iloc` | `loc`: selezione per etichette (nomi colonne/indice); `iloc`: selezione per posizione numerica (come indici di matrice) | M2-01 | 0/3 | 🔄 |
 | Boolean mask | Filtro booleano su DataFrame — `df[df['colonna'] > valore]` restituisce solo le righe dove la condizione è vera | M2-01 | 0/3 | 🔄 |
+| `value_counts()` | Conta occorrenze di ogni valore unico in una Series; con `normalize=True` dà proporzioni (0-1) | M2-01 | 0/3 | 🔄 |
+| `pd.cut()` | Divide valori numerici in categorie/fasce — `pd.cut(col, bins, labels)` | M2-01 | 1/3 | 🔄 |
+| Varianza | Misura di dispersione: quanto i valori si allontanano dalla media — `df['col'].var()` | M2-01 | 0/3 | 🔄 |
+| Feature categorica | Feature non numerica (es. "città") che va trasformata (one-hot encoding) per essere usata dai modelli | M2-01 | 0/3 | 🔄 |
+| One-hot encoding | Trasformazione di feature categoriche in colonne binarie (0/1) — una colonna per ogni valore unico | M2-01 | 0/3 | 🔄 |
+| Validation set | Sotto-insieme dei dati per tuning iperparametri, intermedio tra train e test | M2-01 | 0/3 | 🔄 |
 
 ---
 
@@ -743,6 +753,23 @@ completezza del self-check e chiedere correzioni.
 
 > Storico completo M1 migrato in `ARCHIVIO_MODULO_01.md`.
 > Qui si registrano solo le domande dal M2 in poi.
+
+### Cap.01 M2 — Cos'è il ML
+
+| # | Domanda | Risposta breve |
+|---|---------|----------------|
+| 1 | Come si usa `value_counts()`? | Conta occorrenze/valori unici; con `normalize=True` dà proporzioni 0-1 |
+| 2 | `null` e `False` sono entrambi valori falsy? | In Python si dice `None`, non `null`. Sì, `None`, `False`, `0`, `""`, `[]` sono falsy |
+| 3 | `pratiche.loc[mask]` restituisce un DataFrame? | Sì, `.loc` con mask booleana restituisce un DataFrame filtrato |
+| 4 | Cosa si intende per validation? | Sotto-set per tuning iperparametri, intermedio tra train e test |
+| 5 | Cosa è il modello, i parametri e le soglie? | Modello = algoritmo che impara; parametri = configurazioni pre-training; soglie = valori di taglio per classificazione |
+| 6 | Come funzionano i vari tipi di modelli? | Decision Tree, Random Forest, Regressione, Neural Network, Transformer — spiegati con analogie |
+| 7 | Cosa è una rete neurale Transformer? | Architettura con attenzione che legge tutto il contesto in parallelo (usata nei LLM) |
+| 8 | Concetto di recall e metrica | Recall = quanti veri positivi trovo su tutti i veri positivi; metrica = misura quantitativa di performance |
+| 9 | Come può essere tradotta la parola "feature"? | Caratteristica/variabile/attributo — nel ML indica una colonna di input |
+| 10 | Feature categoriche e one-hot encoding | Feature non numeriche vanno trasformate; one-hot crea colonne binarie per ogni valore |
+| 11 | Cosa è la varianza del prezzo? | Misura di dispersione: quanto i prezzi si allontanano dalla media |
+| 12 | Come salvare un report in CSV? | `df.to_csv(path, index=False)` |
 
 ---
 
@@ -784,7 +811,7 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠�
 - **Durata M1**: 17/02/2026 – 25/03/2026 (~5 settimane, 12 capitoli)
 - **Ritmo effettivo**: ~1 file ogni 2-3 giorni
 - **Tempo totale stimato per il corso**: 7-9 mesi (corso + MVP)
-- **Sessione corrente**: 10
+- **Sessione corrente**: 11
 
 ---
 
@@ -832,6 +859,13 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - Pandas: DataFrame, groupby, mask, agg, report, EDA, merge, apply, sort_values, to_dict
 - Visualizzazione: Matplotlib (plot, bar, pie, subplot, styling)
 - Web: FastAPI (endpoint, query parameters, JSON response, CORSMiddleware, Swagger)
+
+### Cap.01 M2 — Cos'è il ML (completato, media 9.1/10)
+- Concetti ML: supervised vs unsupervised vs reinforcement, feature/target, X/y, leakage, train/test
+- Pandas avanzato: pd.cut, groupby().agg() con lambda e var, reset_index, sort_values, to_csv
+- FastAPI: endpoint con Query() parametrizzato (ge/le), type hint str | None, limit
+- Workflow ML: frase business → target → EDA → X/y → split → baseline → metriche → iterazione
+- Terminologia pipeline: score_genuinita, prob_alterato, anomaly_score, semaforo, motivi_top3
 
 ---
 
@@ -890,13 +924,16 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 | Concetto | Appreso il | Rivisto (3gg) | Rivisto (7gg) | Rivisto (14gg) | Stato |
 |----------|-----------|---------------|---------------|----------------|-------|
-| Feature vs Target (X/y) | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
-| Data leakage | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
-| Train/test split | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
-| Supervised vs Unsupervised | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
+| Feature vs Target (X/y) | 25/03 (cap.01 M2) | ✅ cap.01 M2 esercizi 1-8 (usato correttamente in tutti) | — | — | 🟡 Praticato, da confermare al cap.02 |
+| Data leakage | 25/03 (cap.01 M2) | ✅ cap.01 M2 (concetto compreso, citato nel quiz) | — | — | 🟡 Teoria ok, pratica da testare |
+| Train/test split | 25/03 (cap.01 M2) | — | — | — | 🔄 Solo teoria, pratica nel cap.02 |
+| Supervised vs Unsupervised | 25/03 (cap.01 M2) | ✅ cap.01 M2 quiz e mini-es.2 | — | — | 🟡 Classificazione corretta |
 | Baseline model | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
-| Precision / Recall / F1 | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto |
-| loc vs iloc | 25/03 (cap.01 M2) | — | — | — | ⚠️ Fragile al quiz |
+| Precision / Recall / F1 | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto, domande fatte |
+| loc vs iloc | 25/03 (cap.01 M2) | ✅ cap.01 M2 (.loc usato correttamente in es.7/8) | — | — | 🟡 .loc ok, iloc non testato |
+| pd.cut / pd.qcut | 30/03 (cap.01 M2) | ✅ cap.01 M2 es.6 (usato correttamente) | — | — | 🟡 Primo uso riuscito |
+| groupby().agg() avanzato | 30/03 (cap.01 M2) | ✅ cap.01 M2 es.6/7/8 (lambda, var, multi-agg) | — | — | 🟡 Consolidato nel cap.01 |
+| Anti-pattern valutazione | 30/03 (cap.01 M2) | ❌ quiz verifica cap.01 M2 (confuso con feature engineering) | — | — | ⚠️ Da rinforzare nel cap.02 |
 
 > **Regola per l'agente**: questa tabella va estesa a ogni nuovo capitolo M2+.
 > I concetti M1 con stato OK/Consolidato restano come riferimento ma non richiedono piu ripasso attivo.
@@ -934,7 +971,8 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 11 | Parsing CSV manuale vs spiegazione astratta | Verifica/06 | Alla domanda Feynman aveva descritto il concetto in modo generale ma senza sequenza operativa completa (apertura file -> lettura righe -> header -> split -> dizionario -> append). Verificata corretta al quiz d'ingresso cap.07 con passaggi operativi in ordine. | 07 | 🟢 |
 | 12 | Diagnosi mismatch shape in reshape | Ingresso/09 | In una domanda "trova l'errore" su `img.reshape(64,)` aveva inizialmente guardato la sintassi, non il mismatch elementi (192 != 64). Rinforzo inserito nel cap.01 M2. | 01_M2 | 🟡 |
 | 13 | Interpretazione `.shape` su selezione colonne Pandas | Verifica/09 | Alla domanda su `vendite[["prodotto","prezzo"]].shape` aveva risposto `(2,)` invece di `(n_righe, 2)`. Rinforzo inserito nel cap.01 M2. | 01_M2 | 🟡 |
-| 14 | Distinzione Series vs DataFrame | Verifica/09 | Aveva confuso `df["colonna"]` (Series) con DataFrame. Rinforzo inserito nel cap.01 M2. | 01_M2 | 🟡 |
+| 14 | Distinzione Series vs DataFrame | Verifica/09 | Aveva confuso `df["colonna"]` (Series) con DataFrame. Rinforzo inserito nel cap.01 M2. Quiz ingresso cap.01 M2 perfetto. | 01_M2 | 🟡 → da confermare al quiz cap.02 |
+| 15 | Anti-pattern di valutazione modello | Verifica/01_M2 | Alla domanda "anti-pattern valutazione" ha descritto un errore di feature selection ("feature non coerenti"), non il classico anti-pattern: valutare su training set o fare tuning guardando il test set. | 02_M2 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
@@ -1111,7 +1149,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 10 — Pandas Progetto | ✅ Completato | Report qualità controlli con EDA completa, multi-aggregation |
 | 11 — Matplotlib | ✅ Completato | Dashboard visuale semafori, trend anomalie, distribuzione rischio |
 | 12 — Web Bridge | ✅ Completato | API FastAPI: endpoint /progetto/pratiche con filtro semaforo e output JSON strutturato |
-| M2 — ML | ⬜ Da fare | |
+| M2 cap.01 — Cos'è il ML | 🟡 Parziale | Teoria + esercizi completati (media 9.1/10), task prodotto non svolto — da recuperare nel cap.02 |
+| M2 cap.02+ — Ciclo ML | ⬜ Da fare | |
 | M3 — DL & CV | ⬜ Da fare | |
 | M4 — NLP | ⬜ Da fare | |
 | M5 — LLM | ⬜ Da fare | |
@@ -1598,6 +1637,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 30/03/2026 | Chiusura cap.01 M2: Stato, Ultima Sessione, Priorità, Prossimo Cap aggiornati. Lacuna #15 (anti-pattern valutazione) aggiunta. Pattern #20 registrato. Domande cap.01 M2 registrate. Ripasso M2 aggiornato. Competenze M2-01 aggiunte. Glossario: value_counts, pd.cut, varianza aggiunti. | Chiusura capitolo formale con handshake | Stato, Ultima Sessione, Priorità, Prossimo Cap, Domande, Lacune, Pattern, Ripasso, Competenze, Glossario, Changelog |
 | 25/03/2026 | Audit coerenza: Regola 7 M4→M3, punti 1-29→1-38, ~800→~1600 target unificato, motivo_top→motivi_top3 unificato, self-check completato, M9 aggiunto a portfolio, cap07 stato corretto, versionote→versionate, archivio M1 marcato come eseguito, sezione colloquio aggiornata | Eliminare incoerenze che potevano confondere agenti futuri | Regole, Self-check, Portfolio, Progetto, Archivio |
 | 25/03/2026 | Handshake canonizzati: .cursorrules riscritto con trigger avvio ("jarvis"+"iniziare") e chiusura ("jarvis chiusura capitolo X"), procedura 4 fasi (A-B-C-D), lettura obbligatoria 3 file | Canonizzare l'utilizzo del corso per studente e agenti | .cursorrules, Header CONTESTO, Sezione H) |
 | 25/03/2026 | Regole 37-38 (testing AI trasversale + primo deploy M2) + Passo 13 (archiviazione) + DoD M10 quantitativa + anomalia cap 07 + ripasso M2 | Chiudere i margini di miglioramento dalla valutazione qualita corso | Regole, Protocollo, Blueprint, Ripasso, Priorita |
