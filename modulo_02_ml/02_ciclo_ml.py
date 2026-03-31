@@ -23,29 +23,36 @@ import os
 # ==========================================================================
 #
 # DOMANDA 1 — Vero/Falso:
-# "Le feature (X) sono un DataFrame, il target (y) è una Series."
+# "Le feature (X) sono un DataFrame, il target (y) è una Series." Vero
 #
 # DOMANDA 2 — Prevedi l'output:
 #   X = case[["metri_quadri", "anno_costruzione"]]
 #   print(X.shape)
-# Se case ha 50 righe, cosa stampa?
+# Se case ha 50 righe, cosa stampa? (50, 2)
 #
 # DOMANDA 3 — Trova l'errore:
 #   y = case[["prezzo_euro"]]
 #   # Ora y è pronto come target per un modello.
-# Cosa c'è di sbagliato?
+# Cosa c'è di sbagliato? Il targer di un modello deve essere definito come Series, la sintassi scritta sopra genererebbe un DataFrame con shape (n, 1)
 #
 # DOMANDA 4 — Completa:
-#   Per selezionare righe con etichetta uso .___ ;
-#   per selezionare righe con posizione numerica uso .___
+#   Per selezionare righe con etichetta uso .loc ;
+#   per selezionare righe con posizione numerica uso .iloc
 #
 # DOMANDA 5 — Definizione:
 # Cos'è il data leakage? Fai un esempio concreto dal dominio documentale.
-#
+# il leakege avviene quando il target in maniera diretta o indiretta, finisce all'interno delle feature che il machine learnig utilizza per addestrarsi. Un esempio può
+# essere quando all'interno della label di un documento reddituale, lo scoring di genuinità finisce tra le feature che il modello usa per trovare proprio quello scoring 
+# in altri documenti. In questo caso avviene che nei test il modello risponde in maniera praticamente perfetta su dati test, ma quando invece si presentano documenti reali
+# (che non hanno associato ancora uno scoring genuinità perchè sono documenti su cui non esiste alcuna prova a riguardo) le prestazioni del modello crollano. In sintesi,
+# il modello deve fare affidamento solo su dati e feature che può trovare all'interno di ogni documento che analizza, e non su assunzioni postume fatte da chi lo sta addestrando
+
 # DOMANDA 6 — 💬 Spiega con parole tue:
 # Qual è la differenza tra valutare il modello sui dati di training
 # e valutarlo su un test set separato? Perché la prima è un anti-pattern?
-#
+# E' un anti patter perchè sarebbe come chiedere a un modello di prevedere qualcosa che ha già visto. Per fare un esempio concreto, non è corretto fare scommesse 
+# su una partità che si è già vista (come Beef di ritorno al futuro). In questo caso, il modello conosce già l'esito. I test vanno eseguiti su dati che il modello non ha 
+# mai visto, solo in questo modo si può capire quanto effettivamente sia diventato bravo nella sua capacità di predizione.
 
 # ==========================================================================
 # 🔁 RINFORZO MIRATO — Anti-pattern di valutazione del modello
@@ -82,7 +89,9 @@ import os
 # Prova subito:
 # 1) Scrivi qui sotto 2 anti-pattern di valutazione (NON di preparazione dati).
 # 2) Spiega in 1 riga perché valutare sul training set è ingannevole.
-# ...
+# fare validation usando il test set, che invece deve rimanere solo come "esame finale". Bisogna invece essere categorici e utilizzare i dati del test sono dopo la fase di validation
+# sceglere la metrica sbagliata per il tipo di target che mi sono prefissato. Con i documenti reddituali è importante avere un accuracy alta, ma senza una recall alta diventa inutile.
+# Valutare sul training test è ingannevole perchè è come valutare quanto si è bravi a predire il tempo meteorologico, allenandoci a fare solo previsioni solo sul meteo del giorno prima. In questo caso, sapendo già a monte la risposta, non avremmo idea di quanto siamo effettivamente efficaci con previsioni di cui non sappiamo l'esito finale.
 
 
 # ==========================================================================
@@ -110,12 +119,15 @@ import os
 
 path_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
 case = pd.read_csv(path_file)
+print(case.iloc[5:10, case.columns.get_indexer(['citta', 'prezzo_euro'])])
+print(case.loc[5:9, ["citta", "prezzo_euro"]])
 
 # 1) Stampa le prime 3 righe usando .iloc (NON .head())
 # 2) Stampa le colonne "citta" e "prezzo_euro" delle righe 5-9 usando .iloc
 # 3) Stampa le stesse righe 5-9 usando .loc con gli stessi nomi colonna
 # 4) Confronta: il risultato è lo stesso? Perché?
-# ...
+# Il risultato è identico perchè andiamo a stampare gli stessi valori nelle stesse posizioni del dataframe, la differenza sta nel modo in cui
+# vi accediamo: il primo tramite indici numerici, il secondo tramite etichette
 
 
 # ==========================================================================
@@ -189,7 +201,22 @@ print("Domanda → Dati → EDA → Preprocessing → Split → Train → Evalua
 # Per ogni punto scrivi UNA frase concreta (non generica).
 # Esempio punto 1: "La domanda è: dato un set di documenti reddituali di
 # un cliente, qual è la probabilità che siano genuini?"
-# ...
+
+
+# 1) Voglio creare un applicativo che sia in grado di prendere in input un documento o più documenti reddituali di una persona, e in out put
+# restituire un semaforo, uno scoring per coerenza fiscale, numerica, grafica e di metadati (ognuno di quali accompagnato da una motivazione testuale) che possa aiutare un gestore fidi o un consulente finanziario a capire il rischio di manomissione documentale di una pratica di finanziamento o di mutuo.
+
+#2) il Dataset sarà formato da documenti alterati (già verificati come tali, per diverse ragioni) e da documenti invece all 100% genuini. In particolare per le buste paghe, i modelli unici, e le certificazioni uniche verranno forniti molti esempi per ogni tipo di software di elaborazione paghe, così per ogni formato sarà possibile essere accurati (dato che molte volte le buste paghe differiscono anche in modalità di calcolo e voci riportate). Inoltre verranno forniti sia documenti pdf nativi sia scansioni, per poter avere un dataset trasversale in grado di analizzare le incogruenze eliminando il rumore di fondo causato dai campiamento di tipo di immagine fornita.
+
+#3/ 4) In seguito , i dati vengono analizzati per capire quali sono gli elementi mancanti o di potenziale disturbo, prima di procedere con la pulizia e poi con la creazione delle feature adatte per il machine learning: ad esempio sezioni della busta paga mancanti, o voci di retribuzioni poco usate e quindi che possono generare dei falsi positivi nell'analisi di contraffazione.
+
+#5) Dopo di che il dataset verrà organizzato in trainig, validation e test. Questo split deve tenere in considerazione anche che i  redditi, anche se divisi in tipologia, ognuno di loro appartiene a una pratica distinta per persona e per data, quindi importante che le pratiche non vengano divise a "metà", di cui una parte inserita in training e l'altra in test. Devono essere trattare come organismi unici, e al loro interno ogni organo distinto deve essere analizzato sia in quanto documento appartente a una categoria (quindi una busta paga deve rispettare i pattern appartenenti a quel tipo di busta paga di quello specifico software di elaborazione paghe) sia in relazione alla pratica nel suo complesso (es. se in busta per ottobre viene riportato un netto di 1000 euro e sul conto invece compare per quel mese un accredito di 1500 euro, questa incongruenza deve essere segnalata come anomalia indice di una possibile manomissione). 
+
+#6) Si allena il modello con la fase di training, facendo tuning degli iperparametri e aggiustando le feature per ottimizzare il risultato desiderato, . 
+
+#7) alla fine si fa un test per vedere se le metriche raggiungono livelli soddisfacenti rispetto il nostro benchmark. Ossia si forniscono in fase di test sia documenti genuini che alterati( in ognuno dei 4 macrosettori stabiliti, o solo su uno o alcuni di essi), e si verificano le metriche per capire il livello di accuracy, precision e f1 che il modello (o i modelli creati) raggiunge. Nel nostro caso una recall quasi perfetta è necessaria, poichè meglio un falso positivo che un positivo mancato.
+
+#8) si ripercorrono i passi precedenti fino a raggiungere il benchmark stabilito.
 
 
 # ==========================================================================
@@ -303,9 +330,7 @@ print("Nuove colonne:", [c for c in case_encoded.columns if c.startswith("citta_
 
 from sklearn.model_selection import train_test_split
 
-X = case_encoded.drop(columns=["id", "prezzo_euro", "fascia_prezzo"] +
-                       [c for c in case_encoded.columns if "fascia" in c],
-                       errors="ignore")
+X = case_encoded.drop(columns=["id", "prezzo_euro", "fascia_prezzo"] + [c for c in case_encoded.columns if "fascia" in c], errors="ignore")
 y = case_encoded["prezzo_euro"]
 
 X_train, X_test, y_train, y_test = train_test_split(

@@ -86,9 +86,9 @@
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
 | 12 | Diagnosi mismatch shape in reshape | 🟡 Rinforzato | cap.01 M2 — da verificare al quiz ingresso cap.02 |
-| 13 | Interpretazione .shape su selezione colonne Pandas | 🟡 Rinforzato | cap.01 M2 — da verificare al quiz ingresso cap.02 |
-| 14 | Distinzione Series vs DataFrame | 🟡 Rinforzato | cap.01 M2 — quiz ingresso perfetto, da confermare al cap.02 |
-| 15 | Anti-pattern di valutazione modello | 🔴 Da rinforzare | Da inserire nel cap.02 M2 |
+| 13 | Interpretazione .shape su selezione colonne Pandas | 🟢 Superato | Quiz ingresso cap.02 M2: risposta corretta (50, 2) |
+| 14 | Distinzione Series vs DataFrame | 🟢 Superato | Quiz ingresso cap.02 M2: ha spiegato che doppia parentesi genera DataFrame, non Series |
+| 15 | Anti-pattern di valutazione modello | 🟢 Superato | Quiz ingresso cap.02 M2: spiegazione perfetta con analogia Biff/Ritorno al Futuro |
 
 ### Anomalia aperta — Cap 07 (NumPy)
 
