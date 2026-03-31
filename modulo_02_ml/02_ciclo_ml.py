@@ -284,8 +284,13 @@ print("Nuove colonne:", [c for c in case_encoded.columns if c.startswith("citta_
 # 2) Conta quante case grandi ci sono con value_counts()
 # 3) Spiega in 1 riga: perché NON puoi mettere "prezzo_euro" come feature
 #    se il target è "prezzo_euro"? (leakage!)
-# ...
-
+# perchè addestrimo il modello sulla base di un info che nell'utilizzo reale non avrebbe, in quanto lo stiamo addestrando proprio
+# a prevedere il prezzo in un contesto dove non lo abbiamo e stiamo cercando di ricavarlo
+print('\nMini-esercizio 2\n')
+case['is_grande'] = case['metri_quadri'] >= 100
+conta_case_grandi = (case['is_grande'].value_counts(normalize=True))*100
+print(f"{case[['metri_quadri', 'is_grande']].head(10)}\n")
+print(conta_case_grandi)
 
 # ==========================================================================
 # PARTE 3: Train/Test Split — Separare Studio da Esame
@@ -330,17 +335,43 @@ print("Nuove colonne:", [c for c in case_encoded.columns if c.startswith("citta_
 
 from sklearn.model_selection import train_test_split
 
-X = case_encoded.drop(columns=["id", "prezzo_euro", "fascia_prezzo"] + [c for c in case_encoded.columns if "fascia" in c], errors="ignore")
+# 1) Definiamo X e y
+# - X (feature): tutte le colonne che useremo come input del modello.
+# - y (target): la colonna che vogliamo prevedere.
+#
+# Regola anti-leakage (fondamentale):
+# - Non mettere MAI in X il target (qui: "prezzo_euro"), altrimenti il modello
+#   sembra bravissimo ma sta solo copiando la risposta.
+# - Escludiamo anche eventuali colonne "fascia_*" / "fascia_prezzo" perché sono
+#   derivate dal prezzo: sarebbero leakage indiretto.
+#
+# Nota: errors="ignore" evita crash se una colonna non esiste (capita spesso
+# quando stai sperimentando e cambi il dataset / le feature).
+cols_to_drop = (
+    ["id", "prezzo_euro", "fascia_prezzo"]
+    + [c for c in case_encoded.columns if "fascia" in c]
+)
+X = case_encoded.drop(columns=cols_to_drop, errors="ignore")
 y = case_encoded["prezzo_euro"]
 
+# 2) Split train/test
+# - test_size=0.2: 20% dei dati va nel test (esame finale), 80% nel training (studio).
+# - random_state=42: fissa la casualità per ottenere SEMPRE lo stesso split,
+#   così se cambi max_depth/feature sai che le metriche cambiano per le tue scelte,
+#   non perché è cambiato il campione.
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
+# 3) Stampiamo un riassunto utile per debug
+# - Quante righe e quante feature stiamo usando
+# - Quante righe finiscono in training e quante in test (con percentuali)
 print("\nPARTE 3 — Train/Test Split")
 print(f"Dataset totale: {X.shape[0]} righe, {X.shape[1]} feature")
 print(f"Training set:   {X_train.shape[0]} righe ({X_train.shape[0]/X.shape[0]*100:.0f}%)")
 print(f"Test set:        {X_test.shape[0]} righe ({X_test.shape[0]/X.shape[0]*100:.0f}%)")
+print(f"y_train shape:  {y_train.shape}  (target per il training)")
+print(f"y_test shape:   {y_test.shape}   (target per il test)")
 
 # --- MINI-ESERCIZIO 3 — Prova subito! ---
 # 1) Cambia test_size a 0.3 (30% test). Stampa le nuove dimensioni.
@@ -348,8 +379,19 @@ print(f"Test set:        {X_test.shape[0]} righe ({X_test.shape[0]/X.shape[0]*10
 #    Le RIGHE specifiche cambiano? (suggerimento: stampa y_test.head())
 # 3) Scrivi in 1 riga: perché nel prodotto documentale lo split va fatto
 #    per PRATICA e non per singolo documento.
-# ...
+# Lo split va fatto per pratiche e non per singoli documenti, perchè una pratica di finanziamento richiede una serie di documenti interconnessi tra loro (es. buste paga e conti correnti dove avvengono gli accrediti delle suddette buste paga). se si splittasse in maniere non omogenea rispetto le pratiche, sarebbe impossibile effettuare controlli incrociati coerenti tra i diversi documenti che costituiscono le pratiche
+X_train_2, X_test_2, y_train_2, y_test_2 = train_test_split(
+    X, y, test_size=0.3, random_state=0
+)
+print("\nMini-esercizio 3\n")
+print(f"Training set => {X_train_2.shape[0]} righe, {X_train_2.shape[1]} colonne ({((X_train_2.shape[0] / X.shape[0])*100):.2f} % del dataset totale)")
+print(f"Testing set => {X_test_2.shape[0]} righe, {X_test_2.shape[1]} colonne ({((X_test_2.shape[0] / X.shape[0])*100):.2f} % del dataset totale)\n")
+print(y_test.head())
+print(y_test_2.head())
+print(y_test.index[:5])
+print(y_test_2.index[:5])
 
+print(f"Confronto tra le prime righe dei dataset:\n{X_train.iloc[0:3, 0:3]}\n{X_train_2.iloc[0:3, 0:3]}")
 
 # ==========================================================================
 # PARTE 4: Il Primo Modello — Decision Tree (Albero Decisionale)
