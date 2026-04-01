@@ -455,7 +455,61 @@ print(f"Valori reali corrispondenti:           {y_train.values[:5]}")
 #    (Suggerimento: con albero molto profondo, memorizza i dati)
 # 3) Scrivi in 1 riga: cos'è l'overfitting, usando l'analogia
 #    dell'albero troppo profondo.
-# ...
+# l'overfitting è quando il modello ad albero raggiunge una profondità eccessiva, e non si limita più a trovare la regola generale, ma impara a memoria i risultati.
+from sklearn.tree import DecisionTreeRegressor
+print("\nMini-esercizio 4\n")
+
+case_encoded = pd.get_dummies(case, columns=["citta"], dtype=int)
+
+cols_to_drop = (['id', 'prezzo_euro'] + [c for c in case_encoded.columns if "fascia" in c ])
+X = case_encoded.drop(columns=cols_to_drop, errors="ignore")
+y = case_encoded['prezzo_euro']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y , test_size=0.2, random_state=42
+)
+
+modello = DecisionTreeRegressor(max_depth=2, random_state=42)
+modello.fit(X_train, y_train)
+y_pred_train = modello.predict(X_train)
+y_pred_test = modello.predict(X_test)
+
+print("\nProfondita 2\n")
+
+print(f"Predizione Train: {y_pred_train[:5].round(0)}")
+print(f"Valori reali Train: {y_train[:5].values.round(0)}\n\n")
+
+print(f"Predizione Test: {y_pred_test[:5].round(0)}")
+print(f"Valori reali Test: {y_test[:5].values.round(0)}\n\n")
+
+modello = DecisionTreeRegressor(max_depth=20, random_state=42)
+modello.fit(X_train, y_train)
+y_pred_train = modello.predict(X_train)
+y_pred_test = modello.predict(X_test)
+
+print("\nProfondita 20\n")
+
+print(f"Predizione Train: {y_pred_train[:5].round(0)}")
+print(f"Valori reali Train: {y_train[:5].values.round(0)}\n\n")
+
+print(f"Predizione Test: {y_pred_test[:5].round(0)}")
+print(f"Valori reali Test: {y_test[:5].values.round(0)}\n\n")
+
+
+
+modello = DecisionTreeRegressor(max_depth=4, random_state=42)
+modello.fit(X_train, y_train)
+y_pred_train = modello.predict(X_train)
+y_pred_test = modello.predict(X_test)
+
+print("\nProfondita 4\n")
+
+print(f"Predizione Train: {y_pred_train[:5].round(0)}")
+print(f"Valori reali Train: {y_train[:5].values.round(0)}\n\n")
+
+print(f"Predizione Test: {y_pred_test[:5].round(0)}")
+print(f"Valori reali Test: {y_test[:5].values.round(0)}\n\n")
+
 
 
 # ==========================================================================
@@ -513,9 +567,49 @@ if r2_train - r2_test > 0.2:
 # 1) Allena un Decision Tree con max_depth=2 e uno con max_depth=20.
 # 2) Calcola MAE e R² per entrambi, sia su train che su test.
 # 3) Quale dei due ha overfitting? Come lo riconosci?
+# lo si riconosce guardando quale dei 2 ha una forbice maggiore tra r2 del train e r2 del test.
 # 4) Scrivi in 2 righe: qual è il valore ideale di max_depth e come
 #    lo troveresti nella pratica?
-# ...
+# Non esiste un valore ideale in assoluto, dipende da tanti fattori (come feature e tipo di dataset).Lo si può trovare in ogni situazione a seguito di diverse prove e dopo aver valutato diversi valori. 
+print("\nMini-esercizio 5\n")
+
+print("\nProfondità 2")
+modello = DecisionTreeRegressor(max_depth=2, random_state=42)
+modello.fit(X_train, y_train)
+
+y_pred_train = modello.predict(X_train)
+y_pred_test = modello.predict(X_test)
+
+mae_train = mean_absolute_error(y_train, y_pred_train)
+mae_test = mean_absolute_error(y_test, y_pred_test)
+r2_train = r2_score(y_train, y_pred_train)
+r2_test = r2_score(y_test, y_pred_test)
+
+print(f"MAE Train => {mae_train:.2f}")
+print(f"MAE Test  => {mae_test:.2f}")
+print(f"R²  Train => {r2_train:.2f}")
+print(f"R²  Test  => {r2_test:.2f}")
+if (r2_train - r2_test) > 0.1:
+    print(f"!!! Possibile Overfitting !!!")
+
+print("\nProfondità 20")
+modello = DecisionTreeRegressor(max_depth=20, random_state=42)
+modello.fit(X_train, y_train)
+
+y_pred_train = modello.predict(X_train)
+y_pred_test = modello.predict(X_test)
+
+mae_train = mean_absolute_error(y_train, y_pred_train)
+mae_test = mean_absolute_error(y_test, y_pred_test)
+r2_train = r2_score(y_train, y_pred_train)
+r2_test = r2_score(y_test, y_pred_test)
+
+print(f"MAE Train => {mae_train:.2f}")
+print(f"MAE Test  => {mae_test:.2f}")
+print(f"R²  Train => {r2_train:.2f}")
+print(f"R²  Test  => {r2_test:.2f}")
+if (r2_train - r2_test) > 0.1:
+    print(f"!!! Possibile Overfitting !!!")
 
 
 # ==========================================================================
@@ -553,10 +647,10 @@ assert mae_test < mae_baseline, "Il modello deve battere la baseline"
 
 # --- MINI-ESERCIZIO 6 — Prova subito! ---
 # 1) Per il tuo prodotto documentale (classificazione genuino/alterato):
-#    se il 90% dei documenti è genuino, qual è l'accuracy della baseline?
+#    se il 90% dei documenti è genuino, qual è l'accuracy della baseline? 90% classificandoli come tutti genuini.
 # 2) Se il modello ha accuracy 91%, è buono? Spiega in 2 righe
 #    perché l'accuracy da sola non basta (suggerimento: recall).
-# ...
+# E' sicuramente meglio rispetto la baseline, ma potenzialmente su 10 documenti alternati potrebbero sfuggirne addirittura 9. Non basta che il modello abbia un accuracy elevata (90% sembra molto), ma in realtà nel caso di documenti alterati vogliamo che il recall (ossia in numero di alterati trovati rispetto al totale degli alterati) sia il più alto possibile, perchè siamo molto più interessati a trovare tutti gli alterati piuttosto che a classificare come non alterati i genuini.
 
 
 # ==========================================================================
@@ -565,29 +659,34 @@ assert mae_test < mae_baseline, "Il modello deve battere la baseline"
 #
 # DOMANDA 1 — Vero/Falso:
 # "Il preprocessing (scaling, encoding) si calcola sull'intero dataset
-# prima dello split." Rispondi e spiega perché.
+# prima dello split." Rispondi e spiega perché. Falso. Acnhe se il formato dei dati deve essere uguale (encoding), per fare scaling, come ad esempio la deviazione standard e le media, devono essere calcolate solo sul training, altrimenti si rischierebbe di fare leakage 
 #
 # DOMANDA 2 — Completa:
 # train_test_split(X, y, test_size=___, random_state=___)
 # Per avere 80% train e 20% test, con risultati riproducibili.
+# train_test_split(X, y, test_size=0.2, random_state=42)
 #
 # DOMANDA 3 — Trova l'errore:
 #   modello.fit(X_test, y_test)
 #   y_pred = modello.predict(X_test)
 #   print("MAE:", mean_absolute_error(y_test, y_pred))
 # Dove sta l'anti-pattern? Spiega.
-#
+# si sta facendo fitting sul testing, invece che sul training. In pratica si allena il modello sugli stessi dati su cui poi verrà esaminato.
+
 # DOMANDA 4 — Prevedi:
 # Se un Decision Tree ha R²=0.95 sul training e R²=0.40 sul test,
 # cosa sta succedendo? Come lo risolvi?
-#
+# Evidentemente un caso di overfitting, si dovrebbe procedere a ridurre la max_depth.
+
 # DOMANDA 5 — 💬 Spiega con parole tue:
 # Cos'è una baseline e perché è il primo passo OBBLIGATORIO prima di
 # costruire modelli complessi?
+# In pratica una baseline costituisce il valore di riferimento di una metrica per capire quanto il mio modello è migliore rispetto alla suddivisione più basica possibile. Nel caso di valori numerici, ad esempio, si valuta quanto le mie previsioni sono accurate rispetto alla semplice media di tutti i valori del training. Ovviamente un modello è efficace solo se riesce a battere la metrica valutata sulla baseline.
 #
 # DOMANDA 6 — Definizione:
 # Differenza tra MAE e R². Quale è più facile da spiegare a un collega
 # non tecnico e perché?
+# il MAE, acronimo di mean absolute error, e semplicemente il calcolo dello scostamento medio rispetto ai valori di y (ossia i valori reali del  target). R² invece è un indicatore che va da 1 a 0 (o addirittua anche valori negativi) che ci aiuta a capire quanto è effettivamente preciso il nostro modello. 1 significa che il modello è perfetto, 0 che il modello risponde come se facesse semplicemente la media, valore negativo qualora il nostro modello stesse addirittura facendo peggio rispetto alla semplice media. Il più semplice da spiegare è il MAE, perchè il calcolo è di facile comprensione poichè è costituito dalla semplice media dello scostamento rispetto ai valori reali. Il secondo invece è un indice il cui calcolo è più complesso.
 #
 
 
@@ -600,7 +699,39 @@ assert mae_test < mae_baseline, "Il modello deve battere la baseline"
 # esegui one-hot encoding su "citta", fai il train/test split (80/20),
 # e stampa le dimensioni di X_train, X_test, y_train, y_test.
 # Attenzione: escludi "id" e "prezzo_euro" da X!
-#
+
+
+print("\nEsercizio 1\n")
+#carico il file csv
+path_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+case = pd.read_csv(path_file)
+
+#creo le features richieste
+case['eta_casa'] = 2026 - case['anno_costruzione']
+case['prezzo_al_mq'] = case['prezzo_euro'] / case['metri_quadri']
+# case['stanze_per_mq'] = case['metri_quadri'] / case['num_stanze']
+
+#faccio one-hot encoding per case['citta']
+case_encoded = pd.get_dummies(case, columns=['citta'], dtype=int)
+
+#preparo il dataset per il train e per il test
+cols_to_drop = (
+    ['prezzo_euro', 'id'] + [c for c in case_encoded.columns if ("prezzo" in c) or ("fascia" in c)]
+    )
+X = case_encoded.drop(columns=cols_to_drop, errors="ignore")
+y = case_encoded['prezzo_euro']
+
+# faccio lo split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=.2, random_state=42
+)
+
+print(f"Size di X_train =>{X_train.shape}")
+print(f"Size di X_test  =>{X_test.shape}")
+print(f"Size di y_train =>{y_train.shape}")
+print(f"Size di y_test  =>{y_test.shape}")
+
+
 
 # ESERCIZIO 2 (Medio):
 # Allena un DecisionTreeRegressor con max_depth=3 sui dati del training.
@@ -608,7 +739,44 @@ assert mae_test < mae_baseline, "Il modello deve battere la baseline"
 # Calcola anche la baseline (media).
 # Stampa un confronto formattato e scrivi un assert che verifica
 # che il modello batte la baseline.
-#
+
+#imposto gli iper-parametri e alleno il modello
+print("\nEsercizio 2\n")
+modello = DecisionTreeRegressor(max_depth=3, random_state=42)
+modello.fit(X_train, y_train)
+
+# testo il modello sul dataset del train e poi sul test (per avere i riferimenti su cui fare analisi tramite le metriche)
+y_pred_train = modello.predict(X_train)
+y_pred_test = modello.predict(X_test)
+
+# imposto le metriche di riferimento basate sulla baseline
+y_baseline = np.full_like(y_test, y_train.mean())
+mae_baseline = mean_absolute_error(y_test, y_baseline)
+r2_baseline = r2_score(y_test, y_baseline)
+
+# creo le metriche su cui fare le valutazioni
+mae_train = mean_absolute_error(y_train, y_pred_train)
+mae_test = mean_absolute_error(y_test, y_pred_test)
+r2_train = r2_score(y_train, y_pred_train)
+r2_test = r2_score(y_test, y_pred_test)
+
+# effettuo un confronto
+print(f"Previsioni Train   =>{y_pred_train[:5].astype(int)}")
+print(f"Valori Reali Train =>{y_train[:5].values.round(0)}")
+print(f"MAE Train =>{mae_train:.2f}")
+print(f"R² Train  =>{r2_train:.3f}\n")
+
+print(f"Previsioni Test   =>{y_pred_test[:5].astype(int)}")
+print(f"Valori Reali Test =>{y_test[:5].values.round(0)}")
+print(f"MAE Test =>{mae_test:.2f}")
+print(f"R² Test  =>{r2_test:.3f}\n")
+
+print(f"Previsioni Baseline =>{y_baseline[:5]}")
+print(f"Valori Reali Test   =>{y_test[:5].values.round(0)}")
+print(f"MAE Baseline => {mae_baseline:.2f}")
+print(f"R² Baseline  => {r2_baseline:.3f}")
+
+assert mae_test < mae_baseline
 
 # ESERCIZIO 3 (🎯 [COLLOQUIO]):
 # Spiega in 8-10 righe:
@@ -616,7 +784,7 @@ assert mae_test < mae_baseline, "Il modello deve battere la baseline"
 # - 2 strategie concrete per ridurlo (nel contesto di un Decision Tree)
 # - Come si collega al concetto di bias-variance tradeoff
 #   (anche se non conosci la formula, spiega l'intuizione)
-#
+# over-fitting è quando il modello, divenuto troppo profondo e complesso, arriva non più a generalizzare ma a imparare a memoria le risposte, adattandosi anche al così detto "rumore" presente nei dati. Darà dunque previsioni perfette con i dati del train, ma sbaglierà nella fase di test (e si riscontrerà un' ampia differenza tra la metrica R² sui dati train e sui dati test). Lo si può trovare andando a regolare gli iperparametri (ad esempio min_samples_split, max_leaf_nodes o il più utilizzato max_depth), oppure lavorando sulla qualità delle freature, fino ad avere delle risposte dalle metriche che soddisfano in nostro benchmark. il punto è trovare il giusto bias-variance_tradeoff, ossia l'equilibrio tra underfitting e overfitting, il giusto compromesso tra generalizzazione e memoria.
 
 # ESERCIZIO 4 (🔧 [REFACTORING]):
 # Riscrivi questo codice "brutto" in modo pulito e professionale:
