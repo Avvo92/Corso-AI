@@ -804,7 +804,51 @@ assert mae_test < mae_baseline
 #
 # Problemi da risolvere: nomi variabili, import disordinati, nessun
 # random_state, nessuna baseline, nessun confronto train/test.
-#
+
+print("\nEsercizio 4")
+import pandas as pd
+import numpy as np
+import os
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import r2_score
+
+path_case_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+case = pd.read_csv(path_case_file)
+X = case[['metri_quadri','anno_costruzione']]
+y = case['prezzo_euro']
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+modello = DecisionTreeRegressor(random_state=42, max_depth=5)
+
+modello.fit(X_train, y_train)
+
+y_pred_test = modello.predict(X_test)
+y_pred_train = modello.predict(X_train)
+
+y_baseline = np.full_like(y_test, y_train.mean())
+mae_baseline = mean_absolute_error(y_test, y_baseline)
+r2_baseline = r2_score(y_test, y_baseline)
+
+mae_test = mean_absolute_error(y_test, y_pred_test)
+r2_test = r2_score(y_test, y_pred_test)
+
+mae_train = mean_absolute_error(y_train, y_pred_train)
+r2_train = r2_score(y_train, y_pred_train)
+
+print("\nBaseline")
+print(f"MAE Baseline =>{mae_baseline:.2f}")
+print(f"R² Baseline  =>{r2_baseline:.3f}")
+
+print(f"\nTrain")
+print(f"MAE Train =>{mae_train:.2f} €")
+print(f"R² Train  =>{r2_train:.3f}")
+
+print(f"\nTest")
+print(f"MAE Test =>{mae_test:.2f} €")
+print(f"R² Test  =>{r2_test:.3f}")
 
 # ESERCIZIO 5 (🔍 [DEBUG]):
 # Questo codice produce un errore. Trova il bug e spiega l'errore:
