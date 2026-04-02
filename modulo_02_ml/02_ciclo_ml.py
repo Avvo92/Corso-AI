@@ -987,17 +987,18 @@ print(f"Previsioni Train => {y_pred_train[:5].astype(int)}")
 print(f"MAE Train        => {mae_train:.2f}")
 print(f"R² Train         => {r2_train:.3f}\n")
 
-print(f"Reali Test      => {y_test[:5].values.astype(int)}")
-print(f"Previsioni Test => {y_pred_test[:5].astype(int)}")
-print(f"MAE Test        => {mae_test:.2f}")
-print(f"R² Test         => {r2_test:.3f}\n")
+print(f"Reali Test       => {y_test[:5].values.astype(int)}")
+print(f"Previsioni Test  => {y_pred_test[:5].astype(int)}")
+print(f"MAE Test         => {mae_test:.2f}")
+print(f"R² Test          => {r2_test:.3f}\n")
 
-print(f"Reali Test     => {y_test.values.astype(int)}")
-print(f"Prev. Baseline => {y_baseline.astype(int)}")
-print(f"MAE Baseline   => {mae_baseline:.2f}")
-print(f"R² Baseline    => {r2_baseline:.3f}\n")
+print(f"Reali Test       => {y_test.values.astype(int)}")
+print(f"Prev. Baseline   => {y_baseline.astype(int)}")
+print(f"MAE Baseline     => {mae_baseline:.2f}")
+print(f"R² Baseline      => {r2_baseline:.3f}\n")
 
 assert mae_test < mae_baseline, "il modello deve battere la baseline"
+
 
 # ESERCIZIO 8 (🔀 [INTERLEAVING] — Confronto modelli):
 # Allena 3 Decision Tree con max_depth diversi: 2, 5, 10.
@@ -1007,14 +1008,105 @@ assert mae_test < mae_baseline, "il modello deve battere la baseline"
 # dove gap_r2 = r2_train - r2_test (indicatore di overfitting).
 # Stampa il DataFrame ordinato per gap_r2 crescente.
 # Quale max_depth sceglieresti e perché?
-#
+
+print("\nEsercizio 8\n")
+
+cols_to_drop = (['prezzo_euro'] + [c for c in case_encoded.columns if ('prezzo' in c) or ('fascia' in c)])
+X = case_encoded.drop(columns=cols_to_drop, errors='ignore')
+y = case_encoded['prezzo_euro']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=.2, random_state=42
+)
+#creo 3 diversi modelli con max depth diverse
+modello_1 = DecisionTreeRegressor(max_depth=2, random_state=42)
+modello_2 = DecisionTreeRegressor(max_depth=5, random_state=42)
+modello_3 = DecisionTreeRegressor(max_depth=10, random_state=42)
+
+#alleno i 3 modelli diversi sugli stessi dati di training
+modello_1.fit(X_train, y_train)
+modello_2.fit(X_train, y_train)
+modello_3.fit(X_train, y_train)
+
+#effutto la previsione sul dataset del train e del test per tutti i modelli
+y_pred_train_mod_1 = modello_1.predict(X_train)
+y_pred_test_mod_1 = modello_1.predict(X_test)
+
+y_pred_train_mod_2 = modello_2.predict(X_train)
+y_pred_test_mod_2 = modello_2.predict(X_test)
+
+y_pred_train_mod_3 = modello_3.predict(X_train)
+y_pred_test_mod_3 = modello_3.predict(X_test)
+
+# creiamo le metriche di controllo per le valutazioni di tutti e tre i modelli
+mae_train_mod_1 = mean_absolute_error(y_train, y_pred_train_mod_1)
+r2_train_mod_1 = r2_score(y_train, y_pred_train_mod_1)
+mae_test_mod_1 = mean_absolute_error(y_test, y_pred_test_mod_1)
+r2_test_mod_1 = r2_score(y_test, y_pred_test_mod_1)
+gap_r2_mod_1 = round(r2_train_mod_1 - r2_test_mod_1, 3) 
+
+mae_train_mod_2 = mean_absolute_error(y_train, y_pred_train_mod_2)
+r2_train_mod_2 = r2_score(y_train, y_pred_train_mod_2)
+mae_test_mod_2 = mean_absolute_error(y_test, y_pred_test_mod_2)
+r2_test_mod_2 = r2_score(y_test, y_pred_test_mod_2)
+gap_r2_mod_2 = round(r2_train_mod_2 - r2_test_mod_2, 3) 
+
+mae_train_mod_3 = mean_absolute_error(y_train, y_pred_train_mod_3)
+r2_train_mod_3 = r2_score(y_train, y_pred_train_mod_3)
+mae_test_mod_3 = mean_absolute_error(y_test, y_pred_test_mod_3)
+r2_test_mod_3 = r2_score(y_test, y_pred_test_mod_3)
+gap_r2_mod_3 = round(r2_train_mod_3 - r2_test_mod_3, 3) 
+
+dati = [
+    {
+    "max_depth": 2,
+    "mae_train": round(mae_train_mod_1, 2),
+    "r2_train": round(r2_train_mod_1, 3),
+    "mae_test": round(mae_test_mod_1, 2),
+    "r2_test": round(r2_test_mod_1, 3),
+    "gap_r2": gap_r2_mod_1   
+    },
+    
+    {
+    "max_depth": 5,
+    "mae_train": round(mae_train_mod_2, 2),
+    "r2_train": round(r2_train_mod_2, 3),
+    "mae_test": round(mae_test_mod_2, 2),
+    "r2_test": round(r2_test_mod_2, 3),
+    "gap_r2": gap_r2_mod_2   
+    },
+    
+    {
+    "max_depth": 10,
+    "mae_train": round(mae_train_mod_3, 2),
+    "r2_train": round(r2_train_mod_3, 3),
+    "mae_test": round(mae_test_mod_3, 2),
+    "r2_test": round(r2_test_mod_3, 3),
+    "gap_r2": gap_r2_mod_3
+    },
+]
+
+analisi_df = pd.DataFrame(dati)
+sorted_analisi_df = analisi_df.sort_values(by="gap_r2", ascending=True)
+print(sorted_analisi_df)
+
+# dalla analisi si evince che il modello migliore è il modello numero 1, sia perchè l'errore medio assoluto del test è il più basso di tutti, sia perchè, vedendo il gap del R² del test in relazione all' R² del train, risulta chiaramente meno soggetto all'overfitting rispetto agli altri 2
 
 # ESERCIZIO 9 (Teoria applicata):
 # In massimo 10 righe:
 # - Descrivi il ciclo ML applicato al tuo prodotto documentale
 # - Per ogni fase cita un esempio concreto dal dominio documenti
 # - Spiega quale fase è la più critica per il tuo caso e perché
-#
+## 1) Problema & metriche: prevedere se un documento è alterato (y) e quantificare score_genuinita — es.: etichetta su busta paga sospetta vs storica certa.
+# 2) Raccolta dati: pratiche con PDF (busta paga, CU, estratto conto) — es.: stesso cliente, più documenti per pratica, hash e versioning file.
+# 3) Estrazione & pulizia: OCR + parsing campi (netto, lordo, date, CF) — es.: normalizzare date e importi prima di costruire le feature.
+# 4) Feature engineering: numeri calcolati da regole di dominio — es.: ratio trattenute/lordo, delta tra netto busta e accrediti in c/c.
+# 5) Split & anti-leakage: train/validation/test (es. per tempo o per pratica) senza mescolare pezzi della stessa pratica tra train e test.
+# 6) Training: modello supervisionato (genuino/alterato) + eventuale anomaly detector su feature — es.: confrontare Random Forest vs albero con max_depth limitato.
+# 7) Valutazione: precision/recall su “alterato”, F1, analisi falsi negativi — es.: accettare un falso allarme ma non un alterato classificato come genuino.
+# 8) Integrazione prodotto: semaforo, motivi_top3, API verso dashboard operatore — es.: esito JSON per pratica con evidenze.
+# 9) Monitoraggio & feedback: revisore corregge etichette → nuovo ciclo — es.: campioni “gialli” reinseriti nel dataset con audit.
+# Fase più critica: qualità etichette + estrazione campi (OCR/parser): se y o gli input sono sbagliati, nessun modello recupera — il resto della pipeline amplifica solo quel rumore.
 
 
 # ==========================================================================
