@@ -36,7 +36,7 @@ from sklearn.preprocessing import StandardScaler
 # "Il preprocessing (scaling, encoding) va calcolato sull'intero dataset
 # PRIMA dello split train/test."
 # Rispondi V o F e spiega perché.
-# ...
+# Falso, solo l'encoding deve essere fatto su tutto il data set. Mentre ad esempio lo one-hot encoding deve essere fatto su dutto il dataset, in quanto in generale i modelli come il decision tree non accettano feature categoriche, Lo scaling deve essere fatto solo sul train. Questo perchè dobbiamo essere sicuri si non fare leakage quando ad esempio, facendo scaling, calcoliamo la media di alcune feature: in questo modo, i dati del test starebbero subdolamente entrando nel trai, alterando la genuinità poi della valutazione finale
 #
 # DOMANDA 2 — Prevedi l'output:
 #   modello = DecisionTreeRegressor(max_depth=2)
@@ -44,28 +44,28 @@ from sklearn.preprocessing import StandardScaler
 #   y_pred = modello.predict(X_train)
 #   print(r2_score(y_train, y_pred))
 # Il valore sarà vicino a 1.0 o a 0.5? Perché?
-# ...
+# vicino a 1 , perchè lo stiamo testando sullo stesso data set su cui lo abbiamo addestrato
 #
 # DOMANDA 3 — Trova l'errore:
 #   mae = (mean_absolute_error(y_test, y_pred), 2)
 #   print(f"MAE: {mae}")
 # Cosa stampa? Perché non è un numero arrotondato?
-# ...
+# perchè manca il round davanti le parentesi
 #
 # DOMANDA 4 — Completa:
 #   Per verificare che un modello sia utile, lo confronto con la ___ .
 #   Se il modello non la batte, significa che ___ .
-# ...
+# baseline, fa peggio della semplice media
 #
 # DOMANDA 5 — Definizione:
 # Qual è la differenza tra valutare un modello sul training set e
 # valutarlo sul test set? Perché il primo è un anti-pattern?
-# ...
+# la differenza sta nel fatto che valutandolo sul train set, lo stiamo valutando nel trovare i valori sui cui lui si è addestrato, ed il rischio è che non abbia generalizzato alcuna regola, ma più probabilmente ha imparato a memoria dei pattern, oppure ovefittato aderendo troppo ai dati. In questo modo il nostro modello sarà estremamente preciso nei dati train, ma potenzialmente scadente quando fornirò previsioni su dati che non conosce. Valutarlo sul test, che è un dataset che il modello non ha mai visto, ci da un idea chiara di come se la cava con le regole generali del contesto su cui lui deve fornire le sue previsioni, senza il rischio che stia per così dire "barando".
 #
 # DOMANDA 6 — Completa:
 #   gap_r2 = r2_train - r2_test. Se gap_r2 è molto alto (es. 0.5),
 #   il modello soffre di ___ . Per ridurlo in un Decision Tree posso ___ .
-# ...
+# overfitting, fare tuning sugli iperparametri, come ad esempio ridurre la max_depth
 
 
 # ==========================================================================
@@ -83,9 +83,9 @@ from sklearn.preprocessing import StandardScaler
 #
 # Prova subito (rispondi nei commenti):
 # 1) np.arange(24).reshape(4, 6) — funziona? Perché?
-# ...
+# Si funziona, perche 4*6 = 24
 # 2) np.arange(24).reshape(5, 5) — funziona? Perché?
-# ...
+# No, non fuziona, perche 5*5 = 25 
 
 
 # ==========================================================================
@@ -107,9 +107,8 @@ from sklearn.preprocessing import StandardScaler
 # x = 3.14159
 # a = (x, 2)
 # b = round(x, 2)
-# print(type(a), a)     # → ?
-# print(type(b), b)     # → ?
-# ...
+# print(type(a), a)     # → tupla, (3.14159, 2)
+# print(type(b), b)     # → float, 3.14
 
 
 # ==========================================================================
@@ -203,7 +202,9 @@ print(f"  {'(intercetta)':25s} -> {modello_lin.intercept_:>12,.1f} EUR")
 # 3) In 1 riga: perché i coefficienti sono utili per spiegare le
 #    previsioni a un collega non tecnico? (Pensa a motivi_top3
 #    nel prodotto documentale.)
-# ...
+# 1) => Il coefficente con maggior peso in termini di valore assoluto è costituito dalla colonna "Roma": potrebbe aver senso che sia quello perchè Roma è la capitale d'Italia ed ha senso che il fatto che l'immobile si trovi li ha molta rilevanza nel determinare il valore dell'immobile.
+# 2) => L'intercetta è negativa. intuitivamente se ne deduce che i coefficenti, moltiplicati per il valore relativo ad ognuno di loro, poi sommati tra loro, producono un numero positivo che è maggiore in termini di valore assoluto a quello dell'intercetta, visto che non esiste una casa nella realtà che abbia costo in euro negativo.
+# 3) i coefficenti danno un idea abbastanza immediata dell'importanza relativa delle vare feature, in modo da capire quasi istantaneamente, come per una fotografia, la situazione generale di un mercato come quello immobiliare 
 
 
 # ==========================================================================
@@ -284,13 +285,16 @@ print(confronto_df.to_string(index=False))
 
 # --- MINI-ESERCIZIO 2 — Prova subito! ---
 # 1) Quale modello ha il MAE test più basso? E l'R² test più alto?
+# il MAE test più basso appartiene al decision tree.
 # 2) Confronta RMSE e MAE per il Decision Tree: sono simili o molto
 #    diversi? Cosa ti dice questo sulla presenza di errori grandi?
+# la differenza tra MAE e RMSE nel decision tree, che si attesta in circa 8000 €, ci indica che ci sono degli errori di grande entità, e che quando il modello sbaglia, sbaglia, in alcuni casi sbaglia di molto.
 # 3) Entrambi i modelli battono la baseline? (Controlla MAE test)
+# si entrambi si sono rivelati efficaci rispetto alla baseline
 # 4) Se dovessi scegliere un modello per stimare il prezzo di una casa,
 #    quale sceglieresti e perché? (Non c'è UNA risposta giusta —
 #    ragiona su metriche + interpretabilità.)
-# ...
+# Sono entrambi efficaci, ma visti i confronti tra le metriche di entrambi, ma il linearRegression sembra essere più efficace nell'evitare errori di grande entità, quindi sceglierei quest'utlimo
 
 
 # ==========================================================================
@@ -390,12 +394,15 @@ print(f"LinearRegression CON scaling   -> MAE test: "
 
 # --- MINI-ESERCIZIO 3 — Prova subito! ---
 # 1) Dopo lo scaling, la media è ~0 e la std ~1. Perché?
+# la media è zero perchè gli scarti sono espressi in valori che possono essere positivi o negativi in base alla loro relazione con la media, e la loro somma è sempre 0 nello stesso insieme. la deviazione std invece è l'unita di misura in cui vengono trasformate le grandezze, e dopo la trasformazione, tutto viene convertito nel "numero di passi tipici" di cui è composta una grandezza
 # 2) Il Decision Tree ha bisogno dello scaling? Perché no?
+# lo scaling non si usa nel DecisionTree perchè il modello funziona tramite domande riguardanti specifiche feature che non vengono confrontate tra di loro, e per ognuna la soglia è costruita per la specifica freature.
 # 3) Cosa succede se fai scaler.fit(X) su TUTTO il dataset prima
 #    dello split? Spiega il leakage in 1 riga.
+# a quel punto le medie del test influiscono nel training, e quindi inquiniamo il modello.
 # 4) Nel prodotto: su quale set faresti fit dello scaler —
 #    pratiche storiche o pratiche nuove da verificare?
-# ...
+# Ovviamente pratiche storiche per il fit, poi farei il trasform su entrambe (con la sicurezza che lo farebbe sulle medie del solo train)
 
 
 # ==========================================================================
@@ -439,13 +446,16 @@ print(f"\nLa feature più influente è: {coef_df.iloc[0]['feature']}")
 
 # --- MINI-ESERCIZIO 4 — Prova subito! ---
 # 1) Qual è la feature con il coefficiente più alto in valore assoluto?
+# il valore più alto in assoluto lo hanno i metri quadri
 # 2) Ha senso che sia quella? (Pensa al dominio immobiliare)
+# in effetti la prima cosa che viene in mente per determinare il valore di una casa è il numero di metri quadri, quindi direi che ha molto senso
 # 3) Ci sono feature con coefficiente NEGATIVO? Cosa significa?
 #    (Es. se "distanza_centro_km" ha coefficiente negativo: più sei
 #    lontano dal centro, più il prezzo SCENDE — ha senso?)
+# si ha senso perchè alcune features rappresentano anche cose negative, quindi se il loro valore è alto per alcuni record, può determinare un prezzo più basso (come nell esempio fatto nella domanda, all'aumentare della distanza dal centro il prezzo segue un andamento più o meno opposto, e quindi scende)
 # 4) Nel prodotto: se il coefficiente di "delta_netto_lordo" è molto
 #    negativo, come lo spiegheresti all'operatore in linguaggio semplice?
-# ...
+#quando il delta tra netto/lordo è molto anomalo, il sistema abbassa pesantemente lo scoring della pratica, suggerendo un controllo più specifico sui documenti che hanno fatto scattare l'allarme.
 
 
 # ==========================================================================
@@ -455,12 +465,12 @@ print(f"\nLa feature più influente è: {coef_df.iloc[0]['feature']}")
 # DOMANDA 1 — Vero/Falso:
 # "La regressione lineare funziona bene quanto il Decision Tree su
 # qualsiasi tipo di dati." Rispondi e spiega.
-# ...
+# Falso, la regressione lineare funziona bene solo per relazioni che sono quasi lineari. Possiamo aiutarlo tramite lo scaling, ma per relazioni non lineari il modello non va bene( meglio usare modelli a soglia come il DecisionTree)
 #
 # DOMANDA 2 — Prevedi:
 # Se MAE = 15.000 e RMSE = 45.000, cosa ti dice sulla distribuzione
 # degli errori del modello? (Suggerimento: RMSE >> MAE)
-# ...
+# Che ci sono errori molto grandi (outliner) e non solo tanti piccoli errori simili tra loro. Su alcune osservazioni il modello sbaglia di molto
 #
 # DOMANDA 3 — Trova l'errore:
 #   scaler = StandardScaler()
@@ -468,23 +478,29 @@ print(f"\nLa feature più influente è: {coef_df.iloc[0]['feature']}")
 #   X_scaled = scaler.transform(X)
 #   X_train, X_test = train_test_split(X_scaled, test_size=0.2)
 # Qual è il problema? Come lo correggi?
-# ...
+# Si è fatto lo scaling prima di splittare il dataset in train e test (problema di leakage);
+# lo si risolve così:
+# X_train, X_test = train_test_split(X, test_size=0.2)
+# scaler = StandardScaler()
+# scaler.fit(X_train)
+# X_train_scaled = scaler.transform(X_train)
+# X_test_scaled = scaler.transform(X_test)
 #
 # DOMANDA 4 — Completa:
 #   I ___ della regressione lineare indicano quanto ogni feature
 #   contribuisce alla previsione. Sono confrontabili tra feature
 #   diverse SOLO se le feature sono ___ .
-# ...
+# coefficenti, scalate
 #
 # DOMANDA 5 — 💬 Spiega con parole tue:
 # Perché nel tuo prodotto documentale i coefficienti della regressione
 # lineare sono utili per costruire i "motivi_top3" dell'esito?
 # Fai un esempio concreto con una feature a tua scelta.
-# ...
+# Sono utili perchè aiutano a capire il peso relativo delle feature per generare gli scoring di genuinità: ad esempio, il delta tra netto della busta paga e stipendio accreditato sul conto nel mese di riferimento nella busta è una feature molto importante, quindi deve avere un peso consistente in grado di far scattare un allarme alla minima incongruenza
 #
 # DOMANDA 6 — Definizione:
 # Differenza tra MAE e RMSE. In quale situazione preferiresti RMSE?
-# ...
+# Il MAE è la media degli errori rispetto i valori reali. L'RMSE invece penalizza gli errori più grandi, aumentando il peso relativo all'interno della media. Comparando il delta tra MAE e RMSE si può avere un idea sulla composizione e distribuzione degli errori. Si usa l'RMSE nei casi in cui si vuole avere per tenere traccia in modo più chiaro degli errori di  grande entità
 
 
 # ==========================================================================
@@ -498,8 +514,56 @@ print(f"\nLa feature più influente è: {coef_df.iloc[0]['feature']}")
 # - I 3 coefficienti più alti (in valore assoluto) con il nome della feature
 # - MAE e R² sul test
 # - L'assert che il modello batte la baseline
-# ...
+print("\nEsercizio 1\n")
 
+#carico il file case.csv
+path_file_case = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+case = pd.read_csv(path_file_case)
+
+#aggiungo feature per eta casa
+case['eta_casa'] = 2026 - case['anno_costruzione']
+
+#preparo X e y (features e target)
+case_encoded = pd.get_dummies(case, columns=["citta"], dtype="int")
+cols_to_drop = ['prezzo_euro', 'id'] + [c for c in case_encoded.columns if ("prezzo" in c) or ("fascia" in c)]
+X = case_encoded.drop(columns=cols_to_drop, errors="ignore")
+y = case_encoded['prezzo_euro']
+
+#faccio lo split del dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=.2, random_state=42
+)
+
+#creo il modello lienare, lo addestro e faccio la previsione sul test
+modello_lineare = LinearRegression()
+modello_lineare.fit(X_train, y_train)
+
+y_pred_test = modello_lineare.predict(X_test)
+
+#trovo la baseline 
+y_baseline = np.full_like(y_test, y_train.mean())
+
+#calcolo le metriche
+mae_baseline = mean_absolute_error(y_test, y_baseline)
+r2_baseline = r2_score(y_test, y_baseline)
+mae_test = mean_absolute_error(y_test, y_pred_test)
+r2_test = r2_score(y_test, y_pred_test)
+
+#creo un DataFrame per visualizzare i coefficenti
+coef_df = pd.DataFrame({
+    "feature": X_train.columns,
+    "coef": modello_lineare.coef_.round(2)
+})
+
+coef_df['abs'] = coef_df['coef'].abs()
+
+
+#stampo come da richiesta dell'esercizio
+print(coef_df.sort_values(by="abs", ascending=False).drop(columns="abs").head(3).reset_index(drop=True))
+print(f"\nMAE Test =>{round(mae_test, 2)}")
+print(f"R² Score =>{round(r2_test, 3)}")
+
+assert mae_test < mae_baseline, "il modello batte la baseline"
 
 # ESERCIZIO 2 (Medio):
 # Confronta 3 modelli sullo stesso split:
