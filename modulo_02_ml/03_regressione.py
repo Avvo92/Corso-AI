@@ -573,7 +573,137 @@ assert mae_test < mae_baseline, "il modello batte la baseline"
 # Per ciascuno calcola MAE, RMSE e R² su train e test.
 # Crea un DataFrame di confronto e stampalo ordinato per mae_test.
 # Quale modello scegli? Motiva in 2 righe di commento.
-# ...
+
+#leggo il file csv
+print("\nEsercizio 2\n")
+path_file_case = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+case = pd.read_csv(path_file_case)
+
+#eseguo one-hot encoding delle colonne categoriche
+case_encoded = pd.get_dummies(case, columns=["citta"], dtype='int')
+
+#definisco le colonne da eliminare dalle features
+cols_to_drop = ['prezzo_euro', 'id'] + [c for c in case_encoded.columns if ('fascia' in c) or ('prezzo' in c)]
+
+#divido le features dal target
+X = case_encoded.drop(columns=cols_to_drop, errors='ignore')
+y = case_encoded['prezzo_euro']
+
+#faccio lo split in train e test
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=.2, random_state=42
+)
+
+#assegno i modelli a delle variabili
+modello_albero= DecisionTreeRegressor(max_depth=4)
+modello_lineare = LinearRegression()
+modello_lineare_scalato = LinearRegression()
+
+#creiamo uno StandardScaler
+scaler = StandardScaler()
+
+# FIT solo sul train (impara media e std dal training)
+scaler.fit(X_train)
+
+# TRANSFORM su entrambi (applica la stessa trasformazione)
+X_train_scaled = pd.DataFrame(
+    scaler.transform(X_train), columns=X_train.columns, index=X_train.index
+)
+
+X_test_scaled = pd.DataFrame(
+    scaler.transform(X_test), columns=X_test.columns, index=X_test.index
+)
+
+#Alleno i tre modelli
+modello_albero.fit(X_train, y_train)
+modello_lineare.fit(X_train, y_train)
+modello_lineare_scalato.fit(X_train_scaled, y_train)
+
+#facciamo le previsioni sul test
+y_pred_albero_test = modello_albero.predict(X_test)
+y_pred_albero_train = modello_albero.predict(X_train)
+
+y_pred_lin_test = modello_lineare.predict(X_test)
+y_pred_lin_train = modello_lineare.predict(X_train)
+
+y_pred_lin_scl_test = modello_lineare_scalato.predict(X_test_scaled)
+y_pred_lin_scl_train = modello_lineare_scalato.predict(X_train_scaled)
+
+#per ognuno creiamo le metriche per la valutazione, sia train che test
+mae_test_albero = mean_absolute_error(y_test, y_pred_albero_test)
+r2_test_albero = r2_score(y_test, y_pred_albero_test)
+rmse_test_albero = root_mean_squared_error(y_test, y_pred_albero_test)
+
+mae_train_albero = mean_absolute_error(y_train, y_pred_albero_train)
+r2_train_albero = r2_score(y_train, y_pred_albero_train)
+rmse_train_albero = root_mean_squared_error(y_train, y_pred_albero_train)
+
+#-----------------------------------------------------------------------
+
+mae_test_lin = mean_absolute_error(y_test, y_pred_lin_test)
+r2_test_lin = r2_score(y_test, y_pred_lin_test)
+rmse_test_lin = root_mean_squared_error(y_test, y_pred_lin_test)
+
+mae_train_lin = mean_absolute_error(y_train, y_pred_lin_train)
+r2_train_lin = r2_score(y_train, y_pred_lin_train)
+rmse_train_lin = root_mean_squared_error(y_train, y_pred_lin_train)
+
+#-----------------------------------------------------------------------
+
+mae_test_lin_scl = mean_absolute_error(y_test, y_pred_lin_scl_test)
+r2_test_lin_scl = r2_score(y_test, y_pred_lin_scl_test)
+rmse_test_scl = root_mean_squared_error(y_test, y_pred_lin_scl_test)
+
+mae_train_lin_scl = mean_absolute_error(y_train, y_pred_lin_scl_train)
+r2_train_lin_scl = r2_score(y_train, y_pred_lin_scl_train)
+rmse_train_scl = root_mean_squared_error(y_train, y_pred_lin_scl_train)
+
+#creiamo una lista di dizionari di confronto delle metriche
+confronto_metriche = [
+    {
+    "modello": "Albero Decisionale",
+    "mae_train": round(mae_train_albero, 2),
+    "r2_score_train": round(r2_train_albero, 3),
+    "rmse_train": round(rmse_train_albero,3),
+    "mae_test": round(mae_test_albero, 2),
+    "r2_score_test": round(r2_test_albero, 3),
+    "rmse_test": round(rmse_test_albero,3)
+    },
+    
+    {
+    "modello": "Regressione Lineare",
+    "mae_train": round(mae_train_lin, 2),
+    "r2_score_train": round(r2_train_lin, 3),
+    "rmse_train": round(rmse_train_lin,3),
+    "mae_test": round(mae_test_lin, 2),
+    "r2_score_test": round(r2_test_lin, 3),
+    "rmse_test": round(rmse_test_lin,3)
+    },
+    
+    {
+    "modello": "Regressione Lineare Scalata",
+    "mae_train": round(mae_train_lin_scl, 2),
+    "r2_score_train": round(r2_train_lin_scl, 3),
+    "rmse_train": round(rmse_train_scl,3),
+    "mae_test": round(mae_test_lin_scl, 2),
+    "r2_score_test": round(r2_test_lin_scl, 3),
+    "rmse_test": round(rmse_test_scl,3)
+    }
+]
+
+#trasformiamola in DataFrame
+df_confronto = pd.DataFrame(confronto_metriche)
+
+
+print(f"Confronto Modello Albero:\n{y_pred_albero_test.astype('int')}\n{y_test.values.astype(int)}\n\n")
+print(f"Confronto Modello Lineare:\n{y_pred_lin_test.astype('int')}\n{y_test.values.astype(int)}\n\n")
+print(f"Confronto Modello Lineare Scalato:\n{y_pred_lin_scl_test.astype('int')}\n{y_test.values.astype(int)}\n\n")
+
+print(df_confronto.sort_values(by="mae_test"))
+
+#Scelgo il modello lineare perchè ha ottenuto punteggi migliori nel confronto di tutte le metriche, mostrando in particolare anche una forbice meno ampia tra train e test.
+
 
 
 # ESERCIZIO 3 (🎯 [COLLOQUIO]):
@@ -583,7 +713,11 @@ assert mae_test < mae_baseline, "il modello batte la baseline"
 # - Come i coefficienti della regressione possono aiutare la
 #   spiegabilità delle previsioni (pensa al tuo prodotto)
 # - Cos'è il trade-off bias-varianza in questo contesto
-# ...
+# E' preferibile usare un modello lineare quando tra features e target esiste una relazione di tipo lineare, ossia modellabile su una retta.
+# Si preferisce invece un albero decisionale quando il rapporto tra target e feature esiste una relazione di tipo non lineare, che quindi segue un andamento che può essere curvilineo. In questo caso la logica delle soglie è quella più efficace.
+#La spiegabilità a partire dai coefficienti, soprattutto nell'ambito della valutazione della genuinità di un documento, è determinante. Per fare un esempio,  un delta errato tra lordo e netto in una busta paga, dovendo influire molto sullo scoring della pratica, avrà sicuramente un coefficiente con peso relativo molto elevato, rispetto ad altre feature di minore importanza.
+#Il trade-off bias varianza è il compromesso tra un modello troppo semplice (under-fitting) e uno troppo complesso (over-fitting). In pratica bias e varianza sono gli estremi opposti entro cui noi dobbiamo trovare il giusto equilibrio. Per trovarlo, possiamo modulare gli iperparametri (come ad esempio la max_depth di un albero decisionale per regolare la complessità del modello), oppure lavorare sulle feature per trovare quelle più adatte e più efficaci.
+#
 
 
 # ESERCIZIO 4 (🔧 [REFACTORING]):
@@ -603,7 +737,20 @@ assert mae_test < mae_baseline, "il modello batte la baseline"
 #
 # Problemi da trovare: ordine scaling/split, nomi variabili,
 # ordine argomenti mean_absolute_error.
-# ...
+print("\nEsercizio 4\n")
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+scaler.fit(X_train)
+X_train_scaled = scaler.transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+modello_lineare_scalato = LinearRegression()
+modello_lineare_scalato.fit(X_train_scaled, y_train)
+y_pred_test = modello_lineare_scalato.predict(X_test_scaled)
+print(mean_absolute_error(y_test, y_pred_test))
 
 
 # ESERCIZIO 5 (🔍 [DEBUG]):
@@ -622,8 +769,8 @@ assert mae_test < mae_baseline, "il modello batte la baseline"
 #
 # Suggerimento: guarda le colonne di X_bug. C'è qualcosa che NON
 # dovrebbe essere lì? (Pensa al data leakage.)
-# ...
-
+# il problema è che la colonna prezzo_euro non è stata eliminata dalle feature, ed è stata eliminata la colonna citta_Milano (scelta da valutare), quindi in pratica si sta allenando il modello dandogli tutte le risposte che invece dovrebbe trovare lui, e si è tolta una feature che poteva invece aiutare il modello.
+# correzione veloce: X_no_bug = case_e.drop(columns=["id", "prezzo_euro", "prezzo_al_mq"], errors="ignore") 
 
 # ESERCIZIO 6 (🔀 [INTERLEAVING] — Pandas + Regressione):
 # 1) Usando case.csv, crea un report groupby("citta") con:
@@ -635,8 +782,94 @@ assert mae_test < mae_baseline, "il modello batte la baseline"
 # 4) Stampa MAE e R² test di entrambi e della baseline
 # 5) Commenta in 2 righe: con pochi dati (una sola città),
 #    quale modello tende a soffrire di più di overfitting?
-# ...
+print("\nEsercizio 6\n")
+path_file_case = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+case = pd.read_csv(path_file_case)
 
+report = case.groupby('citta').agg(
+    prezzo_medio = ('prezzo_euro', 'mean'),
+    metri_quadri_medi = ('metri_quadri', 'mean'),
+    num_case = ('id', 'count')    
+)
+#trovo la citta con il maggior numero di case in vendita
+top_citta = report.sort_values(by='num_case', ascending=False).head(1).index[0]
+
+#filtro usando .loc
+case_roma = case.loc[case['citta'] == top_citta]
+
+#creo i due modelli
+modello_albero = DecisionTreeRegressor(max_depth=3, random_state=42)
+modello_lineare = LinearRegression()
+
+#scelta delle colonne da eliminare dalle features
+cols_to_drop = ['prezzo_euro', 'id', 'citta'] + [c for c in case_roma.columns if ('prezzo' in c) or ('fascia' in c)]
+
+#divido features e target
+X = case_roma.drop(columns=cols_to_drop, errors='ignore')
+y = case_roma['prezzo_euro']
+
+#splitto test e train
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=.2, random_state=42
+)
+
+#addestro i modelli sul dataset del train
+modello_albero.fit(X_train, y_train)
+modello_lineare.fit(X_train, y_train)
+
+#facciamo le previsioni sul test con entrambi i modelli
+y_pred_albero_test = modello_albero.predict(X_test)
+y_pred_albero_train = modello_albero.predict(X_train)
+y_pred_lineare_test = modello_lineare.predict(X_test)
+y_pred_lineare_train = modello_lineare.predict(X_train)
+
+#creaiamo la base line 
+y_baseline = np.full_like(y_test, y_train.mean())
+
+#creiamo le metriche a partire da quella della baseline
+mae_baseline = mean_absolute_error(y_test, y_baseline)
+r2_baseline = r2_score(y_test, y_baseline)
+
+#metriche modello albero per train e test
+mae_train_albero = mean_absolute_error(y_train, y_pred_albero_train)
+mae_test_albero = mean_absolute_error(y_test, y_pred_albero_test)
+r2_train_albero = r2_score(y_train, y_pred_albero_train)
+r2_test_albero = r2_score(y_test, y_pred_albero_test)
+
+#metriche modello lineare per train e test
+mae_train_lineare = mean_absolute_error(y_train, y_pred_lineare_train)
+mae_test_lineare = mean_absolute_error(y_test, y_pred_lineare_test)
+r2_train_lineare = r2_score(y_train, y_pred_lineare_train)
+r2_test_lineare = r2_score(y_test, y_pred_lineare_test)
+
+report_metriche = [
+    {
+        'modello': 'Baseline',
+        'mae_train': '-',
+        'mae_test': round(mae_baseline, 2),
+        'r2_train': '-',
+        'r2_test': round(r2_baseline, 3) 
+    },
+    {
+        'modello': 'Decision Tree',
+        'mae_train': round(mae_train_albero, 2),
+        'mae_test': round(mae_test_albero, 2),
+        'r2_train': round(r2_train_albero, 3),
+        'r2_test': round(r2_test_albero, 3) 
+    },
+    {
+        'modello': 'Linear Regression',
+        'mae_train': round(mae_train_lineare, 2),
+        'mae_test': round(mae_test_lineare, 2),
+        'r2_train': round(r2_train_lineare, 3),
+        'r2_test': round(r2_test_lineare, 3) 
+    }
+]
+
+df_report_metriche = pd.DataFrame(report_metriche)
+print(df_report_metriche)
+
+#guardando le metriche a confronto, il Decision Tree sembra soffrire di più l'over-fitting. Lo si evince dalla forbice tra r2_score del train e r2_score del test
 
 # ESERCIZIO 7 (🧠 [RETRIEVAL] — riscrivi da memoria):
 # Senza guardare il codice sopra, riscrivi da zero:
@@ -648,7 +881,52 @@ assert mae_test < mae_baseline, "il modello batte la baseline"
 # 6) Calcola MAE, RMSE, R² su test
 # 7) Stampa i 3 coefficienti più influenti
 # 8) Assert: modello batte la baseline
-# ...
+
+print("\nEsercizio 7\n")
+path_file_case = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
+case = pd.read_csv(path_file_case)
+
+case_encoded = pd.get_dummies(case, columns=['citta'], dtype='int')
+X = case_encoded.drop(columns=['id', 'prezzo_euro'])
+y = case_encoded['prezzo_euro']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=.2, random_state=42
+)
+
+scaler = StandardScaler()
+scaler.fit(X_train)
+
+X_train_scaled = scaler.transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+modello_lineare = LinearRegression()
+modello_lineare.fit(X_train_scaled, y_train)
+
+y_pred_train = modello_lineare.predict(X_train_scaled)
+y_pred_test = modello_lineare.predict(X_test_scaled)
+y_baseline = np.full_like(y_test, y_train.mean())
+
+mae_baseline = mean_absolute_error(y_test, y_baseline)
+
+mae_train = mean_absolute_error(y_train, y_pred_train)
+mae_test = mean_absolute_error(y_test, y_pred_test)
+r2_train = r2_score(y_train, y_pred_train)
+r2_test = r2_score(y_test, y_pred_test)
+rmse_train = root_mean_squared_error(y_train, y_pred_train)
+rmse_test = root_mean_squared_error(y_test, y_pred_test)
+
+df_coef = pd.DataFrame({
+    'nome' : X.columns,
+    'valore': modello_lineare.coef_,
+})
+
+df_coef['valore_abs'] = df_coef['valore'].abs()
+
+print(df_coef.sort_values(by='valore_abs', ascending=False).round(2).head(3).to_string(index=False))    
+
+assert mae_test < mae_baseline, 'il modello deve battere la baseline'
+
 
 
 # ESERCIZIO 8 (Analisi — collegamento al prodotto):
@@ -662,7 +940,19 @@ assert mae_test < mae_baseline, "il modello batte la baseline"
 # 3) In un commento: spiega come adatteresti questa funzione per il
 #    prodotto documentale (dove le feature sarebbero delta_netto_lordo,
 #    ratio_trattenute, match_cf_cross_doc, ecc.)
-# ...
+print("\nEsercizio 8\n")
+def motivi_top_n(modello, feature_names, n=3):
+    
+    df_coef = pd.DataFrame({
+        'nome': feature_names,
+        'valore': modello.coef_
+    })
+    df_coef['abs'] = df_coef['valore'].abs()
+    df_coef_sorted = df_coef.sort_values(by='abs', ascending=False)
+    for _, row in df_coef_sorted.head(n).iterrows():
+        print(f"{row['nome']:25s} => {round(row['valore'], 2)}")
+        
+motivi_top_n(modello_lineare, X_train.columns, 4)
 
 
 # ==========================================================================
