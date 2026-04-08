@@ -85,7 +85,7 @@ from sklearn.preprocessing import StandardScaler
 # "I coefficienti di una regressione lineare sono confrontabili tra feature
 # diverse anche SENZA scaling."
 # Rispondi V o F e spiega in 2 righe.
-#
+#Falso. lo scaling serve proprio a trasformare le unità di misura di ogni colonna in un ordine di grandezza che sia comune a tutti. Lo si fa tramite lo StandardScaler, che per ogni valore effettua la trasformazione tramite il calcolo (x - media della colonna) / deviazione std della colonna. In questo modo, i valori vengono trasformati in rapporto alla deviazione standard, piuttosto che ad es. uno in euro, il secondo in metri ecc.
 #
 # DOMANDA 2 — Prevedi l'output:
 #   scaler = StandardScaler()
@@ -95,27 +95,27 @@ from sklearn.preprocessing import StandardScaler
 #   modello.fit(X_train, y_train)
 #   y_pred = modello.predict(X_test_scaled)
 # Il modello funzionerà bene? Perché sì o perché no?
-#
+# c'è un problema: non è stata fatta la trasformazione del train in scaled per addestrare il modello. Poi dopo si chiede di fare una previsione sui dati del test scalati, ma in questo modo il modello non è addestrato a ricevere dati impostati sulla scala standardizzata.
 #
 # DOMANDA 3 — Trova l'errore:
 #   mae = round(mean_absolute_error(y_pred, y_test), 2)
 # Questo codice funziona, ma c'è un errore concettuale
 # nell'ordine degli argomenti. Qual è?
-#
+# y_test deve essere il primo parametro passato al mean_absolute_error, nell' esempio sono invertiti
 #
 # DOMANDA 4 — Completa:
 #   RMSE penalizza gli errori ___ più del MAE. Se MAE = 10.000
 #   e RMSE = 40.000, significa che il modello ha ___ .
-#
+# grandi, ha errori molto grandi, (quindi outlier/ pochi errori sbagliati di tanto)
 #
 # DOMANDA 5 — Definizione:
 # Cos'è il trade-off bias-varianza? Fai un esempio con un Decision Tree.
-#
+# il trade-off bias-varianza e il compromesso tra un modello troppo semplice (under-fitting), quindi che poco si adatta alla  varietà dei dati forniti nelle features, e un modello troppo complesso (over-fitting), ossia un modello troppo complesso che non generalizza più i pattern ma praticamente memorizza le risposte da dare. in pratica sono i due estremi tra cui noi dobbiamo trovare il giusto equilibri. Ad esempio, un Decision Tree con max_depth=1 rischi di essere troppo semplice. Se max_depth=None, il modello invece si adatta anche al rumore di fondo (varianza troppo elevata)
 #
 # DOMANDA 6 — 💬 Spiega con parole tue:
 # Perché, nel tuo prodotto documentale, i coefficienti di un modello
 # lineare scalato sono utili per costruire i `motivi_top3` dell'esito?
-#
+#Perchè i coefficenti dammi un idea del peso relativo dello scoring di una pratica. Ad esempio, un delta tra lordo e netto errato, avrà un peso molto rilevante nel definire una pratica "non genuina", ed aiuta l'operatore a capire subito il perchè di questa classificazione.
 
 
 # ==========================================================================
