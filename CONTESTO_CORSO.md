@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 07/04/2026
+> **Ultimo aggiornamento**: 08/04/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -32,12 +32,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_02_ml/04_classificazione_metriche.py (Classificazione e metriche — da sviluppare) |
+| **Capitolo in corso** | modulo_02_ml/04_classificazione_metriche.py — Classificazione e metriche (in svolgimento); dominio **Controllo Documentale AI**: `pratiche_genuinita_mock.csv`, `y_alterato`, `prob_alterato` / `score_genuinita` / `semaforo` |
 | **Ultimo completato** | 03_regressione.py (07/04/2026) — Regressione lineare, scaling, confronto con Decision Tree, coefficienti e motivi_top3, progetto incrementale `modello_base.py` aggiornato |
 | **Modulo attuale** | 2 — Machine Learning Fundamentals |
 | **Difficoltà media** | ~6.4 (14 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-03; cap 07 escluso; M2-03 = **6**/10) |
 | **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (rinforzato in cap.03), 🟡 Allineamento variabili tra esercizi sequenziali nello stesso file `.py` (monitoraggio), ⚠️ Data leakage: consolidato cap.02–03 — replicare su documenti reali quando possibile |
-| **Sessione corrente** | Sessione 13 |
+| **Sessione corrente** | Sessione 14 |
 
 ---
 
@@ -48,11 +48,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 07/04/2026 |
-| **Cosa è stato fatto** | Chiusura cap.03 M2: quiz ingresso/verifica + rinforzi #12 e #21; PARTE 1–4 teoria; esercizi 1–8 (tag colloquio, refactoring, debug, interleaving, retrieval, analisi prodotto); es.8 `motivi_top_n` + formato coefficienti; `modello_base.py` esteso con tabella metriche (incl. RMSE), `motivi_top_3`, assert baseline. |
-| **Errori emersi** | Quiz ingresso Q1: sfumatura encoding/scaling (precisare: statistiche scaler solo su train; `get_dummies` prima dello split va valutato per categorie nuove in test). Quiz verifica Q4: refuso "coefficenti" → "coefficienti". Possibile disallineamento nome modello in es.8 se si riusa `modello_lineare_scalato` dopo es.7 — verificare coerenza variabili nello stesso script. |
-| **Cosa fare nella prossima sessione** | Sviluppare `04_classificazione_metriche.py` (accuracy, precision, recall, F1, confusion matrix); quiz ingresso su regressione/scaling; collegare metriche al classificatore vero/alterato della pipeline. |
-| **Stato motivazione** | Alto: primo confronto multi-modello + spiegabilità coefficienti → `motivi_top3` roadmap prodotto. |
+| **Data** | 08/04/2026 |
+| **Cosa è stato fatto** | (Sessione precedente) Chiusura cap.03 M2: regressione, scaling, `modello_base.py` con confronto modelli e `motivi_top_3`. (Oggi) Allineamento cap.04 al dominio **Controllo Documentale AI**: docstring e PARTE 1 (ponte da regressione su `case.csv` a classificazione su pratiche); blocco “tutti gli esercizi” su `pratiche_genuinita_mock.csv`; nota quiz Q1 su scale nel documentale. Aggiornato stato in CONTESTO_CORSO (cap.04 in svolgimento, prossimo 05_overfitting). |
+| **Errori emersi** | — |
+| **Cosa fare nella prossima sessione** | Completare cap.04: mini-esercizi 1–4 e quiz di verifica; esercizi 1–8 + progetto incrementale classificazione in `modello_base.py`; poi aprire `05_overfitting_validazione.py`. |
+| **Stato motivazione** | Alto: metriche classificazione legate a FN/FP nel documentale e alla roadmap `semaforo` / `motivi_top3`. |
 
 ---
 
@@ -107,12 +107,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_02_ml/04_classificazione_metriche.py — classificazione binaria, accuracy, precision, recall, F1, confusion matrix; collegamento a `genuino`/`alterato` e focus recall su alterati |
-| **Rinforzi da inserire (🔁)** | Blocchi già predisposti nel file cap.04 (commenti): recall `round` vs tupla; coerenza variabili modello tra esercizi sequenziali; richiamo leakage su split/scaler. |
-| **Concetti ⚠️ da ripassare** | Soglia decisionale 0.5 vs `predict_proba`; sbilanciamento classi; perché accuracy sola può ingannare nel documentale |
+| **Prossimo capitolo** | modulo_02_ml/05_overfitting_validazione.py — validazione, overfitting/underfitting, bias-varianza operativo; sempre su dominio pratiche dove applicabile |
+| **Rinforzi da inserire (🔁)** | Già nel cap.04: Pattern #21/#22; encoding/scaler fit-on-train; al bisogno richiamo leakage prima del cap.05 |
+| **Concetti ⚠️ da ripassare** | Soglia 0.5 vs `predict_proba`; sbilanciamento classi; accuracy ingannevole nel documentale |
 | **Pattern 🔴 da monitorare** | #6, #19, #21, allineamento variabili tra blocchi esercizi nello stesso `.py` |
-| **Ponte mentale da riusare** | Da regressione (errore €) a classificazione (etichetta giusta/sbagliata); recall = "non lasciar passare alterati" |
-| **Note** | Cap.03 chiuso: `modello_base.py` con LinearRegression scalata vs Decision Tree + tabella metriche. Cap.04 è stub: va costruito come capitolo formale (quiz, teoria, esercizi). |
+| **Ponte mentale da riusare** | Da regressione (cap.03 su `case.csv`) a classificazione su pratiche (`y_alterato`); recall = non lasciar passare alterati |
+| **Note** | Cap.04: capitolo strutturato (quiz ingresso, PARTI 1–4, mini-esercizi, quiz verifica, es.1–8, progetto). Dataset mock `pratiche_genuinita_mock.csv` allineato al prodotto finale (M10). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -581,7 +581,7 @@ completezza del self-check e chiedere correzioni.
 
 | Modulo | Focus | Componente pipeline prodotto | Librerie principali | Stato |
 |--------|-------|------------------------------|---------------------|-------|
-| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore supervisionato (vero/alterato) + anomaly detector + `score_genuinita` + `anomaly_score` + **primo test verificabile** + **deploy Streamlit Cloud** | scikit-learn, streamlit | 🟡 In corso (cap.01-03 completati; cap.04+ da fare) |
+| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore supervisionato (vero/alterato) + anomaly detector + `score_genuinita` + `anomaly_score` + **primo test verificabile** + **deploy Streamlit Cloud** | scikit-learn, streamlit | 🟡 In corso (cap.01-03 completati; **cap.04 in svolgimento** su dominio documentale mock) |
 | **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, coseno, gradiente, discesa — tutto in codice + Matplotlib | Fondamenta per embedding e backpropagation | numpy, matplotlib | ⬜ Da creare |
 | 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | ⬜ Da creare |
 | 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | ⬜ Da creare |

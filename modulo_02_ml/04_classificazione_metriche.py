@@ -3,22 +3,32 @@
 MODULO 2 — CAPITOLO 04: Classificazione e Metriche
 ============================================================================
 
+Prodotto (M10 — Controllo Documentale AI, vedi APPUNTI_APPLICATIVO.md):
+- Termini di pipeline: `prob_alterato`, `score_genuinita`, `semaforo`, `motivi_top3`.
+- Da questo capitolo gli esercizi usano sempre il dominio documentale (mock),
+  allineato all'app che costruirai nel modulo finale.
+
 Analogia pratica:
-- Nei cap.02-03 hai previsto un NUMERO (il prezzo di una casa). Il modello
-  diceva "questa casa vale circa 280.000 €" e tu misuravi di quanto
-  sbagliava (MAE, RMSE, R²).
-- Ora cambi gioco: il modello deve rispondere SÌ o NO.
-  "Questo documento è alterato?" → sì / no.
-  "Questa casa è costosa?" → sì / no.
-  Non ti interessa più di QUANTO sbaglia, ma SE sbaglia — e soprattutto
-  su QUALI casi sbaglia.
+- Nei cap.02-03 hai fatto REGRESSIONE: predicevi un numero continuo (es. su
+  `case.csv`) e misuravi l'errore con MAE, RMSE, R².
+- Qui passi alla CLASSIFICAZIONE sul dominio pratiche: il modello risponde
+  SÌ o NO — "questa pratica presenta segnali di alterazione?" (target
+  `y_alterato`: genuino vs alterato).
+  Non ti interessa più di QUANTO sbaglia in euro, ma SE sbaglia l'etichetta —
+  e soprattutto su quali casi (FN vs FP).
+
+Dataset:
+- `dati/pratiche_genuinita_mock.csv`: feature di genuinità simulate
+  (delta_netto_lordo, ratio_trattenute, match_cf_cross_doc,
+  coerenza_date, accrediti_stipendio_presenti, confidence_ocr_media,
+  num_incoerenze_cross_doc). Target: `y_alterato` (0=genuino, 1=alterato).
 
 Confronto web:
 - In PHP/JS/Laravel:
     if ($status === "approved") { ... } else { ... }
   Il risultato è binario: approvato o rifiutato.
 - In ML la classificazione fa lo stesso: dato un insieme di feature,
-  il modello sceglie una CLASSE (0 o 1, vero o falso, genuino o alterato).
+  il modello sceglie una CLASSE (0 o 1, genuino o alterato).
   La differenza? Il modello sceglie in base ai DATI, non a un if scritto
   da te — e può sbagliare. L'arte sta nel MISURARE come sbaglia.
 """
@@ -47,7 +57,7 @@ from sklearn.preprocessing import StandardScaler
 # Pattern #21: `(x, 2)` è una tupla, non un arrotondamento. Usa `round(x, 2)`.
 #
 # Pattern #22: in uno script lungo con più esercizi, riusi nomi come
-# `modello_lineare` o `modello_albero`. Verifica sempre che il modello
+# `modello_lineare` o `clf_albero`. Verifica sempre che il modello
 # passato a `.predict` o ai coefficienti sia quello addestrato nell'esercizio
 # corrente (stesso X_train/y_train).
 #
@@ -55,8 +65,8 @@ from sklearn.preprocessing import StandardScaler
 # 1) Dopo split e scaling, la sequenza corretta è:
 #    scaler.fit(X_train) → transform(X_train) → transform(X_test)
 #    → modello.fit(X_train_scaled, y_train) → predict(X_test_scaled).
-# 2) Se l'ultimo `.fit` l'hai fatto su `modello` ma stampi
-#    `modello_scalato.coef_`, i coefficienti sono quelli VECCHI.
+# 2) Se l'ultimo `.fit` l'hai fatto su `clf` ma stampi
+#    `clf_scalato.coef_`, i coefficienti sono quelli VECCHI.
 
 
 # ==========================================================================
@@ -73,7 +83,7 @@ from sklearn.preprocessing import StandardScaler
 #   su train, transform su entrambi. Categorie nuove vengono azzerate.
 # - Lo scaler (media/std) va SEMPRE stimato solo sul train.
 #
-# Regola: se i dati cambiano nel tempo (documenti nuovi, città nuove),
+# Regola: se i dati cambiano nel tempo (documenti nuovi, tipi nuovi),
 # tratta OGNI trasformazione come fit-on-train → transform-on-both.
 
 
@@ -85,6 +95,8 @@ from sklearn.preprocessing import StandardScaler
 # "I coefficienti di una regressione lineare sono confrontabili tra feature
 # diverse anche SENZA scaling."
 # Rispondi V o F e spiega in 2 righe.
+# (Stesso concetto nel dominio app: senza scaling, pesi su colonne a scale
+#  diverse — es. importi vs ratio 0-1 vs contatori — non sono confrontabili.)
 #Falso. lo scaling serve proprio a trasformare le unità di misura di ogni colonna in un ordine di grandezza che sia comune a tutti. Lo si fa tramite lo StandardScaler, che per ogni valore effettua la trasformazione tramite il calcolo (x - media della colonna) / deviazione std della colonna. In questo modo, i valori vengono trasformati in rapporto alla deviazione standard, piuttosto che ad es. uno in euro, il secondo in metri ecc.
 #
 # DOMANDA 2 — Prevedi l'output:
@@ -122,23 +134,22 @@ from sklearn.preprocessing import StandardScaler
 # PARTE 1: Da Regressione a Classificazione — Il Cambio di Prospettiva
 # ==========================================================================
 #
-# Finora il tuo modello prediceva un NUMERO continuo: il prezzo di una casa.
-# Il target (y) era un valore come 280.000, 150.000, 420.000 — e misuravi
-# quanto il modello si avvicinava al valore vero con MAE, RMSE e R².
+# Finora, nei cap.02-03, il target della regressione era un NUMERO continuo
+# (es. prezzo stimato su `case.csv`) e misuravi quanto il modello si
+# avvicinava al valore vero (MAE, RMSE, R²).
 #
 # La classificazione è un problema diverso: il target non è un numero
 # continuo, è una CATEGORIA. Due classi, nel caso più semplice:
 #
-#   - 0 = classe negativa (es. "genuino", "non costosa", "non spam")
-#   - 1 = classe positiva (es. "alterato", "costosa", "spam")
+#   - 0 = classe negativa → "genuino"
+#   - 1 = classe positiva → "alterato"
 #
-# Il modello non dice "questa casa vale 280.000 €" ma "questa casa
-# è costosa: SÌ" oppure "questa casa è costosa: NO".
+# Il modello non dice "questa pratica ha uno score di 73.5" ma
+# "questa pratica è alterata: SÌ" oppure "questa pratica è genuina: NO".
 #
-# Perché serve nel tuo prodotto?
-# La pipeline del prodotto documentale ha bisogno di un classificatore
-# che, data una pratica con le sue feature (delta_netto_lordo,
-# ratio_trattenute, match_cf_cross_doc...), risponda:
+# Nella pipeline del prodotto documentale, il classificatore riceve
+# le feature di una pratica (delta_netto_lordo, ratio_trattenute,
+# match_cf_cross_doc, coerenza_date...) e risponde:
 #
 #   genuino (0) oppure alterato (1)?
 #
@@ -171,33 +182,28 @@ print("\n" + "="*60)
 print("PARTE 1 — Da regressione a classificazione")
 print("="*60)
 
-# Prepariamo il dataset per la classificazione.
-# Usiamo sempre case.csv, ma creiamo un TARGET BINARIO:
-# la casa è "costosa" (1) o "non costosa" (0)?
-# Soglia: prezzo >= mediana → costosa.
+# Carichiamo il dataset documentale mock.
+# Le feature simulano controlli di genuinità su pratiche bancarie:
+# - delta_netto_lordo: differenza netto-lordo (valori negativi = sospetti)
+# - ratio_trattenute: rapporto trattenute/lordo (alto = sospetto)
+# - match_cf_cross_doc: codice fiscale coerente tra documenti (1=sì, 0=no)
+# - coerenza_date: date coerenti tra documenti della pratica (1=sì, 0=no)
+# - accrediti_stipendio_presenti: accrediti in conto coerenti con busta (1=sì)
+# - confidence_ocr_media: qualità media estrazione OCR (0-1)
+# - num_incoerenze_cross_doc: numero di incoerenze trovate tra documenti
+# Target: y_alterato (0=genuino, 1=alterato)
 
-path_file = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
-case = pd.read_csv(path_file)
+path_file = os.path.join(os.path.dirname(__file__), "dati", "pratiche_genuinita_mock.csv")
+pratiche = pd.read_csv(path_file)
 
-mediana_prezzo = case["prezzo_euro"].median()
-case["costosa"] = (case["prezzo_euro"] >= mediana_prezzo).astype(int)
+print(f"Dataset pratiche: {len(pratiche)} righe")
+print(f"\nDistribuzione classi (y_alterato):")
+print(f"  genuino (0): {(pratiche['y_alterato'] == 0).sum()}")
+print(f"  alterato (1): {(pratiche['y_alterato'] == 1).sum()}")
 
-print(f"Mediana prezzo: {mediana_prezzo:,.0f} EUR")
-print(f"Distribuzione classi:\n{case['costosa'].value_counts()}")
-
-# Feature engineering (stesse del cap.03 per continuità)
-case["eta_casa"] = 2026 - case["anno_costruzione"]
-case_encoded = pd.get_dummies(case, columns=["citta"], dtype=int)
-
-# Anti-leakage: togliamo TUTTO ciò che contiene il prezzo.
-# "costosa" è derivata dal prezzo, ma è il NOSTRO TARGET — non una feature.
-# Il prezzo stesso e i derivati (prezzo_al_mq, fascia) vanno eliminati da X.
-cols_to_drop = (
-    ["id", "prezzo_euro", "costosa"]
-    + [c for c in case_encoded.columns if "prezzo" in c or "fascia" in c]
-)
-X = case_encoded.drop(columns=cols_to_drop, errors="ignore")
-y = case_encoded["costosa"]
+# X e y (anti-leakage: togli ID e target da X)
+X = pratiche.drop(columns=["pratica_id", "y_alterato"])
+y = pratiche["y_alterato"]
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
@@ -206,14 +212,12 @@ X_train, X_test, y_train, y_test = train_test_split(
 print(f"\nFeature usate: {list(X.columns)}")
 print(f"Train: {len(X_train)} | Test: {len(X_test)}")
 
-# Alleniamo un DecisionTreeClassifier (la versione classificazione
-# dell'albero che già conosci dal cap.02)
+# Alleniamo un DecisionTreeClassifier
 clf_albero = DecisionTreeClassifier(max_depth=3, random_state=42)
 clf_albero.fit(X_train, y_train)
 
 y_pred = clf_albero.predict(X_test)
 
-# La metrica più semplice: accuracy (percentuale di risposte giuste)
 acc = accuracy_score(y_test, y_pred)
 print(f"\nAccuracy albero: {acc:.2%}")
 print(f"Previsioni: {y_pred}")
@@ -228,7 +232,7 @@ print(f"Reali:      {y_test.values}")
 # 3) Rispondi in un commento: l'accuracy del 100% significherebbe che
 #    il modello è perfetto. Ma un modello con accuracy 90% è sempre
 #    "buono"? Pensa a un caso in cui 90% di accuracy è INUTILE.
-#    (Suggerimento: se il 90% dei documenti è genuino e il modello
+#    (Suggerimento: se il 90% delle pratiche è genuino e il modello
 #    dice SEMPRE "genuino"...)
 # Scrivi qui sotto:
 #
@@ -239,10 +243,10 @@ print(f"Reali:      {y_test.values}")
 # ==========================================================================
 #
 # L'accuracy ti dice "quanti ne hai azzeccati sul totale". Ma non ti dice
-# COME hai sbagliato — e nel mondo reale, non tutti gli errori pesano
-# uguale.
+# COME hai sbagliato — e nel controllo documentale, non tutti gli errori
+# pesano uguale.
 #
-# Prendiamo il prodotto documentale. Il modello ha due modi di sbagliare:
+# Il modello ha due modi di sbagliare:
 #
 # 1) Dice "alterato" a un documento genuino → FALSO ALLARME
 #    Il consulente controlla un documento che era a posto. Fastidioso,
@@ -257,20 +261,20 @@ print(f"Reali:      {y_test.values}")
 # del modello con la realtà:
 #
 #                          Realtà
-#                     0 (negativo)   1 (positivo)
+#                     0 (genuino)    1 (alterato)
 #   Previsto 0    │  TN (True Neg)  │  FN (False Neg)  │
 #   Previsto 1    │  FP (False Pos) │  TP (True Pos)   │
 #
-# Traduciamo nel dominio documentale (dove positivo = alterato):
+# Nel dominio documentale (positivo = alterato):
 #
-# - TP (True Positive): il modello dice "alterato" e il documento ERA
-#   davvero alterato. BENE — ha trovato il problema.
-# - TN (True Negative): il modello dice "genuino" e il documento ERA
-#   davvero genuino. BENE — nessun falso allarme.
-# - FP (False Positive): il modello dice "alterato" ma il documento
-#   era genuino. FALSO ALLARME — spreco di tempo, ma niente danni gravi.
-# - FN (False Negative): il modello dice "genuino" ma il documento
-#   era alterato. MANCATA RILEVAZIONE — il caso peggiore!
+# - TP (True Positive): dice "alterato" e il documento ERA alterato.
+#   BENE — ha trovato il problema.
+# - TN (True Negative): dice "genuino" e il documento ERA genuino.
+#   BENE — nessun falso allarme.
+# - FP (False Positive): dice "alterato" ma il documento era genuino.
+#   FALSO ALLARME — spreco di tempo, ma niente danni gravi.
+# - FN (False Negative): dice "genuino" ma il documento era alterato.
+#   MANCATA RILEVAZIONE — il caso peggiore!
 #
 # Confronto web:
 # È come il testing nel software:
@@ -300,19 +304,17 @@ print(f"\nConfusion Matrix:\n{cm}")
 print(f"\n  TN={cm[0,0]}  FP={cm[0,1]}")
 print(f"  FN={cm[1,0]}  TP={cm[1,1]}")
 
-# Verifica: TN + FP + FN + TP = totale campioni nel test
 totale = cm.sum()
-corretti = cm[0, 0] + cm[1, 1]  # TN + TP
+corretti = cm[0, 0] + cm[1, 1]
 print(f"\nTotale: {totale} | Corretti: {corretti} | Accuracy: {corretti/totale:.2%}")
 
 
 # --- MINI-ESERCIZIO 2 — Prova subito! ---
 # 1) Dalla confusion matrix stampata sopra:
-#    - Quanti documenti "costosi" il modello ha classificato correttamente? (TP)
-#    - Quanti documenti "non costosi" il modello ha sbagliato? (FP)
-# 2) Se questo fosse il prodotto documentale (1 = alterato):
-#    - I FN (False Negative) sono pericolosi: perché?
-#    - I FP (False Positive) sono fastidiosi ma tollerabili: perché?
+#    - Quanti documenti alterati il modello ha classificato correttamente? (TP)
+#    - Quanti documenti genuini il modello ha sbagliato? (FP)
+# 2) I FN (False Negative) sono pericolosi: perché?
+#    I FP (False Positive) sono fastidiosi ma tollerabili: perché?
 # 3) Scrivi la formula dell'accuracy usando TN, FP, FN, TP:
 #    accuracy = ___
 # Scrivi qui sotto:
@@ -326,22 +328,22 @@ print(f"\nTotale: {totale} | Corretti: {corretti} | Accuracy: {corretti/totale:.
 # L'accuracy è utile come punto di partenza, ma in molti casi è
 # INSUFFICIENTE. Ecco perché:
 #
-# Immagina di avere 100 documenti: 95 genuini e 5 alterati.
-# Un modello "stupido" che dice SEMPRE "genuino" ha accuracy del 95%.
-# Sembra fantastico! Ma non ha trovato NESSUNO dei documenti alterati.
+# Immagina di avere 100 pratiche: 90 genuine e 10 alterate.
+# Un modello "stupido" che dice SEMPRE "genuino" ha accuracy del 90%.
+# Sembra fantastico! Ma non ha trovato NESSUNA delle pratiche alterate.
 # È completamente inutile per lo scopo del prodotto.
 #
 # Servono metriche più precise. Tre in particolare:
 #
 # ---
 # PRECISION (Precisione):
-# "Dei documenti che il modello ha CHIAMATO alterati, quanti lo erano
+# "Delle pratiche che il modello ha CHIAMATO alterate, quante lo erano
 # davvero?"
 #
 #   precision = TP / (TP + FP)
 #
 # Se il modello dice "alterato" 10 volte, e 8 di quelle erano davvero
-# alterati → precision = 8/10 = 0.80 (80%).
+# alterate → precision = 8/10 = 0.80 (80%).
 # Precision alta = pochi falsi allarmi.
 #
 # Analogia: un allarme antifurto con precision alta suona SOLO quando
@@ -349,13 +351,13 @@ print(f"\nTotale: {totale} | Corretti: {corretti} | Accuracy: {corretti/totale:.
 #
 # ---
 # RECALL (Richiamo / Sensibilità):
-# "Dei documenti che ERANO davvero alterati, quanti ne ha trovati
+# "Delle pratiche che ERANO davvero alterate, quante ne ha trovate
 # il modello?"
 #
 #   recall = TP / (TP + FN)
 #
-# Se ci sono 10 documenti alterati e il modello ne trova 7
-# → recall = 7/10 = 0.70 (70%). 3 gli sono sfuggiti.
+# Se ci sono 10 pratiche alterate e il modello ne trova 7
+# → recall = 7/10 = 0.70 (70%). 3 gli sono sfuggite.
 # Recall alto = il modello non si lascia sfuggire i positivi.
 #
 # Analogia: un allarme antifurto con recall alto suona SEMPRE quando
@@ -364,7 +366,7 @@ print(f"\nTotale: {totale} | Corretti: {corretti} | Accuracy: {corretti/totale:.
 #
 # ---
 # NEL PRODOTTO DOCUMENTALE: la recall è LA METRICA CRITICA.
-# Un documento alterato che passa il controllo (FN) può causare danni
+# Una pratica alterata che passa il controllo (FN) può causare danni
 # economici reali. Un falso allarme (FP) costa solo tempo al revisore.
 # Quindi vuoi recall alto sulla classe "alterato", anche a costo di
 # qualche falso allarme in più (precision un po' più bassa).
@@ -387,18 +389,19 @@ print("\n" + "="*60)
 print("PARTE 3 — Precision, Recall, F1")
 print("="*60)
 
-prec = precision_score(y_test, y_pred)
-rec = recall_score(y_test, y_pred)
-f1 = f1_score(y_test, y_pred)
+prec = precision_score(y_test, y_pred, zero_division=0)
+rec = recall_score(y_test, y_pred, zero_division=0)
+f1 = f1_score(y_test, y_pred, zero_division=0)
 
 print(f"\nPrecision: {prec:.2f}")
 print(f"Recall:    {rec:.2f}")
 print(f"F1 Score:  {f1:.2f}")
 
 # classification_report: un riepilogo completo per ogni classe
-print(f"\nClassification Report:\n{classification_report(y_test, y_pred)}")
+print(f"\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=["genuino", "alterato"], zero_division=0))
 
-# Il report mostra precision/recall/F1 PER OGNI CLASSE (0 e 1),
+# Il report mostra precision/recall/F1 PER OGNI CLASSE (genuino e alterato),
 # più la media (macro e weighted). "support" è il numero di campioni
 # reali per classe nel test set.
 
@@ -442,13 +445,13 @@ print(f"\nClassification Report:\n{classification_report(y_test, y_pred)}")
 # un numero continuo.
 #
 # Come funziona a grandi linee:
-# 1) Calcola una somma pesata delle feature (come la regressione lineare):
-#    z = w1 * mq + w2 * eta + w3 * piano + ... + b
+# 1) Calcola una somma pesata delle feature:
+#    z = w1 * delta_netto_lordo + w2 * ratio_trattenute + ... + b
 # 2) Passa il risultato attraverso una funzione "sigmoide" che lo
 #    comprime tra 0 e 1 — interpretabile come PROBABILITÀ:
 #    p = 1 / (1 + e^(-z))
-# 3) Se p >= 0.5 → classe 1 (costosa / alterato)
-#    Se p < 0.5  → classe 0 (non costosa / genuino)
+# 3) Se p >= 0.5 → classe 1 (alterato)
+#    Se p < 0.5  → classe 0 (genuino)
 #
 # La magia è che puoi accedere alla probabilità con `.predict_proba()`:
 # non solo "sì/no", ma "sì con probabilità 87%".
@@ -486,17 +489,17 @@ print(f"  Classi:       {y_pred_log}")
 print(f"  Reali:        {y_test.values}")
 
 # predict_proba restituisce una matrice con 2 colonne:
-# colonna 0 = P(classe 0), colonna 1 = P(classe 1)
-print(f"\n  Probabilità (prime 5 righe):")
+# colonna 0 = P(genuino), colonna 1 = P(alterato)
+print(f"\n  Probabilità (prime 5 pratiche del test):")
 for i in range(min(5, len(y_proba))):
     p0, p1 = y_proba[i]
-    print(f"    Casa {i+1}: P(non costosa)={p0:.2f}  P(costosa)={p1:.2f}  → classe {y_pred_log[i]}")
+    print(f"    Pratica {i+1}: P(genuino)={p0:.2f}  P(alterato)={p1:.2f}  → classe {y_pred_log[i]}")
 
-# Nel prodotto: la colonna 1 è prob_alterato
+# La colonna 1 è prob_alterato → da qui si ricava score_genuinita
 prob_alterato_esempio = y_proba[:, 1]
 score_genuinita_esempio = ((1 - prob_alterato_esempio) * 100).round(1)
-print(f"\n  Se fosse il prodotto (colonna 1 = prob_alterato):")
-print(f"  score_genuinita: {score_genuinita_esempio}")
+print(f"\n  prob_alterato:    {np.round(prob_alterato_esempio, 2)}")
+print(f"  score_genuinita:  {score_genuinita_esempio}")
 
 # Metriche
 print(f"\n  Accuracy:  {accuracy_score(y_test, y_pred_log):.2%}")
@@ -507,25 +510,25 @@ print(f"  F1:        {f1_score(y_test, y_pred_log, zero_division=0):.2f}")
 # Effetto della soglia (esempio: soglia 0.3 invece di 0.5)
 soglia_prudente = 0.3
 y_pred_prudente = (prob_alterato_esempio >= soglia_prudente).astype(int)
-print(f"\n  Con soglia {soglia_prudente} (più prudente):")
+print(f"\n  Con soglia {soglia_prudente} (più prudente — meno FN):")
 print(f"  Previsioni: {y_pred_prudente}")
 print(f"  Recall:     {recall_score(y_test, y_pred_prudente, zero_division=0):.2f}")
 print(f"  Precision:  {precision_score(y_test, y_pred_prudente, zero_division=0):.2f}")
 
 
 # --- MINI-ESERCIZIO 4 — Prova subito! ---
-# 1) Guarda le probabilità stampate sopra: ci sono casi in cui il modello
-#    era "indeciso" (probabilità vicina a 0.5)?
+# 1) Guarda le probabilità stampate sopra: ci sono pratiche in cui il
+#    modello era "indeciso" (probabilità vicina a 0.5)?
 # 2) Se abbassi la soglia da 0.5 a 0.3, cosa succede al numero di
-#    previsioni "1" (costosa/alterato)? Aumenta o diminuisce?
+#    previsioni "1" (alterato)? Aumenta o diminuisce?
 #    Perché questo fa salire il recall?
 # 3) Nel prodotto: se la soglia è troppo bassa (es. 0.1), il modello
 #    dice "alterato" quasi sempre. Cosa succede alla precision?
 #    Qual è il rischio operativo per il consulente?
-# 4) Collegamento al prodotto: il semaforo (verde/giallo/rosso) è
-#    derivato dallo score_genuinita con soglie. Come sceglieresti
-#    le soglie in produzione? (Suggerimento: non con l'intuizione,
-#    ma guardando precision/recall a soglie diverse sul test set.)
+# 4) Il semaforo (verde/giallo/rosso) è derivato dallo score_genuinita
+#    con soglie. Come sceglieresti le soglie in produzione?
+#    (Suggerimento: non con l'intuizione, ma guardando precision/recall
+#    a soglie diverse sul test set.)
 # Scrivi qui sotto:
 #
 
@@ -544,20 +547,20 @@ print(f"  Precision:  {precision_score(y_test, y_pred_prudente, zero_division=0)
 #   [[80, 10],
 #    [ 5, 5]]
 # Calcola: accuracy, precision, recall, F1.
-# Il modello è buono per trovare i positivi?
+# Il modello è buono per trovare le pratiche alterate?
 #
 #
 # DOMANDA 3 — Trova l'errore:
-#   y_pred = modello.predict(X_test)
+#   y_pred = clf.predict(X_test)
 #   print(precision_score(y_pred, y_test))
 # Cosa c'è di sbagliato? Cosa può succedere?
 #
 #
 # DOMANDA 4 — Completa:
 #   Nel prodotto documentale, la metrica CRITICA è la ___ sulla classe
-#   "alterato" perché un ___ (documento alterato classificato come
-#   genuino) è molto più grave di un ___ (genuino classificato
-#   come alterato).
+#   "alterato" perché un ___ (pratica alterata classificata come
+#   genuina) è molto più grave di un ___ (genuina classificata
+#   come alterata).
 #
 #
 # DOMANDA 5 — Definizione:
@@ -575,11 +578,15 @@ print(f"  Precision:  {precision_score(y_test, y_pred_prudente, zero_division=0)
 # ==========================================================================
 # ESERCIZI — Ora prova tu
 # ==========================================================================
+#
+# Tutti gli esercizi sotto usano il dataset del prodotto (mock):
+#   dati/pratiche_genuinita_mock.csv — stesso dominio dell'app Controllo
+#   Documentale (pratiche reddituali, genuino/alterato, semaforo in es.8).
+#
 
 # ESERCIZIO 1 (Facile):
-# 1) Carica case.csv e crea il target binario "costosa"
-#    (prezzo >= mediana → 1, altrimenti → 0)
-# 2) Prepara X e y (anti-leakage: elimina prezzo e derivati da X)
+# 1) Carica pratiche_genuinita_mock.csv
+# 2) Prepara X (tutte le feature) e y (y_alterato)
 # 3) Split 80/20, random_state=42
 # 4) Allena un DecisionTreeClassifier(max_depth=3, random_state=42)
 # 5) Stampa: accuracy, precision, recall, F1
@@ -592,7 +599,7 @@ print("="*60)
 
 
 # ESERCIZIO 2 (Medio):
-# Confronta 3 classificatori sullo stesso split:
+# Confronta 3 classificatori sullo stesso split (dal dataset pratiche):
 # 1) DecisionTreeClassifier(max_depth=3)
 # 2) DecisionTreeClassifier(max_depth=6)
 # 3) LogisticRegression (con StandardScaler — fit solo su train!)
@@ -608,11 +615,12 @@ print("="*60)
 
 # ESERCIZIO 3 (🎯 [COLLOQUIO]):
 # Rispondi in 10-12 righe di commento:
-# - Cosa sono precision e recall? Fai un esempio per ciascuno.
+# - Cosa sono precision e recall? Fai un esempio per ciascuno nel
+#   contesto del controllo documentale.
 # - Quando è più importante la precision? Quando il recall?
 # - Cos'è l'F1 e perché usa la media armonica (non aritmetica)?
-# - Nel tuo prodotto documentale: su quale classe vuoi recall alto
-#   e perché? Cosa succede se il recall sulla classe "alterato" è basso?
+# - Nel prodotto: su quale classe vuoi recall alto e perché?
+#   Cosa succede se il recall sulla classe "alterato" è basso?
 # - Cos'è una confusion matrix? Come la leggi?
 
 print("\n" + "="*60)
@@ -646,18 +654,16 @@ print("="*60)
 # Questo codice gira senza errori ma il recall è SOSPETTOSAMENTE alto (1.0).
 # Trova il bug e spiega perché il risultato è ingannevole.
 #
-# case_e = pd.get_dummies(case, columns=["citta"], dtype=int)
-# mediana = case_e["prezzo_euro"].median()
-# case_e["costosa"] = (case_e["prezzo_euro"] >= mediana).astype(int)
-# X_dbg = case_e.drop(columns=["id", "costosa"], errors="ignore")
-# y_dbg = case_e["costosa"]
+# pratiche_dbg = pd.read_csv("dati/pratiche_genuinita_mock.csv")
+# X_dbg = pratiche_dbg.drop(columns=["pratica_id"], errors="ignore")
+# y_dbg = pratiche_dbg["y_alterato"]
 # X_tr, X_te, y_tr, y_te = train_test_split(X_dbg, y_dbg, test_size=0.2, random_state=42)
 # clf = DecisionTreeClassifier(random_state=42)
 # clf.fit(X_tr, y_tr)
 # print("Recall:", recall_score(y_te, clf.predict(X_te)))
 #
-# Suggerimento: guarda le colonne di X_dbg. Il prezzo è ancora lì?
-# E ricorda: "costosa" è DERIVATA dal prezzo...
+# Suggerimento: guarda le colonne di X_dbg. Hai droppato davvero solo
+# ciò che serve? Il target è ancora nelle feature?
 
 print("\n" + "="*60)
 print("ESERCIZIO 5 — DEBUG")
@@ -665,14 +671,16 @@ print("="*60)
 
 
 # ESERCIZIO 6 (🔀 [INTERLEAVING] — Pandas + Classificazione):
-# 1) Carica case.csv e crea il target "costosa"
-# 2) Crea un report con groupby("citta"):
-#    - num_case, perc_costose (percentuale di case costose per città)
-# 3) Identifica la città con la percentuale più alta di case costose
-# 4) Allena un DecisionTreeClassifier SOLO sulle case di quella città
+# 1) Carica pratiche_genuinita_mock.csv
+# 2) Crea un report con Pandas:
+#    - pratiche_totali, pratiche_alterate, perc_alterate
+#    - media di delta_netto_lordo per classe (genuino vs alterato)
+#    - media di confidence_ocr_media per classe
+# 3) Filtra SOLO le pratiche con confidence_ocr_media >= 0.75
+# 4) Allena un DecisionTreeClassifier SOLO su quelle filtrate
 # 5) Stampa la confusion matrix e il classification_report
-# 6) Commenta: con pochi dati (una sola città), le metriche sono
-#    affidabili? Perché sì o perché no?
+# 6) Commenta: filtrare per confidence alta migliora o peggiora
+#    le metriche? Ha senso nel prodotto reale?
 
 print("\n" + "="*60)
 print("ESERCIZIO 6 — INTERLEAVING")
@@ -681,13 +689,13 @@ print("="*60)
 
 # ESERCIZIO 7 (🧠 [RETRIEVAL] — riscrivi da memoria):
 # Senza guardare il codice sopra, riscrivi da zero:
-# 1) Carica case.csv, crea target "costosa" (>= mediana)
+# 1) Carica pratiche_genuinita_mock.csv
 # 2) Prepara X e y (anti-leakage!)
 # 3) Split 80/20
 # 4) Allena una LogisticRegression con scaling
 # 5) Calcola predict_proba → prob_alterato (colonna 1)
 #    → score_genuinita = (1 - prob_alterato) * 100
-# 6) Stampa per ogni casa del test: score_genuinita, classe prevista,
+# 6) Stampa per ogni pratica del test: score_genuinita, classe prevista,
 #    classe reale
 # 7) Stampa accuracy, recall, precision, F1
 # 8) Assert: recall >= 0.5
@@ -701,14 +709,14 @@ print("="*60)
 # 1) Usando il classificatore LogisticRegression scalato dell'es.7 (o
 #    allenatone uno nuovo): stampa i coefficienti del modello con il
 #    nome della feature, ordinati per valore assoluto (come `motivi_top_n`
-#    del cap.03, ma questa volta per un CLASSIFICATORE).
+#    del cap.03, ma questa volta per un CLASSIFICATORE su pratiche).
 # 2) Simula il semaforo: usando le soglie del Blueprint
 #    (score >= 85 → verde, 60-84 → giallo, < 60 → rosso),
-#    assegna un semaforo a ogni casa del test set.
+#    assegna un semaforo a ogni pratica del test set.
 # 3) Stampa un DataFrame con colonne:
-#    indice | score_genuinita | semaforo | classe_reale | classe_prevista
+#    pratica | score_genuinita | semaforo | classe_reale | classe_prevista
 # 4) In un commento: conta quanti verdi/gialli/rossi ci sono.
-#    Quanti rossi sono effettivamente "costosi" (classe 1)?
+#    Quanti rossi sono effettivamente alterati (classe 1)?
 #    Questo corrisponde alla logica "rosso = pratica sospetta da bloccare"?
 
 print("\n" + "="*60)
@@ -726,7 +734,7 @@ print("="*60)
 # TASK:
 # 1) Apri modello_base.py (usato nei cap.02-03 per la regressione)
 # 2) Aggiungi una sezione CLASSIFICAZIONE che:
-#    a) Crea il target binario "costosa" (>= mediana del prezzo)
+#    a) Carica pratiche_genuinita_mock.csv
 #    b) Allena un DecisionTreeClassifier e una LogisticRegression
 #    c) Stampa un DataFrame di confronto con colonne:
 #       modello | accuracy | precision | recall | f1
@@ -750,62 +758,53 @@ print("="*60)
 #
 # --- RISPOSTE QUIZ D'INGRESSO ---
 # 1) Falso. Senza scaling, i coefficienti riflettono la scala della feature,
-#    non la sua importanza. Se "metri_quadri" va da 30 a 200 e "piano" da
-#    1 a 10, i pesi non sono confrontabili. Lo StandardScaler li porta
-#    sulla stessa scala → i coefficienti diventano confrontabili.
-# 2) No, funzionerà male. Il modello è stato addestrato su X_train (non
-#    scalato) ma sta predicendo su X_test_scaled (scalato). Le feature
-#    sono su scale diverse tra training e inferenza → le previsioni
-#    saranno incoerenti. Bisogna fare fit su X_train, poi transform
-#    sia su X_train sia su X_test, e usare i dati scalati per ENTRAMBI
-#    fit e predict.
+#    non la sua importanza. Se "delta_netto_lordo" va da -350 a 240 e
+#    "match_cf_cross_doc" è 0 o 1, i pesi non sono confrontabili.
+#    Lo StandardScaler li porta sulla stessa scala → confrontabili.
+# 2) No, funzionerà male. Il modello è addestrato su X_train (non scalato)
+#    ma predice su X_test_scaled (scalato). Le feature sono su scale
+#    diverse tra training e inferenza → previsioni incoerenti. Bisogna
+#    fare transform su ENTRAMBI, e usare i dati scalati per fit e predict.
 # 3) L'ordine corretto è mean_absolute_error(y_test, y_pred), non
-#    (y_pred, y_test). La convenzione sklearn è sempre:
-#    REALE prima, PREVISTO dopo. Con MAE il risultato numerico è lo
-#    stesso, ma con altre metriche (es. precision_score) l'inversione
-#    cambia il valore.
+#    (y_pred, y_test). Convenzione sklearn: REALE prima, PREVISTO dopo.
+#    Con MAE il valore numerico non cambia, ma con precision_score sì.
 # 4) grandi; alcuni errori molto grandi (outlier nelle previsioni)
-# 5) Il bias-varianza è il compromesso tra un modello troppo semplice
-#    (alto bias, underfitting) e uno troppo complesso (alta varianza,
-#    overfitting). Es: un DecisionTree con max_depth=1 è troppo semplice
-#    (bias alto); con max_depth=None si adatta a ogni rumore nel train
-#    (varianza alta). Il punto ottimale è nel mezzo (es. max_depth=3-6).
+# 5) Il bias-varianza è il compromesso tra modello troppo semplice
+#    (alto bias, underfitting) e troppo complesso (alta varianza,
+#    overfitting). Es: DecisionTree con max_depth=1 è troppo semplice;
+#    con max_depth=None si adatta al rumore. Ottimo: max_depth=3-6.
 # 6) Dopo lo scaling, i coefficienti indicano l'importanza relativa di
-#    ogni feature: quanto contribuisce alla previsione, confrontabile
-#    con le altre. I 3 coefficienti più alti in valore assoluto diventano
-#    i motivi_top3 per spiegare all'operatore PERCHÉ il modello ha dato
-#    quel risultato. Es. "delta_netto_lordo ha il peso più alto →
-#    questa feature è la principale responsabile dello score."
+#    ogni feature. I 3 più alti in valore assoluto diventano motivi_top3
+#    per spiegare all'operatore PERCHÉ la pratica ha ricevuto quel score.
+#    Es. "delta_netto_lordo pesa molto → è la feature più sospetta."
 #
 # --- RISPOSTE QUIZ DI VERIFICA ---
 # 1) Falso. Se il dataset è sbilanciato (es. 95% genuino, 5% alterato),
 #    un modello che dice SEMPRE "genuino" ha accuracy 95% ma recall 0%
-#    sulla classe alterato — non trova nessun problema.
+#    sulla classe alterato — non trova nessuna pratica sospetta.
 # 2) TN=80, FP=10, FN=5, TP=5. Totale=100.
 #    Accuracy = (80+5)/100 = 85%
 #    Precision = 5/(5+10) = 0.333
 #    Recall = 5/(5+5) = 0.50
 #    F1 = 2*(0.333*0.50)/(0.333+0.50) = 0.40
-#    Il modello trova solo metà dei positivi (recall=0.50) e molti
-#    di quelli che chiama positivi sono falsi allarmi (precision=0.33).
+#    Il modello trova solo metà delle pratiche alterate (recall=0.50)
+#    e molte che chiama alterate sono falsi allarmi (precision=0.33).
 #    Per il prodotto: insufficiente.
 # 3) L'ordine è invertito. Deve essere precision_score(y_test, y_pred),
-#    non (y_pred, y_test). Con precision_score l'inversione cambia il
-#    valore calcolato (scambia TP con TN, FP con FN).
+#    non (y_pred, y_test). Con precision_score l'inversione cambia
+#    il valore (scambia TP con TN, FP con FN).
 # 4) recall; FN (False Negative); FP (False Positive)
 # 5) `predict` restituisce la classe (0 o 1). `predict_proba` restituisce
-#    la probabilità per ogni classe (array con 2 colonne: P(classe 0) e
-#    P(classe 1)). Per score_genuinita serve predict_proba, perché
-#    score_genuinita = (1 - prob_alterato) * 100, e prob_alterato è la
-#    colonna 1 di predict_proba.
+#    la probabilità per ogni classe (array 2 colonne: P(genuino), P(alterato)).
+#    Per score_genuinita serve predict_proba: colonna 1 = prob_alterato,
+#    score_genuinita = (1 - prob_alterato) * 100.
 # 6) [Risposta Feynman — esempio valido:
-#    "Precision: se l'allarme suona 10 volte, quante volte c'è davvero
-#    un ladro? Se 8 su 10 → precision 80%.
-#    Recall: su 10 furti reali, quante volte ha suonato l'allarme?
-#    Se ha suonato per 7 → recall 70%, 3 ladri passati inosservati.
+#    "Precision: se il sistema segna 10 pratiche come sospette, quante
+#    lo erano davvero? Se 8 su 10 → precision 80%.
+#    Recall: su 10 pratiche davvero alterate, quante ne ha trovate?
+#    Se ne trova 7 → recall 70%, 3 alterate sono passate inosservate.
 #    Nel controllo documentale il recall è più importante: meglio qualche
-#    falso allarme (il consulente controlla un doc buono) che lasciar
-#    passare un documento alterato."]
+#    falso allarme che lasciar passare una pratica alterata."]
 #
 # --- RISPOSTE ESERCIZI ---
 #
@@ -816,8 +815,6 @@ print("="*60)
 # 3) Ordine argomenti: accuracy_score(y, p) non accuracy_score(p, y).
 #    (per accuracy il risultato non cambia, ma per recall sì!)
 # Codice corretto:
-# from sklearn.tree import DecisionTreeClassifier
-# from sklearn.metrics import accuracy_score, recall_score
 # clf = DecisionTreeClassifier(random_state=42)
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 # clf.fit(X_train, y_train)
@@ -826,10 +823,8 @@ print("="*60)
 # print(recall_score(y_test, y_pred))
 #
 # ESERCIZIO 5 (DEBUG) — Bug:
-# X_dbg contiene ANCORA la colonna "prezzo_euro"! Non è stata droppata.
-# Dato che "costosa" è derivata dalla mediana del prezzo, il prezzo
-# è un predittore perfetto del target → data leakage. Il modello
-# impara la soglia del prezzo, non le feature reali.
-# Correzione: aggiungere "prezzo_euro" (e derivati) alla lista drop:
-# X_dbg = case_e.drop(columns=["id", "costosa", "prezzo_euro"] +
-#   [c for c in case_e.columns if "prezzo" in c or "fascia" in c])
+# X_dbg contiene ANCORA la colonna "y_alterato"! Non è stata droppata
+# (si droppa solo "pratica_id"). Il target è nelle feature →
+# data leakage perfetto: il modello impara che y_alterato == 1
+# → recall 1.0 garantito.
+# Correzione: X_dbg = pratiche_dbg.drop(columns=["pratica_id", "y_alterato"])
