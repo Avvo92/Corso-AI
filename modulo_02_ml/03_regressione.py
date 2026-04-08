@@ -940,19 +940,26 @@ assert mae_test < mae_baseline, 'il modello deve battere la baseline'
 # 3) In un commento: spiega come adatteresti questa funzione per il
 #    prodotto documentale (dove le feature sarebbero delta_netto_lordo,
 #    ratio_trattenute, match_cf_cross_doc, ecc.)
+
 print("\nEsercizio 8\n")
-def motivi_top_n(modello, feature_names, n=3):
-    
+
+def motivi_top_n(modello, feature_names, n=3):    
     df_coef = pd.DataFrame({
         'nome': feature_names,
         'valore': modello.coef_
     })
     df_coef['abs'] = df_coef['valore'].abs()
     df_coef_sorted = df_coef.sort_values(by='abs', ascending=False)
+    report = []
     for _, row in df_coef_sorted.head(n).iterrows():
-        print(f"{row['nome']:25s} => {round(row['valore'], 2)}")
+        report.append(f"{row['nome']} ({row['valore']:+.1f})")
+    return report
         
-motivi_top_n(modello_lineare, X_train.columns, 4)
+print(motivi_top_n(modello_lineare_scalato, X_train.columns, 3))
+
+
+#La funzione rimane sostanzialmente invariata nel suo utilizzo. inserendo come parametro il modello addestrato sullo score di genuinità, la funzione restituisce n coefficienti a partire dal più importante, il modo da avere un idea di cosa a maggiormente influito per raggiungere lo scoring.
+
 
 
 # ==========================================================================

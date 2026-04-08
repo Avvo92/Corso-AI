@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 02/04/2026
+> **Ultimo aggiornamento**: 07/04/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -32,12 +32,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_02_ml/03_regressione.py (Regressione — da preparare / in bozza) |
-| **Ultimo completato** | 02_ciclo_ml.py (02/04/2026) — Ciclo ML completo: preprocessing, split, Decision Tree, metriche, baseline, assert |
+| **Capitolo in corso** | modulo_02_ml/04_classificazione_metriche.py (Classificazione e metriche — da sviluppare) |
+| **Ultimo completato** | 03_regressione.py (07/04/2026) — Regressione lineare, scaling, confronto con Decision Tree, coefficienti e motivi_top3, progetto incrementale `modello_base.py` aggiornato |
 | **Modulo attuale** | 2 — Machine Learning Fundamentals |
-| **Difficoltà media** | ~6.4 (13 capitoli con voto: M1 01-06, 08-12 + M2-01, M2-02; cap 07 escluso; M2-02 = 5) |
-| **Priorità attive** | 🟡 Lacuna #12 reshape/elementi (verificare al quiz cap.03 o ripasso NumPy), 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla accidentale `(x, n)` vs `round(x, n)` emerso in es.8, ⚠️ Data leakage: consolidato in cap.02 — replicare su dati documentali reali quando possibile |
-| **Sessione corrente** | Sessione 12 |
+| **Difficoltà media** | ~6.4 (14 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-03; cap 07 escluso; M2-03 = **6**/10) |
+| **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (rinforzato in cap.03), 🟡 Allineamento variabili tra esercizi sequenziali nello stesso file `.py` (monitoraggio), ⚠️ Data leakage: consolidato cap.02–03 — replicare su documenti reali quando possibile |
+| **Sessione corrente** | Sessione 13 |
 
 ---
 
@@ -48,11 +48,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 02/04/2026 |
-| **Cosa è stato fatto** | Chiusura cap.02 M2: quiz ingresso/verifica svolti; esercizi 1-9 + teoria es.9; es.8 portato a 10/10 (confronto max_depth, gap_r2, DataFrame); progetto incrementale recuperato con `modello_base.py` eseguibile. Rinforzi cap.02 (anti-pattern valutazione, loc/iloc, None) integrati nel file. |
-| **Errori emersi** | In es.8: uso di `(valore, 2)` invece di `round(valore, 2)` — tupla accidentale (registrato come pattern #21). Quiz verifica: refuso "Acnhe" in commento. Esercizio 5 debug: risposta corretta su categoriche + encoding. |
-| **Cosa fare nella prossima sessione** | Svolgere/completare `03_regressione.py`; quiz ingresso su ordine pipeline e anti-pattern. |
-| **Stato motivazione** | Alto: chiude il ciclo ML operativo con assert e baseline; ownership su `modello_base.py`. |
+| **Data** | 07/04/2026 |
+| **Cosa è stato fatto** | Chiusura cap.03 M2: quiz ingresso/verifica + rinforzi #12 e #21; PARTE 1–4 teoria; esercizi 1–8 (tag colloquio, refactoring, debug, interleaving, retrieval, analisi prodotto); es.8 `motivi_top_n` + formato coefficienti; `modello_base.py` esteso con tabella metriche (incl. RMSE), `motivi_top_3`, assert baseline. |
+| **Errori emersi** | Quiz ingresso Q1: sfumatura encoding/scaling (precisare: statistiche scaler solo su train; `get_dummies` prima dello split va valutato per categorie nuove in test). Quiz verifica Q4: refuso "coefficenti" → "coefficienti". Possibile disallineamento nome modello in es.8 se si riusa `modello_lineare_scalato` dopo es.7 — verificare coerenza variabili nello stesso script. |
+| **Cosa fare nella prossima sessione** | Sviluppare `04_classificazione_metriche.py` (accuracy, precision, recall, F1, confusion matrix); quiz ingresso su regressione/scaling; collegare metriche al classificatore vero/alterato della pipeline. |
+| **Stato motivazione** | Alto: primo confronto multi-modello + spiegabilità coefficienti → `motivi_top3` roadmap prodotto. |
 
 ---
 
@@ -70,7 +70,7 @@
 | 18 | Confusione Series vs DataFrame | 🟡 In miglioramento | Quiz cap.02 ok; consolidare su nuovi DataFrame |
 | 19 | `if var:` vs `is not None` per numeri opzionali | 🟡 In miglioramento | Rinforzo terminologico cap.02; evitare "null" in risposte |
 | 20 | Anti-pattern valutazione confuso con feature engineering | 🟡 In miglioramento | Rinforzato in cap.02 (blocco dedicato + quiz) |
-| 21 | Tupla accidentale `(x, n)` al posto di `round(x, n)` | 🟡 Nuovo | Emerso durante correzione es.8 cap.02: la virgola crea una tupla |
+| 21 | Tupla accidentale `(x, n)` al posto di `round(x, n)` | 🟡 In miglioramento | Rinforzo cap.03 (# 🔁 Pattern #21) |
 
 ### Concetti da rinforzare per M2 (⚠️)
 
@@ -107,12 +107,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_02_ml/03_regressione.py (Regressione lineare, estensione metriche, collegamento al prodotto) |
-| **Rinforzi da inserire (🔁)** | Lacuna #12 (reshape/elementi): mini-domanda o richiamo in teoria. Pattern #21: micro-esercizio `round` vs tupla. Richiamo split per pratica (documentale). Recall: pipeline ML vs semplice `fit` sul test (anti-pattern quiz cap.02). |
-| **Concetti ⚠️ da ripassare** | Equazione regressione lineare e interpretazione coefficienti; quando preferire modello lineare vs albero; RMSE vs MAE su errori grossi |
-| **Pattern 🔴 da monitorare** | #6, #19, #21 (tuple/round), #12 (reshape) |
-| **Ponte mentale da riusare** | Baseline = media stipendi ufficio; regressione = retta che minimizza errori; stesso spirito del Decision Tree ma superficie di decisione diversa |
-| **Note** | Cap.02 chiuso: primo ciclo end-to-end con `modello_base.py`. File `03_regressione.py` è placeholder: va completato come capitolo formale. |
+| **Prossimo capitolo** | modulo_02_ml/04_classificazione_metriche.py — classificazione binaria, accuracy, precision, recall, F1, confusion matrix; collegamento a `genuino`/`alterato` e focus recall su alterati |
+| **Rinforzi da inserire (🔁)** | Blocchi già predisposti nel file cap.04 (commenti): recall `round` vs tupla; coerenza variabili modello tra esercizi sequenziali; richiamo leakage su split/scaler. |
+| **Concetti ⚠️ da ripassare** | Soglia decisionale 0.5 vs `predict_proba`; sbilanciamento classi; perché accuracy sola può ingannare nel documentale |
+| **Pattern 🔴 da monitorare** | #6, #19, #21, allineamento variabili tra blocchi esercizi nello stesso `.py` |
+| **Ponte mentale da riusare** | Da regressione (errore €) a classificazione (etichetta giusta/sbagliata); recall = "non lasciar passare alterati" |
+| **Note** | Cap.03 chiuso: `modello_base.py` con LinearRegression scalata vs Decision Tree + tabella metriche. Cap.04 è stub: va costruito come capitolo formale (quiz, teoria, esercizi). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -581,7 +581,7 @@ completezza del self-check e chiedere correzioni.
 
 | Modulo | Focus | Componente pipeline prodotto | Librerie principali | Stato |
 |--------|-------|------------------------------|---------------------|-------|
-| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore supervisionato (vero/alterato) + anomaly detector + `score_genuinita` + `anomaly_score` + **primo test verificabile** + **deploy Streamlit Cloud** | scikit-learn, streamlit | 🟡 In corso (cap.01-02 completati; cap.03+ da fare) |
+| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore supervisionato (vero/alterato) + anomaly detector + `score_genuinita` + `anomaly_score` + **primo test verificabile** + **deploy Streamlit Cloud** | scikit-learn, streamlit | 🟡 In corso (cap.01-03 completati; cap.04+ da fare) |
 | **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, coseno, gradiente, discesa — tutto in codice + Matplotlib | Fondamenta per embedding e backpropagation | numpy, matplotlib | ⬜ Da creare |
 | 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | ⬜ Da creare |
 | 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | ⬜ Da creare |
@@ -645,8 +645,9 @@ completezza del self-check e chiedere correzioni.
 | 12_web_bridge | 6 | -1 ↓ (FastAPI + Pandas: buona comprensione endpoint/query, errori su is not None e Series/DataFrame) |
 | M2-01_cos_e_il_ml | 6 | = (primo capitolo ML: teoria ben assorbita, media esercizi 9.1/10, nessun salto di difficoltà percepito) |
 | M2-02_ciclo_ml | 5 | -1 ↓ vs M2-01 (percepito più gestibile: stesso filo logico del cap.01, molta pratica guidata) |
+| M2-03_regressione | 6 | +1 ↑ vs M2-02 (più carico: più modelli, scaling, coefficienti, progetto) |
 
-**Media attuale**: ~6.4 (13 capitoli con voto, cap 07 escluso). M2-02 a 5: percezione di difficoltà in calo rispetto al primo capitolo ML — coerente con consolidamento degli stessi strumenti.
+**Media attuale**: ~6.4 (14 capitoli con voto, cap 07 escluso). Con M2-03 = 6 la media aritmetica aggiornata è ~**6.37** (arrotondato ~6.4).
 
 ---
 
@@ -757,6 +758,9 @@ completezza del self-check e chiedere correzioni.
 | RMSE | Root Mean Squared Error — penalizza errori grandi più del MAE | M2-02 | 0/3 | 🔄 |
 | `DecisionTreeRegressor` | Albero per regressione; iperparametri chiave `max_depth`, `random_state` | M2-02 | 0/3 | 🔄 |
 | `.fit` / `.predict` | Addestramento e inferenza in scikit-learn | M2-02 | 0/3 | 🔄 |
+| `LinearRegression` | Regressione lineare OLS; attributi `coef_`, `intercept_` | M2-03 | 0/3 | 🔄 |
+| `StandardScaler` | Standardizza feature (media 0, var 1); `fit` solo su train | M2-03 | 0/3 | 🔄 |
+| Coefficienti (post-scaling) | Con feature scalate, i pesi sono confrontabili tra colonne per ordine di importanza | M2-03 | 0/3 | 🔄 |
 
 ---
 
@@ -789,6 +793,13 @@ completezza del self-check e chiedere correzioni.
 | 1 | Differenza anti-pattern valutazione vs preparazione dati | Valutazione: misura su train/test sbagliati; preparazione: feature/target, leakage nelle X |
 | 2 | Perché `(x, 2)` non arrotonda | La virgola crea una tupla `(x, 2)`; usare `round(x, 2)` |
 
+### Cap.03 M2 — Regressione
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | Valutazione es.8 `motivi_top_n` (formato coef, return, modello scalato) | Iterazioni: `return` lista, `:+.1f`, uso `modello_lineare_scalato` coerente con PARTE 4 |
+| 2 | Progetto incrementale `modello_base.py` | DataFrame metriche + RMSE test + `motivi_top_3`; assert baseline; compatibilità sklearn `root_mean_squared_error` |
+
 ---
 
 ## Pattern di Errore Ricorrenti — Solo Attivi
@@ -802,7 +813,8 @@ completezza del self-check e chiedere correzioni.
 | 18 | **Confusione Series vs DataFrame** | 🟡 In miglioramento | Rinforzato cap.01-02; quiz cap.02 ok |
 | 19 | **`if var:` vs `is not None` per numeri opzionali** | 🟡 In miglioramento | Emerso cap 12 — rinforzo terminologico cap.02 |
 | 20 | **Anti-pattern valutazione vs feature engineering** | 🟡 In miglioramento | Quiz cap.01 + rinforzo cap.02 |
-| 21 | **Tupla accidentale `(x, n)` al posto di `round(x, n)`** | 🟡 Nuovo | Emerso correzione es.8 cap.02 M2 |
+| 21 | **Tupla accidentale `(x, n)` al posto di `round(x, n)`** | 🟡 In miglioramento | Rinforzo dedicato cap.03; quiz ok |
+| 22 | **Riutilizzo variabili tra esercizi sequenziali nello stesso `.py`** | 🟡 Nuovo | Rischio disallineamento ultimo `fit` vs nome variabile (es. `modello_lineare` vs `modello_lineare_scalato`) |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠️ Da consolidare | 🟢 Superato
 
@@ -896,6 +908,14 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - Deliverable: `modello_base.py` — ciclo ML autonomo con assert anti-baseline
 - Teoria applicata: ciclo ML su prodotto documentale (es.9)
 
+### Cap.03 M2 — Regressione lineare (completato; voto difficoltà: **6**/10)
+- `LinearRegression`: coefficienti, intercetta, confronto con `DecisionTreeRegressor`
+- `StandardScaler`: fit su train, transform su train/test; coefficienti interpretabili a parità di scala
+- Metriche: MAE, RMSE, R²; lettura RMSE >> MAE (errori grossi / outlier nelle previsioni)
+- Funzione tipo `motivi_top_n` / top |coef| → collegamento a `motivi_top3` in pipeline prodotto
+- Tag esercizi: colloquio (lineare vs albero, bias-varianza), refactoring split/scaling, debug leakage, interleaving groupby+ML, retrieval pipeline completa, analisi prodotto
+- Deliverable: `modello_base.py` — confronto tabellare (baseline, albero, lineare scalato) + `motivi_top_3()` su coefficienti
+
 ---
 
 ## Checklist di Auto-Revisione (prima di consegnare il codice)
@@ -922,6 +942,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - [ ] **Il parametro della funzione è usato?** Se la funzione accetta `dizionario`, dentro uso `dizionario`, non il nome della variabile globale
 - [ ] **Ho contato bene `>=` vs `>`?** Se la condizione è `>= 7`, il 7 è INCLUSO. Se è `> 7`, il 7 è ESCLUSO
 - [ ] **Ho scritto `(valore, 2)` invece di `round(valore, 2)`?** La virgola crea una **tupla**, non un numero arrotondato
+- [ ] **In un file con molti esercizi in sequenza**, il modello che passo a `predict` o ai coefficienti è lo stesso su cui ho fatto l’ultimo `.fit` coerente con X/y?
 
 ### Controlli Bonus (buone pratiche)
 - [ ] La funzione ha una docstring? (se la consegna la chiede, è OBBLIGATORIA)
@@ -964,6 +985,8 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | pd.cut / pd.qcut | 30/03 (cap.01 M2) | ✅ cap.01 M2 es.6 (usato correttamente) | — | — | 🟡 Primo uso riuscito |
 | groupby().agg() avanzato | 30/03 (cap.01 M2) | ✅ cap.01 M2 es.6/7/8 (lambda, var, multi-agg) | — | — | 🟡 Consolidato nel cap.01 |
 | Anti-pattern valutazione | 30/03 (cap.01 M2) | ✅ cap.02 M2 (rinforzo + quiz + esercizi) | — | — | 🟢 Superato (monitoraggio continuo) |
+| Regressione lineare / scaling | 07/04 (cap.03 M2) | ✅ cap.03 es.1-8 + quiz | — | — | 🟡 Praticato |
+| Interpretazione coefficienti e motivi_top3 | 07/04 (cap.03 M2) | ✅ es.8 + progetto incrementale | — | — | 🟡 Praticato |
 
 > **Regola per l'agente**: questa tabella va estesa a ogni nuovo capitolo M2+.
 > I concetti M1 con stato OK/Consolidato restano come riferimento ma non richiedono piu ripasso attivo.
@@ -999,7 +1022,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 9 | >= vs > (include o esclude il valore limite) | Verifica/05 | Dict comprehension `if v >= 7`: ha escluso Marco (voto 7) dalla risposta. Non distingue >= (include) da > (esclude) | 06 | 🟡 |
 | 10 | .get() vs .items() — metodi diversi | Verifica/05 | Per contare frequenze ha scritto `.items(lettera, totale)` invece di `.get(lettera, 0)`. Confonde .items() (tutte le coppie) con .get() (una chiave con default) | 06 | 🟡 |
 | 11 | Parsing CSV manuale vs spiegazione astratta | Verifica/06 | Alla domanda Feynman aveva descritto il concetto in modo generale ma senza sequenza operativa completa (apertura file -> lettura righe -> header -> split -> dizionario -> append). Verificata corretta al quiz d'ingresso cap.07 con passaggi operativi in ordine. | 07 | 🟢 |
-| 12 | Diagnosi mismatch shape in reshape | Ingresso/09 | In una domanda "trova l'errore" su `img.reshape(64,)` aveva inizialmente guardato la sintassi, non il mismatch elementi (192 != 64). Rinforzo inserito nel cap.01 M2. | 01_M2 | 🟡 |
+| 12 | Diagnosi mismatch shape in reshape | Ingresso/09 | In una domanda "trova l'errore" su `img.reshape(64,)` aveva inizialmente guardato la sintassi, non il mismatch elementi (192 != 64). Rinforzo inserito nel cap.01 M2; micro-es. cap.03 risposti correttamente. | 01_M2 | 🟡 → 🟢 |
 | 13 | Interpretazione `.shape` su selezione colonne Pandas | Verifica/09 | Alla domanda su `vendite[["prodotto","prezzo"]].shape` aveva risposto `(2,)` invece di `(n_righe, 2)`. Rinforzo inserito nel cap.01 M2. | 01_M2 | 🟡 |
 | 14 | Distinzione Series vs DataFrame | Verifica/09 | Aveva confuso `df["colonna"]` (Series) con DataFrame. Rinforzo inserito nel cap.01 M2. Quiz ingresso cap.01 M2 perfetto. | 01_M2 | 🟡 → da confermare al quiz cap.02 |
 | 15 | Anti-pattern di valutazione modello | Verifica/01_M2 | Alla domanda "anti-pattern valutazione" ha descritto un errore di feature selection ("feature non coerenti"), non il classico anti-pattern: valutare su training set o fare tuning guardando il test set. | 02_M2 | 🟢 |
@@ -1181,6 +1204,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 12 — Web Bridge | ✅ Completato | API FastAPI: endpoint /progetto/pratiche con filtro semaforo e output JSON strutturato |
 | M2 cap.01 — Cos'è il ML | ✅ Completato | Teoria + esercizi; task `modello_base` recuperato nel cap.02 |
 | M2 cap.02 — Ciclo ML | ✅ Completato | Esercizi 1-9 + teoria es.9; `modello_base.py` deliverable; assert baseline |
+| M2 cap.03 — Regressione | ✅ Completato | Confronto lineare vs albero + scaling; `motivi_top_n`/motivi_top3; `modello_base.py` esteso (metriche + spiegabilità) |
 | M3 — DL & CV | ⬜ Da fare | |
 | M4 — NLP | ⬜ Da fare | |
 | M5 — LLM | ⬜ Da fare | |
@@ -1669,6 +1693,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 |------|----------|--------|-----------------|
 | 02/04/2026 | **Preferenze di spiegazione**: niente LaTeX in chat (formule in linguaggio naturale / Python); sotto-sezione nel Profilo; Regola 21 aggiornata con rimando | Richiesta studente: matematica comprensibile senza notazione LaTeX | Profilo, Regola 21, Changelog |
 | 02/04/2026 | Voto difficoltà cap.02 M2: **5**/10 registrato; difficoltà media ricalcolata ~6.4; competenze e valutazioni aggiornate | Risposta studente post-chiusura | Stato Attuale, Valutazioni, Competenze, Changelog |
+| 07/04/2026 | Chiusura cap.03 M2: Stato, Ultima Sessione, Priorità, Prossimo Cap, Moduli Successivi, Valutazioni, Competenze, Ripasso M2, Glossario (LinearRegression, StandardScaler, coefficienti scalati), Domande cap.03, Pattern #21 aggiornato + #22, Lacuna #12 → 🟢, Progetto incrementale (riga M2 cap.03). **Voto difficoltà 6/10** registrato in seguito (media ~6.37). | Handshake chiusura capitolo 3 M2 + conferma voto | Stesso set + Valutazioni |
 | 02/04/2026 | Chiusura cap.02 M2: Stato, Ultima Sessione, Priorità, Prossimo Cap, Progresso M2, Valutazioni (M2-02 voto da confermare), Competenze, Ripasso, Lacune (#15 🟢), Pattern (#20-#21), Glossario (MAE, RMSE, DecisionTree, fit/predict), Checklist tupla/round, Progetto (`modello_base.py`), Domande cap.02, Changelog | Handshake chiusura capitolo 2 M2 | Stesso set + Moduli Successivi |
 | 30/03/2026 | Chiusura cap.01 M2: Stato, Ultima Sessione, Priorità, Prossimo Cap aggiornati. Lacuna #15 (anti-pattern valutazione) aggiunta. Pattern #20 registrato. Domande cap.01 M2 registrate. Ripasso M2 aggiornato. Competenze M2-01 aggiunte. Glossario: value_counts, pd.cut, varianza aggiunti. | Chiusura capitolo formale con handshake | Stato, Ultima Sessione, Priorità, Prossimo Cap, Domande, Lacune, Pattern, Ripasso, Competenze, Glossario, Changelog |
 | 25/03/2026 | Audit coerenza: Regola 7 M4→M3, punti 1-29→1-38, ~800→~1600 target unificato, motivo_top→motivi_top3 unificato, self-check completato, M9 aggiunto a portfolio, cap07 stato corretto, versionote→versionate, archivio M1 marcato come eseguito, sezione colloquio aggiornata | Eliminare incoerenze che potevano confondere agenti futuri | Regole, Self-check, Portfolio, Progetto, Archivio |

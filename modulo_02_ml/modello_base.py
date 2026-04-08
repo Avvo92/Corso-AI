@@ -3,11 +3,12 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import mean_absolute_error
-from sklearn.metrics import r2_score
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, r2_score, root_mean_squared_error
+from sklearn.preprocessing import StandardScaler
 
 print("\nProgetto incrementale\n")
-#carico il file file "case.csv" e lo leggo come Dataframe Pandas
+#carico il file "case.csv" e lo leggo come Dataframe Pandas
 path_file_case = os.path.join(os.path.dirname(__file__), "dati", "case.csv")
 case = pd.read_csv(path_file_case)
 
@@ -28,11 +29,25 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=.2, random_state=42
 )
 
+#Imposto lo scaler per il secondo modello
+scaler = StandardScaler()
+scaler.fit(X_train)
+
+#preparo i dati scalati per il modello lineare
+X_train_scaled = scaler.transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
 #assegno il modello alla variabile "modello",imposto gli iperparametri e lo addestro
 modello = DecisionTreeRegressor(max_depth=6, random_state=42)
+modello_lineare_scalato = LinearRegression()
+
 modello.fit(X_train, y_train)
-y_pred_train = modello.predict(X_train)
-y_pred_test = modello.predict(X_test)
+modello_lineare_scalato.fit(X_train_scaled, y_train)
+
+y_pred_train_albero = modello.predict(X_train)
+y_pred_test_albero = modello.predict(X_test)
+y_pred_train_lineare_scl = modello_lineare_scalato.predict(X_train_scaled)
+y_pred_test_lineare_scl = modello_lineare_scalato.predict(X_test_scaled)
 
 #calcolo la baseline
 y_baseline = np.full_like(y_test, y_train.mean())
@@ -40,26 +55,70 @@ y_baseline = np.full_like(y_test, y_train.mean())
 #imposto le metriche per effettuare i confronti
 mae_baseline = mean_absolute_error(y_test, y_baseline)
 r2_baseline = r2_score(y_test, y_baseline)
+rmse_baseline = root_mean_squared_error(y_test, y_baseline)
 
-mae_train = mean_absolute_error(y_train, y_pred_train)
-r2_train = r2_score(y_train, y_pred_train)
+mae_train_albero = mean_absolute_error(y_train, y_pred_train_albero)
+r2_train_albero = r2_score(y_train, y_pred_train_albero)
+rmse_train_albero = root_mean_squared_error(y_train, y_pred_train_albero)
+mae_test_albero = mean_absolute_error(y_test, y_pred_test_albero)
+r2_test_albero = r2_score(y_test, y_pred_test_albero)
+rmse_test_albero = root_mean_squared_error(y_test, y_pred_test_albero)
 
-mae_test = mean_absolute_error(y_test, y_pred_test)
-r2_test = r2_score(y_test, y_pred_test)
+mae_train_lineare_scl = mean_absolute_error(y_train, y_pred_train_lineare_scl)
+r2_train_lineare_scl = r2_score(y_train, y_pred_train_lineare_scl)
+rmse_train_lineare_scl = root_mean_squared_error(y_train, y_pred_train_lineare_scl)
+mae_test_lineare_scl = mean_absolute_error(y_test, y_pred_test_lineare_scl)
+r2_test_lineare_scl = r2_score(y_test, y_pred_test_lineare_scl)
+rmse_test_lineare_scl = root_mean_squared_error(y_test, y_pred_test_lineare_scl)
 
-print(f"Reali Train      => {y_train[:5].values.astype(int)}")
-print(f"Previsioni Train => {y_pred_train[:5].astype(int)}")
-print(f"MAE Train        => {mae_train:.2f}")
-print(f"R² Train         => {r2_train:.3f}\n")
+#creo una lista di dizionari per il report delle metriche
+report_metriche = [
+    {
+        'modello': 'Baseline',
+        'mae_train': '-',
+        'mae_test': round(mae_baseline, 2),
+        'r2_train': '-',
+        'r2_test': round(r2_baseline, 3),
+        'rmse_train': '-',
+        'rmse_test': round(rmse_baseline, 2),
+        
+    },
+    {
+        'modello': 'Decision Tree',
+        'mae_train': round(mae_train_albero, 2),
+        'mae_test': round(mae_test_albero, 2),
+        'r2_train': round(r2_train_albero, 3),
+        'r2_test': round(r2_test_albero, 3),
+        'rmse_train': round(rmse_train_albero, 2),
+        'rmse_test': round(rmse_test_albero, 2),
+    },
+    {
+        'modello': 'Linear Regression',
+        'mae_train': round(mae_train_lineare_scl, 2),
+        'mae_test': round(mae_test_lineare_scl, 2),
+        'r2_train': round(r2_train_lineare_scl, 3),
+        'r2_test': round(r2_test_lineare_scl, 3),
+        'rmse_train': round(rmse_train_lineare_scl, 2),
+        'rmse_test': round(rmse_test_lineare_scl, 2), 
+    }
+]
 
-print(f"Reali Test       => {y_test[:5].values.astype(int)}")
-print(f"Previsioni Test  => {y_pred_test[:5].astype(int)}")
-print(f"MAE Test         => {mae_test:.2f}")
-print(f"R² Test          => {r2_test:.3f}\n")
+assert (mae_test_albero < mae_baseline) or (mae_test_lineare_scl < mae_baseline), "il modello deve battere la baseline"
 
-print(f"Reali Test       => {y_test.values.astype(int)}")
-print(f"Prev. Baseline   => {y_baseline.astype(int)}")
-print(f"MAE Baseline     => {mae_baseline:.2f}")
-print(f"R² Baseline      => {r2_baseline:.3f}\n")
 
-assert mae_test < mae_baseline, "il modello deve battere la baseline"
+#funzione per trovare i coefficienti più rilevanti
+def motivi_top_3(modello, feature_names, n=3):    
+    df_coef = pd.DataFrame({
+        'nome': feature_names,
+        'valore': modello.coef_
+    })
+    df_coef['abs'] = df_coef['valore'].abs()
+    df_coef_sorted = df_coef.sort_values(by='abs', ascending=False)
+    report = []
+    for _, row in df_coef_sorted.head(n).iterrows():
+        report.append(f"{row['nome']} ({row['valore']:+.1f})")
+    return report
+
+#stampa del report e della lista prodotta dalla funzione
+print(f"{pd.DataFrame(report_metriche)}\n")        
+print(motivi_top_3(modello_lineare_scalato, X_train.columns, 3))
