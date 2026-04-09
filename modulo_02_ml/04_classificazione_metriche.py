@@ -519,14 +519,18 @@ print(f"  Precision:  {precision_score(y_test, y_pred_prudente, zero_division=0)
 # --- MINI-ESERCIZIO 4 — Prova subito! ---
 # 1) Guarda le probabilità stampate sopra: ci sono pratiche in cui il
 #    modello era "indeciso" (probabilità vicina a 0.5)?
+# si, alcune erano intorno al 60% di score genuinità
 # 2) Se abbassi la soglia da 0.5 a 0.3, cosa succede al numero di
 #    previsioni "1" (alterato)? Aumenta o diminuisce?
 #    Perché questo fa salire il recall?
+#Aumenta, perchè in questo caso, appena la probabilità alterato sale oltre il 30 %, fa scattare l'alert e da classe 1
 # 3) Nel prodotto: se la soglia è troppo bassa (es. 0.1), il modello
 #    dice "alterato" quasi sempre. Cosa succede alla precision?
 #    Qual è il rischio operativo per il consulente?
+# Bisogna trovare il giusto equilibrio, perchè altrimenti il consulente si trova a controllare manualmente praticamente tutte le pratiche, ma a quel punto il modello diventa praticamente inutile. La precision deve cmq essere sufficientemente alta così da scongiurare questa evenienza. 
 # 4) Il semaforo (verde/giallo/rosso) è derivato dallo score_genuinita
 #    con soglie. Come sceglieresti le soglie in produzione?
+# 0% - 50% rosso, 51% - 70% giallo, 71% - 100 % verde utilizzando una soglia di .3
 #    (Suggerimento: non con l'intuizione, ma guardando precision/recall
 #    a soglie diverse sul test set.)
 # Scrivi qui sotto:
@@ -540,7 +544,7 @@ print(f"  Precision:  {precision_score(y_test, y_pred_prudente, zero_division=0)
 # DOMANDA 1 — Vero/Falso:
 # "Un modello con accuracy 95% è sempre affidabile."
 # Rispondi V o F, fai un esempio concreto dove non lo è.
-#
+# Falso, in un data set di documenti , in cui 95 sono genuini e 5 alterati praticamente il modello, anche avendo accuracy 95 (sembra molto bravo) ha allo stesso tempo recall 0, quindi di fatto non ne prende neanche 1, ed è di fatto inutile
 #
 # DOMANDA 2 — Prevedi:
 # Confusion matrix:
@@ -548,31 +552,37 @@ print(f"  Precision:  {precision_score(y_test, y_pred_prudente, zero_division=0)
 #    [ 5, 5]]
 # Calcola: accuracy, precision, recall, F1.
 # Il modello è buono per trovare le pratiche alterate?
-#
+# accuracy = (TN + TP) / (TN + TP + FN + FP) = 85 / 100 = 85.00%
+# precision = TP / (TP + FP) = 5 / 5 + 10 = 5 / 15 = 33.33%
+# recall = TP / (TP + FN) = 5 / 5 + 5 = 5 / 10 = 50.00%
+# f1 = (2 * 0.50 * 0.33) / (0.5 + 0.33) = 0.33 / 0.83 = 0.4
 #
 # DOMANDA 3 — Trova l'errore:
 #   y_pred = clf.predict(X_test)
 #   print(precision_score(y_pred, y_test))
 # Cosa c'è di sbagliato? Cosa può succedere?
-#
+# I parametri di precision_score sono invertiti, e di conseguenza la metrisca non avrebbe senso e sarebbe fuorviante
 #
 # DOMANDA 4 — Completa:
 #   Nel prodotto documentale, la metrica CRITICA è la ___ sulla classe
 #   "alterato" perché un ___ (pratica alterata classificata come
 #   genuina) è molto più grave di un ___ (genuina classificata
 #   come alterata).
+#  recall, falso negativo, falso positivo
 #
 #
 # DOMANDA 5 — Definizione:
 # Qual è la differenza tra `predict` e `predict_proba` in sklearn?
 # Quale dei due è necessario per calcolare `score_genuinita`?
-#
+# predict da un esito che è binario, nel nostro caso genuino o alterato rappresentati con 0 o 1. la predict_proba, invece restituisce le probabilità di appartenenza all'una o l'altra classe, e dunque fondamentale perchè da questa probabilità possiamo ricavare proprio lo score_genuinità.
 #
 # DOMANDA 6 — 💬 Spiega con parole tue:
 # Spiega a un collega non tecnico cosa significano precision e recall,
 # usando l'esempio dell'allarme antifurto (o un'analogia a tua scelta).
 # Quale delle due è più importante nel controllo documentale? Perché?
-#
+# precision è : su 10 volte che è scattato l'allarme, quante volte era davvero entrato un ladro?
+# recall : su 10 volte che sono arrivati i ladri, quante volte l'allarme se ne è accorto ed è scattato?
+# Nel caso del controllo documentale, la recall ha sicuramente un importanza maggiore. Questo perchè se anche il modello segnala un falso positivo, li può intervenire l'operatore e verificare manualmente, ma ne caso di un positivo non segnalato, li non si puù intervenire per sistemare, e l'errore passa semplicemente e può causare rischi gravi (come frodi)
 
 
 # ==========================================================================
@@ -597,6 +607,58 @@ print("\n" + "="*60)
 print("ESERCIZIO 1")
 print("="*60)
 
+path_file_mock = os.path.join(os.path.dirname(__file__), "dati", "pratiche_genuinita_mock.csv")
+pratiche = pd.read_csv(path_file_mock)
+
+print(pratiche.columns)
+
+X = pratiche.drop(columns=['y_alterato', 'pratica_id'])
+y = pratiche['y_alterato']
+
+X_train, X_test, y_train, y_test = train_test_split(
+  X, y, test_size = .2, random_state=42, stratify=y
+)
+
+
+clf_tree = DecisionTreeClassifier(max_depth=3, random_state=42)
+clf_tree.fit(X_train, y_train)
+
+y_pred_train = clf_tree.predict(X_train)
+y_pred_test = clf_tree.predict(X_test)
+
+accuracy_train = accuracy_score(y_train, y_pred_train)
+precision_train = precision_score(y_train, y_pred_train, zero_division=0)
+recall_train = recall_score(y_train, y_pred_train, zero_division=0)
+f1_train = f1_score(y_train, y_pred_train, zero_division=0)
+
+accuracy_test = accuracy_score(y_test, y_pred_test)
+precision_test = precision_score(y_test, y_pred_test, zero_division=0)
+recall_test = recall_score(y_test, y_pred_test, zero_division=0)
+f1_test = f1_score(y_test, y_pred_test, zero_division=0)
+
+report= [
+  {
+    'set': 'TRAIN',
+    'accuracy_score': accuracy_train,
+    'precision_score': precision_train,
+    'recall_score': recall_train,
+    'f1_score': f1_train
+  },
+  {
+    'set': 'TEST',
+    'accuracy_score': accuracy_test,
+    'precision_score': precision_test,
+    'recall_score': recall_test,
+    'f1_score': f1_test
+  }
+]
+
+print(pd.DataFrame(report))
+print(confusion_matrix(y_test, y_pred_test))
+
+
+assert accuracy_test > .5, 'Il modello deve battere il lancio di una moneta'
+
 
 # ESERCIZIO 2 (Medio):
 # Confronta 3 classificatori sullo stesso split (dal dataset pratiche):
@@ -607,25 +669,82 @@ print("="*60)
 # Crea un DataFrame di confronto e stampalo ordinato per recall.
 # In un commento: quale sceglieresti per il prodotto documentale?
 # Motiva la scelta pensando ai falsi negativi.
+# Nel caso di questo test, i modelli sono risultati identici in termini di punteggi delle metriche, compreso il recall sui falsi negativi. Quindi la scelta, nel nostro caso specifico, ricadrebbe sul logistic regressor per via del predict proba, che ci sarebbe utile per generare poi il punteggio di scoring.
 
 print("\n" + "="*60)
 print("ESERCIZIO 2")
 print("="*60)
 
+path_file_mock = os.path.join(os.path.dirname(__file__), "dati", "pratiche_genuinita_mock.csv")
+pratiche = pd.read_csv(path_file_mock)
+
+X = pratiche.drop(columns=['pratica_id', 'y_alterato'])
+y = pratiche['y_alterato']
+
+X_train, X_test, y_train, y_test = train_test_split(
+  X, y, test_size=.2, random_state=42, stratify=y
+)
+
+scaler = StandardScaler()
+scaler.fit(X_train)
+
+X_train_scaled = scaler.transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+clf_tree_md3 = DecisionTreeClassifier(max_depth = 3, random_state=42)
+clf_tree_md6 = DecisionTreeClassifier(max_depth = 6, random_state=42)
+clf_log = LogisticRegression(max_iter=1000, random_state=42)
+
+clf_tree_md3.fit(X_train, y_train)
+clf_tree_md6.fit(X_train, y_train)
+clf_log.fit(X_train_scaled, y_train)
+
+y_pred_tree_md3 = clf_tree_md3.predict(X_test)
+y_pred_tree_md6 = clf_tree_md6.predict(X_test)
+y_pred_log = clf_log.predict(X_test_scaled)
+
+report=[
+  {
+    'modello': 'Albero max_depth=3',
+    'accuracy': accuracy_score(y_test, y_pred_tree_md3),
+    'precision': precision_score(y_test, y_pred_tree_md3, zero_division=0),
+    'recall': recall_score(y_test, y_pred_tree_md3, zero_division=0),
+    'f1_score': f1_score(y_test, y_pred_tree_md3, zero_division=0)
+  },
+  {
+    'modello': 'Albero max_depth=6',
+    'accuracy': accuracy_score(y_test, y_pred_tree_md6),
+    'precision': precision_score(y_test, y_pred_tree_md6, zero_division=0),
+    'recall': recall_score(y_test, y_pred_tree_md6, zero_division=0),
+    'f1_score': f1_score(y_test, y_pred_tree_md6, zero_division=0)
+  },
+  {
+    'modello': 'Logistic Regressor',
+    'accuracy': accuracy_score(y_test, y_pred_log),
+    'precision': precision_score(y_test, y_pred_log, zero_division=0),
+    'recall': recall_score(y_test, y_pred_log, zero_division=0),
+    'f1_score': f1_score(y_test, y_pred_log, zero_division=0)
+  }
+]
+
+print(pd.DataFrame(report).sort_values(by='recall', ascending=False))
 
 # ESERCIZIO 3 (🎯 [COLLOQUIO]):
 # Rispondi in 10-12 righe di commento:
 # - Cosa sono precision e recall? Fai un esempio per ciascuno nel
 #   contesto del controllo documentale.
+# precision: su 10 documenti segnalati, quanti erano realmente alterati ? (falsi positivi)
+# recall: su 10 documenti alterati, quanti ne ha segnalati il modello ? (falsi negativi)
 # - Quando è più importante la precision? Quando il recall?
+# la precision è importante in quei contesti in cui è meglio avere meno falsi allarmi possibile. la recall è importante quando devono sfuggire meno target possibili.
 # - Cos'è l'F1 e perché usa la media armonica (non aritmetica)?
+# perchè se uno dei valori è molto basso (anche se l'altro è invece alto), l'f1 score lo segnala 
 # - Nel prodotto: su quale classe vuoi recall alto e perché?
+# voglio recall alto sulle pratiche alterate, perchè non trovarle significa esporsi a rischi gravi (come le frodi)
 #   Cosa succede se il recall sulla classe "alterato" è basso?
+# che molto pratiche alterate superano il controllo, e quindi il modello non è adeguato al compito che ci siamo prefissati, ossia evitare le frodi
 # - Cos'è una confusion matrix? Come la leggi?
-
-print("\n" + "="*60)
-print("ESERCIZIO 3 — COLLOQUIO")
-print("="*60)
+# la confusion matrix e una matrice 2, che va letta in questo modo = [[TN, FP][FN, TP]]. La si utilizza per il calcolo delle metriche.
 
 
 # ESERCIZIO 4 (🔧 [REFACTORING]):
@@ -649,6 +768,25 @@ print("\n" + "="*60)
 print("ESERCIZIO 4 — REFACTORING")
 print("="*60)
 
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, recall_score
+
+X = pratiche.drop(columns=['pratica_id', 'y_alterato'])
+y = pratiche['y_alterato']
+
+clf_tree_model = DecisionTreeClassifier(random_state=42)
+
+X_train, X_test, y_train, y_test = train_test_split(
+  X, y, test_size=.2, random_state=42, stratify=y
+)
+
+clf_tree_model.fit(X_train, y_train)
+
+y_pred = clf_tree_model.predict(X_test)
+
+print(f"Accuracy Score => {accuracy_score(y_test, y_pred):.1%}")
+print(f"Recall Score   => {recall_score(y_test, y_pred):.1%}")
+
 
 # ESERCIZIO 5 (🔍 [DEBUG]):
 # Questo codice gira senza errori ma il recall è SOSPETTOSAMENTE alto (1.0).
@@ -664,10 +802,7 @@ print("="*60)
 #
 # Suggerimento: guarda le colonne di X_dbg. Hai droppato davvero solo
 # ciò che serve? Il target è ancora nelle feature?
-
-print("\n" + "="*60)
-print("ESERCIZIO 5 — DEBUG")
-print("="*60)
+# c'è un problema di leakage. in pratica non è stato tolto il target dalla X, e dunque il modello utilizza anche la feature che dovrebbe prevedere per addestrarsi. inoltre non è stata impostato nessun iperparametro (es. max_depth) per regolare un possibile prblema di over-fitting
 
 
 # ESERCIZIO 6 (🔀 [INTERLEAVING] — Pandas + Classificazione):
@@ -682,10 +817,48 @@ print("="*60)
 # 6) Commenta: filtrare per confidence alta migliora o peggiora
 #    le metriche? Ha senso nel prodotto reale?
 
+# può avere senso nel ottica di offrire dati più leggibili, e quindi meglio interpretabili. Ma nel test svolto con il mock, l'aver imposto una soglia di ocr_confidence così alta, ha di fatto eliminato dal data set tutti gli alterati. Questo è un problema perchè non abbiamo un reale confronto con delle pratiche alterate
+
 print("\n" + "="*60)
 print("ESERCIZIO 6 — INTERLEAVING")
 print("="*60)
+from sklearn.metrics import classification_report
 
+pratiche = pd.read_csv(os.path.join(os.path.dirname(__file__), 'dati', 'pratiche_genuinita_mock.csv'))
+
+report = pd.DataFrame([
+  {
+  'pratiche_totali': len(pratiche),
+  'pratiche_alterate': len(pratiche[pratiche['y_alterato'] == 1]),
+  'perc_alterate': round(((len(pratiche[pratiche['y_alterato'] == 1]) / len(pratiche))*100), 2),
+  'delta_lordo_netto_alterati':  pratiche.loc[pratiche['y_alterato'] == 1, 'delta_netto_lordo'].abs().mean().round(2),
+  'delta_lordo_netto_genuini':  pratiche.loc[pratiche['y_alterato'] == 0, 'delta_netto_lordo'].abs().mean().round(2),
+  'conf_ocr_media_alterati': pratiche.loc[pratiche['y_alterato'] == 1, 'confidence_ocr_media'].mean().round(2),
+  'conf_ocr_media_genuini': pratiche.loc[pratiche['y_alterato'] == 0, 'confidence_ocr_media'].mean().round(2)
+  }
+])
+
+print(report)
+
+pratiche_ocr_alta = pratiche.loc[pratiche['confidence_ocr_media'] >= 0.75].sort_values(by='confidence_ocr_media')
+
+X = pratiche_ocr_alta.drop(columns=['pratica_id', 'y_alterato'])
+y = pratiche_ocr_alta['y_alterato']
+
+print(y.value_counts())
+
+X_train, X_test, y_train, y_test = train_test_split(
+  X, y, test_size=.2, random_state=42, stratify=y
+)
+
+
+clf_tree = DecisionTreeClassifier(max_depth=6, random_state=42)
+clf_tree.fit(X_train, y_train)
+
+y_pred_test = clf_tree.predict(X_test)
+
+print(confusion_matrix(y_test, y_pred_test))
+print(classification_report(y_test, y_pred_test, zero_division=0))
 
 # ESERCIZIO 7 (🧠 [RETRIEVAL] — riscrivi da memoria):
 # Senza guardare il codice sopra, riscrivi da zero:
@@ -704,6 +877,37 @@ print("\n" + "="*60)
 print("ESERCIZIO 7 — RETRIEVAL")
 print("="*60)
 
+path_file_mock = os.path.join(os.path.dirname(__file__), "dati", "pratiche_genuinita_mock.csv")
+pratiche = pd.read_csv(path_file_mock)
+
+X = pratiche.drop(columns=['pratica_id', 'y_alterato'])
+y = pratiche['y_alterato']
+
+X_train, X_test, y_train, y_test = train_test_split(
+  X, y, test_size=.2, random_state=42, stratify=y
+)
+
+scaler = StandardScaler()
+scaler.fit(X_train)
+
+X_train_scaled = scaler.transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+clf_log = LogisticRegression(max_iter=1000, random_state=42)
+clf_log.fit(X_train_scaled, y_train)
+
+y_pred_test = clf_log.predict(X_test_scaled)
+y_proba_test = clf_log.predict_proba(X_test_scaled)
+
+for classe_reale, classe_prev, proba in zip(y_test, y_pred_test, y_proba_test):
+  print(f"Classe Reale: {('Genuino' if classe_reale == 0 else 'Alterato'):15s}Classe Prevista: {('Genuino' if classe_prev == 0 else 'Alterato'):10s} =>  score genuinità: {(1 - proba[1]):.2%} {'!!!' if classe_reale != classe_prev else ''}")
+  
+print(f"Accuracy Score:    {accuracy_score(y_test, y_pred_test, zero_division=0):.2f}")
+print(f"\nPrecision Score:   {precision_score(y_test, y_pred_test):.2f}")
+print(f"Recall Score:      {recall_score(y_test, y_pred_test, zero_division=0):.2f}")
+print(f"F1 Score:          {f1_score(y_test, y_pred_test, zero_division=0):.2f}")
+
+assert recall_score(y_test, y_pred_test) >= .5, 'Il recall deve essere maggiore o uguale rispetto al caso'
 
 # ESERCIZIO 8 (Analisi — collegamento al prodotto):
 # 1) Usando il classificatore LogisticRegression scalato dell'es.7 (o

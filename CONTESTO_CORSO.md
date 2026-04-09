@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 08/04/2026
+> **Ultimo aggiornamento**: 09/04/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -25,6 +25,11 @@
 > - Poi esegue la procedura di chiusura (Fasi A-B-C-D) definita in `.cursorrules`
 >   e nella sezione H) di questo file.
 > - La procedura completa e definita in `.cursorrules` (fonte di verita per i trigger).
+>
+> **FILE DIARIO SESSIONE (capitolo in corso)** — vedi **Regola 39** e sezione **J)** sotto:
+> - Un file Markdown per capitolo dentro `modulo_.../sessioni_capitoli/` (naming: `M##_CNN_*_sessione.md`).
+> - **Durante** il capitolo: il mentor **appende** voci quando valuta esercizi/quiz/mini-esercizi o registra domande utili alla chiusura.
+> - **In chiusura capitolo**: lettura **obbligatoria** se il file esiste, **dopo** `CONTESTO_CORSO.md` e `APPUNTI_APPLICATIVO.md` e **prima** della Fase A di diagnosi (per integrare domande/correzioni nella chiusura e nel capitolo successivo).
 
 ---
 
@@ -302,6 +307,7 @@ Ogni nuovo mentor/agente deve:
    - sezione "Pipeline ML del Prodotto — Decisioni Architetturali Consolidate"
    - sezione "Allineamento Mercato 2026"
    - questa sezione "Protocollo Anti-Perdita Contesto"
+   - se il capitolo in corso ha un **diario sessione** (`modulo_.../sessioni_capitoli/M##_CNN_*_sessione.md`), leggerlo per riprendere domande e correzioni recenti (sezione **J**)
 2. Scrivere un mini "check di allineamento mentale" interno:
    - dove siamo
    - cosa NON rifare
@@ -418,10 +424,11 @@ DoD modulo:
 6. **Eccezione unica**: bug bloccante nel capitolo → fermarsi e chiedere autorizzazione.
 
 **Ordine delle 4 fasi** (dettaglio in `.cursorrules`):
-- **Fase A**: Diagnosi (leggere il capitolo, correggere in chat, raccogliere errori, chiedere voto)
+- **Pre-fase (letture)**: dopo `CONTESTO_CORSO.md` e `APPUNTI_APPLICATIVO.md`, leggere il **file diario sessione** del capitolo in chiusura se esiste (`modulo_.../sessioni_capitoli/M##_CNN_*_sessione.md` — vedi sezione **J**).
+- **Fase A**: Diagnosi (leggere il capitolo, correggere in chat, raccogliere errori, integrare il diario sessione, chiedere voto)
 - **Fase B**: Aggiornamento CONTESTO_CORSO.md (Passi 1-13)
 - **Fase C**: Preparazione capitolo successivo (rinforzi, mini-esercizi, task prodotto)
-- **Fase D**: Conferma in chat (elenco aggiornamenti, anomalie, decisioni)
+- **Fase D**: Conferma in chat (elenco aggiornamenti, anomalie, decisioni; includere menzione del diario se usato)
 
 **Obiettivo**:
 - evitare regressioni durante la chiusura,
@@ -447,6 +454,50 @@ SELF-CHECK COMPLETATO:
 Se un campo risulta "non so" o mancante, l'agente DEVE rileggere la sezione
 corrispondente prima di procedere. Lo studente puo verificare la
 completezza del self-check e chiedere correzioni.
+
+### J) Diario sessione capitolo — file persistente (obbligatorio quando si corregge / si valuta)
+
+> **Scopo**: non dipendere solo dalla memoria della chat. Traccia domande, correzioni e pattern mentre Gianluca studia un capitolo; in chiusura capitolo alimenta Passi 1-13 e i rinforzi nel file **successivo**.
+
+**Percorso e naming**
+
+- Cartella dedicata **per modulo**: `modulo_XX_nome/sessioni_capitoli/`
+- Un file per capitolo, **Markdown** consigliato (`.md`).
+- Pattern nome file: **`M{modulo}_C{NN}_{slug}_sessione.md`**
+  - `{modulo}` = numero modulo a due cifre (es. `01`, `02`)
+  - `{NN}` = prefisso numerico del file capitolo (es. `12` per `12_web_bridge.py`, `04` per `04_classificazione_metriche.py`)
+  - `{slug}` = resto del nome file senza `.py` e senza il prefisso `NN_` (es. `web_bridge`, `classificazione_metriche`)
+- Esempi:
+  - `modulo_01_python_dati/sessioni_capitoli/M01_C12_web_bridge_sessione.md`
+  - `modulo_02_ml/sessioni_capitoli/M02_C04_classificazione_metriche_sessione.md`
+- Template: `_TEMPLATE_sessione_capitolo.md` nella stessa cartella `sessioni_capitoli/`.
+
+**Quando creare il file**
+
+- All’avvio del lavoro su un nuovo capitolo: copiare il template nel nome corretto **oppure** crearlo alla prima valutazione/correzione se mancante.
+
+**Cosa scrivere (append-only durante il capitolo)**
+
+1. **Domande** durante lo studio (opzionale ma utile): sintesi della domanda + risposta in una riga se serve traccia.
+2. **Ogni valutazione** richiesta dall’utente (trigger preferito: l’utente scrive esplicitamente **"valutazione"**) su esercizi, quiz, mini-esercizi o progetto del capitolo:
+   - riferimento (`@file`, righe);
+   - punti di forza;
+   - errori / lacune;
+   - correzione o direzione;
+   - eventuale ID pattern o lacuna già nota in `CONTESTO_CORSO.md`.
+   - **voto ponderato (1–10)**: assegnare un voto finale e motivarlo in 1-2 righe (criteri suggeriti: correttezza, completezza consegna, qualità ragionamento, aderenza al dominio prodotto).
+3. **Note per il capitolo successivo** (bullet grezzi): il mentor le consolida in chiusura (Fase C).
+
+**Integrazione con la chiusura capitolo (sezione H)**
+
+- Dopo aver letto `CONTESTO_CORSO.md` e `APPUNTI_APPLICATIVO.md`, leggere **integralmente** il file diario del capitolo in chiusura **se esiste**.
+- Usarlo in **Fase A** (diagnosi) e **Fase B** (Passi 1-13, in particolare domande, pattern, lacune).
+- **Non** sostituisce `CONTESTO_CORSO.md`: il contesto resta la fonte di verità sintetica; il diario è la **traccia grezza** personalizzata.
+
+**Integrazione con handoff sessione (sezione A/B)**
+
+- In **A) Evidenze**: citare il path del file diario se è stato aggiornato in sessione.
+- In **B)**: se si riprende un capitolo già iniziato, aprire/leggere il diario di quel capitolo prima di produrre nuovi contenuti.
 
 ---
 
@@ -476,7 +527,11 @@ completezza del self-check e chiedere correzioni.
 
 ### Come correggere gli esercizi
 
-- **Aggiornamento immediato obbligatorio**: OGNI volta che si corregge qualcosa (quiz, mini-esercizi, esercizi, progetto — qualsiasi cosa), DOPO il feedback aggiornare subito CONTESTO_CORSO.md: lacune dai quiz (🔴), pattern di errore, contatori glossario, ripasso programmato. Non aspettare la fine del capitolo per registrare le lacune.
+- **Diario sessione capitolo (Regola 39)**: quando lo studente chiede una **VALUTAZIONE** esplicita (parola chiave: “valutazione”) su esercizi/quiz/mini-esercizi/progetto del capitolo attivo, il mentor deve:
+  1) dare il feedback in chat;
+  2) dare un **voto ponderato 1–10** in chiusura della valutazione;
+  3) **appendere** una voce nel file `sessioni_capitoli/M##_CNN_*_sessione.md` corrispondente (creare il file dal template se assente).
+- **Aggiornamento immediato obbligatorio**: OGNI volta che si corregge qualcosa (quiz, mini-esercizi, esercizi, progetto — qualsiasi cosa), DOPO la valutazione aggiornare subito CONTESTO_CORSO.md: lacune dai quiz (🔴), pattern di errore, contatori glossario, ripasso programmato. Non aspettare la fine del capitolo per registrare le lacune.
 - **Mai dare la soluzione completa subito**. Gianluca corregge rapidamente dopo il feedback — ha solo bisogno che gli si indichi *dove* e *perché* c'è il problema
 - **Scala di aiuto progressiva** (seguire quest'ordine):
   1. **Indicare la zona**: "guarda la riga X, c'è qualcosa che non torna"
@@ -559,6 +614,7 @@ completezza del self-check e chiedere correzioni.
 36. **Collegamento esercizi → workflow reale del prodotto (vincolante dal M2)**: quando un esercizio introduce un concetto (es. train/test split, metriche, feature scaling), l'agente deve **sempre** aggiungere un commento o paragrafo che spiega come quel concetto si applica al prodotto documentale. Esempio: "Nella nostra app, il train/test split si farà per pratica e per tempo — non mescoleremo documenti della stessa pratica tra train e test, perché sarebbe leakage." Questo trasforma ogni concetto da astratto a concreto.
 37. **Testing AI come skill trasversale (dal M2)**: il testing non va confinato al M9 — va introdotto gradualmente come mentalità. Dal M2: scrivere almeno 1 assert per verificare che il modello batte la baseline. Dal M3-M4: test di regressione semplice (output shape corretta, prediction nel range atteso). Dal M5-M6: eval set fisso per confrontare qualità risposte LLM/RAG tra versioni. Dal M7: test end-to-end dell'agente su 3-5 casi noti. Il M9 consolida e automatizza, ma il "muscolo del testing" si costruisce prima. Ogni modulo deve produrre almeno 1 test verificabile salvato come file/script.
 38. **Primo deploy anticipato al M2**: alla fine del Modulo 2, la demo Streamlit del classificatore deve essere deployata su Streamlit Cloud (gratuito) o Render. Obiettivo: rompere la barriera psicologica del deploy il prima possibile. Non serve essere perfetto — serve essere live. Questo micro-deploy diventa il primo URL nel portfolio. Nei moduli successivi, ogni demo aggiorna/sostituisce la precedente.
+39. **Diario sessione capitolo (file persistente)**: per ogni capitolo in lavorazione esiste al massimo un file Markdown nella cartella `sessioni_capitoli/` del modulo (vedi sezione **J** del Protocollo Anti-Perdita). Il mentor **appende** voci quando: (a) Gianluca chiede valutazione/correzione di esercizi, quiz, mini-esercizi o progetto del capitolo; (b) è utile registrare una domanda concettuale con risposta sintetica per la chiusura. In **chiusura capitolo**, il file va letto se presente e usato per personalizzare Fasi A-C e l’aggiornamento del contesto. Non duplicare pari pari lunghe spiegazioni già in chat: preferire bullet e riferimenti a righe/file.
 
 ---
 
@@ -1691,6 +1747,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 09/04/2026 | **Regola 39** + sezione **J)** Protocollo: diario sessione per capitolo (`sessioni_capitoli/M##_CNN_*_sessione.md`); handshake e chiusura capitolo aggiornati; README + template per M1 e M2; file avviato `M02_C04_classificazione_metriche_sessione.md`. **Aggiornamento**: trigger keyword “valutazione” (non “feedback”) + obbligo di **voto ponderato 1–10** a fine valutazione | Traccia persistente domande/correzioni durante il capitolo per personalizzare chiusura e capitolo successivo | Protocollo, Regole, Header, Linee Mentor, Cartelle modulo |
 | 02/04/2026 | **Preferenze di spiegazione**: niente LaTeX in chat (formule in linguaggio naturale / Python); sotto-sezione nel Profilo; Regola 21 aggiornata con rimando | Richiesta studente: matematica comprensibile senza notazione LaTeX | Profilo, Regola 21, Changelog |
 | 02/04/2026 | Voto difficoltà cap.02 M2: **5**/10 registrato; difficoltà media ricalcolata ~6.4; competenze e valutazioni aggiornate | Risposta studente post-chiusura | Stato Attuale, Valutazioni, Competenze, Changelog |
 | 07/04/2026 | Chiusura cap.03 M2: Stato, Ultima Sessione, Priorità, Prossimo Cap, Moduli Successivi, Valutazioni, Competenze, Ripasso M2, Glossario (LinearRegression, StandardScaler, coefficienti scalati), Domande cap.03, Pattern #21 aggiornato + #22, Lacuna #12 → 🟢, Progetto incrementale (riga M2 cap.03). **Voto difficoltà 6/10** registrato in seguito (media ~6.37). | Handshake chiusura capitolo 3 M2 + conferma voto | Stesso set + Valutazioni |

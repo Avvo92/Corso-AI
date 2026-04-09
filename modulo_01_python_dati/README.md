@@ -32,6 +32,12 @@ crolla tutto.
 
 ---
 
+## Diario sessione per capitolo
+
+Per ogni capitolo puoi tenere un file Markdown in `sessioni_capitoli/` (naming e istruzioni in `sessioni_capitoli/README.md`). Il mentor vi annota domande e valutazioni mentre studi; il file viene letto in **chiusura capitolo** per personalizzare il passo successivo. Vedi **Regola 39** e sezione **J** in `CONTESTO_CORSO.md`.
+
+---
+
 ## Come Usare Ogni File
 
 Ogni file `.py` è strutturato così:

@@ -29,6 +29,12 @@ Librerie principali del modulo:
 
 ---
 
+## Diario sessione per capitolo
+
+File Markdown opzionali in `sessioni_capitoli/` — una traccia persistente di domande e correzioni durante ogni capitolo; usata in chiusura con `CONTESTO_CORSO.md`. Dettagli in `sessioni_capitoli/README.md` e **Regola 39** / sezione **J** in `CONTESTO_CORSO.md`.
+
+---
+
 ## Setup Quando Inizi Davvero il Modulo
 
 Nel file `requirements.txt` della root, scommenta:

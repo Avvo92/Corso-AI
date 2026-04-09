@@ -418,6 +418,7 @@ Da oggi questo documento guida anche la didattica:
 - il task prodotto puo essere micro (15-30 minuti) ma deve lasciare un deliverable reale
 - nessun capitolo "solo teoria/pratica astratta" se esiste un collegamento coerente al prodotto
 - se il task tocca dati documentali, usare quando possibile il dataset reale dello studente (con campionamento e protezione dati)
+- traccia sessione per capitolo: file `sessioni_capitoli/M##_CNN_*_sessione.md` nel modulo (vedi **Regola 39** e sezione **J** in `CONTESTO_CORSO.md`) — in chiusura capitolo il mentor integra quel diario con questo documento per task prodotto e priorità
 
 Template rapido per capitolo:
 
