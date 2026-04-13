@@ -5,7 +5,7 @@
 | **Modulo** | M02 — Machine Learning Fundamentals |
 | **File capitolo** | `04_classificazione_metriche.py` |
 | **File diario** | `M02_C04_classificazione_metriche_sessione.md` |
-| **Stato** | in corso |
+| **Stato** | completato (chiusura 13/04/2026) |
 
 ---
 
@@ -187,6 +187,39 @@
   - Ordine stampa metriche: la traccia elenca accuracy, recall, precision, F1 — ordine attuale diverso ma contenuto ok.
 - **Voto ponderato (1–10)**: 9/10 (esercizio ben eseguito; piccole rifiniture assert/ordine/zero_division)
 
+### 2026-04-13 — ESERCIZIO 8 (Analisi prodotto: coefficienti, score_genuinita, semaforo)
+
+- **Riferimento**: `modulo_02_ml/04_classificazione_metriche.py` ~righe 911-968
+- **Punti di forza**:
+  - **Coefficienti**: DataFrame con `nome_feature`, peso, valore assoluto e `sort_values` — stesso spirito di `motivi_top_n` del cap.03, adattato al classificatore.
+  - **score_genuinita**: con `y_alterato` (0=genuino, 1=alterato) e `classes_` ordinato `[0,1]`, usare `y_proba_test[:, 0] * 100` è **coerente** con il Blueprint: equivale a `(1 - prob_alterato) * 100` perché `prob_alterato = proba[:, 1]`.
+  - **Semaforo**: `np.select` con soglie 85 / 60 allineate al Blueprint; ordine condizioni corretto (prima `>=85`, poi `>=60`, default rosso).
+  - **Tabella richiesta**: colonne `pratica`, `score_genuinita`, `semaforo`, `classe_reale`, `classe_prevista` presenti; mapping reale/previsto con `np.select` leggibile.
+  - **Commento di business**: interpretazione sensata — il giallo come allerta anche quando la classe prevista non coincide; collegamento a “non verde = non ok operativo”.
+- **Miglioramenti (non bloccanti)**:
+  - Un commento esplicito tipo `prob_alterato = y_proba_test[:, 1]` / `score_genuinita = (1 - prob_alterato) * 100` rende il legame alla pipeline leggibile a colpo d’occhio (anche se numericamente identico a `[:,0]*100`).
+  - Per il punto 4 della consegna (conteggi verdi/gialli/rossi) si può aggiungere `report["semaforo"].value_counts()` (e eventualmente filtrare rossi con `y_test==1`) così i numeri restano nel codice, non solo nel commento.
+  - Evitare accenti nel nome variabile (`genuinità_prev` → es. `genuinita_prev`) per convenzione e compatibilità tool.
+- **Pattern**: nessuno nuovo; coerenza con #22 (variabili allineate al modello usato: qui `clf_log` + `y_pred_test`/`y_proba_test` dallo stesso blocco es.7).
+- **Voto ponderato (1–10)**: **9/10** (corretto, completo, forte collegamento prodotto; piccoli extra per esplicitare `prob_alterato` e conteggi programmatici).
+
+### 2026-04-13 — PROGETTO INCREMENTALE `modello_base.py` (sezione CLASSIFICAZIONE, ~145-253)
+
+- **Riferimento**: `modulo_02_ml/modello_base.py` ~righe 145-253
+- **Punti di forza**:
+  - Pipeline completa: CSV → `X/y` → split stratificato → scaler fit su train → due classificatori → metriche → report test con `pratica_id`, score da `predict_proba`, semaforo.
+  - **`score_genuinita`** da `y_proba_log[:, 0] * 100` coerente con `0=genuino` (equivale a `(1 - prob_alterato)*100`).
+  - **Soglie semaforo** 85/60 allineate al Blueprint; `top3` coefficienti con `coef_.ravel()` e ordinamento per `abs`.
+  - Extra utile: tabella ordinata per score, confronto reale/previsto in linguaggio dominio.
+- **Gap rispetto al task / DoD**:
+  - Assert richiesto: **recall di almeno un modello ≥ 0.5** — nel file c’è un assert **diverso** (logistica vs “baseline”); va sostituito o affiancato a quello della consegna.
+  - **`y_baseline = np.full_like(y_test, y_train.mean())`**: per target interi, la media spesso viene **troncata a 0** → baseline “sempre genuino”, confronto recall poco significativo; per una baseline classica meglio **classe maggioritaria** o `DummyClassifier(strategy="most_frequent")`.
+  - **`semaforo`**: la consegna suggerisce **`semaforo(score)`** (punteggio 0–100); qui accetti **`proba`** intera — ok funzionale, ma API e nome parametro da allineare; evitare **`proba=[]`** (default mutabile).
+  - **`motivi_top_3`**: la funzione esistente non viene riusata per la logistica; hai replicato la logica con DataFrame — ok come output, ma il DoD chiede che **`motivi_top_3` “funzioni anche” sul classificatore** → estendere con `.ravel()` (o ramo dedicato) e una `print(motivi_top_3(clf_log, ...))`.
+  - Colonna **`f1`** vs `f1_score` (solo naming).
+- **Pattern**: nessuno nuovo critico; attenzione a **rinominare variabili** tra regressione e classificazione (`report_metriche` riusato per due contenuti diversi — funziona ma confonde in lettura).
+- **Voto ponderato (1–10)**: **7.5/10** (ottimo lavoro su dati e prodotto; perde punti su assert/DoD, baseline, API `semaforo`, riuso `motivi_top_3`).
+
 ---
 
 ## Lacune e dubbi ancora aperti
@@ -197,4 +230,9 @@
 
 ## Note per il capitolo successivo (mentor)
 
-- …
+- Inseriti in `05_overfitting_validazione.py` (blocco iniziale) rinforzi su: prob_alterato vs score, leakage, scaler fit-on-train; quiz ingresso bozza.
+- Ripasso trade-off validazione e collegamento a metriche prodotto (recall, generalizzazione).
+
+### Rettifica voto difficoltà (13/04/2026)
+
+- **Voto difficoltà capitolo 04 (studente)**: **7**/10 (conferma esplicita; aggiornato in `CONTESTO_CORSO.md`).

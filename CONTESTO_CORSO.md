@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 09/04/2026
+> **Ultimo aggiornamento**: 13/04/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -30,6 +30,8 @@
 > - Un file Markdown per capitolo dentro `modulo_.../sessioni_capitoli/` (naming: `M##_CNN_*_sessione.md`).
 > - **Durante** il capitolo: il mentor **appende** voci quando valuta esercizi/quiz/mini-esercizi o registra domande utili alla chiusura.
 > - **In chiusura capitolo**: lettura **obbligatoria** se il file esiste, **dopo** `CONTESTO_CORSO.md` e `APPUNTI_APPLICATIVO.md` e **prima** della Fase A di diagnosi (per integrare domande/correzioni nella chiusura e nel capitolo successivo).
+>
+> **`modello_base.py` (Modulo 2+)**: il deliverable progressivo è **codice dello studente**. Il mentor non lo compila al posto tuo (consegna/DoD nel capitolo; soluzione come idea dopo il tentativo). Dettaglio: **Regola 13** — *Regole per il progetto incrementale*.
 
 ---
 
@@ -37,12 +39,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_02_ml/04_classificazione_metriche.py — Classificazione e metriche (in svolgimento); dominio **Controllo Documentale AI**: `pratiche_genuinita_mock.csv`, `y_alterato`, `prob_alterato` / `score_genuinita` / `semaforo` |
-| **Ultimo completato** | 03_regressione.py (07/04/2026) — Regressione lineare, scaling, confronto con Decision Tree, coefficienti e motivi_top3, progetto incrementale `modello_base.py` aggiornato |
+| **Capitolo in corso** | modulo_02_ml/05_overfitting_validazione.py — Overfitting, validazione, bias-varianza (da svolgere); dominio pratiche dove applicabile |
+| **Ultimo completato** | 04_classificazione_metriche.py (13/04/2026) — Classificazione binaria, confusion matrix, precision/recall/F1, `predict_proba`, score/semaforo, esercizi su `pratiche_genuinita_mock.csv`; progetto `modello_base.py` con sezione classificazione |
 | **Modulo attuale** | 2 — Machine Learning Fundamentals |
-| **Difficoltà media** | ~6.4 (14 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-03; cap 07 escluso; M2-03 = **6**/10) |
+| **Difficoltà media** | ~6.4 (15 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-04; cap 07 escluso; M2-04 = **7**/10) |
 | **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (rinforzato in cap.03), 🟡 Allineamento variabili tra esercizi sequenziali nello stesso file `.py` (monitoraggio), ⚠️ Data leakage: consolidato cap.02–03 — replicare su documenti reali quando possibile |
-| **Sessione corrente** | Sessione 14 |
+| **Sessione corrente** | Sessione 15 |
 
 ---
 
@@ -53,11 +55,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 08/04/2026 |
-| **Cosa è stato fatto** | (Sessione precedente) Chiusura cap.03 M2: regressione, scaling, `modello_base.py` con confronto modelli e `motivi_top_3`. (Oggi) Allineamento cap.04 al dominio **Controllo Documentale AI**: docstring e PARTE 1 (ponte da regressione su `case.csv` a classificazione su pratiche); blocco “tutti gli esercizi” su `pratiche_genuinita_mock.csv`; nota quiz Q1 su scale nel documentale. Aggiornato stato in CONTESTO_CORSO (cap.04 in svolgimento, prossimo 05_overfitting). |
-| **Errori emersi** | — |
-| **Cosa fare nella prossima sessione** | Completare cap.04: mini-esercizi 1–4 e quiz di verifica; esercizi 1–8 + progetto incrementale classificazione in `modello_base.py`; poi aprire `05_overfitting_validazione.py`. |
-| **Stato motivazione** | Alto: metriche classificazione legate a FN/FP nel documentale e alla roadmap `semaforo` / `motivi_top3`. |
+| **Data** | 13/04/2026 |
+| **Cosa è stato fatto** | Chiusura formale cap.04 M2: quiz ingresso/verifica ed esercizi 1–8 sul mock pratiche; es.8 prodotto (coefficienti, semaforo Blueprint); progetto `modello_base.py` con `DecisionTreeClassifier` + `LogisticRegression`, `semaforo`, `motivi_top_3` esteso con `coef_.ravel()`, assert recall. Diario sessione integrato. CONTESTO aggiornato (Passi 1–13). |
+| **Errori emersi** | Lacune minime: interpretazione “zona indecisa” (legare a `prob_alterato`≈0.5, non solo score %); alcuni esercizi con dettagli consegna (ordinamento es.2, soglia OCR es.6). |
+| **Cosa fare nella prossima sessione** | Aprire e svolgere `05_overfitting_validazione.py` (rinforzi già in testa al file); preparare quiz ingresso su trade-off validazione; mantenere dominio pratiche dove indicato. |
+| **Stato motivazione** | Alto: pipeline `score_genuinita` / `semaforo` / `motivi_top3` consolidate prima del cap. su generalizzazione. |
 
 ---
 
@@ -103,6 +105,8 @@
 > **Azione richiesta**: alla prima occasione utile (es. quiz ingresso di un capitolo M2 che tocca NumPy),
 > proporre a Gianluca un mini-quiz di recupero su shape/broadcasting/reshape per chiudere
 > formalmente il cap 07 e assegnare il voto. Non blocca il progresso M2, ma va sanata.
+>
+> **Nota 13/04/2026**: voto difficoltà prescelto per la chiusura futura del cap.07 — **8**/10 (confermato dallo studente).
 
 ---
 
@@ -112,12 +116,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_02_ml/05_overfitting_validazione.py — validazione, overfitting/underfitting, bias-varianza operativo; sempre su dominio pratiche dove applicabile |
-| **Rinforzi da inserire (🔁)** | Già nel cap.04: Pattern #21/#22; encoding/scaler fit-on-train; al bisogno richiamo leakage prima del cap.05 |
-| **Concetti ⚠️ da ripassare** | Soglia 0.5 vs `predict_proba`; sbilanciamento classi; accuracy ingannevole nel documentale |
-| **Pattern 🔴 da monitorare** | #6, #19, #21, allineamento variabili tra blocchi esercizi nello stesso `.py` |
-| **Ponte mentale da riusare** | Da regressione (cap.03 su `case.csv`) a classificazione su pratiche (`y_alterato`); recall = non lasciar passare alterati |
-| **Note** | Cap.04: capitolo strutturato (quiz ingresso, PARTI 1–4, mini-esercizi, quiz verifica, es.1–8, progetto). Dataset mock `pratiche_genuinita_mock.csv` allineato al prodotto finale (M10). |
+| **Prossimo capitolo** | modulo_02_ml/05_overfitting_validazione.py — train/val/test o CV, overfitting/underfitting, bias-varianza operativo; collegare generalizzazione a metriche su test e a decisioni prodotto (`semaforo`, recall) |
+| **Rinforzi da inserire (🔁)** | In testa al file cap.05: soglia `prob_alterato` vs “indecisione” (mini-ex cap.04); richiamo leakage; fit scaler solo su train; **nuovo**: trade-off varianza vs bias collegato a `max_depth` / complessità già visti |
+| **Concetti ⚠️ da ripassare** | Perché valutare sul test una sola volta “come scelta modello” è rischioso; differenza tra errore di training e errore di generalizzazione |
+| **Pattern 🔴 da monitorare** | #6 (consegne complete), #21/#22, allineamento variabili tra blocchi nello stesso `.py` |
+| **Ponte mentale da riusare** | Cap.04: recall su alterati + `score_genuinita`; cap.05: stesso modello può andare bene sul train e male sul test → overfitting |
+| **Note** | Cap.05 creato (teoria, quiz, esercizi con tag); progetto incrementale = task CV su `modello_base.py` (da implementare allo studente). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -637,7 +641,7 @@ completezza del self-check e chiedere correzioni.
 
 | Modulo | Focus | Componente pipeline prodotto | Librerie principali | Stato |
 |--------|-------|------------------------------|---------------------|-------|
-| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore supervisionato (vero/alterato) + anomaly detector + `score_genuinita` + `anomaly_score` + **primo test verificabile** + **deploy Streamlit Cloud** | scikit-learn, streamlit | 🟡 In corso (cap.01-03 completati; **cap.04 in svolgimento** su dominio documentale mock) |
+| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore supervisionato (vero/alterato) + anomaly detector + `score_genuinita` + `anomaly_score` + **primo test verificabile** + **deploy Streamlit Cloud** | scikit-learn, streamlit | 🟡 In corso (cap.01-04 completati; **cap.05 in svolgimento** — validazione/overfitting) |
 | **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, coseno, gradiente, discesa — tutto in codice + Matplotlib | Fondamenta per embedding e backpropagation | numpy, matplotlib | ⬜ Da creare |
 | 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | ⬜ Da creare |
 | 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | ⬜ Da creare |
@@ -702,8 +706,9 @@ completezza del self-check e chiedere correzioni.
 | M2-01_cos_e_il_ml | 6 | = (primo capitolo ML: teoria ben assorbita, media esercizi 9.1/10, nessun salto di difficoltà percepito) |
 | M2-02_ciclo_ml | 5 | -1 ↓ vs M2-01 (percepito più gestibile: stesso filo logico del cap.01, molta pratica guidata) |
 | M2-03_regressione | 6 | +1 ↑ vs M2-02 (più carico: più modelli, scaling, coefficienti, progetto) |
+| M2-04_classificazione_metriche | 7 | +1 ↑ vs M2-03 (carico: metriche, quiz, esercizi prodotto; voto studente confermato 13/04/2026) |
 
-**Media attuale**: ~6.4 (14 capitoli con voto, cap 07 escluso). Con M2-03 = 6 la media aritmetica aggiornata è ~**6.37** (arrotondato ~6.4).
+**Media attuale**: ~6.5 (15 capitoli con voto, cap 07 escluso).
 
 ---
 
@@ -817,6 +822,10 @@ completezza del self-check e chiedere correzioni.
 | `LinearRegression` | Regressione lineare OLS; attributi `coef_`, `intercept_` | M2-03 | 0/3 | 🔄 |
 | `StandardScaler` | Standardizza feature (media 0, var 1); `fit` solo su train | M2-03 | 0/3 | 🔄 |
 | Coefficienti (post-scaling) | Con feature scalate, i pesi sono confrontabili tra colonne per ordine di importanza | M2-03 | 0/3 | 🔄 |
+| `DecisionTreeClassifier` | Albero per classificazione; `predict` classe, `max_depth` controlla complessità | M2-04 | 0/3 | 🔄 |
+| `confusion_matrix` | Tabella TN/FP/FN/TP; ordine sklearn `[[TN,FP],[FN,TP]]` per binario | M2-04 | 0/3 | 🔄 |
+| `predict_proba` | Probabilità per classe; colonna 1 = P(alterato) se classi [0,1] | M2-04 | 0/3 | 🔄 |
+| `classification_report` | Riepilogo precision/recall/F1 per classe | M2-04 | 0/3 | 🔄 |
 
 ---
 
@@ -855,6 +864,13 @@ completezza del self-check e chiedere correzioni.
 |---|----------------|----------------|
 | 1 | Valutazione es.8 `motivi_top_n` (formato coef, return, modello scalato) | Iterazioni: `return` lista, `:+.1f`, uso `modello_lineare_scalato` coerente con PARTE 4 |
 | 2 | Progetto incrementale `modello_base.py` | DataFrame metriche + RMSE test + `motivi_top_3`; assert baseline; compatibilità sklearn `root_mean_squared_error` |
+
+### Cap.04 M2 — Classificazione e metriche
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | Collegamento coefficienti → `motivi_top3` (quiz ingresso Feynman) | Pesi scalati indicano importanza relativa delle feature per spiegare l’esito |
+| 2 | Metrica critica nel documentale | Recall su classe alterato (FN più gravi dei FP) — consolidato in quiz ed es. colloquio |
 
 ---
 
@@ -972,6 +988,14 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - Tag esercizi: colloquio (lineare vs albero, bias-varianza), refactoring split/scaling, debug leakage, interleaving groupby+ML, retrieval pipeline completa, analisi prodotto
 - Deliverable: `modello_base.py` — confronto tabellare (baseline, albero, lineare scalato) + `motivi_top_3()` su coefficienti
 
+### Cap.04 M2 — Classificazione e metriche (completato; voto difficoltà: **7**/10)
+- Classificazione binaria su `pratiche_genuinita_mock.csv`: `DecisionTreeClassifier`, `LogisticRegression` con `StandardScaler` (fit su train)
+- Metriche: accuracy, precision, recall, F1; `confusion_matrix`, `classification_report`; ordine argomenti `metriche(y_true, y_pred)`
+- `predict_proba` → `prob_alterato` / `score_genuinita` / soglie operative; collegamento a `semaforo` Blueprint (85/60)
+- Data leakage (es. debug es.5): target non deve restare in X
+- Tag esercizi: colloquio metriche, refactoring, debug leakage, interleaving Pandas+ML, retrieval logistica, analisi prodotto es.8
+- Deliverable: `modello_base.py` — sezione CLASSIFICAZIONE: confronto modelli, `semaforo`, `motivi_top_3(clf_log, …)` con `coef_.ravel()`, assert `max(recall_albero, recall_log) >= 0.5`
+
 ---
 
 ## Checklist di Auto-Revisione (prima di consegnare il codice)
@@ -1036,13 +1060,15 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | Train/test split | 25/03 (cap.01 M2) | ✅ cap.02 M2 (split 80/20, più varianti esercizi) | — | — | 🟡 Praticato su case.csv |
 | Supervised vs Unsupervised | 25/03 (cap.01 M2) | ✅ cap.01 M2 quiz e mini-es.2 | — | — | 🟡 Classificazione corretta |
 | Baseline model | 25/03 (cap.01 M2) | ✅ cap.02 M2 (media vs modello, assert) | — | — | 🟡 Praticato |
-| Precision / Recall / F1 | 25/03 (cap.01 M2) | — | — | — | 🔄 Appena introdotto, domande fatte |
+| Precision / Recall / F1 | 25/03 (cap.01 M2) | ✅ cap.04 M2 (quiz + esercizi + colloquio es.3) | — | — | 🟡 Praticato su mock pratiche |
 | loc vs iloc | 25/03 (cap.01 M2) | ✅ cap.02 M2 (rinforzo + esercizio .iloc/.loc righe 5-9) | — | — | 🟡 iloc praticato su case |
 | pd.cut / pd.qcut | 30/03 (cap.01 M2) | ✅ cap.01 M2 es.6 (usato correttamente) | — | — | 🟡 Primo uso riuscito |
 | groupby().agg() avanzato | 30/03 (cap.01 M2) | ✅ cap.01 M2 es.6/7/8 (lambda, var, multi-agg) | — | — | 🟡 Consolidato nel cap.01 |
 | Anti-pattern valutazione | 30/03 (cap.01 M2) | ✅ cap.02 M2 (rinforzo + quiz + esercizi) | — | — | 🟢 Superato (monitoraggio continuo) |
 | Regressione lineare / scaling | 07/04 (cap.03 M2) | ✅ cap.03 es.1-8 + quiz | — | — | 🟡 Praticato |
 | Interpretazione coefficienti e motivi_top3 | 07/04 (cap.03 M2) | ✅ es.8 + progetto incrementale | — | — | 🟡 Praticato |
+| Confusion matrix / TP FP FN TN | 13/04 (cap.04 M2) | ✅ cap.04 teoria + esercizi | — | — | 🟡 Praticato |
+| predict_proba / score_genuinita | 13/04 (cap.04 M2) | ✅ PARTE 4 + es.7-8 + `modello_base` | — | — | 🟡 Praticato |
 
 > **Regola per l'agente**: questa tabella va estesa a ogni nuovo capitolo M2+.
 > I concetti M1 con stato OK/Consolidato restano come riferimento ma non richiedono piu ripasso attivo.
@@ -1135,7 +1161,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 06 — File CSV | Parsing manuale di CSV, trovare anomalie nei dati, aggregazioni per gruppo | ✅ |
 | 07 — NumPy | Normalizzazione di un array, distanza euclidea, operazioni su matrici | ✅ |
 | 09 — Pandas | Pulizia dati con valori mancanti, group by + aggregazione, pivot table | ✅ |
-| M2 — ML | Train/test split manuale, calcolo accuratezza, feature scaling, "spiega overfitting" | ⬜ |
+| M2 — ML | Train/test split manuale, calcolo accuratezza, feature scaling, "spiega overfitting" | 🟡 (metriche classificazione es.3 cap.04 ok; completare con validazione cap.05) |
 | M3 — DL & CV | Spiegare backpropagation a parole, costruire un modello semplice, leggere una loss curve | ⬜ |
 | M4 — NLP | "Cos'è un embedding?", "Come funziona un Transformer?", similarità coseno a mano | ⬜ |
 | M5 — LLM | "Progetta un chatbot con function calling", prompt engineering sotto pressione, "cos'è il prompt injection?" | ⬜ |
@@ -1261,6 +1287,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M2 cap.01 — Cos'è il ML | ✅ Completato | Teoria + esercizi; task `modello_base` recuperato nel cap.02 |
 | M2 cap.02 — Ciclo ML | ✅ Completato | Esercizi 1-9 + teoria es.9; `modello_base.py` deliverable; assert baseline |
 | M2 cap.03 — Regressione | ✅ Completato | Confronto lineare vs albero + scaling; `motivi_top_n`/motivi_top3; `modello_base.py` esteso (metriche + spiegabilità) |
+| M2 cap.04 — Classificazione | ✅ Completato | Metriche classificazione, semaforo, coefficienti logistica; `modello_base.py` con sezione classificazione + assert recall |
 | M3 — DL & CV | ⬜ Da fare | |
 | M4 — NLP | ⬜ Da fare | |
 | M5 — LLM | ⬜ Da fare | |
@@ -1284,6 +1311,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 10. Quando il task riguarda dati documentali, usare preferibilmente un sottoinsieme del dataset reale dello studente (se disponibile e conforme privacy) invece di soli dataset sintetici/demo.
 11. **Coerenza con la pipeline ML consolidata**: dal M2, ogni task prodotto deve essere allineato alla sezione "Pipeline ML del Prodotto — Decisioni Architetturali Consolidate". Usare la terminologia concordata (`score_genuinita`, `prob_alterato`, `anomaly_score`, `semaforo`, `motivi_top3`, `evidenze`, `azione_consigliata`) e riferirsi al mapping "Moduli → Componenti Pipeline" per sapere quale pezzo del sistema quel capitolo deve costruire. Non inventare output o nomi diversi da quelli definiti.
 12. **Progressione verticale**: ogni modulo deve produrre un output che si integra con quello del modulo precedente. Esempio: il classificatore CNN di M3 produce un output che diventa una feature in input al modello supervisionato di M2; l'estrazione campi di M4 alimenta il feature engineering; il RAG di M6 fornisce contesto normativo al motore regole. L'agente deve esplicitare questa integrazione nei task.
+13. **`modulo_02_ml/modello_base.py` (M2+) — ownership dello studente**: il file è il **deliverable progressivo personale** dello studente. Il mentor definisce **solo** consegna, Definition of Done e (se serve) hint nella sezione **PROGETTO INCREMENTALE** del capitolo e, nelle **SOLUZIONI**, un'**idea risolutiva** da consultare *dopo* il tentativo — **non** va committata come implementazione completa dentro `modello_base.py`. Eccezione: **solo** se lo studente chiede esplicitamente uno scheletro, un fix mirato o un file di riferimento separato dal proprio deliverable.
 
 ---
 
@@ -1747,6 +1775,9 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 13/04/2026 | **Regola 13** (progetto incrementale): `modello_base.py` è scritto dallo studente; il mentor non inserisce codice nel file salvo richiesta esplicita. | Evitare che il mentor “consegni” il deliverable progressivo al posto dello studente | Regole progetto incrementale, Changelog |
+| 13/04/2026 | Chiusura cap.04 M2: Stato, Ultima Sessione, Prossimo Cap, Moduli Successivi, Valutazioni (M2-04 **7**/10 confermato studente), Glossario (classificazione), Domande cap.04, Competenze, Ripasso M2, Progresso progetto, Colloquio roadmap M2, Changelog. Rinforzi iniziali in `05_overfitting_validazione.py`. | Handshake chiusura capitolo 4 M2 | Stato, Valutazioni, Glossario, Domande, Competenze, Ripasso, Progetto, Prossimo Cap, Changelog, cap.05 |
+| 13/04/2026 | Rettifica voto difficoltà M2-04: da 8 → **7**/10; media difficoltà ~6.4 | Conferma Gianluca post-chiusura | Stato Attuale, Valutazioni, Competenze, Changelog |
 | 09/04/2026 | **Regola 39** + sezione **J)** Protocollo: diario sessione per capitolo (`sessioni_capitoli/M##_CNN_*_sessione.md`); handshake e chiusura capitolo aggiornati; README + template per M1 e M2; file avviato `M02_C04_classificazione_metriche_sessione.md`. **Aggiornamento**: trigger keyword “valutazione” (non “feedback”) + obbligo di **voto ponderato 1–10** a fine valutazione | Traccia persistente domande/correzioni durante il capitolo per personalizzare chiusura e capitolo successivo | Protocollo, Regole, Header, Linee Mentor, Cartelle modulo |
 | 02/04/2026 | **Preferenze di spiegazione**: niente LaTeX in chat (formule in linguaggio naturale / Python); sotto-sezione nel Profilo; Regola 21 aggiornata con rimando | Richiesta studente: matematica comprensibile senza notazione LaTeX | Profilo, Regola 21, Changelog |
 | 02/04/2026 | Voto difficoltà cap.02 M2: **5**/10 registrato; difficoltà media ricalcolata ~6.4; competenze e valutazioni aggiornate | Risposta studente post-chiusura | Stato Attuale, Valutazioni, Competenze, Changelog |

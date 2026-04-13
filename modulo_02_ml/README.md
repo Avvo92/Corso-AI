@@ -20,12 +20,16 @@ Ponte mentale:
 | 02 | `02_ciclo_ml.py` | Pipeline completa: dati -> train -> evaluate | Workflow riusabile |
 | 03 | `03_regressione.py` | Regressione lineare e alberi decisionali | Primo modello predittivo |
 | 04 | `04_classificazione_metriche.py` | Classificazione, accuracy/precision/recall/F1 | Valutazione corretta modelli |
-| 05 | `05_overfitting_validazione.py` | Overfitting, cross-validation, feature engineering | Modelli piu robusti |
+| 05 | `05_overfitting_validazione.py` | Overfitting, train/val/test, CV, bias-varianza, **validation curve** (tabella + grafico opzionale), caveat dataset piccolo | Modelli piu robusti; progetto incrementale = CV su `modello_base.py` (lo scrivi tu) |
 | 06 | `06_progetto_streamlit.py` | Mini-progetto deployabile | Demo portfolio #1 |
 
 Librerie principali del modulo:
 - `scikit-learn`
 - `streamlit`
+
+Dataset mock (pratiche di genuinità):
+- `dati/pratiche_genuinita_mock.csv` — circa **640 righe**; include **casi limite** (genuini ambigui, alterati lievi) e un **piccolo rumore sulle etichette** (~3%) per avvicinarsi a dati reali (errori di revisione). Distribuzione classi variabile dopo il rumore.
+- Rigenerazione (solo libreria standard, seed 42): `python dati/genera_pratiche_genuinita_mock.py` dalla cartella `modulo_02_ml` o da `dati/`.
 
 ---
 

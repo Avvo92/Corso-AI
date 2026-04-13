@@ -902,8 +902,8 @@ y_proba_test = clf_log.predict_proba(X_test_scaled)
 for classe_reale, classe_prev, proba in zip(y_test, y_pred_test, y_proba_test):
   print(f"Classe Reale: {('Genuino' if classe_reale == 0 else 'Alterato'):15s}Classe Prevista: {('Genuino' if classe_prev == 0 else 'Alterato'):10s} =>  score genuinità: {(1 - proba[1]):.2%} {'!!!' if classe_reale != classe_prev else ''}")
   
-print(f"Accuracy Score:    {accuracy_score(y_test, y_pred_test, zero_division=0):.2f}")
-print(f"\nPrecision Score:   {precision_score(y_test, y_pred_test):.2f}")
+print(f"Accuracy Score:    {accuracy_score(y_test, y_pred_test):.2f}")
+print(f"\nPrecision Score:   {precision_score(y_test, y_pred_test, zero_division=0):.2f}")
 print(f"Recall Score:      {recall_score(y_test, y_pred_test, zero_division=0):.2f}")
 print(f"F1 Score:          {f1_score(y_test, y_pred_test, zero_division=0):.2f}")
 
@@ -922,10 +922,50 @@ assert recall_score(y_test, y_pred_test) >= .5, 'Il recall deve essere maggiore 
 # 4) In un commento: conta quanti verdi/gialli/rossi ci sono.
 #    Quanti rossi sono effettivamente alterati (classe 1)?
 #    Questo corrisponde alla logica "rosso = pratica sospetta da bloccare"?
+# i verdi sono 6, 1 giallo e 3 rossi. Tutti i rossi segnalati sono effettivamente da bloccare, mentre, anche se il giallo è stato alla fine etichettato come genuino (mentre in realtà era alterato), il semaforo ci ha permesso comunque di avere un allert perchè in ogni caso non era stato etichettato come verde. Quindi si, la logica funziona
 
 print("\n" + "="*60)
 print("ESERCIZIO 8 — Prodotto")
 print("="*60)
+
+coefficienti = pd.DataFrame({
+  'nome_feature': X.columns,
+  'peso': clf_log.coef_.ravel()
+})
+coefficienti['abs'] = coefficienti['peso'].abs()
+print(coefficienti.sort_values(by='abs', ascending=False))
+
+report = pd.DataFrame({
+  'pratica': pratiche.loc[y_test.index, 'pratica_id'],
+  'score_genuinita': (((y_proba_test[:, 0]).round(4))*100), 
+})
+
+score = report["score_genuinita"].to_numpy()
+semaforo = np.select(
+    [score >= 85, score >= 60],
+    ["verde", "giallo"],
+    default="rosso",
+)
+
+# lo trasformiamo in np.array perchè in forma originale è una Series
+a = y_test.to_numpy()
+genuinita_reale = np.select(
+  [a == 1, a == 0],
+  ["Alterato", "Genuino"],
+  default='?'
+)
+
+#si presenta in forma originale come np.array
+genuinità_prev = np.select(
+  [y_pred_test == 1, y_pred_test == 0],
+  ["Alterato", "Genuino"],
+  default='?'
+)
+
+report["semaforo"] = semaforo
+report['classe_reale'] = genuinita_reale
+report['classe_prevista'] = genuinità_prev
+print(report)
 
 
 # ==========================================================================
