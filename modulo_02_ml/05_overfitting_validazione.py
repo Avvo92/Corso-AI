@@ -60,8 +60,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 # non quando è "60%" da solo: 60% di score corrisponde a prob_alterato ≈ 0.40.
 #
 # Prova subito (rispondi in commento):
-# 1) Se prob_alterato = 0.45, qual è score_genuinita?
-# 2) Se score_genuinita = 60, qual è prob_alterato?
+# 1) Se prob_alterato = 0.45, qual è score_genuinita? => 0.55
+# 2) Se score_genuinita = 60, qual è prob_alterato? => 0.40
 #
 # Nel cap.05 userai la stessa logica: valutare il modello su dati tenuti da parte
 # mostra se le probabilità sono calibrate o solo "memorizzate" dal train.
@@ -75,6 +75,10 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 # X non deve contenere y_alterato né colonne derivate dal target.
 #
 # Micro-check: scrivi la riga Pandas corretta per droppare pratica_id e target.
+# X = df.drop(columns=['id', 'target']) => concetto astratto
+# pratiche = pd.read_csv(path_file_mock) => dove "path_file_mock" è il percorso del file mock
+# X = pratiche.drop(columns=['pratica_id', 'y_alterato'])
+
 
 
 # ==========================================================================
@@ -93,36 +97,43 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 # DOMANDA 1 — Vero/Falso:
 # "Recall alto sul training set garantisce un buon modello in produzione."
 # Rispondi V o F e spiega in 2 righe.
+# Falso. Il recall alto sul training non ci dice molto sulla validità del modello. Per avere un giudizio affidabile dobbiamo confrontarlo con il recall prodotto dal test. A quel punto avremo sia un indicatore della recall del modello su dati che non ha mai visto, e dalla forbice tra i due indicatori avremo anche un indicazione se il modello soffre ad esempio di overfitting (qualora recall alto su train e basso su test)
 #
 # DOMANDA 2 — Definizione:
 # Cosa misura il recall sulla classe 'alterato' (1)? Perché è spesso prioritaria
 # nel controllo documentale?
+# la recall ci indica quanti falsi negativi il nostro modello produce, quindi quanti 'alterato' (1) il modello si lascia sfuggire sul totale dei 'alterato' (1). Per fare un esempio, su 10 ladri che hanno cercato di rubare, l'antifurto quante volte ha suonato? Nel controllo documentale è fondamentale, perchè un falso negativo (ossia una pratica falsa che sfugge alla maglia del nostro controllo) ci espone a rischio potenzialmente molto gravi, come frodi.
+
 #
 # DOMANDA 3 — Completa:
 # predict_proba per il binario restituisce due colonne: la colonna 1 è
 # P(y = ___) e da lì ricavi prob_alterato e poi score_genuinita = (1 - prob_alterato) * ___.
-#
+# 'y_alterato', 100
+
 # DOMANDA 4 — Trova l'errore concettuale:
 #   scaler.fit(X)  # X = intero DataFrame prima dello split
 #   X_train, X_test, y_train, y_test = train_test_split(X, y, ...)
 #   X_train_s = scaler.transform(X_train)
 # Spiega cosa c'è che non va.
+# Invece di fare il fit dello Scaler sulla X, bisognava fare prima lo split in train e test, e poi fare il fit dello scaler sulla X_train. in questo modo si stanno scalando le feature ad un unità di misura basandoci su una deviazione std la quale è stata prodotta anche sulla base dei dati che useremo per il test. Il termine corretto dell' errore è processing leakage.
 #
 # DOMANDA 5 — Vero/Falso:
 # "È corretto provare 20 valori di max_depth guardando ogni volta il recall sul
 # test set e tenere il migliore." V o F?
+# Falso, lo si deve fare sul validation Set. In questo modo il test rimane solo come esame finale, poichè non deve avere nessuna correlazione con le scelte che abbiamo fatto per scegliere il modello migliore, ma deve essere "arbitro imparziale" a tutti gli effetti.
 #
 # DOMANDA 6 — Prevedi l'output (ordine di grandezza):
 # Un DecisionTreeClassifier(max_depth=None) su un dataset **piccolo** rispetto alla
 # complessità dell'albero: l'accuracy sul training sarà tipicamente vicina a ___ %
-# e sul test potrebbe essere ___ (più bassa / più alta / uguale)?
+# e sul test potrebbe essere più ___ (più bassa / più alta / uguale)?
+#100, bassa
 #
 # DOMANDA 7 — 💬 Spiega con parole tue:
 # Perché l'accuracy da sola può essere ingannevole su un dataset con molte
 # pratiche genuine e poche alterate?
 #
 # Scrivi le risposte qui sotto:
-#
+# Immaginiamo un dataset di 100 pratiche, di cui 90 genuine e 10 alterate. Qualora il modello si limitasse a darle tutte per genuine, si avrebbe un accuracy del 90%: ((TN + TP) / (TN + TP + FP + FN)) * 100 = (90 / 100) * 100 = 90 %. In generale, un valore del 90% potrebbe farci pensare che il modello sia molto efficace, ma se andassimo a vedere la recall dello stesso modello (TP / (TP + FP) => 0 / 0 => 0% (non possibile matematicamente, ma corretto per convenzione)) ci renderemmo conto che il modello in realtà è sostanzialmente inutile, in quando è come un allarme rotto che non scatta mai. L'accuracy è in realtà solo un specchietto delle addole, dovuto al fatto che in generale le pratiche alterate sono poche rispetto al totale.
 
 
 # ==========================================================================

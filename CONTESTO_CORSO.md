@@ -1108,6 +1108,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 13 | Interpretazione `.shape` su selezione colonne Pandas | Verifica/09 | Alla domanda su `vendite[["prodotto","prezzo"]].shape` aveva risposto `(2,)` invece di `(n_righe, 2)`. Rinforzo inserito nel cap.01 M2. | 01_M2 | 🟡 |
 | 14 | Distinzione Series vs DataFrame | Verifica/09 | Aveva confuso `df["colonna"]` (Series) con DataFrame. Rinforzo inserito nel cap.01 M2. Quiz ingresso cap.01 M2 perfetto. | 01_M2 | 🟡 → da confermare al quiz cap.02 |
 | 15 | Anti-pattern di valutazione modello | Verifica/01_M2 | Alla domanda "anti-pattern valutazione" ha descritto un errore di feature selection ("feature non coerenti"), non il classico anti-pattern: valutare su training set o fare tuning guardando il test set. | 02_M2 | 🟢 |
+| 16 | Scala `prob_alterato` (0–1) vs `score_genuinita` (0–100) | Rinforzo/05_M2 | Ha risposto `score_genuinita = 0.55` invece di `55` (stessa informazione ma scala sbagliata). | 06_M2 | 🔴 |
+| 17 | Droppare ID + target (nomi colonne reali) | Rinforzo/05_M2 | Ha scritto `df.drop(['id','target'])` in modo astratto: concetto giusto, ma sul mock le colonne sono `pratica_id` e `y_alterato`. | 06_M2 | 🔴 |
+| 18 | Recall: denominatore corretto (TP+FN, non TP+FP) | Ingresso/05_M2 | Nel ragionamento su accuracy vs recall ha scritto `recall = TP/(TP+FP)` e un caso `0/0`. In realtà recall (classe 1) = `TP/(TP+FN)`; nel caso “predico tutti genuini”: TP=0, FN>0 ⇒ recall=0. | 06_M2 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
