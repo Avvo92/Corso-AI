@@ -446,6 +446,7 @@ _demo_matrice_recall_train_fold, _demo_matrice_recall_valid_fold = validation_cu
     cv=StratifiedKFold(n_splits=5, shuffle=True, random_state=42),
     scoring="recall",
 )
+print(_demo_matrice_recall_train_fold)
 _demo_recall_medio_su_train_fold = _demo_matrice_recall_train_fold.mean(axis=1)
 _demo_recall_medio_su_valid_fold = _demo_matrice_recall_valid_fold.mean(axis=1)
 print("max_depth | recall medio (train fold) | recall medio (valid fold)")
