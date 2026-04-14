@@ -225,7 +225,8 @@ print(
 # 1) Guarda i due numeri stampati sopra: il gap train-test è grande?
 # 2) In una frase: cosa significa "generalizzare" in questo contesto?
 # Scrivi qui sotto:
-#
+# c'è una differenza di quasi il 7% tra train e test.
+# Generalizzare significa ottenere buoni risultati sul test set, che il modello non ha mai visto
 
 
 # ==========================================================================
@@ -275,7 +276,8 @@ print(
 # 1) Riordina: "scelta max_depth" vs "valutazione finale sul test" — quale viene prima?
 # 2) Nel prodotto: perché fissare soglie semaforo guardando solo il test è rischioso?
 # Scrivi qui sotto:
-#
+# Viene prima la scelta della max_depth, e poi la valutazione finale tramite test.
+# Perchè si stanno ottimizzando le soglie guardando i dati del test, cosa che invece andrebbe fatta nella validation o nella CV
 
 
 # ==========================================================================
@@ -336,7 +338,7 @@ print(
 # 1) Perché cross_val_score qui usa _demo_X_train/_demo_y_train e non tutto il dataset incluso il test?
 # 2) Cosa indica una deviazione standard alta tra i fold?
 # Scrivi qui sotto:
-#
+# si una _demo_X_train e _demo_y_train per la cv è non su tutto il dataset per mantenere il test diviso dalla fase di addestramento e validation, lasciandolo così come arbitro imparziale. una deviazione std alta può significare ad esempio che il dataset, essendo molto contenuto in termini di dimensioni, in tra le varie configurazioni produce risultati sensibilmente diversi. 
 
 
 # ==========================================================================
@@ -398,7 +400,9 @@ print(
 # 2) Collega: recall alto sul train e basso sul test → che parola usa il mentor?
 # 3) Guarda la tabella nella PARTE 5: a occhio, dove si vede il trade-off bias-varianza?
 # Scrivi qui sotto:
-#
+# 1) Prima cambio la max_depth, facendo una cross_validation per 3/4 diversi tuning del modello. Poi, una volta identificato il modello che sembra il più efficace, aggiusto le soglie per adeguarle ai risultitati prodotti dal modello. Infine eseguo un test.
+# 2) problema di over-fitting, flex-varianza
+# 3) si vede a max_depth=3 un apex per quanto riguarda il recall in fase di test, dopo di che diminuisce i modo quasi lineare  
 
 
 # ==========================================================================
