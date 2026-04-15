@@ -446,9 +446,10 @@ _demo_matrice_recall_train_fold, _demo_matrice_recall_valid_fold = validation_cu
     cv=StratifiedKFold(n_splits=5, shuffle=True, random_state=42),
     scoring="recall",
 )
-print(_demo_matrice_recall_train_fold)
+
 _demo_recall_medio_su_train_fold = _demo_matrice_recall_train_fold.mean(axis=1)
 _demo_recall_medio_su_valid_fold = _demo_matrice_recall_valid_fold.mean(axis=1)
+
 print("max_depth | recall medio (train fold) | recall medio (valid fold)")
 print("-" * 62)
 for indice_profondita, profondita_max in enumerate(_demo_valori_max_depth):
@@ -500,9 +501,11 @@ print(
 # DOMANDA 1 — Vero/Falso:
 # La cross-validation sul train può sostituire completamente un test set tenuto
 # separato per la valutazione finale.
+# No, il test alla fine è sempre indispensabile. La cross-validation serve solo a stabilizzare i risultati di uno score, cercando di arginare la possibilità che lo score sia stato influenzato da una composizione fortunata del set usato per il train e la validazione. Alla fine, dopo che avremo scelto in base a uno score stabilizzato, il  test ci darà eventualmente la conferma finale del fatto se siamo o meno sulla strada giusta, facendo come da "arbitro finale"
 #
 # DOMANDA 2 — Definizione:
 # Cos'è l'overfitting in due righe?
+# Si parla di overfitting quando il modello che abbiamo addestrato è divenuto troppo complesso, e invece di generalizzare impara a memoria le risposte in base ai target specifici del train set
 #
 # DOMANDA 3 — Trova l'errore:
 #   for d in [1, 2, 3, 4, 5]:
@@ -510,25 +513,29 @@ print(
 #       clf.fit(X_train, y_train)
 #       print(d, recall_score(y_test, clf.predict(X_test)))
 #   # scelgo il d col recall migliore sul test
+# Stiamo a tutti gli effetti facendo tuning guardano i recall prodotti dal test. 
+# per avere dati coerenti dovremmo impostare un random_state fisso, altrimenti avremmo un variabilità legata anche alla configurazione del set, e non solo dovuta alle differenti impostazioni degli iperparametri
+
 #
 # DOMANDA 4 — Completa:
 # StratifiedKFold serve a mantenere la proporzione delle ___ in ogni fold.
+# classi
 #
 # DOMANDA 5 — Prevedi:
-# All'aumentare di max_depth (da 1 a molto alto), tipicamente l'accuracy sul train
-# ___ e sul test prima ___ poi può ___ .
+# All'aumentare di max_depth (da 1 a molto alto), tipicamente l'accuracy sul train ___
+# e sul test prima ___ poi può ___ .
+# sale, sale, scendere
 #
 # DOMANDA 6 — 💬 Spiega con parole tue:
 # Perché "guardare il test più volte per scegliere l'iperparametro" è come
 # barare all'esame?
+# perchè starei di fatto scegliendo le mie risposte sul voto che prenderei poi all'esame finale.In pratica si dice che sto facendo tuning su dei dati che non dovrebbero essere noti nel momento in cui sto ancora scegliendo la configurazione del modello.
 #
 # DOMANDA 7 — Vero/Falso:
 # "Con un dataset piccolo, un singolo split train/test basta per stimare in modo
 # affidabile il recall in produzione; la cross-validation non aggiunge nulla."
 # V o F? Motiva in 2 righe.
-#
-# Scrivi le risposte qui sotto:
-#
+# Falso. In un data-set piccolo, la probabilità di avere uno split che mal rappresenti le regole generali contenute nei dati aumenta. Dunque, la cross validation può in realtà rappresentare uno strumento prezioso per stabilizzare i valori delle metriche a cui poi ci affideremo per scegliere la giusta configurazione del nostro modello.
 
 
 # ==========================================================================
@@ -549,7 +556,6 @@ print(
 # 4) Stampa accuracy train e test per entrambi (4 numeri). Commenta il gap.
 #
 # Scrivi qui sotto:
-#
 
 
 # ESERCIZIO 2 (Medio):
