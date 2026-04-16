@@ -655,6 +655,14 @@ print(table)
 #
 # Scrivi qui sotto:
 #
+# # X_train, X_test, y_train, y_test = train_test_split(...)
+# # best_depth, best_recall = 1, 0
+# # for depth in range(1, 15):
+# #     clf_tree = DecisionTreeClassifier(max_depth=d, random_state=42)
+# #     clf_tree.fit(X_train, y_train)
+# #     recall_score = recall_score(y_train, clf.predict(X_train))
+# #     if recall > best_recall:
+# #         best_rec, best_d = r, d
 
 
 # ESERCIZIO 5 (🔍 [DEBUG]):
