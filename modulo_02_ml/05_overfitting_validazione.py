@@ -37,6 +37,7 @@ Struttura didattica:
 """
 
 import os
+from joblib.memory import re
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import (
@@ -557,6 +558,32 @@ print(
 #
 # Scrivi qui sotto:
 
+pratiche = pd.read_csv(os.path.join(os.path.dirname(__file__), "dati", "pratiche_genuinita_mock.csv"))
+
+X = pratiche.drop(columns=['y_alterato', 'pratica_id'])
+y = pratiche['y_alterato']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=.2, random_state=42, stratify=y
+)
+
+clf_tree_md2 = DecisionTreeClassifier(max_depth=2, random_state=42)
+clf_tree_md_none = DecisionTreeClassifier(random_state=42)
+
+clf_tree_md2.fit(X_train, y_train)
+clf_tree_md_none.fit(X_train, y_train)
+
+print("\nEsercizio 1\n")
+print("Decision Tree max_depth = 2")
+print(f"Accuracy Train => {accuracy_score(y_train, clf_tree_md2.predict(X_train)):.2%}")
+print(f"Accuracy Test  => {accuracy_score(y_test, clf_tree_md2.predict(X_test)):.2%}\n")
+
+print("Decision Tree max_depth = None")
+print(f"Accuracy Train => {accuracy_score(y_train, clf_tree_md_none.predict(X_train)):.2%}")
+print(f"Accuracy Test  => {accuracy_score(y_test, clf_tree_md_none.predict(X_test)):.2%}\n")
+
+# si può notare che il gap tra train e test del modello senza max_depth definita sia sostanzialmente più ampio, segno questo che il modello soffre di overfitting per via della eccessiva complessita'. Inoltre l'accuracy nel test è superiore nel modello con max_depth=2, segno che, anche un modello relativamente molto semplice è più efficace nel generalizzare rispetto al modello più complesso. 
+
 
 # ESERCIZIO 2 (Medio):
 # 1) Stesso split dell'es.1.
@@ -567,7 +594,37 @@ print(
 # Opzionale: confronta la tua tabella con l’idea della PARTE 5 (validation_curve su più profondità).
 #
 # Scrivi qui sotto:
-#
+
+
+print("\nEsercizio 2\n")
+kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+recall_medi = []
+recall_std = []
+depth_arr = [2, 4, 6, None]
+
+for depth in depth_arr:
+    scores = cross_val_score(
+        DecisionTreeClassifier(max_depth=depth, random_state=42),
+        X_train,
+        y_train,
+        cv=kfold,
+        scoring="recall"
+        )
+    recall_medi.append(scores.mean())
+    recall_std.append(scores.std())
+
+table = pd.DataFrame({
+    'max_depth': depth_arr,
+    'recall_medio_cv': [round(x*100 ,2) for x in recall_medi],
+    'std': [round(x ,3) for x in recall_std],
+})
+
+print(table)
+
+# la profondità migliore è quella del modello con max depth 4. Abbiamo fatto questa prova solo sul train set, perchè altrimenti avremmo  in pratica scelto il modello sulla base del test, e quindi avrebbe perso il suo ruolo di arbitro finale.
+
+
+
 
 
 # ESERCIZIO 3 (🎯 [COLLOQUIO]):

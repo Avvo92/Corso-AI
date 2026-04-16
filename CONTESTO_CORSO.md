@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 13/04/2026
+> **Ultimo aggiornamento**: 15/04/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -39,7 +39,7 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_02_ml/05_overfitting_validazione.py — Overfitting, validazione, bias-varianza (da svolgere); dominio pratiche dove applicabile |
+| **Capitolo in corso** | modulo_02_ml/05_overfitting_validazione.py — Overfitting, validazione, bias-varianza (**in svolgimento**: mini-es.1–4, quiz verifica 1–7, esercizi 1–2 completati; restano es.3–8 + progetto `modello_base.py`); dominio pratiche dove applicabile |
 | **Ultimo completato** | 04_classificazione_metriche.py (13/04/2026) — Classificazione binaria, confusion matrix, precision/recall/F1, `predict_proba`, score/semaforo, esercizi su `pratiche_genuinita_mock.csv`; progetto `modello_base.py` con sezione classificazione |
 | **Modulo attuale** | 2 — Machine Learning Fundamentals |
 | **Difficoltà media** | ~6.4 (15 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-04; cap 07 escluso; M2-04 = **7**/10) |

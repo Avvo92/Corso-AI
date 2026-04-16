@@ -98,3 +98,35 @@
 
 - Inserire `# 🔁 RINFORZO MIRATO` su: (a) scale 0–1 vs 0–100; (b) “drop colonne reali” con micro-esempio coerente con `pratiche_genuinita_mock.csv`.
 
+---
+
+### 2026-04-15 — Correzioni live + avanzamento cap.05 (mini-esercizi, quiz verifica, es.1-2)
+
+- **Mini-esercizio 1 (gap train-test + “generalizzare”)**: risposta corretta. Hai notato un gap ~7% e definito generalizzazione come “andare bene su dati mai visti”.
+- **Mini-esercizio 2 (ordine tuning vs test + soglie semaforo)**: corretto dopo revisione. Punto chiave scritto bene: **non si ottimizzano soglie/iperparametri sul test** (test = arbitro finale).
+- **Mini-esercizio 3 (perché CV solo su train + std alta)**: corretto. Std alta = metrica instabile tra split (spesso per dataset piccolo/rumoroso).
+- **Mini-esercizio 4 (iperparametri vs policy + parola mentor + bias-varianza)**:
+  - Sequenza corretta: prima stabilizzi modello (CV/validation), poi calibri soglie policy, test solo alla fine.
+  - “Recall alto train e basso test” → overfitting (varianza alta). Da ripulire solo la terminologia “flex-varianza” → **bias-varianza**.
+  - Trade-off visibile come picco su valid/test e poi calo mentre train resta alto.
+
+- **Quiz di verifica (Domande 1–7)**:
+  - D1 (CV non sostituisce test): corretta e ben motivata.
+  - D2 (definizione overfitting): corretta; nota utile: train alto vs test/val più basso.
+  - D3 (trova l’errore): corretto dopo aggiornamento — errore = **tuning sul test**; `random_state` è extra di riproducibilità.
+  - D4 (StratifiedKFold): concetto corretto (“proporzione delle classi”).
+  - D5 (andamento accuracy train/test vs max_depth): corretto (train sale; test sale poi può scendere).
+  - D6 (test visto più volte = “barare”): corretto, con motivazione centrata (ottimismo/stima non onesta).
+  - D7 (dataset piccolo e singolo split): corretto (CV stabilizza: media + variabilità).
+
+- **Esercizio 1 (albero max_depth=2 vs None, accuracy train/test)**: esecuzione corretta (split con stratify e `random_state=42`, stampa 4 numeri). Commento sul gap centrato: albero profondo tende a overfittare; modello semplice può generalizzare meglio.
+- **Esercizio 2 (CV recall per max_depth in [2,4,6,None])**: implementazione corretta (loop + `cross_val_score` su `X_train,y_train`, tabella con media e std). Nota: coerenza su percentuali/std; `random_state=42` nel classifier consigliato per replicabilità (poi aggiunto).
+
+- **Domande concettuali chiarite in chat (da tenere come ponte mentale)**:
+  - Differenza tra validation set e cross-validation; cosa vuol dire “ruotare” i fold.
+  - `cross_val_score` vs `validation_curve`: il primo dà score su fold di validazione; la seconda esplora valori iperparametro e restituisce matrici train/valid per fold.
+  - `np.argmax`: restituisce l’indice del massimo (usato per scegliere il `max_depth` migliore in griglia).
+
+- **Pattern/lacune emerse**:
+  - Attenzione a terminologia e concetti: bias-varianza; tuning sul test; distinzione recall vs precision (già emersa il 2026-04-14 nella D7 del quiz d’ingresso).
+
