@@ -654,16 +654,25 @@ print(table)
 # #         best_rec, best_d = r, d
 #
 # Scrivi qui sotto:
-#
-# # X_train, X_test, y_train, y_test = train_test_split(...)
-# # best_depth, best_recall = 1, 0
-# # for depth in range(1, 15):
-# #     clf_tree = DecisionTreeClassifier(max_depth=d, random_state=42)
-# #     clf_tree.fit(X_train, y_train)
-# #     recall_score = recall_score(y_train, clf.predict(X_train))
-# #     if recall > best_recall:
-# #         best_rec, best_d = r, d
 
+print("\nEsercizio 4\n")
+best_depth, best_recall = 1, 0
+
+for depth in range(1, 15):
+    recall_scores = cross_val_score(
+    DecisionTreeClassifier(max_depth=depth, random_state=42),
+        X_train,
+        y_train,
+        cv=StratifiedKFold(n_splits=5, random_state=42, shuffle=True),
+        scoring="recall"
+        )
+    if recall_scores.mean() > best_recall:
+        best_depth, best_recall = depth, recall_scores.mean()
+best_clf_tree = DecisionTreeClassifier(max_depth=best_depth, random_state=42)
+best_clf_tree.fit(X_train, y_train)       
+test_recall = recall_score(y_test, best_clf_tree.predict(X_test))
+print(f"Miglior Train Recall => {best_recall:.2%}")
+print(f"Test Recall          => {test_recall:.2%}")
 
 # ESERCIZIO 5 (🔍 [DEBUG]):
 # Leggi il codice sotto (non eseguirlo se vedi l'errore): cosa produce di fuorviante?
@@ -678,7 +687,16 @@ print(table)
 # X_test_s = scaler.transform(X_test)
 #
 # Scrivi qui sotto:
-#
+# Lo scaler viene impostato su tutto il set, prima che questo venga diviso in train e test. In questo modo, la deviazione std su cui viene effettuate la trasformazione dei valori è calcolata anche sul dataset che poi verrà diviso per il  test, provocando di fatto un preprocessing leakage. di seguito il codice corretto
+
+# scaler = StandardScaler()
+# X_all = pd.read_csv(...).drop(columns=['pratica_id','y_alterato'])
+# y_all = pd.read_csv(...)['y_alterato']
+# X_train, X_test, y_train, y_test = train_test_split(X_all, y_all, test_size=0.2, stratify=y_all)
+# scaler.fit(X_train)
+# X_train_s = scaler.transform(X_train)
+# X_test_s = scaler.transform(X_test)
+
 
 
 # ESERCIZIO 6 (Opzionale — 🔀 [INTERLEAVING] — Pandas + validazione):
@@ -690,9 +708,42 @@ print(table)
 #    allena DecisionTreeClassifier(max_depth=3, random_state=42), calcola recall sul test.
 # 3) Stampa i 5 recall e la media (solo sklearn.metrics, niente CV sklearn).
 # 4) Due righe: perché StratifiedKFold è preferibile a questo trucco?
-#
+# Il modo che abbiamo utilizzato non permette una stratificazione omogeneare delle classi di y_alterato. Dunque, i risultati saranno meno precisi rispetto ai valori ottenuti dallo stesso set splittato tramite StratifiedKFold
 # Scrivi qui sotto:
 #
+print("\nEsercizio 6\n")
+pratiche = pd.read_csv(os.path.join(os.path.dirname(__file__), "dati", "pratiche_genuinita_mock.csv"))
+
+pratiche["fold_id"] = np.arange(len(pratiche)) % 5
+
+scores = []
+
+for k in range(0, pratiche['fold_id'].max() + 1):
+    X_train = pratiche.loc[pratiche['fold_id'] != k].drop(columns=['pratica_id', 'y_alterato'])
+    y_train = pratiche.loc[pratiche['fold_id'] != k]['y_alterato']
+    X_test = pratiche.loc[pratiche['fold_id'] == k].drop(columns=['pratica_id', 'y_alterato'])
+    y_test = pratiche.loc[pratiche['fold_id'] == k]['y_alterato']
+        
+    clf_tree = DecisionTreeClassifier(max_depth=3, random_state=42)    
+    clf_tree.fit(X_train, y_train)
+    
+    rec_score = recall_score(y_test, clf_tree.predict(X_test))
+    scores.append(rec_score)
+    
+print(f"{[round(x*100, 2) for x in scores]}")
+print(f"Media Recall => {round(np.array(scores).mean(), 4):.2%}")
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+
 
 
 # ESERCIZIO 7 (🧠 [RETRIEVAL]):
