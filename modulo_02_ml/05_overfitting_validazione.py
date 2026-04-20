@@ -660,7 +660,7 @@ best_depth, best_recall = 1, 0
 
 for depth in range(1, 15):
     recall_scores = cross_val_score(
-    DecisionTreeClassifier(max_depth=depth, random_state=42),
+        DecisionTreeClassifier(max_depth=depth, random_state=42),
         X_train,
         y_train,
         cv=StratifiedKFold(n_splits=5, random_state=42, shuffle=True),
@@ -732,18 +732,6 @@ for k in range(0, pratiche['fold_id'].max() + 1):
     
 print(f"{[round(x*100, 2) for x in scores]}")
 print(f"Media Recall => {round(np.array(scores).mean(), 4):.2%}")
-    
-    
-    
-    
-    
-    
-
-
-
-
-
-
 
 
 # ESERCIZIO 7 (🧠 [RETRIEVAL]):
@@ -754,7 +742,33 @@ print(f"Media Recall => {round(np.array(scores).mean(), 4):.2%}")
 # - stampa della media
 #
 # Scrivi qui sotto:
-#
+from sklearn.model_selection import (
+    cross_val_score,
+    StratifiedKFold,
+)
+print("\nEsercizio 7\n")
+pratiche = pd.read_csv(os.path.join(os.path.dirname(__file__), "dati", "pratiche_genuinita_mock.csv"))
+
+X = pratiche.drop(columns=['pratica_id', 'y_alterato'])
+y = pratiche['y_alterato']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=.2, random_state=42, stratify=y
+)
+
+kfold = StratifiedKFold(n_splits=5, random_state=42, shuffle=True)
+
+clf_tree_md5 = DecisionTreeClassifier(max_depth=5, random_state=42)
+
+f1_cross_score = cross_val_score(
+        clf_tree_md5,
+        X_train,
+        y_train,
+        cv=kfold,
+        scoring="f1"
+)
+
+print(f1_cross_score.mean().round(3))
 
 
 # ESERCIZIO 8 (Prodotto — policy vs test):
@@ -766,9 +780,54 @@ print(f"Media Recall => {round(np.array(scores).mean(), 4):.2%}")
 # 5) Solo alla fine calcola recall e precision sul **test** con quella soglia.
 # 6) Commento: perché questo schema è più onesto per il prodotto rispetto a
 #    provare soglie sul test finché trovi quella che piace?
-#
+#  Il test deve essere una prova finale, il tuning delle soglie deve essere fatto su un set dedicato, per l'appunto su un validation set deputato a testare vari tipi di configurazioni, sia degli iperparametri del modello sia delle soglie
 # Scrivi qui sotto:
-#
+pratiche = pd.read_csv(os.path.join(os.path.dirname(__file__), "dati", "pratiche_genuinita_mock.csv"))
+
+X = pratiche.drop(columns=['pratica_id', 'y_alterato'])
+y = pratiche['y_alterato']
+
+X_train, X_temp, y_train, y_temp = train_test_split(
+    X, y, test_size=.4, random_state=42, stratify=y
+)
+
+X_val, X_test, y_val, y_test = train_test_split(
+    X_temp, y_temp, test_size=.5, random_state=42, stratify=y_temp
+)
+
+scaler = StandardScaler()
+scaler.fit(X_train)
+
+clf_log = LogisticRegression(max_iter=1_000)
+
+X_train_scaled = scaler.transform(X_train)
+X_val_scaled = scaler.transform(X_val)
+X_test_scaled = scaler.transform(X_test)
+
+clf_log.fit(X_train_scaled, y_train)
+
+proba_alter_val = clf_log.predict_proba(X_val_scaled)[:, 1]
+
+soglie = [0.3, 0.5, 0.7]
+
+best_soglia = 0
+best_recall = 0
+
+for s in soglie:
+    y_pred_val = (proba_alter_val >= s).astype(int)
+    rec_score = recall_score(y_val, y_pred_val)
+    if rec_score > best_recall:
+        best_recall = rec_score
+        best_soglia = s
+    print(f"{s} => {rec_score:.3f}")
+
+proba_alter_test = clf_log.predict_proba(X_test_scaled)[:, 1]
+y_pred_test = (proba_alter_test >= best_soglia).astype(int)
+
+rec_score_test = recall_score(y_test, y_pred_test)
+prec_score_test = precision_score(y_test, y_pred_test)
+
+print(f"Test => Recall: {rec_score_test:.3f} Precision: {prec_score_test:.3f}")
 
 
 # ==========================================================================

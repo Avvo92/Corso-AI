@@ -164,3 +164,20 @@
 - **Correzione / suggerimento:** Aggiungi anche la `std` (opzionale ma utile) e in 2 righe chiudi: “StratifiedKFold mantiene la proporzione di `y_alterato` in ogni fold, quindi confronti mele con mele; con `index % 5` potresti avere un fold con pochi ‘alterati’ e recall più rumoroso”.
 - **Voto ponderato (1–10):** **9/10** — implementazione corretta e aderente alla consegna; manca solo un filo di precisione nella motivazione su StratifiedKFold.
 
+### 2026-04-20 — Esercizio 7 (RETRIEVAL — `cross_val_score` + `StratifiedKFold`, scoring F1)
+
+- **Esercizio / blocco:** `05_overfitting_validazione.py` — ESERCIZIO 7 (righe ~737–771).
+- **Punti di forza:** consegna centrata: import corretti, `train_test_split(..., stratify=y)`, `StratifiedKFold(5, shuffle=True, random_state=42)`, `cross_val_score(..., scoring="f1")` su `X_train, y_train`, stampa della media.
+- **Errori / lacune:** nessuna. Solo nota “extra”: `X_test, y_test` creati ma non usati in questo esercizio (ok, ma non necessario).
+- **Pattern errore / ID contesto:** nessun pattern nuovo.
+- **Voto ponderato (1–10):** **9/10** — esecuzione corretta e pulita, in piena aderenza alla consegna.
+
+### 2026-04-20 — Esercizio 8 (Prodotto — policy vs test: soglia su validation, test una volta)
+
+- **Esercizio / blocco:** `05_overfitting_validazione.py` — ESERCIZIO 8 (righe ~774–829).
+- **Punti di forza:** schema corretto e “onesto”: split 60/20/20 con `stratify`, scaler con `fit` solo su `X_train`, training su `X_train_scaled`, soglie provate su `X_val_scaled`, test usato solo alla fine per recall+precision con la soglia scelta su validation.
+- **Errori / lacune:** bug nella selezione della soglia: `best_soglia` e `best_recall` vengono azzerati **dentro** il loop, quindi in pratica non stai davvero tenendo il “migliore finora” (rischi di scegliere semplicemente l’ultima soglia con recall > 0). Vanno inizializzati **prima** del `for`.
+- **Correzione / suggerimento:** mettere `best_recall = -1` e `best_soglia = None` prima del loop; nel loop aggiorni solo se `rec_score > best_recall`. Poi stampare anche la soglia scelta e, se vuoi essere più robusto, scegliere per recall e in caso di pari recall usare precision come tie-break.
+- **Pattern errore / ID contesto:** nessun pattern concettuale nuovo; è un bug di “stato dentro al loop”.
+- **Voto ponderato (1–10):** **7/10** — pipeline e idea prodotto ottime; penalità solo per il bug che può rendere sbagliata la soglia selezionata.
+

@@ -815,6 +815,8 @@ completezza del self-check e chiedere correzioni.
 | Feature categorica | Feature non numerica (es. "città") che va trasformata (one-hot encoding) per essere usata dai modelli | M2-01 | 0/3 | 🔄 |
 | One-hot encoding | Trasformazione di feature categoriche in colonne binarie (0/1) — una colonna per ogni valore unico | M2-01 | 0/3 | 🔄 |
 | Validation set | Sotto-insieme dei dati per tuning iperparametri, intermedio tra train e test | M2-01 | 0/3 | 🔄 |
+| `StratifiedKFold` | K-fold che mantiene la stessa proporzione delle classi in ogni fold (utile quando `y` è sbilanciata) | 05 | 0/3 | 🔄 |
+| `cross_val_score` | Utility scikit-learn per calcolare una metrica con cross-validation (ritorna uno score per fold; poi si fa media/std) | 05 | 0/3 | 🔄 |
 | MAE | Mean Absolute Error — errore medio assoluto in regressione (stessa unità del target) | M2-02 | 0/3 | 🔄 |
 | RMSE | Root Mean Squared Error — penalizza errori grandi più del MAE | M2-02 | 0/3 | 🔄 |
 | `DecisionTreeRegressor` | Albero per regressione; iperparametri chiave `max_depth`, `random_state` | M2-02 | 0/3 | 🔄 |
