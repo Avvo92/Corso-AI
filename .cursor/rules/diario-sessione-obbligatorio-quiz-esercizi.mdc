@@ -27,6 +27,12 @@ Subito DOPO il feedback in chat, l’agente deve:
 - 1–3 bullet: cosa è corretto / cosa manca / next step
 - se emergono nuove lacune ricorrenti, segnalarle esplicitamente (per aggiornamento contesto).
 
+## Regola “esame” (voto che conta)
+
+- La valutazione serve a tracciare **lacune reali**: il voto principale da registrare è quello del **primo tentativo**, prima di ricevere suggerimenti/soluzioni.
+- Se l’utente applica le correzioni dopo il feedback, nel diario si può aggiungere **al massimo** una riga “Fix applicato” (senza ricalcolare il voto) **oppure** una seconda entry chiaramente marcata come **post-feedback**.
+- Fare una vera “seconda valutazione” solo se l’utente la richiede esplicitamente come *nuovo tentativo*.
+
 ## Vincoli
 
 - **Append-only**: non riscrivere le entry precedenti (si aggiunge in fondo alla sezione).

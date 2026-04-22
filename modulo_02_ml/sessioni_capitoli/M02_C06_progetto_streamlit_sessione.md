@@ -85,6 +85,53 @@
 - **Punti chiave corretti:** alzando la soglia aumenta tipicamente la precision e diminuisce il recall; in controllo documentale è più grave un **FN** (frode non intercettata) di un FP (falso allarme).
 - **Micro-miglioria:** precisare “tipicamente” perché dipende da distribuzione e modello, ma la direzione è corretta nella maggior parte dei casi.
 
+### 2026-04-22 — Mini-esercizio 1.1 (requisiti UI finali)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 1.1 (descrivi cosa vuoi vedere in pagina).
+- **Valutazione:** **8.5/10**.
+- **Punti di forza:** obiettivo UI chiaro (titolo, select pratica, semaforo, score, motivi_top3) e coerente col prodotto.
+- **Micro-miglioria:** aggiungere esplicitamente `prob_alterato (0–1)` e una sezione “stabilità” (CV media ± std) perché fanno parte del deliverable e ti aiutano a non confondere le scale.
+
+### 2026-04-22 — Mini-esercizio 1.1 (revisione: requisiti UI finali + modalità esperimento)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 1.1 (revisione).
+- **Valutazione:** **9.5/10**.
+- **Punti di forza:** hai incluso stabilità (CV media±std), output per pratica (semaforo/score/motivi) e controlli sidebar per soglie/iperparametri.
+- **Micro-miglioria:** aggiungere esplicitamente `prob_alterato (0–1)` tra le info della pratica selezionata (per chiarezza di scala).
+
+### 2026-04-22 — Mini-esercizio 1.2 (rerun: variabili non persistono)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 1.2 (lista + append tra click).
+- **Valutazione:** **9.5/10**.
+- **Punti chiave corretti:** ad ogni interazione Streamlit riesegue il file dall’alto → `lista = []` viene ricreata e quindi non accumuli storico tra rerun.
+- **Micro-miglioria:** aggiungere che per “memoria” tra rerun si usano `st.session_state` (stato) o cache (per risultati/dati), non variabili Python globali.
+
+### 2026-04-22 — Mini-esercizio 1.3 (comando avvio Streamlit)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 1.3 (comando da lanciare).
+- **Valutazione:** **10/10**.
+- **Note:** comando corretto: `streamlit run modulo_02_ml/app_streamlit.py` (da root del repo con venv attivo).
+
+### 2026-04-22 — Mini-esercizio 1.4 (troubleshooting: streamlit command not found)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 1.4.
+- **Valutazione:** **9/10**.
+- **Punti chiave corretti:** attivare il venv e verificare install (`streamlit --version`) prima di “reinstallare tutto”.
+- **Micro-miglioria:** prima di reinstallare Streamlit, provare `python -m streamlit --version` e/o `pip install -r requirements.txt` (così riallinei tutte le dipendenze del progetto nel venv).
+
+### 2026-04-22 — Mini-esercizio 2.1 (title + header + dict)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 2.1.
+- **Valutazione:** **8.5/10**.
+- **Punti chiave corretti:** hai mostrato titolo, header e hai stampato un dict (derivato dal DataFrame).
+- **Micro-miglioria:** la consegna chiedeva “3 righe”: qui hai aggiunto import + lettura CSV (ok come extra), ma in app reale la lettura andrebbe messa in funzione cached (`@st.cache_data`). Inoltre `to_dict()` di un DataFrame produce una struttura annidata; per un dict più “leggibile” meglio `pratiche.head(1).to_dict(orient="records")[0]`.
+
+### 2026-04-22 — Mini-esercizio 2.1 (revisione: cache + orient=\"records\")
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 2.1 (revisione).
+- **Valutazione:** **10/10**.
+- **Punti di forza:** lettura CSV spostata in funzione `@st.cache_data` (no reload ad ogni rerun) e `to_dict(orient="records")[0]` produce un dict riga→valori molto più leggibile.
+
 ---
 
 ## Lacune e dubbi ancora aperti

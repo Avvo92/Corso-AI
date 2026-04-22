@@ -150,7 +150,11 @@ Vincoli imparati nei capitoli precedenti (da rispettare qui):
 # --- MINI-ESERCIZIO 1.1 ---
 # Senza scrivere codice: in una riga, descrivi cosa vuoi vedere in pagina alla fine
 # del capitolo. (Es: "titolo + select pratica + tre numeri + CV media±std")
-#
+# Titolo: Valutazione Pratica
+# Select: una select con id delle pratiche
+# Info generiche: stabilità/volatilità del modello (CV media e std)
+# Info sulla pratica selezionata: semaforo (verde, giallo, rosso), score genuinità, motivi top3 della valutazione
+# Sidebar: diverse select o input per cambiare soglie e iperparametri al modello.
 
 
 # ==========================================================================
@@ -175,16 +179,16 @@ Vincoli imparati nei capitoli precedenti (da rispettare qui):
 #
 # Mini-esempio (concetto):
 #
-#     import streamlit as st
-#     st.title("Hello")                 # rieseguita ad ogni rerun
-#     nome = st.text_input("Nome")      # ad ogni rerun, `nome` ha il valore corrente
-#     st.write(f"Ciao {nome}")          # viene ri-renderizzata
+# import streamlit as st
+# st.title("Hello")                 # rieseguita ad ogni rerun
+# nome = st.text_input("Nome")      # ad ogni rerun, `nome` ha il valore corrente
+# st.write(f"Ciao {nome}")          # viene ri-renderizzata
 #
 # --- MINI-ESERCIZIO 1.2 ---
 # In 2 righe: cosa succede se dentro il file scrivi `lista = []` e poi fai
 # `lista.append(x)` pensando di accumulare dati tra un click e l'altro?
 # (Suggerimento: ricorda il "rerun".)
-#
+# Ripartirebbe da 0, quindi avrei un array con solo l'ultimo elemento inserito
 
 
 # ==========================================================================
@@ -204,7 +208,7 @@ Vincoli imparati nei capitoli precedenti (da rispettare qui):
 # --- MINI-ESERCIZIO 1.3 ---
 # Scrivi qui sotto l'esatto comando che tu lancerai, con il path del file:
 # ...
-#
+# streamlit run modulo_02_ml/app_streamlit.py
 
 
 # ==========================================================================
@@ -235,7 +239,9 @@ Vincoli imparati nei capitoli precedenti (da rispettare qui):
 # --- MINI-ESERCIZIO 1.4 ---
 # Immagina di vedere "streamlit: command not found": scrivi i 2 passi che faresti PRIMA
 # di "reinstallare tutto da zero".
-#
+# proverei ad attivare il venv
+# controllerei che streamlit sia installato (streamlit --version)
+# proverei a reinstallare streamlit
 
 
 # ==========================================================================
@@ -258,14 +264,27 @@ Vincoli imparati nei capitoli precedenti (da rispettare qui):
 #
 # Mini-esempio:
 #
-#     st.title("Demo genuinità")
-#     st.header("Dati")
-#     st.write({"righe": 640, "feature": 7})
+# import streamlit as st
+# st.title("Demo genuinità")
+# st.header("Dati")
+# st.write({"righe": 640, "feature": 7})
 #
 # --- MINI-ESERCIZIO 2.1 ---
 # Scrivi 3 righe che producono: titolo, header "Dati", scrittura di un dict a tua scelta.
 #
+# import streamlit as st
+# import os
+# import pandas as pd
 
+# @st.cache_data
+# def carica_pratiche() -> pd.DataFrame:
+#     path = os.path.join(os.path.dirname(__file__), "dati", "pratiche_genuinita_mock.csv")
+#     return pd.read_csv(path)
+
+# st.title("Mini-esercizio 2.1")
+# st.header("Dati")
+# pratiche = carica_pratiche()
+# st.write(pratiche.head(1).to_dict(orient="records")[0])
 
 # ==========================================================================
 # 📖 TEORIA 2.2 — Sidebar e layout a colonne
@@ -276,15 +295,16 @@ Vincoli imparati nei capitoli precedenti (da rispettare qui):
 #
 # Mini-esempio sidebar:
 #
-#     with st.sidebar:
-#         st.header("Filtri")
-#         scelta = st.selectbox("Semaforo", ["tutti", "verde", "giallo", "rosso"])
+import streamlit as st
+with st.sidebar:
+    st.header("Filtri")
+    scelta = st.selectbox("Semaforo", ["tutti", "verde", "giallo", "rosso"])
 #
 # Mini-esempio colonne:
 #
-#     c1, c2 = st.columns(2)
-#     c1.metric("Score", 80)
-#     c2.metric("Semaforo", "verde")
+c1, c2 = st.columns(2)
+c1.metric("Score", 80)
+c2.metric("Semaforo", "verde")
 #
 # --- MINI-ESERCIZIO 2.2 ---
 # Scrivi in 4 righe: sidebar con un header + un selectbox binario; fuori dalla sidebar
@@ -745,6 +765,30 @@ Vincoli imparati nei capitoli precedenti (da rispettare qui):
 #   carica_pratiche(path) -> DataFrame
 #   calcola_score_e_semaforo(pipe, riga_X) -> (prob, score, semaforo)
 # DoD: `app_streamlit.py` è più corto e leggibile; UI invariata.
+#
+# ESERCIZIO 9 (Modalità esperimento — iperparametri & soglie in UI):
+# Obiettivo: capire la differenza tra:
+# - iperparametri del modello (es. `C` della LogisticRegression) → richiedono retrain
+# - soglia di decisione su `prob_alterato` (es. 0.5→0.8) → NON richiede retrain
+# - soglie semaforo su `score_genuinita` (es. 85/60) → sono policy/UX, NON ML
+#
+# Implementazione (in `app_streamlit.py`):
+# 1) Sidebar:
+#   - slider `C` (es. 0.01–10.0, log scale facoltativa)
+#   - slider `soglia_prob` (0.0–1.0, default 0.5)
+#   - slider `soglia_verde` e `soglia_giallo` (0–100, default 85/60)
+# 2) Caching:
+#   - l’addestramento deve stare in una funzione `@st.cache_resource` che dipende da `C`
+#     (così non rifai fit a ogni click su `pratica_id`).
+# 3) Output:
+#   - mostra `prob_alterato`, `score_genuinita`, `semaforo` (con soglie personalizzabili)
+#   - mostra anche `classe_predetta = 1 se prob_alterato >= soglia_prob altrimenti 0`
+#
+# Regola cap.05 (importante):
+# - NON “scegliere” `C` o `soglia_prob` guardando il test: se vuoi ottimizzare, fallo su validation/CV.
+#
+# DoD: cambiando `soglia_prob` cambia la classe predetta senza retrain; cambiando `C` il modello si riallena
+# (solo una volta per valore di C) e `prob_alterato` cambia in modo coerente.
 #
 
 
