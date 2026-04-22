@@ -181,3 +181,19 @@
 - **Pattern errore / ID contesto:** nessun pattern concettuale nuovo; è un bug di “stato dentro al loop”.
 - **Voto ponderato (1–10):** **7/10** — pipeline e idea prodotto ottime; penalità solo per il bug che può rendere sbagliata la soglia selezionata.
 
+### 2026-04-22 — `modello_base.py` — Task cap.05 (CV recall con Pipeline per evitare leakage nello scaler)
+
+- **Esercizio / blocco:** `modulo_02_ml/modello_base.py` — task sotto l’assert della sezione classificazione (righe ~257–305): `cross_val_score` + `StratifiedKFold`, `scoring="recall"`, richiesta esplicita di `Pipeline(StandardScaler + LogisticRegression)` per evitare leakage nello scaler *dentro ogni fold*.
+- **Punti di forza:** Hai rispettato i vincoli macro: CV fatta su **solo** `X_train, y_train` (non sul test set), `StratifiedKFold(5, shuffle=True, random_state=42)` corretto, stampa di array fold + media + std corretta. Il commento (punto 5) comunica bene l’idea “una media è più stabile di un singolo test”.
+- **Errori / lacune:** Il punto chiave della consegna non è centrato: facendo `scaler.fit(X_train)` **prima** di `cross_val_score`, lo scaler “vede” anche le righe che in ogni fold diventano validation ⇒ **preprocessing leakage intra-CV** (non stai simulando correttamente il fit del preprocessing sul solo train del fold). Inoltre `X_test_scaled` qui non serve (non lo usi).
+- **Correzione / suggerimento:** La correzione richiesta è usare una `Pipeline` e passare a `cross_val_score` direttamente `X_train` non scalato. Così sklearn rifà `fit` dello scaler a ogni fold sul train del fold e poi trasforma il validation fold senza leakage.
+- **Pattern errore / ID contesto:** Richiamo “leakage da preprocessing” (già presente nel capitolo), esteso al caso CV (scaler dentro fold).
+- **Voto ponderato (1–10):** **6/10** — output e impostazione CV ok, ma manca l’obiettivo principale (evitare leakage dello scaler *dentro ogni fold* tramite `Pipeline`).
+
+### 2026-04-22 — `modello_base.py` — Task cap.05 (revisione: Pipeline + CV senza leakage intra-fold)
+
+- **Esercizio / blocco:** `modulo_02_ml/modello_base.py` — stessa sezione task cap.05 (righe ~257–304).
+- **Fix applicato:** `cross_val_score(clf_log_pipe, X_train, y_train, ...)` con `clf_log_pipe = Pipeline([("scaler", StandardScaler()), ("model", LogisticRegression(...))])` e **senza** scalare prima `X_train`.
+- **Perché ora è corretto:** lo scaler viene rifittato **dentro ogni fold** solo sul train del fold, e poi applicato al validation fold → niente leakage da preprocessing in CV.
+- **Esito:** consegna rispettata (CV su train, recall per fold + media + std, commento su cosa aggiunge la CV).
+- **Voto ponderato (1–10):** **9/10** — ottima correzione: hai capito e applicato esattamente il punto “Pipeline per evitare leakage nello scaler dentro ogni fold”.

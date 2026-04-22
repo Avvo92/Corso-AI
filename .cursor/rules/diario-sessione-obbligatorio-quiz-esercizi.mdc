@@ -1,0 +1,35 @@
+---
+description: Ogni valutazione di quiz/esercizi va tracciata nel diario del capitolo (sessioni_capitoli) con append immediato.
+alwaysApply: true
+---
+
+# Diario sessione capitolo — Append obbligatorio su ogni valutazione
+
+## Quando si applica (trigger)
+
+Ogni volta che l’utente chiede una **valutazione/correzione** di:
+- quiz d’ingresso / quiz di verifica
+- mini-esercizi inline
+- esercizi finali / progetto incrementale
+
+## Cosa fare (obbligo operativo)
+
+Subito DOPO il feedback in chat, l’agente deve:
+
+1) **Individuare il diario del capitolo corrente** nella cartella del modulo:
+- Pattern: `modulo_XX_*/sessioni_capitoli/M??_C??_*_sessione.md`
+- Se non esiste, crearlo dal template della cartella (`_TEMPLATE_sessione_capitolo.md`).
+
+2) **Appendere** una nuova entry in `## Valutazioni esercizi / quiz / mini-esercizi` con:
+- data (`YYYY-MM-DD`)
+- riferimento puntuale (file + domanda/esercizio)
+- voto (es. `8/10`)
+- 1–3 bullet: cosa è corretto / cosa manca / next step
+- se emergono nuove lacune ricorrenti, segnalarle esplicitamente (per aggiornamento contesto).
+
+## Vincoli
+
+- **Append-only**: non riscrivere le entry precedenti (si aggiunge in fondo alla sezione).
+- La voce deve essere **breve** (massimo ~10 righe), ma concreta.
+- Se la valutazione riguarda più domande in serie, è ok una entry unica purché siano elencate.
+

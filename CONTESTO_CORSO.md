@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 15/04/2026
+> **Ultimo aggiornamento**: 22/04/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -39,12 +39,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_02_ml/05_overfitting_validazione.py — Overfitting, validazione, bias-varianza (**in svolgimento**: mini-es.1–4, quiz verifica 1–7, esercizi 1–2 completati; restano es.3–8 + progetto `modello_base.py`); dominio pratiche dove applicabile |
-| **Ultimo completato** | 04_classificazione_metriche.py (13/04/2026) — Classificazione binaria, confusion matrix, precision/recall/F1, `predict_proba`, score/semaforo, esercizi su `pratiche_genuinita_mock.csv`; progetto `modello_base.py` con sezione classificazione |
+| **Capitolo in corso** | modulo_02_ml/06_progetto_streamlit.py — Demo Streamlit (M2) + primo deploy: integrazione `modello_base.py` (score, semaforo, motivi, CV stability) in UI operatore |
+| **Ultimo completato** | 05_overfitting_validazione.py (22/04/2026) — Overfitting, validazione, generalizzazione, bias-varianza; CV su train con `StratifiedKFold`; distinzione tuning vs test; progetto `modello_base.py`: CV recall con `Pipeline(StandardScaler + LogisticRegression)` per evitare leakage intra-fold |
 | **Modulo attuale** | 2 — Machine Learning Fundamentals |
-| **Difficoltà media** | ~6.4 (15 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-04; cap 07 escluso; M2-04 = **7**/10) |
-| **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (rinforzato in cap.03), 🟡 Allineamento variabili tra esercizi sequenziali nello stesso file `.py` (monitoraggio), ⚠️ Data leakage: consolidato cap.02–03 — replicare su documenti reali quando possibile |
-| **Sessione corrente** | Sessione 15 |
+| **Difficoltà media** | ~6.6 (16 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-05; cap 07 escluso; M2-05 = **8**/10) |
+| **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Allineamento variabili tra esercizi sequenziali nello stesso `.py` (monitoraggio), ⚠️ Data leakage (anche da preprocessing/CV) — consolidare e applicare sempre con `Pipeline`, 🔴 Lacuna #16 scala `prob_alterato` (0–1) vs `score_genuinita` (0–100), 🔴 Lacuna #17 drop colonne reali (`pratica_id`, `y_alterato`), 🔴 Lacuna #18 recall vs precision (denominatore TP+FN vs TP+FP) |
+| **Sessione corrente** | Sessione 16 |
 
 ---
 
@@ -55,11 +55,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 13/04/2026 |
-| **Cosa è stato fatto** | Chiusura formale cap.04 M2: quiz ingresso/verifica ed esercizi 1–8 sul mock pratiche; es.8 prodotto (coefficienti, semaforo Blueprint); progetto `modello_base.py` con `DecisionTreeClassifier` + `LogisticRegression`, `semaforo`, `motivi_top_3` esteso con `coef_.ravel()`, assert recall. Diario sessione integrato. CONTESTO aggiornato (Passi 1–13). |
-| **Errori emersi** | Lacune minime: interpretazione “zona indecisa” (legare a `prob_alterato`≈0.5, non solo score %); alcuni esercizi con dettagli consegna (ordinamento es.2, soglia OCR es.6). |
-| **Cosa fare nella prossima sessione** | Aprire e svolgere `05_overfitting_validazione.py` (rinforzi già in testa al file); preparare quiz ingresso su trade-off validazione; mantenere dominio pratiche dove indicato. |
-| **Stato motivazione** | Alto: pipeline `score_genuinita` / `semaforo` / `motivi_top3` consolidate prima del cap. su generalizzazione. |
+| **Data** | 22/04/2026 |
+| **Cosa è stato fatto** | Chiusura cap.05 M2: overfitting/validazione/CV/bias-varianza; chiarito perché usare `Pipeline` per evitare leakage dello scaler **dentro ogni fold**; implementato in `modello_base.py` il task CV recall con `StratifiedKFold(5)` + `Pipeline(StandardScaler + LogisticRegression)` e stampa media±std; voto difficoltà raccolto. Diario cap.05 aggiornato. |
+| **Errori emersi** | Lacune attive dai quiz: (a) scala 0–1 vs 0–100 (prob/score), (b) attenzione a nomi colonne reali (`pratica_id`, `y_alterato`), (c) recall vs precision. |
+| **Cosa fare nella prossima sessione** | Iniziare `06_progetto_streamlit.py`: costruire la demo Streamlit del modulo 2 collegata a `modello_base.py` e preparare il primo deploy. |
+| **Stato motivazione** | Buono: concetto “test arbitro finale + CV per stabilità” consolidato, utile per il deploy. |
 
 ---
 
@@ -116,12 +116,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_02_ml/05_overfitting_validazione.py — train/val/test o CV, overfitting/underfitting, bias-varianza operativo; collegare generalizzazione a metriche su test e a decisioni prodotto (`semaforo`, recall) |
-| **Rinforzi da inserire (🔁)** | In testa al file cap.05: soglia `prob_alterato` vs “indecisione” (mini-ex cap.04); richiamo leakage; fit scaler solo su train; **nuovo**: trade-off varianza vs bias collegato a `max_depth` / complessità già visti |
-| **Concetti ⚠️ da ripassare** | Perché valutare sul test una sola volta “come scelta modello” è rischioso; differenza tra errore di training e errore di generalizzazione |
-| **Pattern 🔴 da monitorare** | #6 (consegne complete), #21/#22, allineamento variabili tra blocchi nello stesso `.py` |
-| **Ponte mentale da riusare** | Cap.04: recall su alterati + `score_genuinita`; cap.05: stesso modello può andare bene sul train e male sul test → overfitting |
-| **Note** | Cap.05 creato (teoria, quiz, esercizi con tag); progetto incrementale = task CV su `modello_base.py` (da implementare allo studente). |
+| **Prossimo capitolo** | modulo_02_ml/06_progetto_streamlit.py — Demo Streamlit Modulo 2 + primo deploy: UI operatore su `score_genuinita`, `semaforo`, `motivi_top3`, con “stabilità” (CV media±std) mostrata in modo leggibile |
+| **Rinforzi da inserire (🔁)** | In testa al cap.06: (1) **Scala** `prob_alterato` 0–1 vs `score_genuinita` 0–100 (Lacuna #16); (2) **drop colonne reali** `pratica_id`, `y_alterato` (Lacuna #17); (3) **recall vs precision** (Lacuna #18); (4) richiamo `Pipeline` per evitare leakage in preprocessing + CV |
+| **Concetti ⚠️ da ripassare** | “train = imparare; CV/validation = scegliere; test = stimare (una volta)”; come comunicare in UI incertezza/variabilità (std tra fold) |
+| **Pattern 🔴 da monitorare** | #6 (consegne complete/DoD demo), #22 (coerenza nomi variabili e modello usato) |
+| **Ponte mentale da riusare** | “Test = staging/produzione; CV = ripetere il controllo su più split”; “semaforo = policy di prodotto sopra la probabilità” |
+| **Note** | `06_progetto_streamlit.py` era placeholder: va riempito con struttura capitolo completa + task deploy (Streamlit Cloud). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -707,8 +707,9 @@ completezza del self-check e chiedere correzioni.
 | M2-02_ciclo_ml | 5 | -1 ↓ vs M2-01 (percepito più gestibile: stesso filo logico del cap.01, molta pratica guidata) |
 | M2-03_regressione | 6 | +1 ↑ vs M2-02 (più carico: più modelli, scaling, coefficienti, progetto) |
 | M2-04_classificazione_metriche | 7 | +1 ↑ vs M2-03 (carico: metriche, quiz, esercizi prodotto; voto studente confermato 13/04/2026) |
+| M2-05_overfitting_validazione | 8 | +1 ↑ vs M2-04 (validazione/CV, bias-varianza, pipeline per evitare leakage in CV; voto studente 22/04/2026) |
 
-**Media attuale**: ~6.5 (15 capitoli con voto, cap 07 escluso).
+**Media attuale**: ~6.6 (16 capitoli con voto, cap 07 escluso).
 
 ---
 
@@ -817,6 +818,8 @@ completezza del self-check e chiedere correzioni.
 | Validation set | Sotto-insieme dei dati per tuning iperparametri, intermedio tra train e test | M2-01 | 0/3 | 🔄 |
 | `StratifiedKFold` | K-fold che mantiene la stessa proporzione delle classi in ogni fold (utile quando `y` è sbilanciata) | 05 | 0/3 | 🔄 |
 | `cross_val_score` | Utility scikit-learn per calcolare una metrica con cross-validation (ritorna uno score per fold; poi si fa media/std) | 05 | 0/3 | 🔄 |
+| `Pipeline` (sklearn) | Catena di step (es. scaler → modello) che garantisce preprocessing corretto (fit solo su train) e in CV rifitta lo scaler dentro ogni fold (evita leakage) | 05 | 0/3 | 🔄 |
+| `validation_curve` | Utility per vedere come cambia una metrica (train/valid in CV) al variare di un iperparametro (es. max_depth) | 05 | 0/3 | 🔄 |
 | MAE | Mean Absolute Error — errore medio assoluto in regressione (stessa unità del target) | M2-02 | 0/3 | 🔄 |
 | RMSE | Root Mean Squared Error — penalizza errori grandi più del MAE | M2-02 | 0/3 | 🔄 |
 | `DecisionTreeRegressor` | Albero per regressione; iperparametri chiave `max_depth`, `random_state` | M2-02 | 0/3 | 🔄 |
@@ -997,6 +1000,13 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - Data leakage (es. debug es.5): target non deve restare in X
 - Tag esercizi: colloquio metriche, refactoring, debug leakage, interleaving Pandas+ML, retrieval logistica, analisi prodotto es.8
 - Deliverable: `modello_base.py` — sezione CLASSIFICAZIONE: confronto modelli, `semaforo`, `motivi_top_3(clf_log, …)` con `coef_.ravel()`, assert `max(recall_albero, recall_log) >= 0.5`
+
+### Cap.05 M2 — Overfitting e validazione (completato; voto difficoltà: **8**/10)
+- Generalizzazione: gap train-test, rischio overfitting/underfitting, distinzione “imparare vs scegliere vs stimare” (train vs CV/validation vs test).
+- Cross-validation sul solo train: `StratifiedKFold(5)` + `cross_val_score` con metrica coerente col dominio (recall sugli alterati) e lettura **media ± std**.
+- Bias–varianza operativo: complessità (es. `max_depth`) vs stabilità delle metriche; lettura base di una `validation_curve`.
+- Preprocessing leakage: fit di scaler/encoder **solo su train**; in CV usare `Pipeline` per rifare il fit dello scaler dentro ogni fold.
+- Deliverable: `modello_base.py` — task progetto cap.05 completato: CV recall su `X_train,y_train` con `Pipeline(StandardScaler + LogisticRegression)` e stampa fold/media/std + commento sul valore aggiunto della CV.
 
 ---
 
@@ -1293,6 +1303,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M2 cap.02 — Ciclo ML | ✅ Completato | Esercizi 1-9 + teoria es.9; `modello_base.py` deliverable; assert baseline |
 | M2 cap.03 — Regressione | ✅ Completato | Confronto lineare vs albero + scaling; `motivi_top_n`/motivi_top3; `modello_base.py` esteso (metriche + spiegabilità) |
 | M2 cap.04 — Classificazione | ✅ Completato | Metriche classificazione, semaforo, coefficienti logistica; `modello_base.py` con sezione classificazione + assert recall |
+| M2 cap.05 — Overfitting/Validazione | ✅ Completato | CV su train (media±std), bias-varianza, distinzione tuning vs test; `modello_base.py`: `Pipeline(StandardScaler + LogisticRegression)` in `cross_val_score` per evitare leakage intra-fold |
 | M3 — DL & CV | ⬜ Da fare | |
 | M4 — NLP | ⬜ Da fare | |
 | M5 — LLM | ⬜ Da fare | |

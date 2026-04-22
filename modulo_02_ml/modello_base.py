@@ -1,10 +1,10 @@
 import os
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
 from sklearn.metrics import (
     mean_absolute_error,
     r2_score,
@@ -16,6 +16,12 @@ from sklearn.metrics import (
     confusion_matrix,
     classification_report,
 )
+from sklearn.model_selection import (
+    cross_val_score,
+    StratifiedKFold,
+    train_test_split
+)
+
 
 
 print("\nProgetto incrementale\n")
@@ -247,3 +253,54 @@ coefficienti['abs'] = coefficienti['valore'].abs()
 print(motivi_top_3(clf_log, X_train.columns, 3))
 
 assert max(recall_score(y_test, y_pred_tree),recall_score(y_test, y_pred_log)) >= 0.5, 'recall di uno dei modelli deve essere >= 0.5'
+
+
+# TASK (ordine consigliato):
+# 1) Importa ciò che serve (es. `cross_val_score`, `StratifiedKFold`, e per
+#    evitare leakage nello scaler dentro ogni fold: `sklearn.pipeline.Pipeline`).
+# 2) Costruisci una `Pipeline` con `StandardScaler` + `LogisticRegression`
+#    (stessi iperparametri sensati che usi già: max_iter, random_state).
+# 3) Esegui `cross_val_score` sulla porzione **train** della classificazione
+#    (gli stessi `X_train`, `y_train` che già usi dopo lo split), con:
+#    - `cv=StratifiedKFold(n_splits=5, shuffle=True, random_state=42)`
+#    - `scoring="recall"`
+# 4) Stampa: array dei recall per fold, **media** e **deviazione standard**.
+# 5) Aggiungi un commento (2–4 righe): cosa ti dice la CV che un solo
+#    `recall_score(y_test, y_pred)` sul test **non** ti dice?
+#
+# Definition of Done:
+# - `python modello_base.py` termina senza errori
+# - In output compare almeno una riga con **media recall** dalla CV
+# - Il commento al punto 5 è presente
+#
+# Non usare il **test set** per la cross-validation (solo `X_train`, `y_train`).
+#
+# Impatto roadmap: R0 — non fidarsi di un solo split; base per monitoring e retuning.
+#
+# Scrivi tutto il codice in `modello_base.py` (sotto l’assert della sezione classificazione).
+
+#imposto lo StdScaler e lo alleno solo sul train
+print("\nTask Capitolo 5\n")
+
+kfold = StratifiedKFold(n_splits=5, random_state=42, shuffle=True)
+
+clf_log_pipe = Pipeline(steps=[
+    ("scaler", StandardScaler()),
+    ("model", LogisticRegression(max_iter=1000, random_state=42))
+])
+
+rec_scores = cross_val_score(
+    clf_log_pipe,
+    X_train,
+    y_train,
+    cv=kfold,
+    scoring="recall"
+)
+
+print(f"Array dei Recall => {rec_scores.round(3)}")
+print(f"Media dei Recall => {rec_scores.mean().round(3)}")
+print(f"Dev. Std Recall  => {rec_scores.std().round(4)}")
+
+# Rispetto al solo valore del recall effettuato sul test set, con la cross_validation e l'utilizzo di una pipeline sul train abbiamo la possibilità di avere una media ripulita dalla variabilità della composizione del set, e quindi un risultato più stabile di questo scoring. Nel test, essendo una prova "secca", avremo un risultato utile ma inevitabilmente legato in parte anche alla composizione dello specifico set di dati che abbiamo utilizzato.
+
+
