@@ -51,6 +51,7 @@ Vincoli imparati nei capitoli precedenti (da rispettare qui):
 # --- MINI-ESERCIZIO — Verifica setup ---
 # In chat, incolla l'output di `streamlit --version` (deve stampare una versione, non un errore).
 #
+import streamlit as st
 
 
 # ==========================================================================
@@ -295,21 +296,27 @@ Vincoli imparati nei capitoli precedenti (da rispettare qui):
 #
 # Mini-esempio sidebar:
 #
-import streamlit as st
-with st.sidebar:
-    st.header("Filtri")
-    scelta = st.selectbox("Semaforo", ["tutti", "verde", "giallo", "rosso"])
+# import streamlit as st
+# with st.sidebar:
+#     st.header("Filtri")
+#     scelta = st.selectbox("Semaforo", ["tutti", "verde", "giallo", "rosso"])
 #
 # Mini-esempio colonne:
 #
-c1, c2 = st.columns(2)
-c1.metric("Score", 80)
-c2.metric("Semaforo", "verde")
+# c1, c2 = st.columns(2)
+# c1.metric("Score", 80)
+# c2.metric("Semaforo", "verde")
 #
 # --- MINI-ESERCIZIO 2.2 ---
 # Scrivi in 4 righe: sidebar con un header + un selectbox binario; fuori dalla sidebar
 # due colonne affiancate con due st.write qualsiasi.
-#
+# import streamlit as st
+# with st.sidebar:
+#     st.header("Mini-esercizio 2.2")
+#     st.selectbox("Select Binario", ['opzione 1', 'opzione 2'])    
+# col_1, col_2 = st.columns(2)
+# col_1.write('Prova Colonna 1')
+# col_2.write('Prova Colonna 2')
 
 
 # ==========================================================================
@@ -324,32 +331,98 @@ c2.metric("Semaforo", "verde")
 # Ritornano sempre il valore CORRENTE del widget (rerun-aware).
 #
 # Mini-esempio:
-#
-#     pid = st.selectbox("pratica_id", [1, 2, 3])
-#     attiva = st.checkbox("mostra dettaglio", value=True)
-#     soglia = st.slider("soglia prob_alterato", 0.0, 1.0, 0.5, step=0.05)
+# pid = st.selectbox("pratica_id", [1, 2, 3])
+# attiva = st.checkbox("mostra dettaglio", value=True)
+# soglia = st.slider("soglia prob_alterato", 0.0, 1.0, 0.5, step=0.05)
 #
 # --- MINI-ESERCIZIO 2.3 ---
 # Scrivi 3 righe: un selectbox su ["alfa", "beta"], un checkbox, e uno slider 0–100 a step 5.
 # Poi 1 riga che stampa con `st.write` i valori correnti.
-#
-
+# prova_select = st.selectbox("Prova Select", ['Alfa', 'Beta'])
+# prova_check = st.checkbox("Prova Checkbox", value=False)
+# prova_slider = st.slider("Prova Slider", 0, 100, 0, step=5)
+# st.header(f"Valori Correnti:")
+# st.metric("Select", prova_select)
+# st.metric("Check", prova_check)
+# st.metric("Slider", prova_slider)
 
 # ==========================================================================
-# 📖 TEORIA 2.4 — Output dati: dataframe, table, metric, messaggi
+# 📖 TEORIA 2.4 — Mostrare dati e messaggi in pagina (output in Streamlit)
 # ==========================================================================
 #
-# - st.dataframe(df) → tabella scrollabile (meglio per df grandi)
-# - st.table(df)     → tabella statica
-# - st.metric("label", value, delta=None)
-# - st.success("...") / st.warning("...") / st.error("...") / st.info("...")
+# Finora abbiamo visto widget di "input" (selectbox, slider, ecc.) che
+# prendono decisioni dall'utente. Ora vediamo i widget di "output": servono
+# per COMUNICARE qualcosa all'utente — tabelle, numeri, avvisi.
 #
-# `st.metric` è perfetto per score/semaforo: "card" con numero grande e label.
+# In Streamlit l'idea è semplice: non stampi con `print()` (quello va nel
+# terminale, non nel browser). Chiami una funzione `st.*` e Streamlit disegna
+# il risultato direttamente nella pagina.
+#
+# Ecco i 4 tipi di output che useremo nel deliverable del cap.06:
+#
+# 1) `st.dataframe(df)` — tabella INTERATTIVA
+#    --------------------------------------------------------------
+#    Mostra un DataFrame Pandas come una tabella scrollabile: puoi
+#    ordinare le colonne, scorrere se ci sono tante righe, ecc.
+#    È la scelta "di default" quando hai dati tabellari.
+#
+#    Esempio:
+import pandas as pd
+# df = pd.DataFrame({"pratica_id": [1, 2, 3], "score": [82, 55, 91]})
+# st.dataframe(df)
+#
+# 2) `st.table(df)` — tabella STATICA
+#    --------------------------------------------------------------
+#    Stessa idea, ma NON è scrollabile né ordinabile: viene renderizzata
+#    tutta così com'è. È utile per tabelle piccole (tipo "top 3 motivi"),
+#    dove non serve interazione.
+#
+#    Esempio:
+# top3 = pd.DataFrame({"feature": ["a","b","c"], "peso": [0.8,-0.6,0.3]})
+# st.table(top3)
+#
+# 3) `st.metric(label, value, delta=None)` — numero "evidenziato"
+#    --------------------------------------------------------------
+#    Disegna una piccola "card" con un'etichetta piccola e un numero grosso.
+#    È PERFETTA per i numeri chiave del nostro prodotto:
+#       - `prob_alterato` (0–1)
+#       - `score_genuinita` (0–100)
+#       - `semaforo` (verde/giallo/rosso, anche se non è un numero)
+#
+#    Il parametro opzionale `delta` aggiunge una variazione (↑ o ↓), utile
+#    se un giorno vorrai confrontare "oggi vs ieri": NON ci serve ora.
+#
+#    Esempio:
+# st.metric("score_genuinita", 82.5)
+# st.metric("prob_alterato",   0.15, delta=-0.03)
+#
+# 4) Messaggi "colorati": `st.success / st.info / st.warning / st.error`
+#    --------------------------------------------------------------
+#    Sono box con uno sfondo colorato e un'icona. Servono per comunicare
+#    in modo chiaro "come sta andando":
+#       - `st.success("Tutto ok")`    → verde (azione riuscita)
+#       - `st.info("Nota: ...")`      → blu  (informazione neutra)
+#       - `st.warning("Attento: ...")`→ giallo (qualcosa da notare)
+#       - `st.error("Errore: ...")`   → rosso (qualcosa non va)
+
+#    Nel nostro deliverable useremo soprattutto `st.info` per i disclaimer
+#    (es. "motivi_top3 non è una spiegazione causale") e `st.warning` per
+#    soglie o stati di dubbio.
+#
+# Nota "rerun" (richiamo alla Teoria 1.2):
+# anche questi widget di output vengono RIDISEGNATI ad ogni rerun, con i
+# valori correnti delle variabili. Quindi se `score_genuinita` dipende dal
+# `pratica_id` selezionato in sidebar, il numero mostrato dentro
+# `st.metric(...)` si aggiorna automaticamente.
 #
 # --- MINI-ESERCIZIO 2.4 ---
-# Scrivi 2 righe: una `st.metric` che mostra "score_genuinita" a 82.5,
-# e una `st.warning` che dice "soglia in revisione".
-#
+# Scrivi 2 righe nel file (una sotto l'altra):
+# 1) una `st.metric` che mostra "score_genuinita" con valore 82.5
+# 2) una `st.warning` che dice "soglia in revisione"
+# Poi avvia l'app e verifica: vedi la card col numero grande e sotto il
+# riquadro giallo con l'avviso.
+st.metric('score_genuinita', 82.5)
+st.warning('Soglia in revisione')
 
 
 # ==========================================================================
@@ -391,7 +464,7 @@ c2.metric("Semaforo", "verde")
 # --- MINI-ESERCIZIO 3.1 ---
 # Dato il compito "calcola array CV recall per 5 fold", quale cache useresti e perché?
 # (Suggerimento: è un array di numeri risultato di un calcolo deterministico.)
-#
+# userei @st.cache_data perchè è un dato e non una risorsa (un array contenente 5 risultati).
 
 
 # ==========================================================================
@@ -410,7 +483,7 @@ c2.metric("Semaforo", "verde")
 # --- MINI-ESERCIZIO 3.2 ---
 # Se nel tuo codice `addestra_modello()` non accetta `X_train, y_train` come argomenti
 # ma li prende da variabili globali, cosa può andare storto con @st.cache_resource?
-#
+# in pratica, la cache riaggiorna il codice solo se vede cambiare gli argomenti passati. Se i set sono passati non come argomenti ma da variabili esterne, il rischio è che anche se cambio i valori contenuti nel X_train e y_train, streamlit non se ne accorge.Quindi, durante il refresh, quando deve decidere se aggiornare o meno la funzione addestra modello, non vedendo nessun cambiamento negli argomenti (che è di fatto il trigger del ricalcolo) mi restituirà il modello addestrato, ma con i valori precedenti a quelli che io ho reimpostato, ossia il modello di prima. 
 
 
 # ==========================================================================
@@ -445,7 +518,8 @@ c2.metric("Semaforo", "verde")
 # --- MINI-ESERCIZIO 4.1 ---
 # Se sposti il file `app_streamlit.py` in `modulo_02_ml/ui/app_streamlit.py`, come cambia il path al CSV?
 # Scrivi la riga corretta.
-#
+# Risposta:
+# path_csv = os.path.join(os.path.dirname(os.path.dirname(__file__)), "dati", "pratiche_genuinita_mock.csv")
 
 
 # ==========================================================================
@@ -473,11 +547,11 @@ c2.metric("Semaforo", "verde")
 #
 # --- MINI-ESERCIZIO 5.1 ---
 # Categorizza ognuna in "UI" o "ML":
-# 1) calcolare score_genuinita da prob_alterato
-# 2) mostrare "score: 82" in colonna 1
-# 3) addestrare la LogisticRegression
-# 4) disegnare il semaforo colorato
-# 5) calcolare CV media ± std
+# 1) calcolare score_genuinita da prob_alterato => ML
+# 2) mostrare "score: 82" in colonna 1 => UI
+# 3) addestrare la LogisticRegression => ML
+# 4) disegnare il semaforo colorato => UI
+# 5) calcolare CV media ± std => ML
 #
 
 
@@ -512,7 +586,9 @@ c2.metric("Semaforo", "verde")
 # --- MINI-ESERCIZIO 6.1 ---
 # Completa: dato `pipe` e una `pratica_id = 42`, scrivi 2 righe che ottengono
 # `prob_alterato` (un numero 0–1).
-#
+# id_pratica = 42
+# X_one = df.loc[df['pratica_id'] == id_pratica].drop(columns=['pratica_id', 'target'])
+# prob_alt = pipe.predict_proba(X_one)[0, 1]
 
 
 # ==========================================================================

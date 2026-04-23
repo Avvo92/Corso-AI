@@ -132,6 +132,72 @@
 - **Valutazione:** **10/10**.
 - **Punti di forza:** lettura CSV spostata in funzione `@st.cache_data` (no reload ad ogni rerun) e `to_dict(orient="records")[0]` produce un dict riga→valori molto più leggibile.
 
+### 2026-04-22 — Mini-esercizio 2.2 (sidebar + select binario + colonne)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 2.2 (righe ~312–318).
+- **Valutazione:** **9/10**.
+- **Punti chiave corretti:** `with st.sidebar:` con header + select a 2 opzioni; fuori dalla sidebar `st.columns(2)` con due `st.write` distinti nelle colonne.
+- **Micro-miglioria:** assegnare il valore del selectbox a una variabile (es. `scelta = st.selectbox(...)`) e poi usarlo in `st.write` per vedere subito l’effetto del rerun; opzionale: `st.set_page_config(layout="wide")` per rendere più evidente l’affiancamento su schermi stretti.
+
+### 2026-04-23 — Mini-esercizio 2.3 (input + mostra valori correnti)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 2.3 (righe ~337–345).
+- **Valutazione:** **8/10**.
+- **Punti chiave corretti:** selectbox + checkbox + slider impostati bene; stai mostrando i valori correnti in pagina (quindi capisci il “rerun-aware”).
+- **Micro-miglioria (aderenza consegna):** la consegna chiedeva 1 riga con `st.write(...)` per stampare i valori; tu hai usato `st.metric` (ok, ma diverso). Inoltre `a, b, c = st.metric(...)` è inutile: `st.metric` serve solo per renderizzare, non per assegnare valori.
+
+### 2026-04-23 — Mini-esercizio 2.4 (metric + warning)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 2.4 (righe ~418–425).
+- **Valutazione:** **10/10**.
+- **Punti chiave corretti:** hai usato `st.metric("score_genuinita", 82.5)` e `st.warning("Soglia in revisione")` esattamente come richiesto; output in pagina coerente (card + riquadro giallo).
+
+### 2026-04-23 — Mini-esercizio 3.1 (quale cache per CV array)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 3.1 (righe ~463–467).
+- **Valutazione:** **9.5/10**.
+- **Punti chiave corretti:** scelta corretta `@st.cache_data` perché l’output è un dato (array di score) e non una risorsa “viva” come un modello/connessione.
+- **Micro-miglioria:** specificare che è deterministico *a parità di input* (dati + seed/parametri) — se cambiano, la cache deve invalidarsi.
+
+### 2026-04-23 — Mini-esercizio 3.2 (cache_resource + variabili globali)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 3.2 (righe ~482–486).
+- **Valutazione:** **9.5/10**.
+- **Punti chiave corretti:** hai capito che la cache decide se ricalcolare guardando gli argomenti; se i dati/parametri stanno in globali, Streamlit può non accorgersi del cambiamento e restituire un modello “vecchio”.
+- **Micro-miglioria:** oltre a `X_train,y_train`, stesso discorso per iperparametri (`C`, seed, ecc.): vanno passati come argomenti per invalidare correttamente la cache.
+
+### 2026-04-23 — Mini-esercizio 4.1 (path deploy-safe dopo spostamento file)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 4.1 (righe ~517–522).
+- **Valutazione:** **10/10**.
+- **Punti chiave corretti:** spostando `app_streamlit.py` in `ui/`, per raggiungere `modulo_02_ml/dati/...` devi risalire di 1 livello (`dirname(dirname(__file__))`) e poi fare `os.path.join(..., "dati", "pratiche_genuinita_mock.csv")`.
+
+### 2026-04-23 — Mini-esercizio 5.1 (confine UI vs ML)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 5.1 (righe ~548–554).
+- **Valutazione:** **9.5/10**.
+- **Punti chiave corretti:** (2) UI, (3) ML, (4) UI, (5) ML.
+- **Nota di fino:** (1) “score_genuinita da prob_alterato” è più correttamente **logica di prodotto/policy** (può stare in ML/servizi condivisi), mentre la UI dovrebbe solo mostrarlo. La tua risposta “ML” è accettabile se intendi “logica non-UI”.
+
+### 2026-04-23 — Mini-esercizio 6.1 (predict_proba su UNA pratica)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 6.1 (righe ~586–591).
+- **Valutazione:** **4/10**.
+- **Errori principali:** 1) usi `df` ma non è definito nel frammento (nel capitolo si chiama spesso `pratiche`); 2) calcoli `X_one` ma poi chiami `predict_proba(X)` (variabile sbagliata); 3) `predict_proba(...)[0]` restituisce un array di 2 probabilità (classe 0 e 1), non un singolo numero — per `prob_alterato` serve `[0, 1]`; 4) `X_one` dovrebbe contenere solo le feature (droppare `pratica_id` e `y_alterato`) per essere compatibile col `pipe`.\n+- **Schema corretto (concetto):** filtra la riga → droppa colonne non-feature → `prob_alterato = pipe.predict_proba(X_una)[0, 1]`.\n 
+### 2026-04-23 — Mini-esercizio 6.1 (nuovo tentativo: struttura 2 righe)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 6.1 (nuovo tentativo).
+- **Valutazione:** **7/10**.
+- **Punti chiave corretti:** filtri per `pratica_id` e prendi `predict_proba(...)[0, 1]` (estrai la proba della classe 1).
+- **Errore strutturale rimasto:** `df.loc[...].drop(['pratica_id','target'])` senza `columns=` (o `axis=1`) tenta di droppare RIGHE/etichette, non colonne. Va scritto `drop(columns=[...])`. Inoltre nel nostro dataset il target è `y_alterato` (non `target`).
+
+### 2026-04-23 — Mini-esercizio 6.1 (nuovo tentativo: drop columns + proba[0,1])
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 6.1 (nuovo tentativo).
+- **Valutazione:** **9/10**.
+- **Punti chiave corretti:** `drop(columns=[...])` ora è corretto (stai passando solo feature) e `predict_proba(...)[0, 1]` estrae la probabilità della classe 1.
+- **Micro-miglioria:** nel dataset del corso il target è `y_alterato` (non `target`), quindi la drop corretta è `drop(columns=["pratica_id","y_alterato"])`.
+
 ---
 
 ## Lacune e dubbi ancora aperti
