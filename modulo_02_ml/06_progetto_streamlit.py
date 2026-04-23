@@ -824,6 +824,46 @@ st.warning('Soglia in revisione')
 # da "spinge verso genuino" (coef<0).
 # DoD: in UI compaiono 3 feature con peso e segno; sotto, un disclaimer onesto.
 #
+# ESERCIZIO 5b (Spiegabilità per PRATICA — contributi riga-per-riga con Pipeline):
+# Obiettivo: passare da “importanza globale del modello” a “motivi per questa pratica”.
+#
+# Concetto:
+# - `coef_` è fisso per il modello (non cambia da pratica a pratica)
+# - i “motivi per pratica” dipendono anche dai valori della pratica:
+#     contributo_j = x_scaled_j * coef_j
+#   dove `x_scaled` è la riga DOPO lo `StandardScaler` della Pipeline.
+#
+# Implementazione (in `app_streamlit.py`, dopo aver fatto `pipe.fit(...)`):
+# 1) Costruisci `X_una` (DataFrame 1 riga) con SOLO feature (drop `pratica_id`, `y_alterato`).
+# 2) Estrai:
+#       scaler = pipe.named_steps["scaler"]
+#       model  = pipe.named_steps["model"]
+#       coef   = model.coef_.ravel()
+# 3) Calcola:
+#       x_scaled = scaler.transform(X_una)[0]      # `[0]` = prima (e unica) riga
+#       contrib  = x_scaled * coef
+# 4) Crea un DataFrame con colonne: feature, contrib, abs(contrib) e ordina per abs desc.
+# 5) Mostra top3 in UI (st.table o st.dataframe).
+#
+# DoD:
+# - cambiando `pratica_id` nella sidebar, i top3 cambiano (perché cambiano i valori di `X_una`)
+# - il disclaimer resta: “non è causalità, è un’indicazione del modello”
+#
+# ESERCIZIO 7b (🧠 [RETRIEVAL] — Pipeline + named_steps + shape):
+# Senza guardare questa sezione, aggiungi in `app_streamlit.py` una funzione:
+#
+#   def motivi_top3_per_pratica(pipe, X_una: pd.DataFrame) -> pd.DataFrame:
+#       \"\"\"Ritorna le 3 feature con |contributo| più alto per la singola pratica.\"\"\"
+#
+# Vincoli:
+# - deve usare `pipe.named_steps["scaler"]` e `pipe.named_steps["model"]`
+# - deve usare `transform(X_una)[0]` (spiega in un commento perché c’è `[0]`)
+# - deve ritornare un DataFrame con: feature, contrib, abs_contrib, direzione (\"verso alterato\" / \"verso genuino\")
+#
+# DoD:
+# - la funzione funziona con `X_una` 1 riga
+# - in UI stampi la tabella top3 e vedi la direzione corretta dal segno del contributo
+#
 # ESERCIZIO 6 (🔀 [INTERLEAVING]):
 # Aggiungi in sidebar un filtro `st.selectbox("Semaforo", ["tutti","verde","giallo","rosso"])`
 # e mostra in una tabella TUTTE le pratiche con i loro score/semaforo (NON solo la selezionata).
