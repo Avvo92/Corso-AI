@@ -183,7 +183,9 @@
 
 - **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 6.1 (righe ~586–591).
 - **Valutazione:** **4/10**.
-- **Errori principali:** 1) usi `df` ma non è definito nel frammento (nel capitolo si chiama spesso `pratiche`); 2) calcoli `X_one` ma poi chiami `predict_proba(X)` (variabile sbagliata); 3) `predict_proba(...)[0]` restituisce un array di 2 probabilità (classe 0 e 1), non un singolo numero — per `prob_alterato` serve `[0, 1]`; 4) `X_one` dovrebbe contenere solo le feature (droppare `pratica_id` e `y_alterato`) per essere compatibile col `pipe`.\n+- **Schema corretto (concetto):** filtra la riga → droppa colonne non-feature → `prob_alterato = pipe.predict_proba(X_una)[0, 1]`.\n 
+- **Errori principali:** 1) usi `df` ma non è definito nel frammento (nel capitolo si chiama spesso `pratiche`); 2) calcoli `X_one` ma poi chiami `predict_proba(X)` (variabile sbagliata); 3) `predict_proba(...)[0]` restituisce un array di 2 probabilità (classe 0 e 1), non un singolo numero — per `prob_alterato` serve `[0, 1]`; 4) `X_one` dovrebbe contenere solo le feature (droppare `pratica_id` e `y_alterato`) per essere compatibile col `pipe`.
+- **Schema corretto (concetto):** filtra la riga → droppa colonne non-feature → `prob_alterato = pipe.predict_proba(X_una)[0, 1]`.
+
 ### 2026-04-23 — Mini-esercizio 6.1 (nuovo tentativo: struttura 2 righe)
 
 - **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 6.1 (nuovo tentativo).
@@ -197,6 +199,180 @@
 - **Valutazione:** **9/10**.
 - **Punti chiave corretti:** `drop(columns=[...])` ora è corretto (stai passando solo feature) e `predict_proba(...)[0, 1]` estrae la probabilità della classe 1.
 - **Micro-miglioria:** nel dataset del corso il target è `y_alterato` (non `target`), quindi la drop corretta è `drop(columns=["pratica_id","y_alterato"])`.
+
+### 2026-04-24 — Mini-esercizio 6.2 (prob → score → semaforo)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 6.2 (righe ~609–611).
+- **Valutazione:** **10/10**.
+- **Punti chiave corretti:** `prob_alterato=0.42` → `score_genuinita=(1-0.42)*100=58` → sotto soglia giallo (60) → semaforo **rosso** (ramo `else`).
+
+### 2026-04-24 — Mini-esercizio 7.1 (coef_: top3 per |peso| + segno)
+
+- **Blocco:** `06_progetto_streamlit.py` — Mini-esercizio 7.1 (righe ~636–639).
+- **Valutazione (primo tentativo — “voto esame”):** **4/10**.
+- **Errori principali:**
+  - (1) top3 per \(|peso|\): includevi `0.3` ma \(|-0.6|=0.6\) è più grande → i top3 corretti sono \(0.8, -0.6, 0.3\) (feature `a`, `d`, `c`).
+  - (2) segno invertito: secondo la teoria del capitolo, `coef < 0` spinge verso **classe 0 (genuino)**, non verso alterato.
+
+### 2026-04-24 — Mini-esercizio 7.1 (correzione applicata)
+
+- **Esito correzione:** ora corretto.
+- **Fix chiave:** (1) top3 per \(|peso|\) = `[0.8, 0.6, 0.3]`; (2) “spinge verso alterato” = `0.8` (coefficiente positivo).
+
+### 2026-04-24 — App “da zero” STEP 1 (carica_pratiche)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 1 `carica_pratiche`.
+- **Valutazione (primo tentativo — “voto esame”):** **7/10**.
+- **Punti ok:** usi `pd.read_csv(...)` e ritorni un `DataFrame`.
+- **Da correggere:** 1) la funzione deve usare l’argomento `csv_path` (non `CSV_PATH` globale); 2) rimuovere il `raise NotImplementedError` rimasto sotto al `return` (è codice morto ma confonde).
+- **Fix applicato:** ora usi `pd.read_csv(csv_path)` e la funzione termina con `return` (nessun `NotImplementedError` residuo).
+
+### 2026-04-24 — App “da zero” STEP 2 (split_X_y)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 2 `split_X_y`.
+- **Valutazione (primo tentativo — “voto esame”):** **6/10**.
+- **Punti ok:** concetto giusto: `y = pratiche["y_alterato"]` e `X` senza `pratica_id`/target.
+- **Errore bloccante:** hai scritto `drop(colums=...)` (typo). Deve essere `drop(columns=...)` altrimenti l’app va in errore.
+
+### 2026-04-24 — App “da zero” STEP 2 (split_X_y) — rivalutazione su nuovo tentativo
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 2 `split_X_y` (nuovo tentativo).
+- **Valutazione:** **10/10**.
+- **Punti chiave corretti:** `X = drop(columns=["pratica_id","y_alterato"])` e `y = pratiche["y_alterato"]` (shape e colonne coerenti per training).
+
+### 2026-04-24 — App “da zero” STEP 3a (allena_pipe_cached)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 3a `allena_pipe_cached`.
+- **Valutazione (primo tentativo — “voto esame”):** **8.5/10**.
+- **Punti ok:** pipeline corretta (`StandardScaler` → `LogisticRegression`), usi `C`, `max_iter`, `random_state`, fai `fit` e ritorni il `pipe`.
+- **Nota integrazione:** assicurati che la chiamata passi anche `max_iter` (era facile dimenticarlo). Ora in UI c’è lo slider e la chiamata è coerente.
+
+### 2026-04-24 — App “da zero” STEP 3b (cv_recall_cached)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 3b `cv_recall_cached`.
+- **Valutazione (primo tentativo — “voto esame”):** **6.5/10**.
+- **Punti ok:** usi `StratifiedKFold(n_splits=5, shuffle=True, random_state=...)` e `cross_val_score` restituisce un array di score (uno per fold).
+- **Da correggere (2 cose):**
+  - parametro sbagliato: `cross_val_score(..., scoring="recall")` (non `score="recall"`).
+  - per CV non dovresti passare una pipeline *già fit* (la tua `allena_pipe_cached` fa fit). In CV è meglio creare una pipeline “vuota” (non fit) e lasciare che `cross_val_score` faccia il fit in ogni fold.
+
+### 2026-04-24 — App “da zero” STEP 3b (cv_recall_cached) — nuovo tentativo
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 3b `cv_recall_cached` (nuovo tentativo).
+- **Valutazione:** **8.5/10**.
+- **Punti chiave corretti:** ora usi `scoring="recall"` e passi a `cross_val_score` una pipeline NON fit (quindi ogni fold fa `fit` sul proprio train).
+- **Micro-errore rimasto:** nello step `("scaler", StandardScaler)` manca `()` → deve essere `StandardScaler()` (altrimenti scikit-learn non riceve un transformer istanziato).
+
+### 2026-04-24 — App “da zero” STEP 3b (cv_recall_cached) — rivalutazione finale
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 3b `cv_recall_cached` (fix `StandardScaler()`).
+- **Valutazione:** **10/10**.
+- **Punti chiave corretti:** CV stratificata sul train, pipeline non fit dentro `cross_val_score`, `scoring="recall"`, output = array score per fold.
+
+### 2026-04-24 — App “da zero” STEP 4a (X_una_pratica_da_id)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 4a `X_una_pratica_da_id`.
+- **Valutazione (primo tentativo — “voto esame”):** **6/10**.
+- **Punti ok:** filtro per `pratica_id` con `.loc[...]` e drop di `["pratica_id","y_alterato"]` (colonne giuste).
+- **Errore tecnico:** dopo il `drop(...)` hai già un `DataFrame` 2D (1×N se la selezione è singola). `to_frame().T` qui è sbagliato perché `to_frame()` è un metodo della **Series**, non del DataFrame.
+
+### 2026-04-24 — App “da zero” STEP 4b (prob_alterato_da_pipe)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 4b `prob_alterato_da_pipe`.
+- **Valutazione (primo tentativo — “voto esame”):** **10/10**.
+- **Punti chiave corretti:** usi `predict_proba(X_una)[0, 1]` (classe 1 = alterato) e ritorni un `float` (valore 0–1).
+
+### 2026-04-24 — App “da zero” STEP 5 (motivi_top3) — primo tentativo
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 5 `motivi_top3`.
+- **Valutazione (primo tentativo — “voto esame”):** **6/10**.
+- **Punti ok:** recuperi `scaler/model`, calcoli `x_scaled = scaler.transform(X_una)[0]`, prendi `coef = model.coef_[0]`, costruisci `contrib = x_scaled * coef` e lo metti in una `Series` con index = nomi feature.
+- **Da correggere (2 cose):**
+  - `X_una.columns()` non è corretto: è una proprietà → usare `X_una.columns.tolist()`.
+  - `contrib_series.abs().sort_values(...)` ordina ma ti lascia i valori **assoluti** (perdi il segno). Meglio `sort_values(key=lambda s: s.abs(), ...)` così ordini per abs ma mantieni i contributi con segno.
+
+### 2026-04-24 — App “da zero” STEP 0 (import)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 0 import (righe ~116–130).
+- **Valutazione (primo tentativo — “voto esame”):** **8/10**.
+- **Punti ok:** importi tutto il necessario per path (`os`), UI (`streamlit`), dati (`pandas`) e ML (Pipeline, scaler, LogReg, split, CV, metriche).
+- **Micro-migliorie:** `numpy` di solito si importa come `import numpy as np` (più comodo per `np.mean/np.std`), e assicurati che nel codice sotto tu usi coerentemente `numpy` o `np` (uno solo).
+
+### 2026-04-24 — App “da zero” STEP 0.1 (config pagina)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 0.1 `st.set_page_config(...)` (righe ~134–148).
+- **Valutazione (primo tentativo — “voto esame”):** **9.5/10**.
+- **Punti ok:** `page_title` + `layout="wide"` corretti; motivazione sensata (più spazio per colonne/elementi).
+- **Micro-miglioria:** ricordati che deve stare *prima* di qualsiasi altro comando Streamlit che renderizza in pagina (title/write/metric). Qui è nel punto giusto del percorso.
+
+### 2026-04-24 — App “da zero” STEP 0.2 (path deploy-safe) — check domanda
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 0.2 domanda “perché path assoluti sono un problema in deploy?” (righe ~141–156).
+- **Valutazione (primo tentativo — “voto esame”):** **10/10**.
+- **Punti chiave corretti:** hai detto che i path assoluti dipendono dalla macchina (directory diverse) → in deploy la risorsa non viene trovata e l’app fallisce. È esattamente il motivo pratico.
+
+### 2026-04-24 — App “da zero” STEP 0.2 (path deploy-safe) — implementazione codice
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 0.2 definizione `FILE_PATH` + `CSV_PATH` (righe ~160–161).
+- **Valutazione (primo tentativo — “voto esame”):** **9.5/10**.
+- **Punti ok:** path relativo a `__file__` + `os.path.join(...)` → deploy-safe e cross-OS; `CSV_PATH` punta correttamente a `dati/pratiche_genuinita_mock.csv`.
+- **Micro-miglioria:** puoi rendere esplicito l’assoluto con `os.path.abspath(__file__)` (o `os.path.dirname(os.path.abspath(__file__))`) per evitare edge case se `__file__` non è già normalizzato; naming più leggibile tipo `HERE`/`DATA_DIR` aiuta, ma non è obbligatorio.
+
+### 2026-04-24 — App “da zero” STEP 1 (carica_pratiche)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 1 `carica_pratiche` (righe ~170–172).
+- **Valutazione (primo tentativo — “voto esame”):** **10/10**.
+- **Punti chiave corretti:** usi `@st.cache_data`, la funzione legge con `pd.read_csv(csv_path)` e ritorna un `DataFrame` usando l’argomento (riusabile/testabile).
+- **Micro-miglioria (stile):** aggiungere l’annotazione del tipo anche al parametro (`csv_path: str`) rende la firma più chiara, ma non è necessario.
+
+### 2026-04-24 — Ripasso (drop vs drop(columns=...))
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — domanda ripasso su `drop(["a","b"])` vs `drop(columns=["a","b"])`.
+- **Valutazione (primo tentativo — “voto esame”):** **6.5/10**.
+- **Punto giusto:** hai intuito che cambia l’oggetto e l’asse (Series vs DataFrame/colonne).
+- **Correzione precisa:** su DataFrame, `drop(["a","b"])` prova a droppare ETICHETTE di riga (axis=0) per default; per droppare colonne serve `drop(columns=["a","b"])` (o `drop(["a","b"], axis=1)`). Su Series, `drop([...])` rimuove etichette dell’indice (non “colonne”, perché non esistono).
+- **Fix applicato:** nuova formulazione corretta: su Series `drop([...])` elimina etichette dell’indice; su DataFrame `drop([...])` tenta di eliminare etichette di riga (default axis=0), mentre `drop(columns=[...])` elimina colonne.
+
+### 2026-04-24 — Ripasso (cache argomenti + Pipeline vs leakage)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — domande ripasso su cache e Pipeline (righe ~203–208).
+- **Valutazione (primo tentativo — “voto esame”):** **9/10**.
+- **Punti ok:** (1) hai centrato il motivo tipico: se `C` non è un argomento della funzione cached (o non entra nella chiave), Streamlit può riusare la cache “vecchia”; (2) hai collegato Pipeline al rischio leakage (fit dello scaler solo su train / dentro fold in CV).
+- **Micro-miglioria:** nella (2) esplicita “in CV ogni fold deve fittare scaler+modello sul proprio train” (è il punto più “da colloquio”). 
+
+### 2026-04-24 — App “da zero” STEP 3a (allena_pipe_cached) — implementazione codice
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 3a `allena_pipe_cached` (righe ~212–226).
+- **Valutazione (primo tentativo — “voto esame”):** **9.5/10**.
+- **Punti chiave corretti:** `@st.cache_resource` appropriato per il modello; Pipeline con `StandardScaler()` prima e `LogisticRegression(C, max_iter, random_state)`; fai `fit` su `(X_train, y_train)` e ritorni l’oggetto addestrato.
+- **Micro-migliorie:** 1) aggiungere type hints (`X_train: pd.DataFrame`, `y_train: pd.Series`, `C: float`, `max_iter: int`, `random_state: int`) aumenta chiarezza; 2) stile firma: metti ogni parametro su una riga per leggibilità.
+
+### 2026-04-24 — App “da zero” STEP 3a (allena_pipe_cached) — fix type hints
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 3a `allena_pipe_cached` (aggiunti type hints).
+- **Esito fix:** applicato (firma più chiara, nessun impatto negativo su runtime).
+
+### 2026-04-24 — App “da zero” STEP 2 (split_X_y) — implementazione codice
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 2 `split_X_y` (righe ~182–186).
+- **Valutazione (primo tentativo — “voto esame”):** **8.5/10**.
+- **Punti chiave corretti:** `X = drop(columns=["pratica_id","y_alterato"])`, `y = pratiche["y_alterato"]`, ritorni `(X, y)` con oggetti giusti (DataFrame + Series).
+- **Micro-errori (type hints):** `pd.Dataframe` è scritto male → `pd.DataFrame`; meglio tipizzare il return come `tuple[pd.DataFrame, pd.Series]` (o `tuple[...]` in Python 3.9+). Il decorator `@st.cache_data` qui è ok ma non indispensabile.
+- **Fix applicato:** return type aggiornato a `tuple[pd.DataFrame, pd.Series]` (corretto).
+
+### 2026-04-24 — Ripasso (cross_val_score output)
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — domanda “cosa restituisce cross_val_score?” (righe ~220–222).
+- **Valutazione (primo tentativo — “voto esame”):** **9/10**.
+- **Punto giusto:** corretto che restituisce un array NumPy di score.
+- **Micro-miglioria:** specifica “uno score per fold” (es. con 5 fold → array di 5 numeri). 
+
+### 2026-04-24 — App “da zero” STEP 3b (cv_recall_cached) — implementazione codice
+
+- **Blocco:** `modulo_02_ml/app_streamlit_da_zero.py` — STEP 3b `cv_recall_cached` (righe ~223–239).
+- **Valutazione (primo tentativo — “voto esame”):** **10/10**.
+- **Punti chiave corretti:** pipeline “fresca” non fit passata a `cross_val_score`; `StratifiedKFold(5, shuffle=True, random_state=...)`; `scoring="recall"`; output = array score per fold; `@st.cache_data` coerente (stai cachando un dato).
+- **Micro-miglioria (opzionale):** puoi parametrizzare `max_iter` (coerenza con slider) e aggiungere type hints ai parametri per leggibilità.
 
 ---
 

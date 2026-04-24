@@ -608,7 +608,7 @@ st.warning('Soglia in revisione')
 #
 # --- MINI-ESERCIZIO 6.2 ---
 # Se `prob_alterato = 0.42`, quale semaforo dovrebbe uscire? Perché?
-#
+# rosso, perchè (1 - 0.42) * 100 = 58, quindi entrerebbe nell'else dell'esempio
 
 
 # ==========================================================================
@@ -635,8 +635,8 @@ st.warning('Soglia in revisione')
 #
 # --- MINI-ESERCIZIO 7.1 ---
 # Se dopo il fit vedi `coef_ = [0.8, -0.1, 0.3, -0.6]` con feature ["a","b","c","d"]:
-# 1) top 3 per |peso| = ?
-# 2) quale "spinge" verso alterato?
+# 1) top 3 per |peso| = [0.8, 0.6, 0.3]
+# 2) quale "spinge" verso alterato? => 0.8
 #
 
 
@@ -655,7 +655,7 @@ st.warning('Soglia in revisione')
 #
 # --- MINI-ESERCIZIO 7.2 ---
 # Scrivi in 1 riga il disclaimer che metteresti sotto la lista dei "motivi".
-#
+# Questi pesi hanno una funzione puramente indicativa. Sono validi solo per il modello utilizzato in questo momento, e ad ogni modo sono stati generati sulla base di un set di dati limitato, le cui relazioni tra feature potrebbero non essere sempre causali. Potrebbe non essere preciso nel fornire indicazioni sulla pratica inserita.
 
 
 # ==========================================================================
@@ -691,7 +691,7 @@ st.warning('Soglia in revisione')
 #
 # --- MINI-ESERCIZIO 8.1 ---
 # Perché NON passiamo `X_test, y_test` a `cv_recall`? (Basta 1 riga.)
-#
+# Perchè non si fa cv sul test, ma si usiamo tutto train-set per fare train e validation per n volte quanto sono quelle descritte nel kf. 
 
 
 # ==========================================================================
@@ -749,36 +749,43 @@ st.warning('Soglia in revisione')
 # DOMANDA 1 — V/F:
 # "Streamlit mantiene lo stato delle variabili Python tra un click e l'altro."
 # V/F? Motiva.
-#
+# Falso. Le mantiene sono se le abbiamo inserite nella cache, altrimenti a ogni rerun verrebbero ricalcolate
+
 # DOMANDA 2 — Completa:
 # Per dati (DataFrame) si usa il decoratore ___; per oggetti pesanti (modello
 # addestrato) si usa ___.
+#@st.cache_data, @st.cache_resource
 #
 # DOMANDA 3 — Trova l'errore:
 #     pratiche = pd.read_csv("C:/Users/visaf/Desktop/Corso IA/modulo_02_ml/dati/pratiche_genuinita_mock.csv")
 # Perché è un problema in deploy? Come correggi?
+# Per il deploy non possiamo usare path assoluti (che variano da macchina a macchina). usiamo la libreria os che ci permette di interagire con i diversi sistemi operativi, e in questo caso generare percorsi:
+# pratiche = pd.read_csv(os.path.join(os.path.dirname(__file__), "dati", "pratiche_genuinita_mock.csv"))
 #
 # DOMANDA 4 — Prevedi l'output:
 #     import streamlit as st
 #     x = st.slider("x", 0, 10, 5)
 #     st.write(x * 2)
 # Se l'utente sposta lo slider a 7, cosa apparirà sotto?
-#
+# 14
+
 # DOMANDA 5 — Shape:
 # Per calcolare `predict_proba` di UNA pratica, quale shape deve avere l'input?
 # Quale comando lo garantisce?
-#
+# Deve essere una matrice 2D (come un dataframe). Possiamo garantirlo usando il comando .to_frame().T
+
 # DOMANDA 6 — 💬 Feynman:
 # Spiega con parole tue perché mostrare "media ± std" della CV è più onesto di
 # mostrare solo `recall_score(y_test, y_pred)` in una demo di portfolio.
-#
+# Perchè il recall sul test è un esame imparziale, ma comunque condizionato dalla composizione del set usato per il test. media e std della CV ci danno un idea del comportamento del modello più in generale, mostrandoci da una parte la media dei risultati dello scoring (cosi da avere una valore più stabile della metrica), sia la deviazione rispetto alla media stessa, così da avere un idea di quanto è stabile il modello su diverse composizioni di dati.
+
 # DOMANDA 7 — Architettura:
 # Tra queste righe, quale NON dovrebbe stare in `app_streamlit.py`?
 # a) calcolo score_genuinita da prob_alterato
 # b) `pipe.fit(X_train, y_train)` chiamato dentro una funzione cached
 # c) definizione dettagliata del dataset di training (riga per riga)
 # d) `st.metric("Score", 82)`
-#
+# la c)
 
 
 # ==========================================================================

@@ -4,7 +4,6 @@ Demo Streamlit — Modulo 2 (Cap.06)
 Questa è la "base di partenza" per gli esercizi del capitolo 06.
 La completi passo-passo seguendo `06_progetto_streamlit.py`.
 """
-
 from __future__ import annotations
 
 import os
