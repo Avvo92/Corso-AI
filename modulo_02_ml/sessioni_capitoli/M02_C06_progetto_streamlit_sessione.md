@@ -21,6 +21,13 @@
 
 ## Valutazioni esercizi / quiz / mini-esercizi
 
+### 2026-04-27 — Capitolo 07 (deploy) — Quiz d’ingresso Q1 (V/F locale vs cloud)
+
+- **Blocco:** `modulo_02_ml/07_deploy_streamlit_cloud.py` — Quiz d’ingresso Q1.
+- **Valutazione (primo tentativo — “voto esame”):** **9/10**.
+- **Punti chiave corretti:** hai detto “Falso” e hai elencato i principali motivi reali: path deploy-safe (no assoluti), dipendenze/requirements allineati, evitare dipendenze inutili.
+- **Micro-miglioria:** aggiungi anche “differenze di ambiente” (versioni Python, file presenti, working directory e permessi): in cloud non hai il tuo filesystem locale.
+
 ### 2026-04-22 — Avvio cap.06: setup diario e deliverable
 
 - **Esercizio / blocco:** creazione diario `M02_C06_progetto_streamlit_sessione.md` + definizione deliverable `app_streamlit.py`.

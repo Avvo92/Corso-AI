@@ -28,11 +28,18 @@ Vincoli importanti (ripasso “da recruiter”):
 # ==========================================================================
 #
 # 1) V/F: “Se funziona in locale, funzionerà uguale in cloud.” Motiva.
+# Falso, ci devono essere alcuni accorgimenti per renderla fruibile in cloud: path deploy safe senza path assoluti, nessuna dipendenza inutile, file requirementes.txt per installare tutte le librerie utilizzate nell'esecuzione del file.
+
 # 2) Trova l’errore: path assoluto nel read_csv.
-# 3) Completa: file obbligatori minimi per Streamlit Cloud: ____, ____, ____.
+# il path assoluto non permette all'applicazione di essere fruibile in macchine diverse. Bisogna prevedere che ogni macchina a un suo filesystem, sia per composizione che per tipologia di sintassi untilizzata nell'esprimere i path, e dunque dobbiamo utilizzare la libreria os per generare path fruibili in tutti gli ambienti.
+
+# 3) Completa: file obbligatori minimi per Streamlit Cloud: requirements.txt, app_streamlit_da_zero.py, file che l'app utilizza per girare (es. file mock).
+
 # 4) Feynman: cos’è `requirements.txt` e perché serve in deploy?
+# il requirements.txt è quel file dove sono inserite tutte le librerie che la nostra app utilizza per funzionare. In questo modo, installandolo, chiunque scarichi la nosta app avrà tutte le dipendenze necessarie per farla girare senza problemi.
+
 # 5) Trova il rischio: import non usati / dipendenze extra → che problema crea?
-#
+# Si rischia di generare confusione, e lanciare errori nel momento in cui magari si ha una dipendenza dichiarata a una libreria non installata. Inoltre aumentano il tempo necessasario per la build, e si ci espone a più attacchi e alla necessasita' di maggiore manutenzione, oltre che a possibili conflitti tra diverse versioni.
 
 
 # ==========================================================================
@@ -44,7 +51,7 @@ Vincoli importanti (ripasso “da recruiter”):
 # - Hai almeno una label esplicita con "(0–1)" e "(0–100)"?
 #
 # Scrivi qui: 1 riga di testo UI che evita confusione di scala.
-#
+# la prob alterata è espressa in una scala da 0 a 1. Lo score genuinita è invece espresso in scala a 0 a 100.
 
 
 # ==========================================================================
@@ -54,7 +61,7 @@ Vincoli importanti (ripasso “da recruiter”):
 # Micro-check prima del deploy:
 # - In `X_una_pratica_da_id`: stai droppando ESATTAMENTE `pratica_id` e `y_alterato`?
 # - Se cambi dataset, dove lo aggiorni (una funzione sola, non 10 punti)?
-#
+# il drop avviene all'interno della funzione split_X_y. Se cambio dataset e target, basta modificarlo li.
 
 
 # ==========================================================================
@@ -63,7 +70,7 @@ Vincoli importanti (ripasso “da recruiter”):
 #
 # Micro-check prima del deploy:
 # - In UI mostri recall test. Sai dire in 1 riga cos’è il FN nel tuo dominio?
-#
+# Il FN nel mio dominio sono tutte quelle pratiche alterate che invece passano come genuine
 
 
 # ==========================================================================
@@ -75,9 +82,9 @@ Vincoli importanti (ripasso “da recruiter”):
 # - assicurati che il file giri in locale dopo la pulizia
 #
 # Checklist:
-# [ ] nessun import inutilizzato
-# [ ] nessun import “strano” che non serve alla demo
-# [ ] `python -m streamlit run modulo_02_ml/app_streamlit_da_zero.py` ok
+# [x] nessun import inutilizzato
+# [x] nessun import “strano” che non serve alla demo
+# [x] `python -m streamlit run modulo_02_ml/app_streamlit_da_zero.py` ok
 #
 
 
@@ -124,13 +131,12 @@ Vincoli importanti (ripasso “da recruiter”):
 # ==========================================================================
 # COSA FARE (tu):
 # - apri l’URL e prova:
-#   [ ] cambia pratica_id → output cambia (prob/score/semaforo)
-#   [ ] motivi_top3 visibili e con segno
-#   [ ] CV media±std visibile
-#   [ ] recall test visibile
-#   [ ] nessun errore nei log
+#   [x] cambia pratica_id → output cambia (prob/score/semaforo)
+#   [x] motivi_top3 visibili e con segno
+#   [x] CV media±std visibile
+#   [x] recall test visibile
+#   [x] nessun errore nei log
 #
 # Scrivi qui l’URL finale della demo:
-# URL: ...
-#
+# URL: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/
 
