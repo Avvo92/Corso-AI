@@ -129,6 +129,10 @@ from sklearn.model_selection import StratifiedKFold, cross_val_score, train_test
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
+# Nota: questo file è un percorso "da zero".
+# Non importiamo funzioni dalla demo già pronta (`app_streamlit.py`), altrimenti salti l'esercizio
+# e in più rischi errori di import se `modulo_02_ml` non è un package.
+
 
 
 # =============================================================================
@@ -224,126 +228,77 @@ def cv_recall_cached(X_train, y_train, C, random_state) -> np.ndarray:
 # =============================================================================
 # STEP 4a — X_una_pratica_da_id(pratiche, pratica_id) → DataFrame (1, n_feature)
 # =============================================================================
-# COSA FARE:
-#   Estrai UNA riga corrispondente all'id, togli le colonne non-feature,
-#   e ritorna un DataFrame 2D (1 riga, n colonne).
-#
-# REGOLE:
-#   - il modello vuole input 2D → mantieni il DataFrame (non ridurlo a Series!)
-#   - droppa SEMPRE "pratica_id" e "y_alterato" (altrimenti crash del pipe)
-#
-# SUGGERIMENTI:
-#   - per filtrare: `pratiche.loc[pratiche["pratica_id"] == pratica_id]`
-#   - dopo `loc[...]` su una condizione hai già un DataFrame (non una Series)  → [T8]
-#   - NON usare `to_frame()`: quello è un metodo della Series, qui non serve  → [T7]
-#   - EXTRA (opzionale robustezza): gestisci i casi 0 righe / >1 riga
-#
 # DOMANDA DI RIPASSO:
 #   - perché `predict_proba` si rompe con input 1D? (hint: "shape")
+# perchè l'imput deve essere una matrice 2D, anche se si tratta di una sola riga di una dataframe.
 
-# <<< SCRIVI QUI X_una_pratica_da_id >>>
-
+def X_una_pratica_da_id(pratiche, pratica_id) -> pd.DataFrame:
+    X_una = pratiche.loc[pratiche['pratica_id'] == pratica_id]
+    
+    if X_una.shape[0] == 0:
+        raise ValueError("ID non trovato")
+    if X_una.shape[0] > 1:
+        raise ValueError("ID duplicato: più righe trovate")
+    return X_una.drop(columns=['pratica_id', 'y_alterato'])
 
 # =============================================================================
 # STEP 4b — prob_alterato_da_pipe(pipe, X_una) → float in [0, 1]
 # =============================================================================
-# COSA FARE:
-#   Data la pipeline addestrata e UNA pratica (2D), ritorna la probabilità
-#   che la pratica sia ALTERATA (classe 1) come float.
-#
-# REGOLE (Lacuna #16 + shape):
-#   - `predict_proba` ritorna una MATRICE: una riga per esempio,
-#     una colonna per ogni classe (classe 0 = genuino, classe 1 = alterato).
-#   - a te serve la cella [0, 1] (prima riga, seconda colonna).  → [T8]
-#   - ritorna un `float` Python pulito (utile per la UI).
-#
-# SUGGERIMENTI:
-#   - l'indicizzazione giusta su un array numpy 2D è `[0, 1]`, non `[0][1]`
-#     (funzionano entrambi, ma [0, 1] è più idiomatico).
-#
 # DOMANDA DI RIPASSO:
 #   - se usassi `predict(...)` invece di `predict_proba(...)` cosa perdi?
+# vedrei solo la classe di appartenenza definita a seconda della soglia impostata, non vedrei le probabilita alterato e lo scoring genuinita.
 
-# <<< SCRIVI QUI prob_alterato_da_pipe >>>
-
+def prob_alterato_da_pipe(pipe, X_una) -> float:
+    return float(pipe.predict_proba(X_una)[0, 1])
 
 # =============================================================================
 # STEP 5a — score_genuinita_da_prob(prob_alterato) → float in [0, 100]
 # =============================================================================
-# COSA FARE:
-#   Converti la probabilità di ALTERATO (0–1) nello SCORE di GENUINITÀ (0–100).
-#
-# REGOLE (Lacuna #16):
-#   - probabilità va da 0 a 1
-#   - score va da 0 a 100
-#   - alterato ALTA → genuinità BASSA
-#
 # DOMANDA DI RIPASSO:
-#   - se prob_alterato = 0.3, quanto vale score_genuinita?
-#   - se score_genuinita = 55, quanto vale prob_alterato?
-
-# <<< SCRIVI QUI score_genuinita_da_prob >>>
-
+#   - se prob_alterato = 0.3, quanto vale score_genuinita? => 70
+#   - se score_genuinita = 55, quanto vale prob_alterato? => 0.45
+def score_genuinita_da_prob(prob_alterato) -> float:
+    return float((1-prob_alterato)*100)
 
 # =============================================================================
 # STEP 5b — semaforo_da_score(score, soglia_verde, soglia_giallo) → "verde|giallo|rosso"
 # =============================================================================
-# COSA FARE:
-#   Applica una POLICY di prodotto:
-#     score >= soglia_verde  → "verde"
-#     score >= soglia_giallo → "giallo"
-#     altrimenti             → "rosso"
-#
-# SUGGERIMENTI:
-#   - basta una cascata di if / elif / else.
-#
 # DOMANDA DI RIPASSO:
 #   - questa funzione è LOGICA DI UI o LOGICA DI PRODOTTO?
 #   - se domani cambia la policy, dove la tocchi (UI o ML)?
+# logica di prodotto
+# se domani cambia la policy, la si andrà nella funzione di policy, richiamata dalla UI
 
-# <<< SCRIVI QUI semaforo_da_score >>>
-
+def semaforo_da_score(score, soglia_verde, soglia_giallo) -> str:
+    if score >= soglia_verde:
+        return "Verde"
+    if score >= soglia_giallo:
+        return "Giallo"
+    else:
+        return "Rosso"
 
 # =============================================================================
 # STEP 6 — motivi_top3(pipe, X_una) → list[tuple[str, float]]
 #            (ESERCIZIO 5b / 7b del cap.06: contributi PER PRATICA)
 # =============================================================================
-# COSA FARE:
-#   Calcola i 3 "motivi" più importanti per QUESTA pratica, mantenendo il SEGNO.
-#
-# INTUIZIONE (fondamentale!):
-#   - `coef_` ti dice quanto pesa una feature IN GENERALE.
-#   - ma il "contributo" per la pratica specifica è:
-#         x_scaled_feature * coef_feature
-#     cioè "quanto quella feature di QUESTA pratica sta spingendo".
-#   - prendi i 3 con |contributo| maggiore (top per ASSOLUTO).
-#   - NON prendere il valore assoluto in uscita: SERVE il segno, perché il
-#     segno dice se spinge verso ALTERATO (+) o verso GENUINO (−).
-#
-# COME RECUPERARE LE PARTI:
-#   - dalla pipeline puoi accedere a ciascuno step con `pipe.named_steps[...]`
-#   - lo scaler ha un metodo `transform(X)` che ti dà i valori standardizzati
-#   - il modello ha `coef_` (attenzione: è un array 2D con shape (1, n_feature)
-#     per classificazione binaria) → prendi la riga della classe 1
-#
-# NOMI DELLE FEATURE:
-#   - NON cercarli sul modello (non ce li ha) → sono le COLONNE di `X_una`
-#   - `X_una.columns` è un ATTRIBUTO: non si chiama con `()`.  → [T6]
-#
-# SUGGERIMENTI PER IL TOP3:
-#   - comodo costruire una Series con index = nomi feature, valori = contributi
-#   - per ordinare PER VALORE ASSOLUTO ma tenere il segno originale, c'è un
-#     trucco elegante: `sort_values(key=lambda s: s.abs(), ascending=False)`  → [T11]
-#   - ATTENZIONE: `contrib.abs().sort_values(...)` PERDE il segno (non usarlo).
-#   - `.head(3)` per fermarti ai primi 3
-#   - return tipico: `list(top3.items())` → lista di tuple (nome, contributo)
-#
 # DOMANDE DI RIPASSO:
 #   - perché moltiplichi `x_scaled` (non `X_una` grezzo) per `coef`?
+# perchè la x scalata fornisce il valure del peso di ogni freature in un unità di misura comune a tutte le feature (un unita di misursa riferita alla loro deviazione rispetto la deviazione standard), così che i pesi siano confrontabili tra loro. In caso contrario, confrontare le feature tra di loro sarebbe come confrontare tra loro mele e ananas
 #   - se in UI scrivi "questi 3 sono la CAUSA", stai mentendo. Perché?
 #     (scrivi il disclaimer nello step UI dei motivi)
-
-# <<< SCRIVI QUI motivi_top3 >>>
+# perchè non sono la causa in se per se, ma i primi tre motivi che hanno portato a generare la valutazione. Sicuramente sono determinanti, ma non rispecchiano la decisione in toto. In teoria, la somma delle altre freature escluse dalla top3 potrebbe aver avuto, sommate tra loro, un peso maggior della somma delle top 3 nel terminare la classe. Inoltre sono dei pesi di un modello generati sui dati ora disponibili. Cambiando il modello o i dati, i risultati variano.
+def motivi_top3(pipe, X_una) -> list[tuple[str, float]]:
+    scaler = pipe.named_steps['scaler']
+    model = pipe.named_steps['model']
+    X_una_scaled = scaler.transform(X_una)[0]
+    model_coef = model.coef_[0]
+    contrib = X_una_scaled * model_coef
+    motivi = pd.Series(contrib, index=X_una.columns)
+    top3_motivi = motivi.sort_values(key=lambda m: m.abs(), ascending=False).head(3)
+    tuple_list = []
+    for k, v in top3_motivi.items():
+        tuple_list.append((k, float(v)))
+    return tuple_list
 
 
 # =============================================================================
@@ -419,53 +374,152 @@ def cv_recall_cached(X_train, y_train, C, random_state) -> np.ndarray:
 #   - se ti accorgi di scrivere logica ML dentro la UI, stoppati e sposta in funzione.
 
 
+
+
 # --- 7.1 ------------------------------------------------------------------
 # <<< TITOLO + CAPTION >>>
-
+#   7.1) TITOLO + CAPTION
+st.title("Demo App Score Pratica")
+st.caption("questa demo simula il funzionamento di un applicazione per il controlla documentale")
 
 # --- 7.2 ------------------------------------------------------------------
 # <<< SIDEBAR: slider C / max_iter, number_input random_state, slider soglie >>>
+#   7.2) SIDEBAR (iperparametri + soglie)
 
+with st.sidebar:
+    st.header("Selezione Iperparametri")
+    ui = {
+        "C": st.slider(
+            "Iperparametro LogisticRegression: C",
+            min_value=0.01,
+            max_value=10.0,
+            value=1.0,
+            step=0.01
+        ),
+        "max_iter": st.slider(
+            'Iperparametro LogisticRegression: max_iter',
+            min_value=100,
+            max_value=2000,
+            value=1000,
+            step=50
+        ),
+        "random_state": st.number_input(
+            'Iperparametro LogisticRegression: random_state',
+            min_value=0,
+            max_value=100,
+            value=42,
+            step=1
+            
+        )
+    }
+    st.divider()
+    st.header("Selezione Soglie")   
+    ui["soglia_verde"] = st.slider(
+            'Soglia Verde',
+            min_value=1,
+            max_value=100,
+            value=85,
+            step=1
+        )
+    
+    ui["soglia_giallo"] =  st.slider(
+            'Soglia Giallo',
+            min_value=1,
+            max_value=100,
+            value=60,
+            step=1
+        )    
 
 # --- 7.3 ------------------------------------------------------------------
 # <<< carica pratiche, split X/y, train_test_split >>>
-
+# Domanda: perché stratify=y nel test split?
+# Perchè voglio che la classe alterato sia omogenuinamente distributita nel test così come nel train
+pratiche = carica_pratiche(CSV_PATH)
+X, y = split_X_y(pratiche)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=.2, random_state=ui['random_state'], stratify=y
+)
 
 # --- 7.4 ------------------------------------------------------------------
 # <<< training pipeline + CV (media, std) + render stabilità + 1 frase tua >>>
+pipe = allena_pipe_cached(
+    X_train,
+    y_train,
+    C=float(ui['C']),
+    max_iter=int(ui['max_iter']),
+    random_state=int(ui['random_state'])
+)
+cv = cv_recall_cached(
+    X_train,
+    y_train,
+    C=float(ui['C']),
+    random_state=int(ui['random_state'])
+)
+cv_mean = cv.mean()
+cv_std = cv.std()
+st.metric("CV Recall (media)", f"{cv_mean:.3f}")
+st.metric("CV Recall (std)", f"{cv_std:.3f}")
+st.write("La media e la deviazione della CV ci aiutano a comprendere meglio la stabilità del modello rispetto a diversi split / diverse composizioni dei dati")
 
 
 # --- 7.5 ------------------------------------------------------------------
 # <<< selectbox pratica_id >>>
-
+pratica_id = st.selectbox('Pratiche', pratiche['pratica_id'].tolist())
 
 # --- 7.6 ------------------------------------------------------------------
 # <<< X_una → prob → score → semaforo → render (3 colonne) >>>
+X_una = X_una_pratica_da_id(pratiche, pratica_id)
+prob = prob_alterato_da_pipe(pipe, X_una)
+score = score_genuinita_da_prob(prob)
+sem = semaforo_da_score(
+    score,
+    soglia_verde=int(ui['soglia_verde']),
+    soglia_giallo=int(ui['soglia_giallo'])
+)
 
+col_1, col_2, col_3, col_4 = st.columns(4)
+with col_1:
+    st.metric('Pratica', f"{pratica_id}")
+with col_2:
+    st.metric('Prob Alterato => 0 - 1', f"{prob:.3f}")
+with col_3:
+    st.metric('Score Genuinita => 0 - 100', f"{(score/100):.2f}")
+with col_4:
+    st.metric('Semaforo', f"{sem}")
 
 # --- 7.7 ------------------------------------------------------------------
 # <<< disclaimer + motivi_top3 + render lista con segno >>>
-
-
+st.divider()
+st.header('Top 3 Motivi')
+st.caption("I pesi del modello sono generati sui dati ora disponibili. Cambiando il modello o i dati, i risultati variano.")
+mot_top3 = motivi_top3(pipe, X_una)
+for i, v in mot_top3:
+    st.write(f"{str(i):<25}  => {v:+.3f} {'verso genuino' if v < 0 else 'verso alterato'}")
+    
 # --- 7.8 ------------------------------------------------------------------
 # <<< y_pred su TEST + recall_test + nota sul "test si usa una volta" >>>
 
-
+y_pred_test = pipe.predict(X_test)
+recall_test = recall_score(y_test, y_pred_test)
+st.divider()
+st.subheader('Test Recall')
+st.metric('Punteggio', round(recall_test, 3))
+st.caption('Il test, in quanto è un arbitro imparziale, viene eseguito una sola volta')
 # =============================================================================
 # FINE PERCORSO
 # =============================================================================
 # Checklist finale (spunta quando l'hai fatto DAVVERO tu):
-#   [ ] STEP 0   — import + config + path deploy-safe
-#   [ ] STEP 1   — carica_pratiche
-#   [ ] STEP 2   — split_X_y
-#   [ ] STEP 3a  — allena_pipe_cached
-#   [ ] STEP 3b  — cv_recall_cached
-#   [ ] STEP 4a  — X_una_pratica_da_id
-#   [ ] STEP 4b  — prob_alterato_da_pipe
-#   [ ] STEP 5a  — score_genuinita_da_prob
-#   [ ] STEP 5b  — semaforo_da_score
-#   [ ] STEP 6   — motivi_top3 (con segno!)
-#   [ ] STEP 7   — UI completa (7.1 → 7.8)
+#   [x] STEP 0   — import + config + path deploy-safe
+#   [x] STEP 1   — carica_pratiche
+#   [x] STEP 2   — split_X_y
+#   [x] STEP 3a  — allena_pipe_cached
+#   [x] STEP 3b  — cv_recall_cached
+#   [x] STEP 4a  — X_una_pratica_da_id
+#   [x] STEP 4b  — prob_alterato_da_pipe
+#   [x] STEP 5a  — score_genuinita_da_prob
+#   [x] STEP 5b  — semaforo_da_score
+#   [x] STEP 6   — motivi_top3 (con segno!)
+#   [x] STEP 7   — UI completa (7.1 → 7.8)
 #
 # Quando sei arrivato in fondo, riesegui:
 #   python -m streamlit run modulo_02_ml/app_streamlit_da_zero.py
