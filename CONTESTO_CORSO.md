@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 22/04/2026
+> **Ultimo aggiornamento**: 27/04/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -39,12 +39,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_02_ml/06_progetto_streamlit.py — Demo Streamlit (M2) + primo deploy: integrazione `modello_base.py` (score, semaforo, motivi, CV stability) in UI operatore |
-| **Ultimo completato** | 05_overfitting_validazione.py (22/04/2026) — Overfitting, validazione, generalizzazione, bias-varianza; CV su train con `StratifiedKFold`; distinzione tuning vs test; progetto `modello_base.py`: CV recall con `Pipeline(StandardScaler + LogisticRegression)` per evitare leakage intra-fold |
-| **Modulo attuale** | 2 — Machine Learning Fundamentals |
-| **Difficoltà media** | ~6.6 (16 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-05; cap 07 escluso; M2-05 = **8**/10) |
-| **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Allineamento variabili tra esercizi sequenziali nello stesso `.py` (monitoraggio), ⚠️ Data leakage (anche da preprocessing/CV) — consolidare e applicare sempre con `Pipeline`, 🔴 Lacuna #16 scala `prob_alterato` (0–1) vs `score_genuinita` (0–100), 🔴 Lacuna #17 drop colonne reali (`pratica_id`, `y_alterato`), 🔴 Lacuna #18 recall vs precision (denominatore TP+FN vs TP+FP) |
-| **Sessione corrente** | Sessione 16 |
+| **Capitolo in corso** | ponte_matematico_m2_m3/01_vettori_da_zero.py — Ponte Matematico (bridge M2→M3): vettori, operazioni, dot product, norma, coseno tra vettori — analogia → codice → grafico → formula |
+| **Ultimo completato** | modulo_02_ml/07_deploy_streamlit_cloud.py (27/04/2026) — Primo URL portfolio LIVE su Streamlit Cloud: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/ — Modulo 2 chiuso. |
+| **Modulo attuale** | Ponte Matematico (bridge M2 → M3) — preludio a Deep Learning |
+| **Difficoltà media** | ~6.6 (18 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07; cap 07 M1 escluso/anomalia; M2-06 = **7**/10, M2-07 = **6**/10) |
+| **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Allineamento variabili tra esercizi sequenziali nello stesso `.py` (monitoraggio), 🟡 Data leakage (consolidato con Pipeline, da rivedere quando entreranno preprocessing custom in M3+), 🟢 Lacuna #16 scala `prob_alterato` (0–1) vs `score_genuinita` (0–100) — superata (rinforzata in app + UI label + verificata in deploy live), 🟢 Lacuna #17 drop colonne reali — superata (centralizzata in `split_X_y`), 🟢 Lacuna #18 recall vs precision — superata (recall_test in UI + definizione FN corretta) |
+| **Sessione corrente** | Sessione 17 |
 
 ---
 
@@ -55,11 +55,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 22/04/2026 |
-| **Cosa è stato fatto** | Chiusura cap.05 M2: overfitting/validazione/CV/bias-varianza; chiarito perché usare `Pipeline` per evitare leakage dello scaler **dentro ogni fold**; implementato in `modello_base.py` il task CV recall con `StratifiedKFold(5)` + `Pipeline(StandardScaler + LogisticRegression)` e stampa media±std; voto difficoltà raccolto. Diario cap.05 aggiornato. |
-| **Errori emersi** | Lacune attive dai quiz: (a) scala 0–1 vs 0–100 (prob/score), (b) attenzione a nomi colonne reali (`pratica_id`, `y_alterato`), (c) recall vs precision. |
-| **Cosa fare nella prossima sessione** | Iniziare `06_progetto_streamlit.py`: costruire la demo Streamlit del modulo 2 collegata a `modello_base.py` e preparare il primo deploy. |
-| **Stato motivazione** | Buono: concetto “test arbitro finale + CV per stabilità” consolidato, utile per il deploy. |
+| **Data** | 27/04/2026 |
+| **Cosa è stato fatto** | **Modulo 2 chiuso.** Capitolo 07 (Deploy Streamlit Cloud) completato: pulizia import (rimosso `scipy.integrate._ivp.radau.C`), `requirements.txt` allineato (streamlit/pandas/numpy/scikit-learn), push GitHub, app cloud creata con main file `modulo_02_ml/app_streamlit_da_zero.py`, smoke test verde (cambio pratica_id → output cambia, motivi_top3 con segno, CV media±std, recall test, no errori log). **Primo URL portfolio LIVE**: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/ Diario cap.07 creato con tutte le valutazioni (Quiz d'ingresso + Micro-check #16/#17/#18 + Step 7.1–7.5). |
+| **Errori emersi** | Q3 file minimi: omessa l'app principale come obbligatoria (corretto al rerun); Q5 rischi import: prima risposta corta (poi completata con build time + maintenance + conflitti). Nessun errore tecnico in deploy. |
+| **Cosa fare nella prossima sessione** | **Ponte Matematico (M2→M3)**, capitolo 01: vettori, operazioni, dot product, norma, coseno tra vettori. NumPy + Matplotlib. Sequenza analogia → codice → grafico → formula (Regola 21). Aggancio dominio: "una pratica = un vettore di feature". |
+| **Stato motivazione** | Alto: primo URL live nel portfolio; M2 chiuso con deliverable concreto e dimostrabile a recruiter. Prossima fase = fondamenta matematiche per Deep Learning. |
 
 ---
 
@@ -93,10 +93,13 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 12 | Diagnosi mismatch shape in reshape | 🟡 Rinforzato | Verificare al quiz ingresso cap.03 o mini-quiz NumPy |
+| 12 | Diagnosi mismatch shape in reshape | 🟡 Rinforzato | Verificare al quiz ingresso Ponte Matematico (NumPy intensivo) |
 | 13 | Interpretazione .shape su selezione colonne Pandas | 🟢 Superato | Quiz ingresso cap.02 M2: risposta corretta (50, 2) |
 | 14 | Distinzione Series vs DataFrame | 🟢 Superato | Quiz ingresso cap.02 M2: ha spiegato che doppia parentesi genera DataFrame, non Series |
 | 15 | Anti-pattern di valutazione modello | 🟢 Superato | Rinforzo cap.02 + quiz/esercizi; distinzione valutazione vs preparazione dati consolidata |
+| 16 | Scala `prob_alterato` (0–1) vs `score_genuinita` (0–100) | 🟢 Superato | Cap.06 + cap.07 M2: rinforzata in app live, label UI esplicite, micro-check superato in deploy |
+| 17 | Drop colonne reali (`pratica_id`, `y_alterato`) | 🟢 Superato | Cap.06 + cap.07 M2: centralizzato in `split_X_y`, applicato in app live |
+| 18 | Recall vs precision (FN nel dominio) | 🟢 Superato | Cap.06 + cap.07 M2: `recall_test` mostrato in UI, definizione FN corretta come "alterato classificato genuino" |
 
 ### Anomalia aperta — Cap 07 (NumPy)
 
@@ -116,12 +119,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_02_ml/06_progetto_streamlit.py — Demo Streamlit Modulo 2 + primo deploy: UI operatore su `score_genuinita`, `semaforo`, `motivi_top3`, con “stabilità” (CV media±std) mostrata in modo leggibile |
-| **Rinforzi da inserire (🔁)** | In testa al cap.06: (1) **Scala** `prob_alterato` 0–1 vs `score_genuinita` 0–100 (Lacuna #16); (2) **drop colonne reali** `pratica_id`, `y_alterato` (Lacuna #17); (3) **recall vs precision** (Lacuna #18); (4) richiamo `Pipeline` per evitare leakage in preprocessing + CV |
-| **Concetti ⚠️ da ripassare** | “train = imparare; CV/validation = scegliere; test = stimare (una volta)”; come comunicare in UI incertezza/variabilità (std tra fold) |
-| **Pattern 🔴 da monitorare** | #6 (consegne complete/DoD demo), #22 (coerenza nomi variabili e modello usato) |
-| **Ponte mentale da riusare** | “Test = staging/produzione; CV = ripetere il controllo su più split”; “semaforo = policy di prodotto sopra la probabilità” |
-| **Note** | `06_progetto_streamlit.py` era placeholder: va riempito con struttura capitolo completa + task deploy (Streamlit Cloud). |
+| **Prossimo capitolo** | ponte_matematico_m2_m3/01_vettori_da_zero.py — Ponte Matematico (bridge M2→M3): vettori come "pratica = lista di numeri", operazioni (somma, sottrazione, scalare × vettore), dot product, norma euclidea, coseno tra vettori. NumPy + Matplotlib. Sequenza obbligatoria: analogia → codice → grafico → formula (Regola 21). |
+| **Rinforzi da inserire (🔁)** | In testa al cap.01 Ponte: (1) **NumPy shape/reshape/broadcasting** (Lacuna #12, ancora da chiudere) — micro-quiz su shape come arbitro; (2) **stratify/random_state** ricordati come "controllo riproducibilità" anche in dimostrazioni vettoriali; (3) richiamo "una pratica = un vettore" già usato in M2, ora reso esplicito con la matematica sottostante. |
+| **Concetti ⚠️ da ripassare** | Tensor (cap.08 M1) come generalizzazione di vettore/matrice; broadcasting NumPy; differenza vettore-riga vs vettore-colonna (preludio a layer Dense in M3). |
+| **Pattern 🔴 da monitorare** | #6 (consegne complete/DoD), #19 (terminologia: dire "uguale a None", non "uguale a null"). |
+| **Ponte mentale da riusare** | "Pratica = vettore di feature" (già usato in M2, ora formalizzato). "Coseno tra vettori = quanto si somigliano due pratiche" (preludio embeddings M4). "Gradiente = pendenza della collina" (preludio backprop M3). |
+| **Note** | Il Ponte è 2 capitoli leggeri in carico (basi web → vettori = array di numeri) ma alti in densità concettuale: regge tutto il M3+. Mantenere stile "no soluzioni dirette, TODO + suggerimenti" già funzionato col cap.06 `app_streamlit_da_zero.py`. Niente LaTeX in chat (preferenza dello studente). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -641,8 +644,8 @@ completezza del self-check e chiedere correzioni.
 
 | Modulo | Focus | Componente pipeline prodotto | Librerie principali | Stato |
 |--------|-------|------------------------------|---------------------|-------|
-| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore supervisionato (vero/alterato) + anomaly detector + `score_genuinita` + `anomaly_score` + **primo test verificabile** + **deploy Streamlit Cloud** | scikit-learn, streamlit | 🟡 In corso (cap.01-04 completati; **cap.05 in svolgimento** — validazione/overfitting) |
-| **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, coseno, gradiente, discesa — tutto in codice + Matplotlib | Fondamenta per embedding e backpropagation | numpy, matplotlib | ⬜ Da creare |
+| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore supervisionato (vero/alterato) + anomaly detector + `score_genuinita` + `anomaly_score` + **primo test verificabile** + **deploy Streamlit Cloud** | scikit-learn, streamlit | 🟢 **Completato 27/04/2026** — cap.01-07 chiusi; demo live: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/ |
+| **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, coseno, gradiente, discesa — tutto in codice + Matplotlib | Fondamenta per embedding e backpropagation | numpy, matplotlib | 🟡 **In corso** — cap.01 vettori_da_zero in svolgimento |
 | 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | ⬜ Da creare |
 | 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | ⬜ Da creare |
 | 5 — LLM Integration & Prompt Engineering | API OpenAI, prompt engineering, structured output, function calling, Pydantic, Ollama, multimodale, sicurezza AI | Interfaccia intelligente: assistente operatore + structured extraction documenti variabili | openai, pydantic-ai, ollama | ⬜ Da creare |
@@ -658,7 +661,7 @@ completezza del self-check e chiedere correzioni.
 
 | # | Progetto | Modulo | Piattaforma deploy | Cosa dimostra |
 |---|----------|--------|---------------------|---------------|
-| 1 | Classificatore genuinità documenti + anomaly detector | M2 | Streamlit Cloud | ML classico (supervisionato + non supervisionato), feature engineering, metriche, Streamlit |
+| 1 | Classificatore genuinità documenti + anomaly detector | M2 | **Streamlit Cloud — LIVE: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/** | ML classico (supervisionato), feature engineering, metriche, Pipeline anti-leakage, CV media±std, motivi_top3 con segno, Streamlit |
 | 2 | Classificatore immagini | M3 | HuggingFace Spaces | Deep Learning, transfer learning, Gradio |
 | 3 | Estrattore campi documentali + matching semantico cross-doc | M4 | Streamlit Cloud | NLP, embeddings, information extraction, coerenza semantica |
 | 4 | Assistente operatore documentale AI | M5 | Streamlit Cloud | LLM API, function calling, streaming |
@@ -708,8 +711,10 @@ completezza del self-check e chiedere correzioni.
 | M2-03_regressione | 6 | +1 ↑ vs M2-02 (più carico: più modelli, scaling, coefficienti, progetto) |
 | M2-04_classificazione_metriche | 7 | +1 ↑ vs M2-03 (carico: metriche, quiz, esercizi prodotto; voto studente confermato 13/04/2026) |
 | M2-05_overfitting_validazione | 8 | +1 ↑ vs M2-04 (validazione/CV, bias-varianza, pipeline per evitare leakage in CV; voto studente 22/04/2026) |
+| M2-06_progetto_streamlit | 7 | -1 ↓ vs M2-05 (progetto Streamlit "da zero": demo end-to-end, cache_data/cache_resource, predict_proba 2D, motivi_top3 con segno; voto studente 27/04/2026) |
+| M2-07_deploy_streamlit_cloud | 6 | -1 ↓ vs M2-06 (capitolo operativo: pulizia dipendenze, requirements, push GitHub, deploy cloud, smoke test; primo URL portfolio LIVE; voto studente 27/04/2026) |
 
-**Media attuale**: ~6.6 (16 capitoli con voto, cap 07 escluso).
+**Media attuale**: ~6.6 (18 capitoli con voto, cap 07 M1 escluso/anomalia aperta).
 
 ---
 
@@ -877,6 +882,28 @@ completezza del self-check e chiedere correzioni.
 | 1 | Collegamento coefficienti → `motivi_top3` (quiz ingresso Feynman) | Pesi scalati indicano importanza relativa delle feature per spiegare l’esito |
 | 2 | Metrica critica nel documentale | Recall su classe alterato (FN più gravi dei FP) — consolidato in quiz ed es. colloquio |
 
+### Cap.06 M2 — Progetto Streamlit
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | Cos'è il parametro `C` di `LogisticRegression`? | Inverso della regolarizzazione: `C` alto → modello "morbido" che si fida dei dati; `C` basso → modello "duro" che teme l'overfitting |
+| 2 | `os` è una libreria? | Sì, è una libreria standard Python per interagire col sistema operativo (path, file, env vars) |
+| 3 | Cosa restituisce `cross_val_score`? | Array NumPy di score (uno per fold); con 5 fold → 5 valori da cui calcolare media e std |
+| 4 | `.to_frame().T` a cosa serve? | Metodo di Series (non DataFrame): converte una Series in DataFrame 1-col, `.T` la traspone in 1-riga 2D — utile quando serve shape `(1, N)` per `predict` |
+| 5 | Cosa restituisce `predict` di `LogisticRegression`? | Array di etichette di classe (0/1), non probabilità (per quelle serve `predict_proba`) |
+| 6 | Cos'è una funzione di policy? | Regola di prodotto sopra al modello (es. mappa score→semaforo); cambia indipendentemente dal modello ML |
+| 7 | Come si usa `pipe.named_steps`? | Dict-like access: `pipe.named_steps['scaler']`, NON `pipe.named_steps('scaler')` (non è una funzione) |
+| 8 | Come generare una `Series` da due `np.array` (indici + valori)? | `pd.Series(data=valori, index=etichette)` |
+
+### Cap.07 M2 — Deploy Streamlit Cloud
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | "Se funziona in locale funziona anche in cloud" V/F? | Falso: path deploy-safe, requirements allineati, no dipendenze inutili, differenze ambiente (Python version, FS, CWD) |
+| 2 | File minimi per Streamlit Cloud | (1) `requirements.txt` con dipendenze pinned, (2) main file path (l'app principale), (3) i file dati che l'app legge a runtime |
+| 3 | Perché un import inutile è un problema in cloud? | Build più lenta, possibili conflitti di versione, superficie di attacco/maintenance maggiore, confusione per chi legge |
+| 4 | FN nel dominio documentale | Pratica alterata (classe 1) classificata come genuina (classe 0) — il rischio più grave, motiva l'uso di `recall` come metrica primaria |
+
 ---
 
 ## Pattern di Errore Ricorrenti — Solo Attivi
@@ -1008,6 +1035,21 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - Preprocessing leakage: fit di scaler/encoder **solo su train**; in CV usare `Pipeline` per rifare il fit dello scaler dentro ogni fold.
 - Deliverable: `modello_base.py` — task progetto cap.05 completato: CV recall su `X_train,y_train` con `Pipeline(StandardScaler + LogisticRegression)` e stampa fold/media/std + commento sul valore aggiunto della CV.
 
+### Cap.06 M2 — Progetto Streamlit (completato; voto difficoltà: **7**/10)
+- Streamlit operativo: `set_page_config`, `sidebar`, widget (`slider`, `number_input`, `selectbox`, `checkbox`, `metric`), `st.columns`, `st.divider`, `st.write`/`st.warning`.
+- Caching: `@st.cache_data` per dati/array (deterministici a parità di input), `@st.cache_resource` per modelli/oggetti pesanti (Pipeline addestrata, connessioni). Gli argomenti della funzione fanno da chiave cache.
+- Demo "da zero" (`app_streamlit_da_zero.py`): path deploy-safe (`__file__` + `os.path.join`), funzioni ML separate da UI, raccolta parametri sidebar in un dict `ui`, pipeline con `StandardScaler() → LogisticRegression(C, max_iter, random_state)`.
+- Predizione singola pratica: `predict_proba(X_una)[0, 1]` (input 2D, colonna classe 1 = alterato); conversione prob (0–1) → score (0–100); policy semaforo (verde/giallo/rosso) sopra al modello.
+- Motivi_top3 onesti: `x_scaled = scaler.transform(X_una)[0]`, `coef = model.coef_[0]`, `contrib = x_scaled * coef`; ordinamento per `|contrib|` mantenendo il segno (`sort_values(key=lambda s: s.abs(), ascending=False)`); ritorno `list[tuple[str, float]]`; disclaimer "spiegazione del modello, non causalità".
+- Stabilità + test in UI: CV recall media ± std (su X_train) per stabilità; `recall_score(y_test, pipe.predict(X_test))` come arbitro finale (test = una volta sola).
+- Deliverable: `modulo_02_ml/app_streamlit_da_zero.py` — demo portfolio-ready completa.
+
+### Cap.07 M2 — Deploy Streamlit Cloud (completato; voto difficoltà: **6**/10)
+- Differenza locale → cloud: path deploy-safe (no assoluti), differenze ambiente (Python version, FS, CWD), `requirements.txt` come "manifesto" delle dipendenze.
+- File obbligatori per Streamlit Cloud: (1) `requirements.txt` con dipendenze reali e idealmente versioni pinned, (2) main file path (`modulo_02_ml/app_streamlit_da_zero.py`), (3) file dati che l'app legge a runtime.
+- Pulizia deploy: rimuovere import inutili (riducono build time, superficie di attacco e conflitti di versione); leggere i log Streamlit Cloud è la prima diagnostica (FileNotFoundError = path; ModuleNotFoundError = requirements).
+- **Deliverable LIVE**: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/ — primo URL portfolio.
+
 ---
 
 ## Checklist di Auto-Revisione (prima di consegnare il codice)
@@ -1120,9 +1162,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 13 | Interpretazione `.shape` su selezione colonne Pandas | Verifica/09 | Alla domanda su `vendite[["prodotto","prezzo"]].shape` aveva risposto `(2,)` invece di `(n_righe, 2)`. Rinforzo inserito nel cap.01 M2. | 01_M2 | 🟡 |
 | 14 | Distinzione Series vs DataFrame | Verifica/09 | Aveva confuso `df["colonna"]` (Series) con DataFrame. Rinforzo inserito nel cap.01 M2. Quiz ingresso cap.01 M2 perfetto. | 01_M2 | 🟡 → da confermare al quiz cap.02 |
 | 15 | Anti-pattern di valutazione modello | Verifica/01_M2 | Alla domanda "anti-pattern valutazione" ha descritto un errore di feature selection ("feature non coerenti"), non il classico anti-pattern: valutare su training set o fare tuning guardando il test set. | 02_M2 | 🟢 |
-| 16 | Scala `prob_alterato` (0–1) vs `score_genuinita` (0–100) | Rinforzo/05_M2 | Ha risposto `score_genuinita = 0.55` invece di `55` (stessa informazione ma scala sbagliata). | 06_M2 | 🔴 |
-| 17 | Droppare ID + target (nomi colonne reali) | Rinforzo/05_M2 | Ha scritto `df.drop(['id','target'])` in modo astratto: concetto giusto, ma sul mock le colonne sono `pratica_id` e `y_alterato`. | 06_M2 | 🔴 |
-| 18 | Recall: denominatore corretto (TP+FN, non TP+FP) | Ingresso/05_M2 | Nel ragionamento su accuracy vs recall ha scritto `recall = TP/(TP+FP)` e un caso `0/0`. In realtà recall (classe 1) = `TP/(TP+FN)`; nel caso “predico tutti genuini”: TP=0, FN>0 ⇒ recall=0. | 06_M2 | 🔴 |
+| 16 | Scala `prob_alterato` (0–1) vs `score_genuinita` (0–100) | Rinforzo/05_M2 | Ha risposto `score_genuinita = 0.55` invece di `55` (stessa informazione ma scala sbagliata). | 06_M2 | 🟡 |
+| 17 | Droppare ID + target (nomi colonne reali) | Rinforzo/05_M2 | Ha scritto `df.drop(['id','target'])` in modo astratto: concetto giusto, ma sul mock le colonne sono `pratica_id` e `y_alterato`. | 06_M2 | 🟡 |
+| 18 | Recall: denominatore corretto (TP+FN, non TP+FP) | Ingresso/05_M2 | Nel ragionamento su accuracy vs recall ha scritto `recall = TP/(TP+FP)` e un caso `0/0`. In realtà recall (classe 1) = `TP/(TP+FN)`; nel caso “predico tutti genuini”: TP=0, FN>0 ⇒ recall=0. | 06_M2 | 🟡 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
