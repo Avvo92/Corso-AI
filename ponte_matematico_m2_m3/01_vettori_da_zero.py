@@ -137,18 +137,19 @@ VINCOLI DI STILE (Regola 21 del corso):
 # Q1) [Cerniera M2 - Lacuna #16] Hai una pratica con prob_alterato = 0.18.
 #     Qual e' lo score_genuinita? Su che scala e'?
 # Risposta:
-#
+# score_genuinita = (1 - 0.18) * 100 = 82
+# La scale prob_alterato e 0-1, mentre per lo score_genuinita e 0-100
 
 # Q2) [Cerniera M2 - Lacuna #17] In split_X_y droppi pratica_id e y_alterato.
 #     Cosa succede al modello se per sbaglio NON droppi y_alterato?
 #     (in 1 frase: il termine tecnico c'e' gia' nei tuoi appunti)
 # Risposta:
-#
+# Se non droppo y_alterato, sto di fatto fornendo il target come feature per trovare se stesso. Per fare un esempio divertente: di che colore era il cavallo bianco di Napoleone? Dunque sto causando un leakage molto evidente
 
 # Q3) [Cerniera M2 - Lacuna #18] Nel controllo documentale, perche' il
 #     recall sulla classe "alterato" e' piu' importante della precision?
 # Risposta:
-#
+# il Recall è TP / (TP + FN), dunque ci indica quante pratiche false sul totale delle pratiche false il modello è riuscito a segnalare correttamente. Precision invece è TP / (TP + FP), ossia quante delle segnalazione che ha fornito il modello consistevano effettivamente in pratiche alterato. Nel nostro caso, se il modello segnala un pratica genuina etichettandola come alterata, si avrà bisogno di un controllo manuale di un operatore per controllare una pratica che di fatto non era da controllare perchè genuina (un problema di perdita di efficienza e velocità nel controllo documentale). Ma se il modello non segnala una pratica alterata e la lascia passare tra le maglie del controllo, l'operatore non ha modo di correre ai ripari, e questo ci espone a gravi problemi (come possibili frodi a nostro danno).
 
 # Q4) [Vocabolario nuovo - vettori] Spiega in 2 righe a un collega web
 #     developer cosa intendi quando dici: "una pratica e' un vettore a 5
@@ -159,7 +160,7 @@ VINCOLI DI STILE (Regola 21 del corso):
 #        conta. Ogni posizione e' una feature: [importo, giorni, ...]."
 #     -> tu scrivi qualcosa di simile, NON identico.
 # Risposta:
-#
+# una pratica, nel caso della nostra applicazione, è rappresentata come una lista di 5 numeri, che rappresentano feature numeriche o numerizzare (es. importo, cod_fisc, date, qualita_ocr, delta_netto_lordo), in cui ogni posizione conta poichè è univoca per il tipo di feature. 
 
 # Q5) [Ponte mentale - shape] Nel cap.06 hai usato la riga
 #         contrib = x_scaled * coef
@@ -167,7 +168,7 @@ VINCOLI DI STILE (Regola 21 del corso):
 #     ma una moltiplicazione element-wise? E quale shape devono avere
 #     x_scaled e coef perche' funzioni?    -> [T1] [T4]
 # Risposta:
-#
+# Una moltiplicazione element-wise (come coef * x_scaled) in pratica moltiplica ogni elemento di un array per il corrispettivo alla stessa posizione di indice di un altro array. Entrambi gli array devono avere lo stesso numero di elementi e shape (n,), ossia entrambi devono essere vettori di egual lunghezza. Il dot product invece, eseguito sempre su due vettori, restituisce un solo numero dato dal risultato dell'espressione (arr_1*arr_2).sum().
 
 
 # ==========================================================================
@@ -179,16 +180,16 @@ VINCOLI DI STILE (Regola 21 del corso):
 #   1) Hai una lista di 12 numeri. Scrivi la chiamata NumPy che produce
 #      una matrice 3x4 a partire da quei numeri.
 #      Risposta:
-#      #
+#      lista.reshape(3, 4)
 #
 #   2) Quale shape ha la matrice ottenuta?
 #      Risposta:
-#      #
+#      (3, 4)
 #
 #   3) Cosa stamperebbe a.reshape(2, 5) sulla stessa lista? Errore o
 #      risultato? Perche'?    -> [T6]
 #      Risposta:
-#      #
+#      Produrrebbe un ValueError, poichè non è possibile ottenere 12 moltiplicando 2*5
 
 #
 # --------------------------------------------------------------------------
@@ -216,7 +217,26 @@ VINCOLI DI STILE (Regola 21 del corso):
 #   - se un reshape fallisce, spiega il motivo con "numero elementi" -> [T6]
 #
 # TUO CODICE (shape palestra):
-#
+import numpy as np
+vettore = np.array([2, 4, 6, 8, 10])
+print(f"Vettore 1D:           {vettore}")
+vettore_riga = vettore.reshape(1, 5)
+print(f"Vettore 2D (Riga):    {vettore_riga}")
+vettore_colonne = vettore.reshape(5, 1)
+print(f"Vettore 2D (Colonna):\n{vettore_colonne}")
+
+print(vettore.ndim)
+print(vettore_riga.ndim)
+print(vettore_colonne.ndim)
+
+print(vettore.shape)
+print(vettore_riga.shape)
+print(vettore_colonne.shape)
+
+print(vettore.size)
+print(vettore_riga.size)
+print(vettore_colonne.size)
+# La size è identica, poichè il numero di elementi è sempre identico, cambia la loro "organizzazione" in dimensioni, come si evince dalla stampa di .ndim (in entrambi i vettori 2D il numero di dimensioni è per l'appunto 2)
 
 
 # ==========================================================================
@@ -282,7 +302,17 @@ VINCOLI DI STILE (Regola 21 del corso):
 #   - print(f"shape={vec.shape}  dtype={vec.dtype}") rende i bug visibili.
 # ----------------------------------------------------------------------
 # TUO CODICE (sezione 1.1):
-#
+print("\nMini-esercizio 1.1\n")
+feature_pratica_A = np.array([1000, 2000, 3000, 4000, 5000])
+feature_pratica_B = np.array([1500, 2500, 3500, 4500, 5500])
+pesi = np.array([1, -1, 0.5, -0.5, 0.25])
+lista = []
+lista.extend([feature_pratica_A, feature_pratica_B, pesi])
+lista = np.array(lista, dtype=float)
+for l in lista:
+   print(f"{l}")
+   print(f"Shape: {l.shape}")
+   print(f"Dtype: {l.dtype}\n")
 
 
 # 1.2) DOMANDA DI RIPASSO:
@@ -292,7 +322,8 @@ VINCOLI DI STILE (Regola 21 del corso):
 #   D2) A quale dei due la pipeline scikit-learn dice "ok, posso fare
 #       predict_proba"? Perche'?    -> [T1]
 # Risposta:
-#
+# D1 => In entrambi i casi ci sono 3 elementi (cambia la loro disposizione in dimensioni)
+# D2 => Solo al secondo la pipeline direbbe ok, perchè predict_proba in input accetta solo matrici (s_samples, n_features), in questo caso (1, 3)
 
 
 # ==========================================================================
@@ -350,15 +381,24 @@ VINCOLI DI STILE (Regola 21 del corso):
 #   - una stampa per ciascuna delle 3 operazioni: facilita il debug.
 # ----------------------------------------------------------------------
 # TUO CODICE (sezione 2.1):
-#
-
+print("\nMini-esercizio 2.1\n")
+feature_pratica_A = np.array([1000, 2000, 3000, 4000, 5000])
+feature_pratica_B = np.array([1500, 2500, 3500, 4500, 5500])
+pesi = np.array([1, -1, 0.5, -0.5, 0.25])
+somma = feature_pratica_A + feature_pratica_B
+diff = feature_pratica_A - feature_pratica_B
+half_pesi = pesi * 0.5
+print(f"A+B =      {somma}")
+print(f"A-B =      {diff}")
+print(f"PESI / 2 = {half_pesi}")
 
 # 2.2) DOMANDA DI RIPASSO:
 #   Cosa rappresenta il vettore (A - B) nel tuo dominio "controllo
 #   documentale", se A e' una pratica sospetta e B una pratica "tipo"
 #   media-genuina? Spiegalo in 2 righe.
 # Risposta:
-#
+# Rappresenta la deviazione di ogni feature di una pratica rispetto la media di genuinità della feature.
+# se (A-B)>0, significa che la feature della pratica A presenta un valore maggiore rispetto a B , (A-B)<0, invece significa che la feature della pratica A ha un valore minore rispetto a B.
 
 
 # ==========================================================================
@@ -444,18 +484,22 @@ VINCOLI DI STILE (Regola 21 del corso):
 #     che e' la "sigmoide" -> da' un numero fra 0 e 1, come prob_alterato.
 # ----------------------------------------------------------------------
 # TUO CODICE (sezione 3.1):
-#
+print("\nMini-esercizio 3.1\n")
+feature_pratica_A = np.array([1000.0, 2000.0, 3000.0, 4000.0, 5000.0])
+pesi = np.array([1.0, -1.0, 0.5, -0.5, 0.25])
+def punteggio_lineare(x, w, b) -> float:
+   return float(np.dot(x, w) + b)
+print(f"{punteggio_lineare(feature_pratica_A, pesi, 0)}")
 
 
 # 3.2) DOMANDA DI RIPASSO:
 #   Senza riguardare il cap.06: nella riga "contrib = x_scaled * coef",
 #   D1) cosa rappresenta CIASCUN elemento del vettore "contrib"
 #       (in 1 frase)?
+# Ogni elemento rappresenta il valore pesato della feature scalata utilizzando la deviazione std, in modo da avere una rappresentazione chiara del suo contributo nel determinare la classe.
 #   D2) perche' la SOMMA di tutti i contrib si avvicina molto a "z"
 #       del modello logistico?
-#       (suggerimento: pensa a cosa fa il dot product)
-# Risposta:
-#
+# Perchè il dot product, che è la somma di tutte le moltiplicazione element-wise, effettivamente è praticamente equivalente a sommare i contrib che si ottengono tramite operazione element-wise coef * x_scaled. Differisce solo per la mancanza dell intercetta che viene inserita dalla Logistic Regression nel calcolare Z.
 
 
 # ==========================================================================
