@@ -109,6 +109,13 @@
 - **Blocco:** `01_vettori_da_zero.py` — Sezione 4.1.
 - **Valutazione (primo tentativo — "voto esame"):** —/10.
 
+### [2026-04-29] — Sezione 4.1 (`norma(v)` con `np.linalg.norm`)
+
+- **Blocco:** `ponte_matematico_m2_m3/01_vettori_da_zero.py` (righe ~578–586) — Sezione 4.1.
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**
+- **Punti di forza:** usa `np.linalg.norm` come richiesto, fa `float(...)` esplicito, stampa 3 norme con label leggibili (output coerente).
+- **Cosa migliorare:** type hint: `v: np.array` non è corretto (meglio `np.ndarray` o `numpy.typing.NDArray[...]`); naming leggermente diverso dalla consegna (`feature_pratica_A/B`), ma sostanza ok; attenzione all’indentazione (usa 4 spazi per consistenza).
+
 ### [YYYY-MM-DD] — Sezione 4.2 (grafico 2D con frecce + Pitagora)
 
 - **Blocco:** `01_vettori_da_zero.py` — Sezione 4.2 (Matplotlib, `quiver`/`annotate`).

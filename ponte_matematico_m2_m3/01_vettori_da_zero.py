@@ -575,6 +575,15 @@ print(f"{punteggio_lineare(feature_pratica_A, pesi, 0)}")
 # ----------------------------------------------------------------------
 # TUO CODICE (sezione 4.1):
 #
+print("\nMini-esercizio 4.1\n")
+def norma(v: np.ndarray) -> float:
+   return float(np.linalg.norm(v))
+feature_A = np.array([1, 2, 3, 4, 5])
+feature_B = np.array([3, 6, 9, 12, 15])
+pesi = np.array([1, -1, 0.5, -0.5, 0.25])
+print(f"Norma Feature_A => {round(norma(feature_A), 3)}")
+print(f"Norma Feature_B => {round(norma(feature_B), 3)}")
+print(f"Norma Pesi =>      {round(norma(pesi), 3)}")
 
 
 # ----------------------------------------------------------------------
