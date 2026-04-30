@@ -596,12 +596,12 @@ print(f"Norma Pesi =>      {round(norma(pesi), 3)}")
 # ESEMPIO GUIDA matplotlib (PIACE? RIUSALA, NON COPIARLA TALE E QUALE
 # perche' i tuoi vettori sono diversi):
 #
-#   import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 #   v_demo = np.array([2.0, 1.0])
 #   fig, ax = plt.subplots()
 #   ax.quiver(0, 0, v_demo[0], v_demo[1],
 #             angles="xy", scale_units="xy", scale=1, color="C0")
-#   ax.set_xlim(-1, 5); ax.set_ylim(-1, 5)
+#   
 #   ax.set_aspect("equal")     # importante: lunghezze fedeli
 #   ax.grid(True)
 #   ax.set_title(f"||v_demo|| = {np.linalg.norm(v_demo):.2f}")
@@ -620,7 +620,12 @@ print(f"Norma Pesi =>      {round(norma(pesi), 3)}")
 #   - non chiamare plt.show() in CI/script: usa savefig se serve
 # ----------------------------------------------------------------------
 # TUO CODICE (sezione 4.2):
-#
+v1, v2 = np.array([3.0, 4.0]), np.array([4.0, 3.0])
+norma_v1, norma_v2 = round(float(np.linalg.norm(v1)), 3), round(float(np.linalg.norm(v2)), 3)
+fig, ax = plt.subplots()
+ax.quiver(0, 0, v1[0], v1[1], angles="xy", scale_units="xy", scale=1, color="C0"), ax.quiver(0, 0, v2[0], v2[1], angles="xy", scale_units="xy", scale=1, color="C2")
+ax.set_title(f"Norma V1: {norma_v1} Norma V2: {norma_v2}"), ax.set_xlim(0, 5), ax.set_ylim(0, 5), ax.set_aspect("equal")
+plt.savefig("figures/01_norma_demo.png"), plt.close(fig)
 
 
 # ==========================================================================
@@ -727,8 +732,92 @@ print(f"Norma Pesi =>      {round(norma(pesi), 3)}")
 #     devono uscire 1.0, 0.0, -1.0, 0.96.
 # ----------------------------------------------------------------------
 # TUO CODICE (sezione 5.1):
-#
+print("\nMini-esercizio 5.1\n")
+v1, v2 = np.array([3.0, 4.0], dtype=float), np.array([4.0, 3.0], dtype=float)
+v3, v4, v5, v6 = np.array([1.0, 0.0], dtype=float), np.array([0.0, 1.0], dtype=float), np.array([-1.0, 0.0], dtype=float), np.array([0.0, -1.0], dtype=float)
 
+def coseno(a: np.ndarray, b: np.ndarray) -> float:
+   if a.shape != b.shape:
+      raise ValueError("Entrambi gli array devono avere shape uguale")
+   norma_a = np.linalg.norm(a)
+   norma_b = np.linalg.norm(b)
+   if norma_a == 0 or norma_b == 0:
+      raise ValueError("Vettore nullo: il coseno non è definito")   
+   return float(np.dot(a, b) / (norma_a * norma_b))
+
+print(coseno(v3, v3))
+print(coseno(v3, v4))
+print(coseno(v3, v5))
+print(coseno(v1, v2))
+
+v1_norm = v1 / np.linalg.norm(v1)
+v2_norm = v2 / np.linalg.norm(v2)
+v3_norm = v3 / np.linalg.norm(v3)
+v4_norm = v4 / np.linalg.norm(v4)
+v5_norm = v5 / np.linalg.norm(v5)
+v6_norm = v6 / np.linalg.norm(v6)
+
+fig, ax = plt.subplots()
+ax.quiver(
+   0,
+   0,
+   v1_norm[0],
+   v1_norm[1],
+   angles="xy",
+   scale_units="xy",
+   scale=1,
+   color="C0")
+ax.quiver(
+   0,
+   0,
+   v2_norm[0],
+   v2_norm[1],
+   angles="xy",
+   scale_units="xy",
+   scale=1,
+   color="C1")
+ax.quiver(
+   0,
+   0,
+   v3_norm[0],
+   v3_norm[1],
+   angles="xy",
+   scale_units="xy",
+   scale=1,
+   color="C2")
+ax.quiver(
+   0,
+   0,
+   v4_norm[0],
+   v4_norm[1],
+   angles="xy",
+   scale_units="xy",
+   scale=1,
+   color="C3")
+ax.quiver(
+   0,
+   0,
+   v5_norm[0],
+   v5_norm[1],
+   angles="xy",
+   scale_units="xy",
+   scale=1,
+   color="C4")
+ax.quiver(
+   0,
+   0,
+   v6_norm[0],
+   v6_norm[1],
+   angles="xy",
+   scale_units="xy",
+   scale=1,
+   color="C5")
+ax.set_title(f"Visualizzazione delle direzioni")
+ax.set_xlim(-1, 1)
+ax.set_ylim(-1, 1)
+ax.set_aspect("equal")
+plt.savefig("figures/Mini_esercizio 5.1.png")
+plt.close(fig)
 #
 # AUTO-TEST MINIMO (consigliato, 2 minuti):
 #   Dopo aver scritto coseno(a, b), provalo su questi casi:
@@ -738,7 +827,7 @@ print(f"Norma Pesi =>      {round(norma(pesi), 3)}")
 #     - coseno([3,4], [4,3])    -> 0.96 (circa)
 #   Suggerimento: usa np.array([...], dtype=float).
 #   Se i risultati sono fuori da [-1, +1] -> hai un bug (-> [T8]).
-#
+
 
 
 # ----------------------------------------------------------------------
@@ -756,11 +845,17 @@ print(f"Norma Pesi =>      {round(norma(pesi), 3)}")
 # embeddings RAG (cap.M6) per dire "il documento X risponde alla
 # domanda Y"? S/N. Se si', spiega in 1 riga il parallelo.
 # Risposta:
-#
+# Si perchè in pratica posso trasformare un documento in un vettore di feature, e comparandolo con un altri documenti posso identificare tramite il coseno la somiglianza tra loro.
 #
 # TUO CODICE (sezione 5.2):
-#
-
+print("\nMini-esercizio 5.2")
+feature_A = np.array([1, 2, 3, 4, 5], dtype=float)
+feature_B = np.array([1.8, 7.2, 9.1, 12.9, 3], dtype=float)
+feature_C = np.array(feature_A * 1.05, dtype=float)
+coseno_AB = coseno(feature_A, feature_B)
+coseno_AC = coseno(feature_A, feature_C)
+print(f"A vs B => {round(coseno_AB, 2)}: {'valori molto simili' if coseno_AB > 0.84 else 'valori abbastanza simili ma non identici'}")
+print(f"A vs C => {round(coseno_AC, 2)}: {'valori molto simili' if coseno_AC > 0.84 else 'valori abbastanza simili ma non identici'}")
 
 # ==========================================================================
 # CHECKPOINT FINALE - "so fare adesso?"
@@ -770,15 +865,15 @@ print(f"Norma Pesi =>      {round(norma(pesi), 3)}")
 #
 # C1) Differenza fra np.array([1,2,3]).shape e np.array([[1,2,3]]).shape?
 #     Risposta:
-#     #
+#     il primo ha shape (3,) il secondo shape (1, 3)
 #
 # C2) Quanto fa np.dot(np.array([1,2,3]), np.array([1,1,1])) e perche'?
 #     Risposta:
-#     #
+#     la risposta è 6 => 1*1 + 2*1 + 3*1 => il dot product e la somma degli elementi risultati dalla moltiplicazione element wise tra i due np array.
 #
 # C3) Se norma(a) = 0, perche' coseno(a, b) non e' definito?
 #     Risposta:
-#     #
+#     perchè il  coseno è la risultanza del dot product diviso la moltiplicazione delle norme dei due vettori. Se uno dei 2 è 0, in automatico si cercherebbe di dividere il dot product per 0. In pratica, un vettore senza grandezza non ha direzione definibile.
 #
 # C4) Spiega in 1 frase il legame fra "x_scaled * coef" del cap.06
 #     e il dot product.
@@ -789,15 +884,15 @@ print(f"Norma Pesi =>      {round(norma(pesi), 3)}")
 #     cui il coseno tra pratiche (vettori di feature) sara' utile in
 #     M4-M6:
 #     Risposta:
-#     #
+#     Perchè ci aiuta a fare un confronto tra le pratiche che controlliamo con le pratiche utilizzate come base per il controllo, aiutandoci a capire quanto risultano uguali o diverse in termini globali.
 #
 # AUTO-RATING (1 = mi sento perso, 5 = potrei spiegarlo a un collega):
 #
-#   - Vettori e shape (Sezione 1):              ___ / 5
-#   - Operazioni base (Sezione 2):              ___ / 5
-#   - Dot product (Sezione 3):                  ___ / 5
-#   - Norma euclidea (Sezione 4):               ___ / 5
-#   - Coseno (Sezione 5):                       ___ / 5
+#   - Vettori e shape (Sezione 1):              5 / 5
+#   - Operazioni base (Sezione 2):              5 / 5
+#   - Dot product (Sezione 3):                  5 / 5
+#   - Norma euclidea (Sezione 4):               5 / 5
+#   - Coseno (Sezione 5):                       5 / 5
 #
 # (questi voti li uso per calibrare il cap.02 del Ponte: se un punto e'
 #  sotto 3, ci torno con un mini-rinforzo)
@@ -856,8 +951,38 @@ print(f"Norma Pesi =>      {round(norma(pesi), 3)}")
 #
 #
 # TUO CODICE (mini-progetto):
-#
+import pandas as pd
+import os
 
+CSV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "modulo_02_ml", "dati", "pratiche_genuinita_mock.csv")
+def carica_pratiche(csv_path) -> pd.DataFrame:
+   return pd.read_csv(csv_path)
+
+def classifica_per_similarita(
+   pratiche: pd.DataFrame,
+   pratica_id_query: int,
+   k: int = 3
+) -> list[tuple[int, float]]:
+   if k > len(pratiche) - 1:
+      raise ValueError("Valore di k troppo elevato")
+   X = pratiche.drop(columns=['pratica_id', 'y_alterato'])
+
+   pratica = X.iloc[pratica_id_query].to_numpy(dtype=float)
+   cos_list = []
+   
+   for i, r in X.iterrows():
+      r_np = r.to_numpy(dtype=float)
+      pid = pratiche.loc[i, "pratica_id"]
+      cos = coseno(r_np, pratica)
+      cos_list.append((pid, cos))
+      
+   pratica_query = pratiche.loc[int(pratica_id_query), 'pratica_id']
+   risultato = [(pid, cos) for (pid, cos) in cos_list if pid != pratica_query]
+   risultato_sorted = sorted(risultato, key=lambda x: x[1], reverse=True)
+   
+   return risultato_sorted[:k]  
+
+print(classifica_per_similarita(carica_pratiche(CSV_PATH), 3))
 
 # ==========================================================================
 # CHIUSURA - cosa hai imparato in concreto

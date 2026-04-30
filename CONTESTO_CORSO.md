@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 27/04/2026
+> **Ultimo aggiornamento**: 30/04/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -39,12 +39,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | ponte_matematico_m2_m3/01_vettori_da_zero.py — Ponte Matematico (bridge M2→M3): vettori, operazioni, dot product, norma, coseno tra vettori — analogia → codice → grafico → formula |
-| **Ultimo completato** | modulo_02_ml/07_deploy_streamlit_cloud.py (27/04/2026) — Primo URL portfolio LIVE su Streamlit Cloud: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/ — Modulo 2 chiuso. |
+| **Capitolo in corso** | ponte_matematico_m2_m3/02_matrici_e_layer_dense.py — Ponte Matematico cap.02 (bridge M2→M3): matrici, prodotto matrice-vettore, batch di pratiche, anteprima layer Dense + rinforzi pattern emersi nel cap.01 (iloc/loc, virgole anti-pattern, type hint NumPy) — DA CREARE |
+| **Ultimo completato** | ponte_matematico_m2_m3/01_vettori_da_zero.py (30/04/2026) — Vettori, dot product, norma euclidea, coseno tra vettori; mini-progetto top-k similarità tra pratiche con coseno (preludio embeddings/RAG M4-M6); voto difficoltà **9**/10. |
 | **Modulo attuale** | Ponte Matematico (bridge M2 → M3) — preludio a Deep Learning |
-| **Difficoltà media** | ~6.6 (18 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07; cap 07 M1 escluso/anomalia; M2-06 = **7**/10, M2-07 = **6**/10) |
-| **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Allineamento variabili tra esercizi sequenziali nello stesso `.py` (monitoraggio), 🟡 Data leakage (consolidato con Pipeline, da rivedere quando entreranno preprocessing custom in M3+), 🟢 Lacuna #16 scala `prob_alterato` (0–1) vs `score_genuinita` (0–100) — superata (rinforzata in app + UI label + verificata in deploy live), 🟢 Lacuna #17 drop colonne reali — superata (centralizzata in `split_X_y`), 🟢 Lacuna #18 recall vs precision — superata (recall_test in UI + definizione FN corretta) |
-| **Sessione corrente** | Sessione 17 |
+| **Difficoltà media** | ~6.7 (19 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07 + Ponte-01; cap 07 M1 escluso/anomalia; **Ponte-01 = 9/10**) |
+| **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Allineamento variabili tra esercizi sequenziali nello stesso `.py` (monitoraggio), 🟡 Pattern #23 NUOVO: virgole a fine chiamata creano tuple inutili (`ax.quiver(...),`) — emerso in cap.01 Ponte sezioni 4.2/5.1 — rinforzo nel cap.02 Ponte, 🟡 Pattern #24 NUOVO: confusione `iloc[i, "colonna"]` (iloc accetta solo indici numerici) vs `loc[i, "colonna"]` — emerso in mini-progetto cap.01 Ponte — rinforzo nel cap.02 Ponte, 🟡 Pattern #25 NUOVO: type hint NumPy `v: np.array` invece di `v: np.ndarray` — emerso in 4.1/5.1 cap.01 Ponte — rinforzo nel cap.02 Ponte, 🟡 Data leakage (consolidato con Pipeline, da rivedere quando entreranno preprocessing custom in M3+), 🟢 Lacuna #12 (NumPy shape/reshape) — superata definitivamente in cap.01 Ponte (uso intensivo `.shape`, `to_numpy(dtype=float)`, dot product con shape coerenti), 🟢 Lacuna #16 scala `prob_alterato` (0–1) vs `score_genuinita` (0–100) — superata (rinforzata in app + UI label + verificata in deploy live), 🟢 Lacuna #17 drop colonne reali — superata (centralizzata in `split_X_y`), 🟢 Lacuna #18 recall vs precision — superata (recall_test in UI + definizione FN corretta) |
+| **Sessione corrente** | Sessione 18 |
 
 ---
 
@@ -55,11 +55,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 27/04/2026 |
-| **Cosa è stato fatto** | **Modulo 2 chiuso.** Capitolo 07 (Deploy Streamlit Cloud) completato: pulizia import (rimosso `scipy.integrate._ivp.radau.C`), `requirements.txt` allineato (streamlit/pandas/numpy/scikit-learn), push GitHub, app cloud creata con main file `modulo_02_ml/app_streamlit_da_zero.py`, smoke test verde (cambio pratica_id → output cambia, motivi_top3 con segno, CV media±std, recall test, no errori log). **Primo URL portfolio LIVE**: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/ Diario cap.07 creato con tutte le valutazioni (Quiz d'ingresso + Micro-check #16/#17/#18 + Step 7.1–7.5). |
-| **Errori emersi** | Q3 file minimi: omessa l'app principale come obbligatoria (corretto al rerun); Q5 rischi import: prima risposta corta (poi completata con build time + maintenance + conflitti). Nessun errore tecnico in deploy. |
-| **Cosa fare nella prossima sessione** | **Ponte Matematico (M2→M3)**, capitolo 01: vettori, operazioni, dot product, norma, coseno tra vettori. NumPy + Matplotlib. Sequenza analogia → codice → grafico → formula (Regola 21). Aggancio dominio: "una pratica = un vettore di feature". |
-| **Stato motivazione** | Alto: primo URL live nel portfolio; M2 chiuso con deliverable concreto e dimostrabile a recruiter. Prossima fase = fondamenta matematiche per Deep Learning. |
+| **Data** | 30/04/2026 |
+| **Cosa è stato fatto** | **Cap.01 Ponte Matematico chiuso.** Tutte le sezioni completate: 1.1-1.2 (vettori e shape), 2.1-2.2 (operazioni base), 3.1-3.2 (dot product + collegamento `contrib = x_scaled * coef` di M2 cap.06), 4.1-4.2 (norma euclidea + grafico Matplotlib quiver), 5.1-5.2 (coseno con controlli robusti + ponte M4-M6 RAG), Checkpoint C1/C2/C3/C5, mini-progetto `classifica_per_similarita` (top-k pratiche più simili = preludio retrieval RAG). PNG didattici generati con `genera_infografiche_png.py`. Diario cap.01 Ponte aggiornato in append-only con tutte le valutazioni (sezioni + checkpoint + mini-progetto). |
+| **Errori emersi** | (1) Type hint NumPy: scritto `v: np.array` invece di `v: np.ndarray` (più volte); (2) Stile Matplotlib: virgole a fine chiamata `ax.quiver(...),` che creano tuple inutili (anti-pattern); (3) Confusione `iloc[i, "col_str"]` (non funziona) vs `loc[i, "col_str"]`; (4) Check "vettore nullo" implementato come `a.sum() == 0` invece di `np.linalg.norm(a) == 0` (un vettore con somma zero non è il vettore zero); (5) `plt.savefig("figures/...")` senza creare prima la cartella → `FileNotFoundError`; (6) Tipico bug di formula: `np.dot(...)(...)` (parentesi invece di divisione); (7) Variabile non definita (`coseno` invece di `cos`). Tutti corretti dopo feedback con scala progressiva. |
+| **Cosa fare nella prossima sessione** | **Ponte Matematico cap.02 — `02_matrici_e_layer_dense.py`** (DA CREARE): matrici come "tante pratiche insieme" (batch), prodotto matrice-vettore come dot product generalizzato, anteprima layer Dense (M3). Includere obbligatoriamente: (a) rinforzi pattern #23/#24/#25 emersi nel cap.01; (b) sezione mini-esercizi "ripasso 5 blocchi" richiesta esplicitamente dallo studente (vettori+shape, operazioni, dot, norma, coseno); (c) ponte mentale "pratica = vettore" → "batch di pratiche = matrice"; (d) collegamento al prodotto: classificare un batch di pratiche con un solo `X @ w + b`. |
+| **Stato motivazione** | Alto: ha completato un capitolo dichiarato 9/10 di difficoltà; ha richiesto esplicitamente i mini-esercizi di ripasso nel prossimo capitolo (segno di metacognizione attiva sulla retention). Pronto per passare alle matrici. |
 
 ---
 
@@ -69,7 +69,7 @@
 > tenere presenti ADESSO. È un "cruscotto" — il dettaglio completo è nelle sezioni
 > dedicate più in basso.
 
-### Pattern di errore attivi — transizione M1 → M2
+### Pattern di errore attivi — transizione M1 → M2 → Ponte Matematico
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
@@ -78,6 +78,9 @@
 | 19 | `if var:` vs `is not None` per numeri opzionali | 🟡 In miglioramento | Rinforzo terminologico cap.02; evitare "null" in risposte |
 | 20 | Anti-pattern valutazione confuso con feature engineering | 🟡 In miglioramento | Rinforzato in cap.02 (blocco dedicato + quiz) |
 | 21 | Tupla accidentale `(x, n)` al posto di `round(x, n)` | 🟡 In miglioramento | Rinforzo cap.03 (# 🔁 Pattern #21) |
+| 23 | **NUOVO — virgole a fine chiamata `func(...),` creano tuple inutili** | 🟡 Da rinforzare | Cap.01 Ponte sez. 4.2 e 5.1: `ax.quiver(...),` come "scorciatoia stilistica" che genera `(NoneObject,)`. Rinforzo nel cap.02 Ponte (blocco 🔁) |
+| 24 | **NUOVO — `iloc[i, "colonna_str"]` non funziona** | 🟡 Da rinforzare | Cap.01 Ponte mini-progetto: ha usato `iloc` con etichetta stringa. `iloc` accetta SOLO indici numerici; `loc` accetta etichette. Rinforzo cap.02 Ponte |
+| 25 | **NUOVO — Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Da rinforzare | Cap.01 Ponte 4.1/5.1: `np.array` è una FUNZIONE (factory), il TIPO è `np.ndarray`. Per type hint stricter: `numpy.typing.NDArray`. Rinforzo cap.02 Ponte |
 
 ### Concetti da rinforzare per M2 (⚠️)
 
@@ -93,7 +96,7 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 12 | Diagnosi mismatch shape in reshape | 🟡 Rinforzato | Verificare al quiz ingresso Ponte Matematico (NumPy intensivo) |
+| 12 | Diagnosi mismatch shape in reshape | 🟢 Superato | Cap.01 Ponte: uso intensivo di `.shape`, `to_numpy(dtype=float)`, dot product con shape coerenti, controllo `if a.shape != b.shape: raise` nella funzione `coseno`. Diagnosi shape ora autonoma. |
 | 13 | Interpretazione .shape su selezione colonne Pandas | 🟢 Superato | Quiz ingresso cap.02 M2: risposta corretta (50, 2) |
 | 14 | Distinzione Series vs DataFrame | 🟢 Superato | Quiz ingresso cap.02 M2: ha spiegato che doppia parentesi genera DataFrame, non Series |
 | 15 | Anti-pattern di valutazione modello | 🟢 Superato | Rinforzo cap.02 + quiz/esercizi; distinzione valutazione vs preparazione dati consolidata |
@@ -101,15 +104,12 @@
 | 17 | Drop colonne reali (`pratica_id`, `y_alterato`) | 🟢 Superato | Cap.06 + cap.07 M2: centralizzato in `split_X_y`, applicato in app live |
 | 18 | Recall vs precision (FN nel dominio) | 🟢 Superato | Cap.06 + cap.07 M2: `recall_test` mostrato in UI, definizione FN corretta come "alterato classificato genuino" |
 
-### Anomalia aperta — Cap 07 (NumPy)
+### Anomalia aperta — Cap 07 (NumPy) — DE FACTO RISOLTA dal cap.01 Ponte
 
-> Il cap 07_numpy_intro.py risulta "In revisione" senza voto e senza chiusura formale.
-> Quiz d'ingresso ed esercizi 1-5 svolti, ma manca la correzione strutturata finale.
-> **Azione richiesta**: alla prima occasione utile (es. quiz ingresso di un capitolo M2 che tocca NumPy),
-> proporre a Gianluca un mini-quiz di recupero su shape/broadcasting/reshape per chiudere
-> formalmente il cap 07 e assegnare il voto. Non blocca il progresso M2, ma va sanata.
->
-> **Nota 13/04/2026**: voto difficoltà prescelto per la chiusura futura del cap.07 — **8**/10 (confermato dallo studente).
+> Il cap 07_numpy_intro.py M1 era "In revisione" senza voto formale; la lacuna #12 (mismatch shape) era l'unica vera frizione residua.
+> **Stato 30/04/2026**: Lacuna #12 chiusa nel cap.01 Ponte (vedi sopra) con uso intensivo e autonomo di `shape`, `dtype`, `to_numpy`, dot product, normalizzazione. Le competenze NumPy del cap.07 M1 sono ora **operativamente verificate** dal mini-progetto top-k similarità.
+> **Voto difficoltà cap.07 M1**: rimane **8/10** già confermato dallo studente (13/04/2026) — registrato come voto storico, non riapre l'anomalia.
+> **Azione residua**: nessuna. Il cap 07 M1 si considera chiuso "per assorbimento" tramite il cap.01 Ponte.
 
 ---
 
@@ -119,12 +119,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | ponte_matematico_m2_m3/01_vettori_da_zero.py — Ponte Matematico (bridge M2→M3): vettori come "pratica = lista di numeri", operazioni (somma, sottrazione, scalare × vettore), dot product, norma euclidea, coseno tra vettori. NumPy + Matplotlib. Sequenza obbligatoria: analogia → codice → grafico → formula (Regola 21). |
-| **Rinforzi da inserire (🔁)** | In testa al cap.01 Ponte: (1) **NumPy shape/reshape/broadcasting** (Lacuna #12, ancora da chiudere) — micro-quiz su shape come arbitro; (2) **stratify/random_state** ricordati come "controllo riproducibilità" anche in dimostrazioni vettoriali; (3) richiamo "una pratica = un vettore" già usato in M2, ora reso esplicito con la matematica sottostante. |
-| **Concetti ⚠️ da ripassare** | Tensor (cap.08 M1) come generalizzazione di vettore/matrice; broadcasting NumPy; differenza vettore-riga vs vettore-colonna (preludio a layer Dense in M3). |
-| **Pattern 🔴 da monitorare** | #6 (consegne complete/DoD), #19 (terminologia: dire "uguale a None", non "uguale a null"). |
-| **Ponte mentale da riusare** | "Pratica = vettore di feature" (già usato in M2, ora formalizzato). "Coseno tra vettori = quanto si somigliano due pratiche" (preludio embeddings M4). "Gradiente = pendenza della collina" (preludio backprop M3). |
-| **Note** | Il Ponte è 2 capitoli leggeri in carico (basi web → vettori = array di numeri) ma alti in densità concettuale: regge tutto il M3+. Mantenere stile "no soluzioni dirette, TODO + suggerimenti" già funzionato col cap.06 `app_streamlit_da_zero.py`. Niente LaTeX in chat (preferenza dello studente). |
+| **Prossimo capitolo** | ponte_matematico_m2_m3/02_matrici_e_layer_dense.py — Ponte Matematico cap.02 (bridge M2→M3): matrici come "tante pratiche insieme" (batch), prodotto matrice-vettore (`X @ w + b`) come dot product generalizzato, anteprima del layer Dense (input → matrice pesi → output → attivazione). NumPy + Matplotlib. Sequenza obbligatoria: analogia → codice → grafico → formula (Regola 21). |
+| **Rinforzi da inserire (🔁)** | OBBLIGATORI: (a) **🔁 RINFORZO Pattern #23** — virgole a fine chiamata `func(...),` (mostrare cosa restituisce davvero `(None,)` con `type(...)`); (b) **🔁 RINFORZO Pattern #24** — `iloc` (numerico) vs `loc` (etichetta) con tabella decisionale; (c) **🔁 RINFORZO Pattern #25** — `np.array` (factory) vs `np.ndarray` (tipo) — type hint corretti, demo con `isinstance`; (d) **Sezione mini-esercizi RIPASSO 5 BLOCCHI** richiesta esplicitamente dallo studente: vettori+shape, operazioni base, dot product, norma euclidea, coseno (1 micro-esercizio per blocco, 2-4 righe ciascuno). |
+| **Concetti ⚠️ da ripassare** | Vettore-riga vs vettore-colonna (preludio Dense), shape `(n, d)` di X = "n pratiche, d feature", broadcasting NumPy nel prodotto `X @ w + b` (b è scalare/vettore?). Riprendere Tensor (cap.08 M1) come generalizzazione. |
+| **Pattern 🔴 da monitorare** | #6 (consegne complete/DoD), #19 (terminologia: dire "uguale a None", non "uguale a null"), #23/#24/#25 (nuovi, vedi sopra). |
+| **Ponte mentale da riusare** | "Pratica = vettore di feature" → ESTESO: "Batch di pratiche = matrice (n×d)". "X @ w = dot product calcolato in parallelo per tutte le pratiche del batch in una sola operazione" (anteprima efficienza GPU/batch). "Layer Dense = matrice di pesi che trasforma un vettore in un altro vettore" (preludio M3). Coseno già introdotto in cap.01 ora utile per discutere similarità tra pratiche del batch. |
+| **Note** | Capitolo "ponte" denso ma corto. Mantenere stile "TODO guidati + suggerimenti, mai soluzioni dirette". Niente LaTeX in chat. Includere obbligatoriamente: Quiz d'ingresso (su cap.01 Ponte: norma, coseno, dot product, shape, normalizzazione), Quiz di verifica (sul cap.02 Ponte: prodotto matrice-vettore, batch, layer Dense). Nel quiz di verifica almeno 1 domanda Feynman. |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -837,6 +837,21 @@ completezza del self-check e chiedere correzioni.
 | `predict_proba` | Probabilità per classe; colonna 1 = P(alterato) se classi [0,1] | M2-04 | 0/3 | 🔄 |
 | `classification_report` | Riepilogo precision/recall/F1 per classe | M2-04 | 0/3 | 🔄 |
 
+### Ponte Matematico (M2 → M3) — Vettori e Algebra Lineare base
+
+| Termine | Significato | Capitolo | Ripassi | Stato |
+|---------|-------------|----------|---------|-------|
+| Vettore | Lista ordinata di numeri (= "istruzione di spostamento" o "punto nello spazio se ancorato all'origine"). In NumPy è un `np.ndarray` 1D di shape `(n,)` | Ponte-01 | 1/3 | 🔄 |
+| `np.ndarray` vs `np.array` | `np.ndarray` è il TIPO (la classe), `np.array(...)` è la FACTORY function che crea un ndarray. Per type hint usare `np.ndarray` o `numpy.typing.NDArray`, non `np.array` | Ponte-01 | 1/3 | 🔄 |
+| Shape `(n,)` vs `(1,n)` | `(n,)` è un vettore 1D (n elementi su un asse); `(1,n)` è una matrice 1×n (1 riga, n colonne). Diversi per matrice-vettore product | Ponte-01 | 1/3 | 🔄 |
+| Dot product (prodotto scalare) | `np.dot(a,b)` o `a @ b`: somma element-wise dei prodotti `a_i * b_i`. Output: uno scalare. Base di `z = x·w + b` in regressione/Dense | Ponte-01 | 1/3 | 🔄 |
+| Norma euclidea (L2) | "Lunghezza" del vettore: `sqrt(sum(v_i^2))`. In NumPy: `np.linalg.norm(v)`. Sempre ≥ 0; zero solo per il vettore nullo. Misura grandezza, non direzione | Ponte-01 | 1/3 | 🔄 |
+| Normalizzazione | Dividere ogni componente per la norma → vettore di norma 1 (versore). Mantiene la direzione, scarta la grandezza. Indispensabile per cosine similarity efficiente | Ponte-01 | 1/3 | 🔄 |
+| Coseno (similarità) | Misura di "direzione comune" tra due vettori: `dot(a,b) / (||a|| * ||b||)`. Range [-1, +1]: +1 stessa direzione, 0 perpendicolari, -1 opposti. Su vettori normalizzati = `dot(a,b)` diretto | Ponte-01 | 1/3 | 🔄 |
+| Distanza euclidea | `sqrt(sum((a_i - b_i)^2))` → "distanza in linea retta" tra due punti/vettori. Diversa dal coseno: misura "lontananza", non direzione | Ponte-01 | 1/3 | 🔄 |
+| Algebra lineare | "La matematica delle frecce e delle tabelle di numeri": vettori, matrici, prodotti, trasformazioni. Fondamenta di ML/DL: ogni rete neurale = sequenza di prodotti matrice-vettore + funzioni non-lineari | Ponte-01 | 1/3 | 🔄 |
+| `numpy.linalg.norm` | `linalg` = linear algebra. Modulo NumPy con norm, det, inv, eig, ecc. `np.linalg.norm(v)` = norma euclidea (L2) di default | Ponte-01 | 1/3 | 🔄 |
+
 ---
 
 ## Domande Fatte Durante i Capitoli
@@ -904,6 +919,21 @@ completezza del self-check e chiedere correzioni.
 | 3 | Perché un import inutile è un problema in cloud? | Build più lenta, possibili conflitti di versione, superficie di attacco/maintenance maggiore, confusione per chi legge |
 | 4 | FN nel dominio documentale | Pratica alterata (classe 1) classificata come genuina (classe 0) — il rischio più grave, motiva l'uso di `recall` come metrica primaria |
 
+### Cap.01 Ponte Matematico — Vettori da zero
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | `||V||` — cosa indica la doppia barra | Norma del vettore V (di default norma euclidea/L2); è uno scalare ≥ 0 = "lunghezza dello spostamento" |
+| 2 | Norma vs Coseno: cosa misura cosa | Norma = grandezza/lunghezza (`sqrt(sum(v_i^2))`); Coseno = direzione/forma (`dot(a,b)/(||a||·||b||)`) |
+| 3 | Perché si quadrano gli elementi nella norma | (a) Elimina i segni (componenti negative non si "annullano"); (b) Pesa di più le componenti grandi (scarto principale) — concetto di varianza |
+| 4 | Coseno indefinito su vettore nullo — perché | Norma di un vettore nullo è 0 → divisione per zero; intuitivamente: un vettore senza grandezza non ha direzione definibile |
+| 5 | Normalizzare = ? | Dividere ogni componente per la norma → versore (norma = 1). Mantiene la direzione, scarta la grandezza. Su vettori normalizzati il coseno = `dot(a,b)` diretto |
+| 6 | Direzione in spazi alti (>3D) — cosa significa | Non è "verso dove punta nello spazio" (visivamente impossibile); è il "rapporto/pattern relativo tra le componenti". Due vettori hanno coseno alto se le proporzioni tra le loro componenti sono simili |
+| 7 | Come si collega il coseno al RAG (M4-M6) | Embeddings = vettori che catturano significato; cercare "documenti simili a query" = top-k coseni più alti tra embedding query e embeddings dei chunk → retrieval |
+| 8 | Differenza `np.array` vs `np.ndarray` | `np.ndarray` = la classe (TIPO); `np.array(...)` = funzione factory che crea ndarray. Per type hint: `np.ndarray` (o `numpy.typing.NDArray`) |
+| 9 | `iloc` vs `loc` per accesso a celle | `iloc[i, j]` solo indici numerici (int); `loc[i, "col"]` etichette (chiavi). Mai mescolare etichette stringa in `iloc` |
+| 10 | Algebra lineare in una frase | "La matematica delle frecce e delle tabelle di numeri": grammatica per descrivere trasformazioni lineari di dati. Fondamenta di tutto il ML/DL |
+
 ---
 
 ## Pattern di Errore Ricorrenti — Solo Attivi
@@ -919,6 +949,9 @@ completezza del self-check e chiedere correzioni.
 | 20 | **Anti-pattern valutazione vs feature engineering** | 🟡 In miglioramento | Quiz cap.01 + rinforzo cap.02 |
 | 21 | **Tupla accidentale `(x, n)` al posto di `round(x, n)`** | 🟡 In miglioramento | Rinforzo dedicato cap.03; quiz ok |
 | 22 | **Riutilizzo variabili tra esercizi sequenziali nello stesso `.py`** | 🟡 Nuovo | Rischio disallineamento ultimo `fit` vs nome variabile (es. `modello_lineare` vs `modello_lineare_scalato`) |
+| 23 | **Virgole a fine chiamata `func(...),` creano tuple inutili** | 🟡 Nuovo (Ponte cap.01) | Nelle sezioni 4.2 e 5.1 ha scritto `ax.quiver(...)`, `plt.savefig(...), plt.close(...)` come "scorciatoia per stare in 8 righe": Python interpreta come tupla `(None, None)`. Anti-pattern stilistico, non bug runtime. Rinforzo cap.02 Ponte. |
+| 24 | **`iloc[i, "col_str"]` (etichetta) vs `loc`/parentesi quadre** | 🟡 Nuovo (Ponte cap.01) | Nel mini-progetto ha usato `pratiche.iloc[i, "pratica_id"]` → TypeError. `iloc` accetta solo INDICI numerici (riga, colonna come int), `loc` accetta etichette. Alternativa: `pratiche.iloc[i]["pratica_id"]`. Rinforzo cap.02 Ponte. |
+| 25 | **Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Nuovo (Ponte cap.01) | Nelle funzioni `norma` e `coseno` ha scritto `def norma(v: np.array)`. `np.array` è la FACTORY function, il tipo è `np.ndarray`. Per type hint moderni: `from numpy.typing import NDArray; def norma(v: NDArray) -> float`. Rinforzo cap.02 Ponte. |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠️ Da consolidare | 🟢 Superato
 
@@ -947,7 +980,7 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠�
 - **Durata M1**: 17/02/2026 – 25/03/2026 (~5 settimane, 12 capitoli)
 - **Ritmo effettivo**: ~1 file ogni 2-3 giorni
 - **Tempo totale stimato per il corso**: 7-9 mesi (corso + MVP)
-- **Sessione corrente**: 11
+- **Sessione corrente**: 18
 
 ---
 
@@ -975,6 +1008,10 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠�
 | "if var: vs if var is not None:" | `if var:` è falsy per 0/""/None/False/[]; per numeri opzionali (che possono valere 0) usare `is not None` | `if ($var)` vs `isset($var)` / `!== null` in PHP | 12 | Parametri opzionali FastAPI, validazione input, configurazione |
 | "Feature = ingredienti, modello = chef" | Le feature sono i dati preparati e pronti; il modello li "cucina" per produrre una previsione | Come preparare gli ingredienti prima di cucinare | M2-01 | Feature engineering, pipeline ML, preprocessing |
 | "Anomaly detection = allarme antifurto" | Non sa chi è il ladro, ma riconosce che qualcosa è fuori posto rispetto alla norma | Sistema di allarme che rileva movimenti anomali | M2-01 | Unsupervised learning, anomaly_score, pattern sconosciuti |
+| "Vettore = lista di istruzioni di spostamento" | Un vettore è un'istruzione `[dx, dy, dz, ...]`: "vai 3 a destra, 2 in su"; senza un punto di partenza è solo un movimento, non una posizione | Array JS / array PHP come "lista di passi" | Ponte-01 | Embeddings (M4), feature vector (M3), gradiente come vettore |
+| "Norma = lunghezza/grandezza, Coseno = direzione/forma" | La norma misura quanto è lungo lo spostamento (sempre rispetto allo zero); il coseno misura solo verso dove punta, ignorando la lunghezza | Ipotenusa di un triangolo (norma) vs angolo della retta (coseno) | Ponte-01 | Similarità embeddings (M4), cosine similarity in RAG (M6), normalizzazione feature (M3) |
+| "Normalizzare = portare a lunghezza 1 mantenendo la direzione" | Dividi ogni componente per la norma → ottieni un vettore con norma 1 (versore). La direzione è preservata, la grandezza scartata. Utile per confrontare SOLO la forma | Ridurre tutto in scala 0-1 prima di confrontare prezzi di prodotti diversi | Ponte-01 | Cosine similarity con vettori normalizzati (dot product diretto), normalizzazione embeddings RAG (M6) |
+| "Pratica simile = pratica con coseno alto rispetto alla query" | Per trovare le pratiche più "simili in pattern" a una pratica X, calcoli il coseno X vs ogni altra pratica e prendi le top-k | Cercare prodotti simili in base alle caratteristiche, non al prezzo assoluto | Ponte-01 | Retrieval RAG (M6), nearest-neighbor search, recommendation systems |
 
 ### Come usare questa sezione
 Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente:
@@ -1050,6 +1087,22 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - Pulizia deploy: rimuovere import inutili (riducono build time, superficie di attacco e conflitti di versione); leggere i log Streamlit Cloud è la prima diagnostica (FileNotFoundError = path; ModuleNotFoundError = requirements).
 - **Deliverable LIVE**: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/ — primo URL portfolio.
 
+### Cap.01 Ponte Matematico — Vettori da zero (completato; voto difficoltà: **9**/10)
+- Vettore come `np.ndarray` 1D: shape `(n,)`, dtype, distinzione vettore-libero vs vettore-posizione, intuizione "lista di istruzioni di spostamento" e "punto nello spazio se ancorato all'origine".
+- Operazioni element-wise: somma/differenza/prodotto (scalare e tra vettori), distinzione operazioni element-wise NumPy vs operazioni "tra vettori" in algebra lineare.
+- **Dot product** (`np.dot(a,b)` = `a @ b`): somma element-wise dei prodotti `a_i * b_i`, output scalare. Collegamento esplicito a `z = x · w + b` di regressione lineare/logistica e a `contrib = x_scaled * coef` del cap.06 M2 (motivi_top3).
+- **Norma euclidea** (L2): `np.linalg.norm(v) = sqrt(sum(v_i^2))`. Funzione `norma(v) -> float` implementata con `np.linalg.norm` + cast esplicito; comprensione del perché si quadrano (segno + peso scarti grandi → varianza).
+- **Normalizzazione**: divisione element-wise per la norma → versore (lunghezza 1). Mantiene direzione, scarta grandezza. Reso visivamente con PNG didattici (`figures/04_normalizza_norma1.png`, `05_coseno_vs_distanza.png`).
+- **Coseno** (`coseno(a, b)`): formula `dot(a,b) / (||a|| * ||b||)`, range [-1, +1]. Funzione robusta con controllo `shape mismatch` (early return) e `vettore nullo` via `np.linalg.norm == 0`. Verificata su vettori paralleli (cos=1), perpendicolari (cos=0), opposti (cos=-1).
+- **Coseno vs distanza euclidea**: due metriche distinte. Coseno = "stessa direzione/forma proporzionale", Euclidea = "vicinanza assoluta". Esempio: `[1,2,3]` e `[10,20,30]` hanno coseno 1 (stessa direzione) ma distanza grande.
+- **Direzione in spazi alti-dimensionali**: capito come "rapporto proporzionale tra componenti" — non è una freccia visualizzabile, ma un pattern di pesi relativi. Una pratica con coseno alto rispetto a un'altra ha le stesse "proporzioni interne" tra feature, anche se i valori assoluti differiscono.
+- **Mini-progetto top-k similarità**: `classifica_per_similarita(pratiche, pratica_id_query, k)` → top-k pratiche più simili per coseno (escludendo la query stessa). Preludio diretto a embeddings (M4) e retrieval RAG (M6). Iterazione `df.iterrows()`, conversione `Series.to_numpy(dtype=float)`, sorting con `sorted(..., key=lambda x: x[1], reverse=True)`, slicing `[:k]`, validazione `k ≤ len-1`.
+- **Tooling Matplotlib**: `fig, ax = plt.subplots()`, `ax.quiver(x, y, dx, dy)` per disegnare vettori-frecce, `set_aspect('equal')`, `fig.savefig` + `plt.close`. Generati 5 PNG didattici riusabili come materiale visivo.
+- **Tag esercizi**: NumPy/algebra lineare, retrieval mini-progetto preludio RAG, debug shape (mini-progetto), refactoring funzione `coseno` (più round di feedback su robustezza ed efficienza).
+- **Lacuna #12 (NumPy shape)**: chiusa definitivamente — uso autonomo di `.shape`, `dtype`, controlli early-exit su `shape != shape`, conversioni `to_numpy(dtype=float)` corrette.
+- **Pattern emersi (#23 virgole→tuple, #24 iloc/loc, #25 type hint NumPy)**: registrati per rinforzo nel cap.02 Ponte.
+- **Deliverable**: `ponte_matematico_m2_m3/01_vettori_da_zero.py` (1020 righe, completo) + `genera_infografiche_png.py` + 5 PNG didattici in `figures/`.
+
 ---
 
 ## Checklist di Auto-Revisione (prima di consegnare il codice)
@@ -1124,6 +1177,18 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | Confusion matrix / TP FP FN TN | 13/04 (cap.04 M2) | ✅ cap.04 teoria + esercizi | — | — | 🟡 Praticato |
 | predict_proba / score_genuinita | 13/04 (cap.04 M2) | ✅ PARTE 4 + es.7-8 + `modello_base` | — | — | 🟡 Praticato |
 
+### Concetti Ponte Matematico — Algebra lineare base (da popolare man mano)
+
+| Concetto | Appreso il | Rivisto (3gg) | Rivisto (7gg) | Rivisto (14gg) | Stato |
+|----------|-----------|---------------|---------------|----------------|-------|
+| Vettore + shape `(n,)` | 30/04 (cap.01 Ponte) | da fare in cap.02 Ponte (mini-esercizi ripasso) | — | — | 🟡 Praticato (sezioni 1.1-1.2) |
+| Operazioni base element-wise | 30/04 (cap.01 Ponte) | da fare in cap.02 Ponte | — | — | 🟡 Praticato (sezioni 2.1-2.2) |
+| Dot product (`np.dot` / `@`) | 30/04 (cap.01 Ponte) | da fare in cap.02 Ponte (rinforzato come matrice-vettore product) | — | — | 🟡 Praticato (sez. 3 + mini-progetto) |
+| Norma euclidea | 30/04 (cap.01 Ponte) | da fare in cap.02 Ponte | — | — | 🟡 Praticato (sez. 4 + funzione `norma`) |
+| Normalizzazione (versore) | 30/04 (cap.01 Ponte) | M3 (input scaling reti neurali) | — | — | 🟡 Praticato (sez. 5) |
+| Coseno (similarità) | 30/04 (cap.01 Ponte) | M4 (embedding similarity) e M6 (retrieval RAG) | — | — | 🟡 Praticato (sez. 5 + mini-progetto top-k) |
+| Distanza euclidea | 30/04 (cap.01 Ponte) | M3 (loss MSE), M4 (k-NN come baseline) | — | — | 🟡 Vista (PNG didattico) |
+
 > **Regola per l'agente**: questa tabella va estesa a ogni nuovo capitolo M2+.
 > I concetti M1 con stato OK/Consolidato restano come riferimento ma non richiedono piu ripasso attivo.
 > Al Passo 13 (fine modulo), i concetti del modulo chiuso in stato OK vengono rimossi da qui e migrati nell'archivio.
@@ -1164,7 +1229,11 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 15 | Anti-pattern di valutazione modello | Verifica/01_M2 | Alla domanda "anti-pattern valutazione" ha descritto un errore di feature selection ("feature non coerenti"), non il classico anti-pattern: valutare su training set o fare tuning guardando il test set. | 02_M2 | 🟢 |
 | 16 | Scala `prob_alterato` (0–1) vs `score_genuinita` (0–100) | Rinforzo/05_M2 | Ha risposto `score_genuinita = 0.55` invece di `55` (stessa informazione ma scala sbagliata). | 06_M2 | 🟡 |
 | 17 | Droppare ID + target (nomi colonne reali) | Rinforzo/05_M2 | Ha scritto `df.drop(['id','target'])` in modo astratto: concetto giusto, ma sul mock le colonne sono `pratica_id` e `y_alterato`. | 06_M2 | 🟡 |
-| 18 | Recall: denominatore corretto (TP+FN, non TP+FP) | Ingresso/05_M2 | Nel ragionamento su accuracy vs recall ha scritto `recall = TP/(TP+FP)` e un caso `0/0`. In realtà recall (classe 1) = `TP/(TP+FN)`; nel caso “predico tutti genuini”: TP=0, FN>0 ⇒ recall=0. | 06_M2 | 🟡 |
+| 18 | Recall: denominatore corretto (TP+FN, non TP+FP) | Ingresso/05_M2 | Nel ragionamento su accuracy vs recall ha scritto `recall = TP/(TP+FP)` e un caso `0/0`. In realtà recall (classe 1) = `TP/(TP+FN)`; nel caso “predico tutti genuini”: TP=0, FN>0 ⇒ recall=0. | 06_M2 | 🟢 |
+| 19 | Type hint NumPy: `np.array` vs `np.ndarray` | Sezione 4.1/5.1 cap.01 Ponte | Ha usato `def norma(v: np.array) -> float`. `np.array` è una factory function, non un tipo. Type hint corretto: `np.ndarray` o `numpy.typing.NDArray` | Ponte-02 | 🔴 |
+| 20 | Stile chiamate Matplotlib: virgole a fine riga creano tuple | Sez. 4.2 e 5.1 cap.01 Ponte | Per stare dentro al limite di righe ha scritto `ax.quiver(...),` e `plt.savefig(...), plt.close(...)`: Python interpreta come tupla `(None, None)`. Anti-pattern stilistico. Soluzione: usare line continuation `\` o riga normale | Ponte-02 | 🔴 |
+| 21 | `iloc` con etichetta stringa | Mini-progetto cap.01 Ponte | Ha scritto `pratiche.iloc[i, "pratica_id"]` → TypeError. `iloc` accetta SOLO indici numerici. Per accesso misto: `pratiche.iloc[i]["pratica_id"]` oppure `pratiche.loc[i, "pratica_id"]` | Ponte-02 | 🔴 |
+| 22 | Check "vettore nullo" — `a.sum() == 0` non equivale a vettore zero | Sezione 5.1 cap.01 Ponte | Ha usato `if a.sum() == 0` per detectare vettore nullo. Bug: `[1, -1]` ha somma 0 ma non è il vettore zero. Corretto: `if np.linalg.norm(a) == 0` (o `np.all(a == 0)`) | Ponte-02 | 🟡 (autocorretto dopo feedback) |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
@@ -1833,6 +1902,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 30/04/2026 | **Chiusura cap.01 Ponte Matematico**: Stato Attuale, Ultima Sessione, Prossimo Cap, Difficoltà media (~6.7 con voto **9**/10 confermato), Sessione corrente → 18, Pattern #23/#24/#25 (NUOVI: virgole→tuple, iloc/loc, np.array vs np.ndarray), Lacuna #12 → **🟢 Superato** (assorbita dal cap.01 Ponte), Lacuna #19/#20/#21/#22 NUOVE, Anomalia cap.07 M1 chiusa per assorbimento, Glossario "Ponte Matematico" creato, Domande cap.01 Ponte registrate (10 entry), Ponti Mentali (5 nuovi: vettore=istruzione, norma=lunghezza/coseno=direzione, normalizzare=norma1, pratica simile=coseno alto, ecc.), Competenze "Cap.01 Ponte Matematico", Ripasso programmato (sezione Ponte Matematico), Changelog. Cap.02 Ponte da CREARE con rinforzi #23/#24/#25 + sezione mini-esercizi "ripasso 5 blocchi" richiesta dallo studente. | Chiusura capitolo formale con handshake studente | Tutte le sezioni di Stato + Pattern + Lacune + Glossario + Domande + Ponti + Competenze + Ripasso + Changelog |
 | 13/04/2026 | **Regola 13** (progetto incrementale): `modello_base.py` è scritto dallo studente; il mentor non inserisce codice nel file salvo richiesta esplicita. | Evitare che il mentor “consegni” il deliverable progressivo al posto dello studente | Regole progetto incrementale, Changelog |
 | 13/04/2026 | Chiusura cap.04 M2: Stato, Ultima Sessione, Prossimo Cap, Moduli Successivi, Valutazioni (M2-04 **7**/10 confermato studente), Glossario (classificazione), Domande cap.04, Competenze, Ripasso M2, Progresso progetto, Colloquio roadmap M2, Changelog. Rinforzi iniziali in `05_overfitting_validazione.py`. | Handshake chiusura capitolo 4 M2 | Stato, Valutazioni, Glossario, Domande, Competenze, Ripasso, Progetto, Prossimo Cap, Changelog, cap.05 |
 | 13/04/2026 | Rettifica voto difficoltà M2-04: da 8 → **7**/10; media difficoltà ~6.4 | Conferma Gianluca post-chiusura | Stato Attuale, Valutazioni, Competenze, Changelog |
