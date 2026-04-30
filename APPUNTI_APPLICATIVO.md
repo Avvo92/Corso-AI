@@ -2,6 +2,14 @@
 
 > Documento vivo: aggiornalo a ogni decisione importante.
 > Obiettivo: trasformare l'idea in specifiche chiare, implementabili e verificabili.
+>
+> **Componenti del prodotto** (unico applicativo end-to-end):
+> - **Validator** (questo documento): rileva incoerenze e produce esito decisionale.
+> - **Fixer** (vedi `APPUNTI_TOOL_FIXING.md`): propone correzioni motivate con
+>   approvazione umana e ri-validazione automatica.
+>
+> I due componenti condividono terminologia, schema canonico (`DATA_CONTRACT_v0.1`),
+> motore regole, base conoscenza RAG e UI.
 
 ---
 
@@ -12,6 +20,8 @@ Costruire un applicativo che aiuti un consulente bancario a valutare la genuinit
 - analisi documentale automatica
 - controlli incrociati multi-documento
 - spiegazioni leggibili per operatore
+- proposte di correzione assistite e ri-validazione automatica (vedi
+  `APPUNTI_TOOL_FIXING.md`)
 - tracciamento completo per audit/compliance
 
 ---
@@ -77,6 +87,13 @@ Note:
 - Controlli superati/falliti (`check_results`, lista strutturata regole deterministiche)
 - Evidenze e fonti usate (`evidenze`)
 - Azione consigliata all'operatore (`azione_consigliata`)
+- Output del Fixer integrato (vedi `APPUNTI_TOOL_FIXING.md` sezione 5):
+  - `proposte_fix` (lista `FixProposal`)
+  - `fix_applicati` (lista `FixApplied`)
+  - `stato_fixing` (`NESSUN_FIX_NECESSARIO` / `FIX_PROPOSTI` / `FIX_APPLICATI` /
+    `NEEDS_REVIEW` / `BLOCCATO_FRODE_SOSPETTA`)
+  - `re_validation` (delta semaforo dopo apply)
+  - `audit_trail_fix`
 
 ---
 
@@ -120,6 +137,21 @@ Note:
 - revisione umana casi gialli/rossi
 - active learning: feedback umano usato per migliorare modello
 
+### 6.7 Riparazione assistita (Fixer)
+
+> Specifica completa in `APPUNTI_TOOL_FIXING.md`. Qui solo i requisiti che
+> il prodotto principale deve esporre.
+
+- generazione di `proposte_fix` per ogni `check_result` fallito o evidenza
+  con `severity = fixable`
+- approvazione esplicita dell'operatore (Approve/Reject) per ogni proposta
+- override umano con fonte (es. "il nome corretto e Marlo") che genera
+  proposte di uniformazione inter-documento
+- ri-validazione automatica post-apply (loop `validate -> propose -> apply -> validate`)
+- blocco fix sostanziali su segnali frode severi (`semaforo = rosso`):
+  consentite solo richieste di originale/seconda fonte/revisione senior
+- audit fix integrato nell'audit trail della pratica
+
 ---
 
 ## 7) Requisiti non funzionali
@@ -141,8 +173,12 @@ Note:
   - motore regole
   - scoring anomalia
   - RAG
-- Database operativo: pratiche, documenti, esiti, audit
-- Vector DB: base conoscenza normativa/procedurale
+  - **Fixer Engine** (vedi `APPUNTI_TOOL_FIXING.md` sezione 8):
+    - `proposer` (genera `FixProposal` da `check_results` + RAG)
+    - `applier` (applica fix approvati su record canonico e/o PDF)
+    - `re_validator` (richiama il motore regole post-fix)
+- Database operativo: pratiche, documenti, esiti, audit, **fix proposti/applicati**
+- Vector DB: base conoscenza normativa/procedurale **condivisa Validator + Fixer**
 - Desktop wrapper (fase successiva): Electron/Tauri
 
 Decisione da fissare:
@@ -188,6 +224,24 @@ Strategia:
 - usare il dataset reale dello studente durante il corso, quando coerente con capitolo/esercizi deliverable
 - lavorare per subset progressivi (non ingestione massiva iniziale)
 - applicare anonimizzazione/pseudonimizzazione prima dell'uso didattico-operativo
+
+### Decisione 30/04/2026 — Deliverable visivo M3 (busta paga vs altro)
+
+- **Scopo didattico**: deliverable cap.07 M3 = classificatore CNN binario "busta paga vs non-busta paga" + demo Gradio + deploy HuggingFace Spaces (portfolio piece #2).
+- **Scopo prodotto**: l'output diventa una feature aggiuntiva nel modello supervisionato M2 per smistamento iniziale dei documenti caricati dall'operatore (`prob_busta_paga_visivo`).
+- **Dataset (confermato dallo studente)**:
+  - ~200 buste paga reali del proprio archivio professionale
+  - ~200 immagini "altro" da raccogliere da dataset pubblici (fatture, contratti, foto generiche) prima del cap.05 M3
+- **Vincoli operativi BLOCCANTI (privacy/GDPR)**:
+  1. Le buste paga reali NON si caricano mai su Colab/cloud nello stato originale.
+  2. Pipeline di anonimizzazione PRIMA del training: script locale che applica maschere nere o blur su nome/CF/IBAN/indirizzi con `cv2.rectangle` (per il classificatore busta-paga-vs-altro interessa il **layout grafico**, non il testo).
+  3. La cartella con le buste paga (anche anonimizzate) va in `.gitignore` PRIMA di iniziare il cap.05 M3. Mai committare nel repo.
+  4. Su Colab si caricano SOLO le immagini anonimizzate.
+- **Step a livello di capitolo**:
+  - Cap.05 M3 — primo training su dataset pubblico low-stakes (Fashion-MNIST/CIFAR), niente buste paga.
+  - Cap.06 M3 — transfer learning con ResNet pre-addestrata + script `anonimizza_buste.py` + setup dataset.
+  - Cap.07 M3 — fine-tuning ResNet su busta-paga-vs-altro + Gradio + deploy.
+- **Estensione futura (M3 bonus o M8)**: una volta acquisita la classificazione "busta paga vs altro", estendere a "alterato vs genuino" (segnali grafici di alterazione: font incoerenti, pixel editati, artefatti compressione) come fine-tuning aggiuntivo.
 
 ---
 
@@ -366,6 +420,11 @@ Per essere utile e competitivo gia in pilot:
 - [ ] Coda revisione e note revisore
 - [ ] Audit export per pratica
 - [ ] KPI operativi visibili in dashboard
+- [ ] Fixer integrato (vedi `APPUNTI_TOOL_FIXING.md` sezione 14):
+  - [ ] `proposte_fix` per pratica con motivazione e prove
+  - [ ] Approve/Reject per ogni proposta + ri-validazione automatica
+  - [ ] Blocco fix sostanziali su `semaforo = rosso` per frodi severe
+  - [ ] Audit fix base (chi/quando/perche/prove)
 
 ---
 
@@ -672,10 +731,13 @@ DoD:
 | D3 | Lista definitiva documenti P0 pilot | Gianluca | 2026-04-10 | in_progress | Scope MVP |
 | D4 | Modalita audit export minima (formato e contenuti) | Mentor | 2026-04-25 | todo | Compliance operativa |
 | D5 | Priorita integrazione esterna (se presente) | Gianluca + Mentor | 2026-05-05 | todo | Roadmap R1-R3 |
+| D6 | Adozione `APPUNTI_TOOL_FIXING.md` come spec ufficiale del Fixer integrato | Gianluca + Mentor | 2026-05-15 | in_progress | Architettura R0-R2, MVP, KPI |
 
 Regola:
 
 - nessuna decisione bloccante resta `todo` oltre la target date senza nuova data esplicita.
+- le decisioni aperte specifiche del Fixer (F1-F5) sono in `APPUNTI_TOOL_FIXING.md`
+  sezione 18.5 - non duplicarle qui.
 
 ---
 
@@ -721,4 +783,11 @@ NEXT STEP:
 - 2026-03-19: Creato file appunti operativo con struttura completa.
 - 2026-03-19: Integrato studio competitor e trasformato il file in roadmap esecutiva competitiva (waterfall, forensics, HITL, score+routing, audit, release plan).
 - 2026-03-19: Migliorata governabilita v0.1: owner aggiunti alla roadmap 90 giorni, sezione Open questions allineata a OPEN_DECISIONS, versioning policy Waterfall introdotta.
+- 2026-04-30: Integrato il **Tool di Fixing** come componente del prodotto:
+  creato `APPUNTI_TOOL_FIXING.md` (spec v0.1) e aggiornate le sezioni 1, 5, 6,
+  8, 16, 18.6 per esporre output canonico del Fixer (`proposte_fix`,
+  `stato_fixing`, `re_validation`, `audit_trail_fix`), Fixer Engine in
+  architettura, MVP must-have e decisione aperta D6. Validator + Fixer
+  costituiscono ora un unico applicativo end-to-end di "Validazione e
+  Riparazione assistita" con KB RAG e schema canonico condivisi.
 

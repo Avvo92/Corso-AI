@@ -1415,7 +1415,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M2 cap.03 — Regressione | ✅ Completato | Confronto lineare vs albero + scaling; `motivi_top_n`/motivi_top3; `modello_base.py` esteso (metriche + spiegabilità) |
 | M2 cap.04 — Classificazione | ✅ Completato | Metriche classificazione, semaforo, coefficienti logistica; `modello_base.py` con sezione classificazione + assert recall |
 | M2 cap.05 — Overfitting/Validazione | ✅ Completato | CV su train (media±std), bias-varianza, distinzione tuning vs test; `modello_base.py`: `Pipeline(StandardScaler + LogisticRegression)` in `cross_val_score` per evitare leakage intra-fold |
-| M3 — DL & CV | ⬜ Da fare | |
+| M3 — DL & CV | 🟡 Pianificato | Deliverable cap.07 deciso (30/04/2026): classificatore "busta paga vs altro" su 200 buste paga reali anonimizzate + ~200 immagini "altro" da dataset pubblici. Vincoli privacy/GDPR documentati nella sezione "Computer Vision nel Prodotto". |
 | M4 — NLP | ⬜ Da fare | |
 | M5 — LLM | ⬜ Da fare | |
 | M6 — RAG | ⬜ Da fare | |
@@ -1647,6 +1647,23 @@ Il modello supervisionato lavora su feature numeriche strutturate. Ma i document
 - queste anomalie richiedono un modello CNN/DL che analizza l'immagine del documento
 - al Modulo 3 (DL & CV): il progetto incrementale deve costruire un classificatore visivo che, dato un documento scansionato, rileva segnali grafici di alterazione
 - l'output del modello CV si integra come feature aggiuntiva nel modello supervisionato principale
+
+#### Decisione 30/04/2026 — Target deliverable cap.07 M3
+
+- **Deliverable scelto**: classificatore binario **busta paga vs non-busta paga** su immagini reali del dominio.
+- **Dataset disponibile (confermato dallo studente)**: ~200 buste paga reali utilizzabili.
+- **Classe negativa "altro"**: ~200 immagini da dataset pubblici (fatture, contratti, foto generiche) — da raccogliere prima del cap.05 M3.
+- **Vincoli privacy/GDPR (BLOCCANTI)**:
+  1. Le buste paga reali NON possono essere caricate su Colab senza preprocessing di anonimizzazione.
+  2. Anonimizzazione PRIMA del training: oscurare nome, codice fiscale, IBAN, indirizzi con `cv2.rectangle` (mask nere) o blur localizzato. Per il training del classificatore visivo (busta paga vs altro) interessa solo il **layout grafico**, non il testo.
+  3. Pipeline di preprocessing (cap.05 M3): script locale `anonimizza_buste.py` che riceve PDF/JPG originali, applica le maschere, esporta in `data/buste_anonimizzate/`. SOLO la cartella anonimizzata viene caricata su Colab.
+  4. Mai committare le buste paga (anche anonimizzate) nel repo: aggiungere `data/buste_*/` a `.gitignore` PRIMA del cap.05 M3.
+- **Roadmap ramo visivo nei capitoli M3**:
+  - **Cap.05 M3** (`05_cnn_computer_vision.py`): primo training su dataset pubblico low-stakes (Fashion-MNIST o CIFAR) per imparare CNN da zero — niente buste paga.
+  - **Cap.06 M3** (`06_transfer_learning.py`): introduzione transfer learning con ResNet pre-addestrata + script anonimizzazione + setup dataset buste paga anonimizzate.
+  - **Cap.07 M3** (`07_progetto_gradio.py`): fine-tuning ResNet su busta-paga-vs-altro + demo Gradio + deploy HuggingFace Spaces. **Portfolio piece #2**.
+- **Obiettivo successivo (M3+)**: una volta acquisito il classificatore "busta paga vs altro", estenderlo a "alterato vs genuino" su buste paga è un fine-tuning aggiuntivo (cap. bonus M3 oppure rimandato a M8 fine-tuning per maggiore precisione).
+- **Integrazione con prodotto**: l'output del classificatore (probabilità "è una busta paga") diventa una **feature aggiuntiva** nel modello supervisionato M2 (`prob_busta_paga_visivo`), utile per smistamento iniziale dei documenti caricati dall'operatore.
 
 ### AI-Assisted Feature Extraction (per volumi reali)
 
@@ -1902,6 +1919,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 30/04/2026 | **Decisione M3 — target deliverable cap.07**: scelto "busta paga vs non-busta paga" su immagini reali (vs. opzione più semplice "MNIST-like"). Studente conferma di avere ~200 buste paga utilizzabili. Documentati 3 vincoli privacy/GDPR bloccanti (anonimizzazione preprocessing, mai committare buste, mai caricare originali su Colab). Roadmap ramo visivo M3 esplicitata nei cap.05/06/07. Progetto incrementale M3 → 🟡 Pianificato. | Pianificazione anticipata del modulo successivo per scegliere dataset di training fin dal cap.05 | Computer Vision nel Prodotto, Progresso del progetto, Changelog |
 | 30/04/2026 | **Chiusura cap.01 Ponte Matematico**: Stato Attuale, Ultima Sessione, Prossimo Cap, Difficoltà media (~6.7 con voto **9**/10 confermato), Sessione corrente → 18, Pattern #23/#24/#25 (NUOVI: virgole→tuple, iloc/loc, np.array vs np.ndarray), Lacuna #12 → **🟢 Superato** (assorbita dal cap.01 Ponte), Lacuna #19/#20/#21/#22 NUOVE, Anomalia cap.07 M1 chiusa per assorbimento, Glossario "Ponte Matematico" creato, Domande cap.01 Ponte registrate (10 entry), Ponti Mentali (5 nuovi: vettore=istruzione, norma=lunghezza/coseno=direzione, normalizzare=norma1, pratica simile=coseno alto, ecc.), Competenze "Cap.01 Ponte Matematico", Ripasso programmato (sezione Ponte Matematico), Changelog. Cap.02 Ponte da CREARE con rinforzi #23/#24/#25 + sezione mini-esercizi "ripasso 5 blocchi" richiesta dallo studente. | Chiusura capitolo formale con handshake studente | Tutte le sezioni di Stato + Pattern + Lacune + Glossario + Domande + Ponti + Competenze + Ripasso + Changelog |
 | 13/04/2026 | **Regola 13** (progetto incrementale): `modello_base.py` è scritto dallo studente; il mentor non inserisce codice nel file salvo richiesta esplicita. | Evitare che il mentor “consegni” il deliverable progressivo al posto dello studente | Regole progetto incrementale, Changelog |
 | 13/04/2026 | Chiusura cap.04 M2: Stato, Ultima Sessione, Prossimo Cap, Moduli Successivi, Valutazioni (M2-04 **7**/10 confermato studente), Glossario (classificazione), Domande cap.04, Competenze, Ripasso M2, Progresso progetto, Colloquio roadmap M2, Changelog. Rinforzi iniziali in `05_overfitting_validazione.py`. | Handshake chiusura capitolo 4 M2 | Stato, Valutazioni, Glossario, Domande, Competenze, Ripasso, Progetto, Prossimo Cap, Changelog, cap.05 |
