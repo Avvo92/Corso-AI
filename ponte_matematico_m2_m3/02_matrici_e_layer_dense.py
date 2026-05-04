@@ -133,44 +133,44 @@ import matplotlib.pyplot as plt
 # Q1) Cosa restituisce np.linalg.norm([3, 4])?
 #     Spiega anche PERCHE'.
 # TUA RISPOSTA:
-# ...
+# restituisce la norma euclidea, ossia la radice della somma dei quadrati degli elementi di un vettore=> sqrt(9 + 16) => 5. Si usa per definire la grandezza del vettore ([3, 4]).
 
 # Q2) Hai due vettori a = [1, 2, 3] e b = [2, 4, 6].
 #     Quanto vale coseno(a, b)? Senza calcolare a mano: che intuizione hai?
 # TUA RISPOSTA:
-# ...
+# Si può osservare che gli elementi di b sono il doppio degli elementi di a posizionati allo stesso indice. Senza fare calcoli, si può intuire che coseno(a, b) = 1, mentre la grandezza è esattamente il doppio, poiche' ||b|| = 2 * ||a||
 
 # Q3) np.dot([1, 2, 3], [4, 5, 6]) restituisce uno SCALARE o un VETTORE?
 #     Quale e' il valore?
 # TUA RISPOSTA:
-# ...
+# Il dot product restituisce uno scalare, poichè il suo risultato è la somma tra i prodotti delle moltiplicazioni degli elementi posizionati allo stesso indice di due vettori (anche detto somma di un prodotto element-wise di due vettori). Nel nostro caso , (1*4 + 2*5 + 3*6) = 32
 
 # Q4) Vero o Falso, e perche':
 #     "Se due vettori hanno coseno = 1.0, allora sono UGUALI."
 # TUA RISPOSTA:
-# ...
+# Falso. La risposta corretta è che hanno stessa direzione, ossia le loro direzioni li rendono paralleli. Se oltre a coseno 1 (direzione uguale) avessero anche norma uguale (stessa grandezza), allora potrebbero essere definiti uguali (salvo micro-errori di arrotondamento).
 
 # Q5) np.array([1, 2, 3]).shape vale (3,) o (1, 3)? Perche' importa?
 # TUA RISPOSTA:
-# ...
+# Vale (3,). E importante perchè nel nostro caso la shape descritta identifica un vettore mono-dimensionale. Se avesse shape (1, 3) staremmo descrivendo una matrice, nella fatti-specie scritta np.array([[1, 2, 3]])
 
 # Q6) Type hint: scriveresti "def f(v: np.array) -> float" o
 #     "def f(v: np.ndarray) -> float"? Spiega.
 # TUA RISPOSTA:
-# ...
+# Nel primo caso stiamo formulando il type hint in modo errato, poichè la sintassi np.array in realtà descrive la chiamata a un metodo della libreria Numpy. La secondo invece è la sintassi corretta, perchè descrive nella fatti-specie il type hint restituito dal metodo prima citato, ossia un array numpy.
 
 # Q7) [Trova l'errore] - Questo codice da' TypeError. Perche'?
 #       df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
 #       valore = df.iloc[0, "a"]
 #     Come lo sistemeresti?
 # TUA RISPOSTA:
-# ...
+# il metodo iloc accetta solo parametri numerici, mentre nel caso descritto sopra si sta usando una striga per travare la colonna con etichetta "a". Se "a" avesse indice 1, la scrittura corretta sarebbe df.iloc[0, 1] => trova l'elemento che si trova nella riga 0 , colonna 1.
 
 # Q8) [Feynman] Spiega con parole tue, come lo diresti a un collega web dev
 #     che non ha mai visto NumPy: cosa misura la NORMA di un vettore e cosa
 #     misura il COSENO fra due vettori? Niente formule, solo intuizione.
 # TUA RISPOSTA:
-# ...
+# La norma serve per descrivere la grandezza di un vettore, mentre il coseno indica la differenza di direzioni tra due vettori. Immaginando i vettori come delle freccie, la norma sarebbe la lunghezza della freccia. Il coseno invece la differenza di direzioni di due freccie confrontate tra loro, espressa tramite un valore che va da 1 (parallele) a -1 (opposte).
 
 
 # ==========================================================================
@@ -206,7 +206,12 @@ def _demo_pattern_23() -> None:
 #       plt.close(fig)
 # 2) Spiega in 1 riga COMMENTATA cosa cambia:
 # TUO CODICE QUI:
-# ...
+# prima oltre a dare le istruzioni necessarie a generare i grafico, stavamo anche creando tuple inutili.
+fig, ax = plt.subplots()
+ax.set_title("ciao")
+ax.set_xlim(-1, 1)
+ax.set_ylim(-1, 1)
+plt.close(fig)
 
 
 # ==========================================================================
@@ -247,9 +252,8 @@ def _demo_pattern_24() -> None:
 #   (b) ottenere il valore di "voto" per la riga in posizione 2
 df_demo = pd.DataFrame({"nome": ["Anna", "Bob", "Carla"], "voto": [7, 5, 9]})
 # TUO CODICE QUI:
-# riga_1 = ...
-# voto_2 = ...
-
+riga_series = df_demo.iloc[1, :]
+voto_riga_2 = df_demo['voto'].iloc[2]
 
 # ==========================================================================
 # RINFORZO Pattern #25 - np.array vs np.ndarray (factory vs tipo)
@@ -280,8 +284,8 @@ def _demo_pattern_25() -> None:
 #   def somma_due_vettori(a: np.array, b: np.array) -> np.array:
 #       return a + b
 # TUO CODICE QUI:
-# def somma_due_vettori(...) -> ...:
-#     return ...
+# def somma_due_vettori(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+#     return a + b
 
 
 # ==========================================================================
@@ -295,34 +299,60 @@ def _demo_pattern_25() -> None:
 # Crea un vettore NumPy con 6 elementi qualsiasi. Stampa la sua shape e
 # il suo dtype.
 # TUO CODICE:
-# ...
+print("\nMini-esercizio R1\n")
+v = np.array([1, 2, 3, 4, 5, 6], dtype=float)
+print(v.shape)
+print(v.dtype)
+
 
 # R2) OPERAZIONI BASE
 # Dati a = np.array([2, 4, 6]) e b = np.array([1, 1, 1]),
 # stampa: a + b, a - b, 2 * a, a * b
 # Quanti scalari produce ognuna? Quale e' element-wise?
 # TUO CODICE:
-# ...
+# Sono tutte operazione element-wise che producono vettori con shape sempre uguale
+print("\nMini-esercizio R2\n")
+a = np.array([2, 4, 6])
+b = np.array([1, 1, 1])
+print(a + b)
+print(a - b)
+print(a * b)
+print(2 * a)
 
 # R3) DOT PRODUCT (senza usare np.dot)
 # Dati x = np.array([1, 2, 3]) e w = np.array([10, 20, 30]),
 # calcola il dot product SENZA usare np.dot ne' "@".
 # Suggerimento: element-wise + .sum().
 # TUO CODICE:
-# ...
+print("\nMini-esercizio R3\n")
+x = np.array([1, 2, 3])
+w = np.array([10, 20, 30])
+dot = (x * w).sum()
+print(dot)
 
 # R4) NORMA EUCLIDEA (senza usare np.linalg.norm)
 # Dato v = np.array([3, 4]), calcola la norma USANDO solo np.sqrt e .sum().
 # Verifica che sia 5.0.
 # TUO CODICE:
-# ...
+print("\nMini-esercizio R4\n")
+v = np.array([3, 4])
+norma = np.sqrt((v**2).sum())
+print(norma)
 
 # R5) COSENO (usando la tua definizione mentale)
 # Dati a = np.array([1, 0]) e b = np.array([0, 1]), calcola il coseno
 # (devi ottenere 0.0). Ora prova con b = np.array([1, 0]) (devi ottenere 1.0).
 # TUO CODICE:
-# ...
-
+print("\nMini-esercizio R5\n")
+a = np.array([1, 0])
+b = np.array([0, 1])
+coseno = (a @ b) / (np.linalg.norm(a) * np.linalg.norm(b))
+print(coseno)
+assert np.isclose(coseno, 0.0)
+b = np.array([1, 0])
+coseno = (a @ b) / (np.linalg.norm(a) * np.linalg.norm(b))
+print(coseno)
+assert np.isclose(coseno, 1.0)
 
 # ==========================================================================
 # SEZIONE 1 - MATRICI COME BATCH DI PRATICHE
@@ -396,7 +426,23 @@ def _esempio_matrice() -> np.ndarray:
 #   X = X_full[:5]
 #
 # TUO CODICE QUI:
-# ...
+print("\nEsercizio 1.1\n")
+CSV_PATH = os.path.join(
+    os.path.dirname(
+        os.path.dirname(__file__)
+    ),
+    "modulo_02_ml",
+    "dati",
+    "pratiche_genuinita_mock.csv"
+)
+
+pratiche = pd.read_csv(CSV_PATH)
+X_full = pratiche.drop(columns=['pratica_id', 'y_alterato']).to_numpy(dtype=float)
+X = X_full[:5]
+print(X.shape)
+print(X.dtype)
+print(X[0])
+print(X[:, 0])
 
 
 # TODO 1.2 (5 minuti):
@@ -405,8 +451,13 @@ def _esempio_matrice() -> np.ndarray:
 #   (b) crea un vettore-colonna (5, 1) usando reshape o np.array([[x] for x in v])
 #   (c) stampa le 3 shape per verificare
 # TUO CODICE QUI:
-# ...
-
+print("\nEsercizio 1.2\n")
+v = np.array([10, 20, 30, 40, 50])
+vr = v.reshape(1, 5)
+vc = v.reshape(5, 1)
+print(v.shape)
+print(vr.shape)
+print(vc.shape)
 
 # ==========================================================================
 # SEZIONE 2 - PRODOTTO MATRICE-VETTORE: 1 OPERAZIONE = N DOT PRODUCT
