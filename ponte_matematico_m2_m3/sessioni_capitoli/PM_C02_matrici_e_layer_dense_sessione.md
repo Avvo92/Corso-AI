@@ -230,22 +230,40 @@
 - **Punti di forza:** **`v`** corretto; **`vr = v.reshape(1, 5)`** → **`(1, 5)`**; **`vc = v.reshape(5, 1)`** → **`(5, 1)`** (alternativa alla list comprehension, esplicitamente ammessa); stampa delle **tre shape** **`v`**, **`vr`**, **`vc`** come richiesto.
 - **Refuso:** `print("\nEsercizio 1.1\n")` dovrebbe essere **1.2** (stesso tipo di errore già visto su R1/R2).
 
-### [YYYY-MM-DD] — Sezione 2.1 (`punteggio_batch(X, w, b)`)
+### [2026-05-04] — Sezione 2.1 (`punteggio_batch(X, w, b)`)
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — Sez. 2.1.
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
-- **Note ponte M2:** verificare che lo studente colleghi `X @ w + b` a "tutti i `z` del cap.06 calcolati in un colpo solo".
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~512–541) — TODO 2.1.
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**
+- **Punti di forza:** verifica **`X.shape[1] != w.shape[0]`** + **`ValueError`**; corpo **`X @ w + b`** corretto (shape **`(N,)`**); hint **`NDArray[np.float64]`** (ok per Pattern #25, meglio di `np.array`); test manuale con **`X`**, **`w`**, **`b`** coerenti con `_esempio_punteggio_batch`.
+- **Cosa migliorare:** manca **`-> NDArray[np.float64]`** (o `np.ndarray`) sul **`return`**; **`b: np.float64`** è rigido — in chiami passi spesso un **`float`** Python (`0.1`); più idiomatico **`float`** o **`float | np.floating`**; messaggio errore un po’ impreciso (“shape uguale” → meglio **“numero di feature di X e lunghezza di w devono coincidere”**); **`from numpy.typing import NDArray`** a metà file — preferibile in cima al modulo (stile).
+- **Note ponte M2:** `X @ w + b` = tutti gli **`z`** del batch in un colpo solo — OK.
 
-### [YYYY-MM-DD] — Sezione 2.2 (lento vs veloce + benchmark)
+### [2026-05-04] — Sezione 2.1 — rivalutazione (righe ~521–542)
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — Sez. 2.2.
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` — TODO 2.1 stato corrente.
+- **Valutazione (codice aggiornato):** **9.5/10** (scala 1–10)
+- **Punti di forza:** **`b: float`**; **`-> NDArray[np.float64]`**; messaggio errore più chiaro (allineamento batch ↔ pesi); logica invariata e corretta.
+- **Micro-nota:** in colloquio, formulare ancora più secco: *«`X.shape[1]` deve uguagliare `w.shape[0]`»* (evita ambiguità su “elementi del batch” = righe vs colonne).
+- **Primo tentativo** invariato: **9/10** (regola diario).
 
-### [YYYY-MM-DD] — Sezione 3.1 (`layer_dense(X, W, b)`)
+### [2026-05-05] — Sezione 2.2 (lento vs veloce + benchmark)
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — Sez. 3.1.
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
-- **Note ponte M3:** verificare che lo studente colleghi `X @ W + b` al "primo layer di una rete neurale".
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~552–581) — TODO 2.2.
+- **Valutazione (primo tentativo — "voto esame"):** **7.5/10**
+- **Punti di forza:** generi un batch grande `X = np.random.randn(10000, 5)` e `w = np.random.randn(5)`; implementi una versione lenta con loop che calcola `X[i] @ w + b`; misuri il tempo con `time.perf_counter()`; hai anche una via “veloce” tramite `punteggio_batch(...)` che a sua volta misura il tempo.
+- **Cosa manca rispetto alla traccia:** (a) mancano i nomi/variabili richieste **`z_lento`** e **`z_veloce`** (ora sono implicite in `result[0]` e `result_2[0]`); (b) manca la verifica richiesta **`assert np.allclose(z_lento, z_veloce)`** (oggi non confronti i due array); (c) la via veloce richiesta era esplicitamente **`X @ w + b`** nel blocco 2.2 (qui passi da una funzione che lo fa comunque: concettualmente ok, ma la consegna voleva farlo “a vista”).
+- **Next step minimale:** `z_lento, t_lento = ...` e `z_veloce, t_veloce = punteggio_batch(X, w, b)` poi `assert np.allclose(z_lento, z_veloce)` e stampa tempi.
+
+### [2026-05-05] — Sezione 3.1 (`layer_dense(X, W, b)`)
+
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~623–654) — TODO 3.1.
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** controllo corretto **`X.shape[1] != W.shape[0]`** con `ValueError`; calcolo core **`z = X @ W + b`**; bonus “attivazione” implementato come callable applicato **element-wise sull’intero array**; default `None` = identità (ok).
+- **Cosa migliorare:** la traccia accetta `b` anche **scalare** ma la firma è **`b: NDArray[np.float64]`** (non copre il caso scalare); manca un check su `b` quando è vettore: dovrebbe essere compatibile con **`(h,)`** (o broadcastable); assert su shape è parziale (controlli solo `z.shape[0]`): aggiungere anche che `z.shape[1] == W.shape[1]` o direttamente `z.shape == (X.shape[0], W.shape[1])`.
+- **Note ponte M3:** `X @ W + b` = “primo layer” (trasformazione affine) — concetto centrato.
+
+- **Fix applicato (post-feedback):** aggiornato `b` a `NDArray[...] | float` e check: se `b` è array allora richiedi `b.shape[0] == W.shape[1]`; con `b` scalare (es. `b = 1`) lasci passare e sfrutti il broadcasting.
+- **Rivalutazione (stato attuale righe ~623–658):** **9.5/10** — aggiunto assert completo **`z.shape == (X.shape[0], W.shape[1])`** (controllo pieno su `(N, h)`). Voto esame resta **8.5/10** (primo tentativo).
 
 ### [YYYY-MM-DD] — Sezione 3.2 (interpretazione W come "h regressioni in parallelo")
 

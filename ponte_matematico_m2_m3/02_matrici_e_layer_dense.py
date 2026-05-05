@@ -74,9 +74,12 @@ COME USARE QUESTO FILE (regola del corso)
 """
 
 import os
+from typing import Callable
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import time
+from numpy.typing import NDArray
 
 
 # ==========================================================================
@@ -508,7 +511,7 @@ def _esempio_punteggio_batch() -> None:
     # Verifica: z[0] dovrebbe essere 1.0*0.5 + 0.0*1.0 + 2.0*(-1.0) + 0.1 = -1.4
     assert np.isclose(z[0], -1.4), "qualcosa non torna nel dot product"
 
-
+print(_esempio_punteggio_batch())
 # TODO 2.1 (8 minuti):
 # Scrivi una funzione "punteggio_batch(X, w, b)" che:
 #   - prende X di shape (N, d), w di shape (d,), b scalare
@@ -518,7 +521,28 @@ def _esempio_punteggio_batch() -> None:
 # Type hint corretti (Pattern #25): np.ndarray, non np.array.
 # TUO CODICE QUI:
 # def punteggio_batch(...):
-#     ...
+print("\nEsercizio 2.1\n")
+
+X = np.array([
+        [1.0, 0.0, 2.0],
+        [3.0, 1.0, 0.0],
+        [0.0, 2.0, 1.0],
+    ])
+w = np.array([0.5, 1.0, -1.0])
+b = 0.1
+
+def punteggio_batch(
+    X: NDArray[np.float64],
+    w: NDArray[np.float64],
+    b: float) -> tuple[NDArray[np.float64], float]:
+    if X.shape[1] != w.shape[0]:
+        raise ValueError("la lunghezza degli elementi del batch e i pesi devono essere uguali")
+    t0 = time.perf_counter()
+    z = X @ w + b
+    t1 = time.perf_counter()
+    return z, t1-t0
+
+print(punteggio_batch(X, w, b))
 
 
 # 2.2 - PERCHE' E' EQUIVALENTE A N DOT PRODUCT (verifica)
@@ -534,7 +558,28 @@ def _esempio_punteggio_batch() -> None:
 #   (d) misura i tempi con time.perf_counter() per N=10_000 pratiche random
 #       (X = np.random.randn(10000, 5), w = np.random.randn(5))
 # TUO CODICE QUI:
-# ...
+print("\nEsercizio 2.2\n")
+
+X = np.random.randn(10000, 5)
+w = np.random.randn(5)
+b = 0.2
+
+def punteggio_batch_slow_version(
+    X: NDArray[np.float64],
+    w: NDArray[np.float64],
+    b: float
+) -> tuple[NDArray[np.float64], float]:
+    punteggi = []
+    t0 = time.perf_counter()
+    for i in range(0, len(X)):
+        punteggi.append(X[i] @ w + b)
+    t1 = time.perf_counter()
+    return np.array(punteggi), t1 - t0
+result = punteggio_batch_slow_version(X, w, b)
+result_2 = punteggio_batch(X, w, b)
+
+print(round(result[1], 5))
+print(round(result_2[1], 5))
 
 
 # ==========================================================================
@@ -586,7 +631,30 @@ def _esempio_layer_dense() -> None:
 # Default: identita' (nessuna attivazione).
 # TUO CODICE QUI:
 # def layer_dense(...):
-#     ...
+print("\nEsercizio 3.1\n")
+
+X = np.random.randn(10000, 5)
+W = np.random.randn(5, 3)
+b = 1
+
+def layer_dense(
+    X: NDArray[np.float64],
+    W: NDArray[np.float64],
+    b: NDArray[np.float64] | float,
+    att: Callable[[NDArray[np.float64]], NDArray[np.float64]] | None = None,
+) -> NDArray[np.float64]:
+    if X.shape[1] != W.shape[0]:
+        raise ValueError("Il numero di feature di X e W non combaciano") 
+    if isinstance(b, np.ndarray): 
+        if b.shape[0] != W.shape[1]:            
+            raise ValueError("Righe di b e colonne di W non combaciano")
+    z = X @ W + b
+    assert z.shape == (X.shape[0], W.shape[1]), "righe di z e X devono combaciare"
+    return z if att is None else att(z)
+
+relu = lambda x: np.maximum(0, x)
+result = layer_dense(X, W, b, relu)
+print(result.shape)
 
 
 # 3.2 - PERCHE' "DENSE"?
