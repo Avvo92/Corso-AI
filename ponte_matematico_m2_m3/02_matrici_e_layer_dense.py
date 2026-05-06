@@ -672,8 +672,12 @@ print(result.shape)
 # Cosa stampa il risultato? Cosa "fa" questo layer? (suggerimento: estrae
 # le prime 2 colonne di X). Spiega in 1 riga commentata.
 # TUO CODICE QUI:
-# ...
-
+print("\nEsercizio 3.2\n")
+X = np.random.randn(4, 5)
+W = np.array([[1, 0], [0, 1], [0, 0], [0, 0], [0, 0]])
+b = np.array([0, 0])
+print(layer_dense(X, W, b))
+# il risultato è una matrice 4x2 in qui per ogni riga sono riportati due elementi(come le colonne di W che sono 2), ognuno dei quali è il dot product delle feature della riga X con i "pesi" della colonna di W. Per così dire, ogni riga di X viene processata da due neuroni, che sulla base di pesi differenti forniranno un dot product differente.
 
 # ==========================================================================
 # QUIZ DI VERIFICA (fai PRIMA di passare agli esercizi)
@@ -681,51 +685,52 @@ print(result.shape)
 
 # V1) X ha shape (100, 5), w ha shape (5,). Che shape ha X @ w?
 # TUA RISPOSTA:
-# ...
+# (100,)
 
 # V2) X ha shape (100, 5), W ha shape (5, 3), b ha shape (3,). Che shape
 #     ha X @ W + b? E quante "operazioni di moltiplicazione" sono state
 #     fatte sotto, in totale?
 # TUA RISPOSTA:
-# ...
+# shape => (100, 3), operazioni di moltiplicazione eseguite => 1500
 
 # V3) [Trova l'errore] Questo codice da' ValueError. Perche'?
 #       X = np.random.randn(100, 5)
 #       w = np.random.randn(3)
 #       z = X @ w
 # TUA RISPOSTA:
-# ...
+# w deve avere shape (5,), nel caso mostrato invece e' shape(3,). In generale, il vettore W deve avere lunghezza pari al numero di colonne di X.
 
 # V4) [Trova l'errore] Stessa X di V3. Cosa stampa questo codice?
 #       z = X @ w + (0.1,)
 #     Qual e' il PROBLEMA stilistico? (suggerimento: pattern #23)
 # TUA RISPOSTA:
-# ...
+# L'errore è aver scritto il bias come un tupla composta da un solo elemento. corretto dovrebbe essere => z = X @ w + 0.1
 
 # V5) Vero o Falso, e perche':
 #     "Un layer Dense di una rete neurale e' matematicamente identico a
 #      una regressione lineare con piu' output."
 # TUA RISPOSTA:
-# ...
+# Vera
 
 # V6) Perche' X @ w (1 operazione) e' MOLTO piu' veloce di un for loop con
 #     N dot product separati? Da' almeno 2 motivi.
 # TUA RISPOSTA:
-# ...
+# 1) X @ w è un operazione vettorizzata che viene eseguita in C, quindi di per se viene eseguita dalle 50 alle 1000 volte più velocemente.
 
 # V7) Hai una matrice X (10, 5) e una W (5, 3). Quale di queste righe ha
+# {W (5, 3).T = W (3, 5) @  X (10, 5).T = X (5, 10)} -----> (X @ W).T
 #     l'operazione INVERSA che ti riallinea per fare W @ X?
 #       (a) X.T @ W
 #       (b) W @ X.T
 #       (c) (X @ W).T
 # TUA RISPOSTA:
-# ...
+# la mia risposta è c
 
 # V8) [Feynman] Spiega con parole tue, come a un collega web dev: cosa
 #     significa "una rete neurale e' sequenza di prodotti matrice-vettore"?
 #     Niente formule, niente termini tecnici - solo analogia.
 # TUA RISPOSTA:
-# ...
+# Immagina la matrice come un insieme di ingredienti e metodi di lavorazione che formano un piatto, e un vettore a un esperto culinario di uno specifico tipo di piatti. arrivano le info all'esperto sugli altipasti, e lui dice che il piatto non ha le caratteristiche per essere definito un antipasto e lo passa al prossimo esperto. Arriva all'esperto di primi piatti, e lui dice che per le caratteristiche di questo piatto, sarebbe un ottimo primo. In pratica ogni insieme di feature (ingredienti), viene valutato da n esperti (anche detti neuroni), fino ad arrivare a una valutazione (regressione) sulla classe di appartenenza di quel insieme di informazioni che compongono l'oggetto processato.
 
 
 # ==========================================================================
@@ -741,9 +746,18 @@ print(result.shape)
 #     Tip anti-overflow: sottrai prima il max(z).
 #     Verifica con z = [1, 2, 3] -> output ~ [0.09, 0.245, 0.665]
 # TUO CODICE QUI:
-# def softmax(z: np.ndarray) -> np.ndarray:
-#     ...
+print("\nEsercizio 1\n")
 
+def softmax(z: np.ndarray) -> np.ndarray:
+    g = np.max(z)
+    z_shift = z - g
+    z_exp = np.e ** z_shift
+    assert np.all(z_exp / z_exp.sum() > 0), "Qualcosa non funziona, tutti i valori dell'array devono essere positivi"
+    assert np.isclose((z_exp / z_exp.sum()).sum(), 1.0), "Qualcosa non funziona, gli elementi dell'array devono restituire somma 1"
+    return z_exp / z_exp.sum()
+
+z = np.array([1, 2, 3])
+print((softmax(z).round(3)))
 
 # E2) [REFACTORING]
 #     Questo codice funziona ma e' brutto. Riscrivilo seguendo le regole
@@ -763,7 +777,19 @@ print(result.shape)
 #         return np.array(out),
 #
 # TUO CODICE QUI:
-# ...
+def calcola_punteggi(    
+    X: np.ndarray,
+    w: np.ndarray,
+    b: float) -> np.ndarray:
+    """
+    Data una matrice X e un vettore W, dove le colonne di X prima hanno shape uguale alle righe di w,
+    la funzione restituisce un vettore 1D di shape (n_righe_X) dove ogni elemento è il dot product di riga di X e w + bias (b) 
+    """
+    if X.shape[1] != w.shape[0]:
+        raise ValueError("Colonne di X e righe di w devono avere stessa lunghezza")
+    return X @ w + b
+
+
 
 
 # E3) [DEBUG] - autonomo, niente scala progressiva (regola corso)

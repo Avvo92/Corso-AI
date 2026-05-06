@@ -265,26 +265,93 @@
 - **Fix applicato (post-feedback):** aggiornato `b` a `NDArray[...] | float` e check: se `b` è array allora richiedi `b.shape[0] == W.shape[1]`; con `b` scalare (es. `b = 1`) lasci passare e sfrutti il broadcasting.
 - **Rivalutazione (stato attuale righe ~623–658):** **9.5/10** — aggiunto assert completo **`z.shape == (X.shape[0], W.shape[1])`** (controllo pieno su `(N, h)`). Voto esame resta **8.5/10** (primo tentativo).
 
-### [YYYY-MM-DD] — Sezione 3.2 (interpretazione W come "h regressioni in parallelo")
+### [2026-05-05] — Sezione 3.2 (layer che “seleziona” colonne di X)
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — Sez. 3.2.
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~667–680) — TODO 3.2.
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**
+- **Punti di forza:** `W` e `b` corretti; `layer_dense(X, W, b)` coerente; commento lungo utile per **memorizzare** dot per colonna / due neuroni in parallelo.
+- **Cosa manca:** la traccia chiedeva **`X` con seed 42** (`rng = np.random.default_rng(42)` o `np.random.seed(42)` prima di `randn`) — così il risultato è **ripetibile**; senza seed ogni run cambia.
+- **Precisione concettuale (1 riga “da consegna”):** con questo `W` il layer non è un caso generico di “due dot diversi”: è quasi una **selezione** — **`z ≈ X[:, :2]`** (prima colonna di `z` = colonna 0 di `X`, seconda = colonna 1), perché le colonne di `W` sono i versori \(e_1, e_2\).
+- **Nota didattica:** commento prolisso OK per studio; per il file capitolo puoi tenere anche una **riga secca** sotto con la sintesi richiesta.
+
+### [2026-05-05] — Quiz di verifica V1 (shape `X @ w`)
+
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~686–688) — Quiz V1.
+- **Valutazione (primo tentativo — "voto esame"):** **2/10**
+- **Errore:** risposta **`(100, 1)`**; in NumPy **`(100, 5) @ (5,)`** → **`(100,)`** (vettore 1D, un punteggio per riga). **`(100, 1)`** si ottiene tipicamente con **`w.reshape(-1, 1)`** o **`X @ w[:, None]`** (secondo fattore 2D).
+- **Next step:** prova in REPL `np.zeros((100,5)) @ np.zeros(5)` → `.shape`; confronta con `(..., 5) @ np.zeros((5,1))`.
+
+### [2026-05-06] — Quiz di verifica V2 (shape `X @ W + b` + n. moltiplicazioni)
+
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~690–694) — Quiz V2.
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** shape corretta **`(100, 3)`**; conteggio moltiplicazioni corretto: `X @ W` fa **100 · 5 · 3 = 1500** moltiplicazioni (il `+ b` è broadcasting + somme, non moltiplicazioni).
+
+### [2026-05-06] — Quiz di verifica V3 (trova errore: shapes not aligned)
+
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~695–701) — Quiz V3.
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** diagnosi corretta: `X.shape == (100, 5)` richiede `w.shape == (5,)` (o `(5,1)`), mentre `w.shape == (3,)` → mismatch e `ValueError` su `@`. Spiegazione generale “lunghezza di `w` = numero colonne di `X`” perfetta.
+
+### [2026-05-06] — Quiz di verifica V4 (pattern #23: tupla accidentale nel bias)
+
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~703–707) — Quiz V4.
+- **Valutazione (primo tentativo — "voto esame"):** **5/10**
+- **Cosa stampa davvero:** **non** `TypeError` (di solito). `X @ w` è un array `(100,)` e `(0.1,)` è una **tupla a 1 elemento** che NumPy interpreta come array `(1,)` e poi **broadcasta** → risultato ancora `(100,)`, cioè tutti i valori aumentati di `0.1`.
+- **Problema stilistico (pattern #23):** quel `(0.1,)` nasce tipicamente da una **virgola** “messa per sbaglio” (tupla accidentale). Il codice “funziona” ma è ambiguo/bug-prone: meglio `+ 0.1` (scalare) o `+ np.array([0.1])` se vuoi esplicitare.
+- **Next step:** prova `type((0.1,))` e confronta con `type(0.1)`.
+
+### [2026-05-06] — Quiz di verifica V5 (Dense = regressione lineare multi-output?)
+
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~708–713) — Quiz V5.
+- **Valutazione (primo tentativo — "voto esame"):** **3/10**
+- **Correzione:** l’affermazione è **Vera** se parli del pezzo “lineare” del layer: `z = X @ W + b` è identico a una regressione lineare con più output (una colonna di `W` = una regressione). Diventa “rete neurale” quando aggiungi **non-linearità** (ReLU/sigmoid/… ) e/o più layer in cascata.
+- **Next step:** scrivere “Vero: è regressione lineare multi-output; la differenza è l’attivazione e lo stacking di layer”.
+
+### [2026-05-06] — Quiz di verifica V6 (perché `X @ w` è molto più veloce del for loop?)
+
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~715–718) — Quiz V6.
+- **Valutazione (primo tentativo — "voto esame"):** **6/10**
+- **Cosa hai detto di giusto:** “vettorizzata in C/BLAS” → riduci overhead Python e sfrutti implementazioni ottimizzate.
+- **Cosa mancava (2° motivo atteso):** (a) migliori uso della **cache** e accessi in memoria contigui; (b) possibilità di **SIMD** / multithreading; (c) meno overhead di loop + append + allocazioni intermedie. Bastava citarne uno in modo chiaro.
+
+### [2026-05-06] — Quiz di verifica V7 (trasposta e riallineamento)
+
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~720–727) — Quiz V7.
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**
+- **Risposta corretta:** **(c) `(X @ W).T`**. Infatti `X @ W` ha shape `(10, 3)` e trasponendo ottieni `(3, 10)`, che è equivalente a `W.T @ X.T` (identità: `(XW)^T = W^T X^T`).
+- **Micro-nota:** l’esercizio parla di “fare `W @ X`”, ma con le shape date **`W @ X` non è definito**; quello che si può riallineare correttamente è la relazione via trasposta (`W.T @ X.T`).
+
+### [2026-05-06] — Quiz di verifica V8 (Feynman: rete = sequenza di trasformazioni)
+
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~728–733) — Quiz V8 (Feynman).
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**
+- **Punti di forza:** analogia degli “esperti” rende bene l’idea di **pipeline a stadi**: un blocco prende un input e lo passa al successivo dopo averlo “riletto”/trasformato.
+- **Cosa non rispetta la consegna:** hai usato termini tecnici vietati (es. **feature, neuroni, regressione, classe**). La richiesta era: *niente formule, niente termini tecnici, solo analogia*.
+- **Come migliorare (1 riga):** “È una catena di macchine/filtri: ognuno prende l’output del precedente, lo ripesa e lo trasforma, e alla fine ottieni una decisione.”
+
+### [YYYY-MM-DD] — Quiz di verifica V2-V8
+
+- **Blocco:** `02_matrici_e_layer_dense.py` — Quiz di verifica (V2: shape + n. moltiplicazioni; V3-V4: trova errore; V5: V/F Dense=regressione; V6: perche' batch e' veloce; V7: trasposta; V8: Feynman rete=sequenza prodotti).
 - **Valutazione (primo tentativo — "voto esame"):** —/10.
 
-### [YYYY-MM-DD] — Quiz di verifica V1-V8
+### [2026-05-06] — Esercizio E1 [COLLOQUIO] - softmax
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — Quiz di verifica (V1: shape `X@w`; V2: shape + n. moltiplicazioni; V3-V4: trova errore; V5: V/F Dense=regressione; V6: perche' batch e' veloce; V7: trasposta; V8: Feynman rete=sequenza prodotti).
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~740–759) — E1 softmax.
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** implementazione corretta del softmax con stabilità numerica: `z_shift = z - max(z)`; esponenziale element-wise (usando `np.e ** z_shift`, equivalente a `np.exp(z_shift)`); normalizzazione `z_exp / z_exp.sum()`; test su `z=[1,2,3]` con output atteso (arrotondato).
+- **Cosa migliorare:** assert poco robusto e messaggio incoerente: la somma deve essere **1**, non “0”. Meglio `assert np.isclose(p.sum(), 1.0)` e anche `assert np.all(p > 0)`; inoltre la condizione `>= 0.99` è un “quasi” che può mascherare bug.
+- **Fix applicato (post-feedback):** aggiornato il messaggio dell’assert su “somma 1” e resa la soglia più stretta (`>= 0.99999999`). (Nota: per robustezza resta consigliato `np.isclose` + check positività).
+- **Fix applicato (post-feedback):** aggiunti assert robusti `np.isclose(p.sum(), 1.0)` e `np.all(p > 0)` (proprietà di probabilità).
 
-### [YYYY-MM-DD] — Esercizio E1 [COLLOQUIO] - softmax
+### [2026-05-06] — Esercizio E2 [REFACTORING] - calcola_punteggi
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — E1.
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
-
-### [YYYY-MM-DD] — Esercizio E2 [REFACTORING] - calcola_punteggi
-
-- **Blocco:** `02_matrici_e_layer_dense.py` — E2.
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
-- **Pattern errore / ID contesto:** verifica chiusura Pattern #23 e #25.
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~780–790) — E2 refactoring.
+- **Valutazione (primo tentativo — "voto esame"):** **6/10**
+- **Punti di forza:** hai eliminato i loop Python e usato l’algebra vettoriale `X @ w + b` (obiettivo principale dell’esercizio); niente virgole spurie; firma con `np.ndarray` ok.
+- **Errore critico:** condizione invertita: fai `if X.shape[1] == w.shape[0]: raise ValueError(...)` ma deve essere l’opposto (**raise se sono diversi**). Così com’è, il codice lancia errore proprio quando le shape sono corrette.
+- **Migliorie consigliate:** controllare che `X` sia 2D e `w` 1D; docstring più precisa su shape: `X (N,d)`, `w (d,)`, output `(N,)`; messaggio errore: “**numero di feature** (colonne di X) deve coincidere con la lunghezza di w”.
+- **Pattern errore / ID contesto:** consolidare check mismatch shape (Lacuna quiz #23) + Pattern #25 terminologia `np.ndarray`/`NDArray`.
 
 ### [YYYY-MM-DD] — Esercizio E3 [DEBUG] - shapes not aligned
 
