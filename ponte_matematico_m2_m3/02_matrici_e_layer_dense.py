@@ -938,19 +938,19 @@ print(classifica_batch(X, w, b))
 #     Dense lo chiamiamo 'matematicamente uguale' a una regressione lineare
 #     ripetuta h volte?"
 # TUA RISPOSTA:
-# perchè esegue la stessa operazione di un regressore : supponiamo di avere le pratiche (X con shape (N, f)) e una serie di neuroni (W con shape (f, h)). il Dense Layer restituisce N * h punteggio, ossia una probabilità per ogni ogni neurono per ogni pratica.
+# perchè esegue la stessa operazione di un regressore : supponiamo di avere le pratiche (X con shape (N, f)) e una serie di neuroni (W con shape (f, h)). il Dense Layer restituisce N * h punteggio, ossia un punteggio per ogni ogni neurone per ogni pratica.
 
 # C3) Cosa stampa "X[5]" se X.shape == (100, 3)? E "X[5:6]"? Quale e' 1D
 #     e quale e' 2D? (Tranello [M6])
 # TUA RISPOSTA:
-# ...
+# X[5] restituisce una vettore di shape (3, ), mentre X[5:6] una sotto-matrice di shape(1, 3). Il primo è 1D il secondo 2D
 
 # C4) Auto-rating onesto (compila in chiusura capitolo):
-#       - matrici e shape (N, d):     /10
-#       - prodotto matrice-vettore:    /10
-#       - layer Dense (anteprima M3):  /10
-#       - ripasso 5 blocchi cap.01:    /10
-#       - rinforzi pattern #23/24/25:  /10
+#       - matrici e shape (N, d):    8 /10
+#       - prodotto matrice-vettore:   7 /10
+#       - layer Dense (anteprima M3): 6 /10
+#       - ripasso 5 blocchi cap.01:   8 /10
+#       - rinforzi pattern #23/24/25: 8 /10
 # TUE RISPOSTE:
 # ...
 
