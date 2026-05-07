@@ -5,8 +5,8 @@
 | **Modulo** | Ponte Matematico (bridge M2 → M3) |
 | **File capitolo** | `02_matrici_e_layer_dense.py` |
 | **File diario** | `PM_C02_matrici_e_layer_dense_sessione.md` |
-| **Stato** | in corso (avvio: 30/04/2026) |
-| **Voto difficoltà** | — (assegnato in chiusura) |
+| **Stato** | **chiuso** (avvio: 30/04/2026 — chiusura: 07/05/2026) |
+| **Voto difficoltà** | **9/10** |
 
 ---
 
@@ -353,35 +353,60 @@
 - **Migliorie consigliate:** controllare che `X` sia 2D e `w` 1D; docstring più precisa su shape: `X (N,d)`, `w (d,)`, output `(N,)`; messaggio errore: “**numero di feature** (colonne di X) deve coincidere con la lunghezza di w”.
 - **Pattern errore / ID contesto:** consolidare check mismatch shape (Lacuna quiz #23) + Pattern #25 terminologia `np.ndarray`/`NDArray`.
 
-### [YYYY-MM-DD] — Esercizio E3 [DEBUG] - shapes not aligned
+### [2026-05-06] — Esercizio E3 [DEBUG] - shapes not aligned
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — E3.
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
-- **Note:** scala progressiva NON applicabile (regola corso esercizio DEBUG); intervento solo dopo 2+ tentativi falliti.
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~794–808) — E3 DEBUG.
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Diagnosi:** corretta — per `(100, 5) @ (d,)` serve **`d == 5`**; con **`w.shape == (3,)`** le dimensioni interne **5 ≠ 3** → `ValueError`.
+- **Fix:** entrambe le opzioni valide: **`w = np.random.randn(5)`** oppure **`X = np.random.randn(100, 3)`** (coerente con l’intento del modello: di solito si corregge **`w`** a **`d`** feature).
+- **Note:** scala progressiva NON applicabile (regola corso esercizio DEBUG).
 
-### [YYYY-MM-DD] — Esercizio E4 [RETRIEVAL] - coseno from scratch
+### [2026-05-07] — Esercizio E4 [RETRIEVAL] - coseno from scratch
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — E4.
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
-- **Note retention:** se ricorda la funzione `coseno` del cap.01 senza guardare → incrementare contatore Glossario; altrimenti programmare nuovo retrieval nel cap.03.
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~811–841) — E4 retrieval.
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**
+- **Punti di forza:** type hint `np.ndarray` ok (Pattern #25); controllo shape; controllo “no matrici” con `ndim`; controllo norma zero; cast esplicito a `float`; test `a=[1,2]`, `b=[2,4]` → 1.0.
+- **Cosa migliorare:** check norma zero meglio con `np.isclose(a_norm, 0.0)` (floating point); l’assert è sbagliato: `result < 1 or result > -1` è quasi sempre vero — deve essere `assert -1.0 <= result <= 1.0` (o `np.isclose` ai bordi); messaggio dell’assert dice “compreso tra 1 e -1” ma dovrebbe essere “tra -1 e 1”.
+- **Note retention:** retrieval riuscito (struttura completa ricordata). Tenere a mente la trappola logica `or` vs `and` nelle condizioni.
+- **Fix applicato (post-feedback):** migliorato assert range a `-1 <= cos <= 1`. Attenzione: `if np.isclose((a_norm, b_norm), 0.0):` è **bug** (ritorna array di bool e l’`if` esplode); serve `np.any(np.isclose((a_norm, b_norm), 0.0))`.
+- **Fix applicato (post-feedback):** sostituito con `np.any(np.isclose((a_norm, b_norm), 0.0))` → esecuzione OK.
 
-### [YYYY-MM-DD] — Esercizio E5 [INTERLEAVING] - cap.06 M2 + matrici
+### [2026-05-07] — Esercizio E5 [INTERLEAVING] - cap.06 M2 + matrici
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — E5.
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
-- **Note:** verificare comprensione del broadcasting NumPy (riusato nel layer Dense).
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~843–867) — E5.
+- **Valutazione (primo tentativo — "voto esame"):** **7.5/10**
+- **Punti di forza:** uso corretto di `default_rng(42)` + `standard_normal`; broadcasting corretto `contribuzioni = X_scaled * coef` → shape `(5, 5)` con `coef` “stiracchiato” per riga; la verifica concettuale che `contribuzioni[i].sum() + intercept_` coincida con `(X_scaled @ coef + intercept_)[i]` è giusta.
+- **Cosa non rispetta la consegna:** c’è un **loop** `for i in range(...)` (la consegna dice “NIENTE LOOP”); la verifica dovrebbe essere vettoriale con `assert np.allclose(...)` su tutti gli elementi in una volta; confronto con `round(..., 5)` è fragile e nasconde errori (meglio tolleranza numerica).
+- **Fix minimale suggerito:** `assert np.allclose(contribuzioni.sum(axis=1) + intercept_, X_scaled @ coef + intercept_)`.
+- **Fix applicato (post-feedback):** rimosso loop e sostituito con verifica vettoriale `assert np.allclose(...)` (tolleranza numerica corretta).
 
-### [YYYY-MM-DD] — Mini-progetto guidato (`classifica_batch`)
+### [2026-05-07] — Mini-progetto guidato (`classifica_batch`)
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — sezione MINI-PROGETTO.
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
-- **Note ponte:** preludio diretto al "batch inference" che vedremo in M3 (PyTorch DataLoader) e M5 (LLM batch API).
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~871–926) — mini-progetto `classifica_batch`.
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**
+- **Punti di forza:** firma corretta; validazioni richieste presenti (shape X vs w, range di k); calcolo in **una sola** operazione `contrib = X @ w + b`; ordinamento decrescente con `np.argsort(...)[::-1]`; restituisce `k` tuple `(indice_riga, punteggio)` con cast a `int`/`float`; test ripetibile con `default_rng(42)`.
+- **Micro-migliorie:** messaggio di errore su `k`: “> 1” dovrebbe essere “>= 1”; ordine dei check: prima validare `ndim` (per evitare `X.shape[1]` su input non 2D); naming: `scores`/`z` invece di `contrib` (più chiaro). Tutto opzionale.
+- **Note ponte:** ottimo ponte a M3: batch inference = `X @ w + b` + ranking top-k.
 
-### [YYYY-MM-DD] — Checkpoint finale C1-C4
+### [2026-05-07] — Checkpoint finale C1-C4 (parziale: C1–C2)
 
-- **Blocco:** `02_matrici_e_layer_dense.py` — Checkpoint C1-C4.
-- **Valutazione (primo tentativo — "voto esame"):** —/10.
+- **Blocco:** `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py` (righe ~932–941) — Checkpoint C1–C2.
+- **Valutazione (primo tentativo — "voto esame"):**
+  - **C1:** **7/10**
+  - **C2:** **5/10**
+- **C1 (dot product batch):** risposta “1000” è **parzialmente** corretta: `X @ w` calcola **1000 dot product** (uno per riga) e l’output contiene **1000 scalari** (shape `(1000,)`). Mancava esplicitare il secondo pezzo (“quanti scalari ha l’output?”) e/o la shape.
+- **C2 (Dense = regressione ripetuta h volte):** idea di base ok (`X @ W + b` = **h regressioni in parallelo**), ma non rispetta “una frase” e introduce un errore concettuale: l’output del layer è **punteggio/logit**, non “probabilità” (la probabilità arriva con sigmoid/softmax). Anche troppo tecnico per formato Feynman.
+
+- **C3 (slicing 1D vs 2D):** risposta **parziale**: `X[5]` corretto → vettore 1D shape `(3,)`. `X[5:6]` è 2D, ma la shape corretta è **`(1, 3)`** (non `(1, 1)`): slice mantiene la dimensione “righe”.
+- **Fix applicato (post-feedback):** ora risponde correttamente: `X[5].shape == (3,)` (1D) e `X[5:6].shape == (1, 3)` (2D).
+
 - **C4 auto-rating:** registrare i 5 voti su matrici/dot batch/Dense/ripasso/rinforzi per programmare il cap.03.
+
+### [2026-05-07] — Chiusura capitolo + voto difficoltà
+
+- **Riferimento:** chiusura `ponte_matematico_m2_m3/02_matrici_e_layer_dense.py`.
+- **Voto difficoltà (primo tentativo):** **9/10**.
+- **Note rapide:** capitolo chiuso; prossimo step pianificato: ingresso in **M3 cap.01** con rinforzo mirato sulle lacune quiz (#23/#24/#26/#27/#28) e re-check slicing 1D vs 2D (#29).
 
 ---
 

@@ -804,7 +804,8 @@ def calcola_punteggi(
 #       - cosa hai diagnosticato (1 riga)
 #       - come l'hai sistemato (1 riga di codice corretto)
 # TUA RISPOSTA / FIX:
-# ...
+# la w.shape[0] deve coincidere con la X.shape[1]. Dato che 5 != 3, il codice così scritto restituisce un ValueError;
+# la correzione va fatta a riga 800, quindi -> w = np.random.randn(5) oppure a riga 799, quindi -> X = np.random.randn(100, 3)
 
 
 # E4) [RETRIEVAL] - senza guardare il cap.01 Ponte
@@ -817,8 +818,28 @@ def calcola_punteggi(
 #     Verifica con a = [1, 2] e b = [2, 4] -> deve dare 1.0.
 # TUO CODICE QUI:
 # def coseno_v2(...) -> float:
-#     ...
 
+print("\nEsercizio 4\n")
+
+def coseno(
+    a: np.ndarray,
+    b: np.ndarray
+) -> float:
+    if a.shape != b.shape or a.ndim > 1 or b.ndim > 1:
+        raise ValueError("gli elementi passati alla funzione devono essere vettori di uguale dimensione!")
+    a_norm = np.linalg.norm(a)
+    b_norm = np.linalg.norm(b)
+    if np.any(np.isclose((a_norm, b_norm), 0.0)):
+        raise ValueError("La norma dei vettori non può essere 0!")
+    result = float(a @ b / (a_norm * b_norm))
+    eps = 1e-9
+    assert (-1.0 - eps) <= result <= (1.0 + eps), "Il coseno deve essere un numero compreso tra -1 e 1"
+    return result
+
+a = np.array([1, 2])
+b = np.array([2, 4])
+
+print(round(coseno(a, b), 4))
 
 # E5) [INTERLEAVING] cap.06 M2 + cap.02 Ponte
 #     Nel cap.06 M2 hai calcolato "motivi_top3" come x_scaled * coef per
@@ -834,7 +855,18 @@ def calcola_punteggi(
 #     Verifica: per ogni riga i, contribuzioni[i].sum() + intercept_
 #     deve coincidere con (X_scaled @ coef + intercept_)[i].
 # TUO CODICE QUI:
-# ...
+print("\nEsercizio 5\n")
+
+rng = np.random.default_rng(42)
+X_scaled = rng.standard_normal((5, 5))
+coef = rng.standard_normal(5)
+intercept_ = 2.0
+contribuzioni = (X_scaled * coef)
+# for i in range(len(contribuzioni)):
+#     if round((contribuzioni[i].sum() + intercept_), 5) != round(((X_scaled @ coef + intercept_)[i]), 5):
+#         print("I dot product non coincidono!")
+assert np.allclose(contribuzioni.sum(axis=1) + intercept_, X_scaled @ coef + intercept_), "I dot product non coincidono!"
+
 
 
 # ==========================================================================
@@ -867,9 +899,31 @@ def calcola_punteggi(
 # La funzione deve restituire 5 tuple ordinate decrescente.
 #
 # TUO CODICE QUI:
-# def classifica_batch(...):
-#     ...
+print("\nMini Progetto Guidato\n")
 
+def classifica_batch(
+    X: np.ndarray,
+    w: np.ndarray,
+    b: float,
+    k: int = 5,
+) -> list[tuple[int, float]]:
+    if X.shape[1] != w.shape[0]:
+        raise ValueError("Colonne di X e righe di w devono coincidere")
+    if X.ndim != 2 or w.ndim != 1:
+        raise ValueError("X deve avere shape 2D (matrice) e w deve avere shape 1D(vettore)")
+    if k < 1 or k > len(X):
+        raise ValueError("il parametro k deve essere un numero intero > 1 e <= al numero di righe di X")
+    contrib = X @ w + b
+    contrib_sorted = np.argsort(contrib)[::-1][:k]
+    top_k_pratiche = [(int(i), float(contrib[i])) for i in contrib_sorted ]
+    return top_k_pratiche
+
+rng = np.random.default_rng(42)
+X = rng.standard_normal((10, 3))
+w = rng.standard_normal(3)
+b = 0.0
+
+print(classifica_batch(X, w, b))
 
 # ==========================================================================
 # CHECKPOINT FINALE (auto-verifica)
@@ -877,14 +931,14 @@ def calcola_punteggi(
 #
 # C1) Hai una X di shape (1000, 5). Quanti dot product calcola "X @ w" con
 #     w di shape (5,)? Quanti scalari ha l'output?
-# TUA RISPOSTA:
+# TUA RISPOSTA: 1000
 # ...
 
 # C2) [Feynman] Spiega in una frase a un collega web dev: "Perche' un layer
 #     Dense lo chiamiamo 'matematicamente uguale' a una regressione lineare
 #     ripetuta h volte?"
 # TUA RISPOSTA:
-# ...
+# perchè esegue la stessa operazione di un regressore : supponiamo di avere le pratiche (X con shape (N, f)) e una serie di neuroni (W con shape (f, h)). il Dense Layer restituisce N * h punteggio, ossia una probabilità per ogni ogni neurono per ogni pratica.
 
 # C3) Cosa stampa "X[5]" se X.shape == (100, 3)? E "X[5:6]"? Quale e' 1D
 #     e quale e' 2D? (Tranello [M6])

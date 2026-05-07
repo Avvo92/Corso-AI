@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 30/04/2026
+> **Ultimo aggiornamento**: 07/05/2026
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -39,12 +39,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | ponte_matematico_m2_m3/02_matrici_e_layer_dense.py — Ponte Matematico cap.02 (bridge M2→M3): matrici, prodotto matrice-vettore, batch di pratiche, anteprima layer Dense + rinforzi pattern emersi nel cap.01 (iloc/loc, virgole anti-pattern, type hint NumPy) — DA CREARE |
-| **Ultimo completato** | ponte_matematico_m2_m3/01_vettori_da_zero.py (30/04/2026) — Vettori, dot product, norma euclidea, coseno tra vettori; mini-progetto top-k similarità tra pratiche con coseno (preludio embeddings/RAG M4-M6); voto difficoltà **9**/10. |
-| **Modulo attuale** | Ponte Matematico (bridge M2 → M3) — preludio a Deep Learning |
+| **Capitolo in corso** | modulo_03_dl_cv/01_neurone_artificiale.py — Modulo 03 (DL & CV): neurone artificiale + forward pass + loss (inizio M3). |
+| **Ultimo completato** | ponte_matematico_m2_m3/02_matrici_e_layer_dense.py (07/05/2026) — Matrici come batch, `X @ w + b`, anteprima layer Dense `X @ W + b`, broadcasting, softmax; esercizi finali + mini-progetto `classifica_batch`; voto difficoltà **9**/10. |
+| **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision |
 | **Difficoltà media** | ~6.7 (19 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07 + Ponte-01; cap 07 M1 escluso/anomalia; **Ponte-01 = 9/10**) |
-| **Priorità attive** | 🔴 **Lacuna quiz #23 (nuova):** shape `X @ w` — `(N,)` vs `(N, 1)` (quiz V1 Ponte-02), 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Allineamento variabili tra esercizi sequenziali nello stesso `.py` (monitoraggio), 🟡 Pattern #23 virgole a fine chiamata creano tuple inutili (`ax.quiver(...),`) — emerso in cap.01 Ponte sezioni 4.2/5.1 — rinforzo nel cap.02 Ponte, 🟡 Pattern #24 NUOVO: confusione `iloc[i, "colonna"]` (iloc accetta solo indici numerici) vs `loc[i, "colonna"]` — emerso in mini-progetto cap.01 Ponte — rinforzo nel cap.02 Ponte, 🟡 Pattern #25 NUOVO: type hint NumPy `v: np.array` invece di `v: np.ndarray` — emerso in 4.1/5.1 cap.01 Ponte — rinforzo nel cap.02 Ponte, 🟡 Data leakage (consolidato con Pipeline, da rivedere quando entreranno preprocessing custom in M3+), 🟢 Lacuna #12 (NumPy shape/reshape) — superata definitivamente in cap.01 Ponte (uso intensivo `.shape`, `to_numpy(dtype=float)`, dot product con shape coerenti), 🟢 Lacuna #16 scala `prob_alterato` (0–1) vs `score_genuinita` (0–100) — superata (rinforzata in app + UI label + verificata in deploy live), 🟢 Lacuna #17 drop colonne reali — superata (centralizzata in `split_X_y`), 🟢 Lacuna #18 recall vs precision — superata (recall_test in UI + definizione FN corretta) |
-| **Sessione corrente** | Sessione 18 |
+| **Priorità attive** | 🔴 Lacuna quiz #23: shape `X @ w` — `(N,)` vs `(N, 1)`; 🔴 Lacuna quiz #24: tupla accidentale `(0.1,)` vs `0.1`; 🔴 Lacuna quiz #26: 2 motivi performance BLAS vs loop; 🔴 Lacuna quiz #27: Feynman rispettare “niente termini tecnici”; 🔴 Lacuna quiz #28: Dense output = logits (non probabilità); 🟡 Lacuna quiz #29: slicing `X[i]` (1D) vs `X[i:i+1]` (2D) (rinforzata); 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Data leakage (monitoraggio). |
+| **Sessione corrente** | Sessione 19 |
 
 ---
 
@@ -55,11 +55,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 30/04/2026 |
-| **Cosa è stato fatto** | **Cap.01 Ponte Matematico chiuso.** Tutte le sezioni completate: 1.1-1.2 (vettori e shape), 2.1-2.2 (operazioni base), 3.1-3.2 (dot product + collegamento `contrib = x_scaled * coef` di M2 cap.06), 4.1-4.2 (norma euclidea + grafico Matplotlib quiver), 5.1-5.2 (coseno con controlli robusti + ponte M4-M6 RAG), Checkpoint C1/C2/C3/C5, mini-progetto `classifica_per_similarita` (top-k pratiche più simili = preludio retrieval RAG). PNG didattici generati con `genera_infografiche_png.py`. Diario cap.01 Ponte aggiornato in append-only con tutte le valutazioni (sezioni + checkpoint + mini-progetto). |
-| **Errori emersi** | (1) Type hint NumPy: scritto `v: np.array` invece di `v: np.ndarray` (più volte); (2) Stile Matplotlib: virgole a fine chiamata `ax.quiver(...),` che creano tuple inutili (anti-pattern); (3) Confusione `iloc[i, "col_str"]` (non funziona) vs `loc[i, "col_str"]`; (4) Check "vettore nullo" implementato come `a.sum() == 0` invece di `np.linalg.norm(a) == 0` (un vettore con somma zero non è il vettore zero); (5) `plt.savefig("figures/...")` senza creare prima la cartella → `FileNotFoundError`; (6) Tipico bug di formula: `np.dot(...)(...)` (parentesi invece di divisione); (7) Variabile non definita (`coseno` invece di `cos`). Tutti corretti dopo feedback con scala progressiva. |
-| **Cosa fare nella prossima sessione** | **Ponte Matematico cap.02 — `02_matrici_e_layer_dense.py`** (DA CREARE): matrici come "tante pratiche insieme" (batch), prodotto matrice-vettore come dot product generalizzato, anteprima layer Dense (M3). Includere obbligatoriamente: (a) rinforzi pattern #23/#24/#25 emersi nel cap.01; (b) sezione mini-esercizi "ripasso 5 blocchi" richiesta esplicitamente dallo studente (vettori+shape, operazioni, dot, norma, coseno); (c) ponte mentale "pratica = vettore" → "batch di pratiche = matrice"; (d) collegamento al prodotto: classificare un batch di pratiche con un solo `X @ w + b`. |
-| **Stato motivazione** | Alto: ha completato un capitolo dichiarato 9/10 di difficoltà; ha richiesto esplicitamente i mini-esercizi di ripasso nel prossimo capitolo (segno di metacognizione attiva sulla retention). Pronto per passare alle matrici. |
+| **Data** | 07/05/2026 |
+| **Cosa è stato fatto** | **Ponte Matematico cap.02 completato e chiuso.** Ripasso 5 blocchi cap.01 (R1–R5), matrici come batch (1.1–1.2), `punteggio_batch` (2.1) + benchmark lento/veloce (2.2), `layer_dense` con attivazione (3.1) + “selezione colonne” (3.2). Quiz di verifica V1–V8 (con correzioni), esercizi finali E1 (softmax), E2 (refactor), E3 (debug), E4 (retrieval coseno), E5 (interleaving broadcasting), mini-progetto guidato `classifica_batch`. Creato anche PNG didattico su shape/broadcasting. |
+| **Errori emersi** | Confusione shape 1D vs 2D (`(N,)` vs `(N,1)`), tupla accidentale `(0.1,)`, Feynman con termini tecnici, e distinzione **logits vs probabilità** (Dense vs softmax). Tutti chiariti con fix post-feedback; da verificare “a freddo” al prossimo quiz. |
+| **Cosa fare nella prossima sessione** | Iniziare **Modulo 03 (DL & CV) cap.01** (neurone artificiale): ripartire da `X @ W + b` e aggiungere loss/gradienti in modo pratico. Inserire blocchi 🔁 di rinforzo mirato per lacune quiz #23/#24/#26/#27/#28 e re-check di #29 (slicing 1D vs 2D). |
+| **Stato motivazione** | Alto (capitolo valutato **9/10**), molte domande “di comprensione” ben poste; buona tenuta su debug e su concetti shape dopo i rinforzi. |
 
 ---
 
@@ -120,12 +120,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | ponte_matematico_m2_m3/02_matrici_e_layer_dense.py — Ponte Matematico cap.02 (bridge M2→M3): matrici come "tante pratiche insieme" (batch), prodotto matrice-vettore (`X @ w + b`) come dot product generalizzato, anteprima del layer Dense (input → matrice pesi → output → attivazione). NumPy + Matplotlib. Sequenza obbligatoria: analogia → codice → grafico → formula (Regola 21). |
-| **Rinforzi da inserire (🔁)** | OBBLIGATORI: (a) **🔁 RINFORZO Pattern #23** — virgole a fine chiamata `func(...),` (mostrare cosa restituisce davvero `(None,)` con `type(...)`); (b) **🔁 RINFORZO Pattern #24** — `iloc` (numerico) vs `loc` (etichetta) con tabella decisionale; (c) **🔁 RINFORZO Pattern #25** — `np.array` (factory) vs `np.ndarray` (tipo) — type hint corretti, demo con `isinstance`; (d) **Sezione mini-esercizi RIPASSO 5 BLOCCHI** richiesta esplicitamente dallo studente: vettori+shape, operazioni base, dot product, norma euclidea, coseno (1 micro-esercizio per blocco, 2-4 righe ciascuno). |
-| **Concetti ⚠️ da ripassare** | Vettore-riga vs vettore-colonna (preludio Dense), shape `(n, d)` di X = "n pratiche, d feature", broadcasting NumPy nel prodotto `X @ w + b` (b è scalare/vettore?). Riprendere Tensor (cap.08 M1) come generalizzazione. |
-| **Pattern 🔴 da monitorare** | #6 (consegne complete/DoD), #19 (terminologia: dire "uguale a None", non "uguale a null"), #23/#24/#25 (nuovi, vedi sopra). |
-| **Ponte mentale da riusare** | "Pratica = vettore di feature" → ESTESO: "Batch di pratiche = matrice (n×d)". "X @ w = dot product calcolato in parallelo per tutte le pratiche del batch in una sola operazione" (anteprima efficienza GPU/batch). "Layer Dense = matrice di pesi che trasforma un vettore in un altro vettore" (preludio M3). Coseno già introdotto in cap.01 ora utile per discutere similarità tra pratiche del batch. |
-| **Note** | Capitolo "ponte" denso ma corto. Mantenere stile "TODO guidati + suggerimenti, mai soluzioni dirette". Niente LaTeX in chat. Includere obbligatoriamente: Quiz d'ingresso (su cap.01 Ponte: norma, coseno, dot product, shape, normalizzazione), Quiz di verifica (sul cap.02 Ponte: prodotto matrice-vettore, batch, layer Dense). Nel quiz di verifica almeno 1 domanda Feynman. |
+| **Prossimo capitolo** | modulo_03_dl_cv/01_neurone_artificiale.py — Modulo 03 (DL & CV) cap.01: neurone artificiale (forward), loss e intuizione del gradiente (senza formalismi), collegamento diretto a `X @ w + b` / `X @ W + b`. |
+| **Rinforzi da inserire (🔁)** | 🔁 Lacuna #23 `(N,)` vs `(N,1)`; 🔁 Lacuna #24 `(0.1,)` vs `0.1`; 🔁 Lacuna #26 (2 motivi performance BLAS vs loop); 🔁 Lacuna #27 (Feynman “solo analogia”); 🔁 Lacuna #28 logits vs probabilità; re-check #29 slicing 1D vs 2D. |
+| **Concetti ⚠️ da ripassare** | Logits→probabilità (sigmoid/softmax), broadcasting del bias, shape nei batch. |
+| **Pattern 🔴 da monitorare** | #6 consegne (DoD), #19 terminologia None vs null, #21 round/tuple, e le lacune quiz #23/#24/#26/#27/#28. |
+| **Ponte mentale da riusare** | “Batch = matrice”, “neurone = dot + bias”, “probabilità = attivazione (sigmoid/softmax) sopra i punteggi”. |
+| **Note** | Ponte Matematico concluso: da qui la matematica viene introdotta “a dose” dentro M3 (loss/gradienti) con analogia → codice → grafico → formula come etichetta. |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -1240,6 +1240,8 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 25 | Dense lineare = regressione lineare multi-output | Verifica Ponte-02 V5 | Ha risposto “Falso” alla frase “Dense è matematicamente identico a una regressione lineare con più output”. In realtà `z = X @ W + b` è esattamente una regressione lineare multivariata; diventa “rete neurale” quando aggiungi attivazioni non-lineari e più layer | Ponte-02 / M3 | 🔴 |
 | 26 | Perché `X @ w` è più veloce di un for-loop (motivazioni concrete) | Verifica Ponte-02 V6 | Ha citato correttamente “vettorizzato in C/BLAS”, ma mancava un secondo motivo (cache/memoria contigua, SIMD/multithreading, riduzione overhead Python/allocazioni) | Ponte-02 | 🔴 |
 | 27 | Feynman: rispettare vincoli “niente termini tecnici” | Verifica Ponte-02 V8 | Ha spiegato bene a livello di analogia, ma ha inserito termini tecnici (feature/neuroni/regressione/classe) nonostante il vincolo “solo analogia” | Ponte-02 | 🔴 |
+| 28 | Output Dense = punteggi/logits, non probabilità | Checkpoint Ponte-02 C2 | Ha descritto l’output del Dense come “probabilità per ogni neurone”; in realtà `X @ W + b` produce punteggi, le probabilità arrivano dopo attivazione (sigmoid/softmax) | Ponte-02 / M3 | 🔴 |
+| 29 | Slicing NumPy: `X[i]` (1D) vs `X[i:i+1]` (2D) e shape `(1, d)` | Checkpoint Ponte-02 C3 | Ha scritto che `X[5:6]` ha shape `(1, 1)`; in realtà con `X.shape=(100,3)`, `X[5:6].shape == (1, 3)`. Slice su righe mantiene la dimensione 2D. Corretto post-feedback in chat. | Ponte-02 / M3 | 🟡 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
