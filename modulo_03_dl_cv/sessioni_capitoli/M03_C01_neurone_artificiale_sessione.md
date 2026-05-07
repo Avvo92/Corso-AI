@@ -61,3 +61,17 @@
 - Se la #28 (logits vs probabilità) è ancora confusa nel quiz di verifica → riproporre nel cap.02 M3 un blocco esplicito sigmoid/softmax PRIMA di parlare di rete a 2 layer.
 - Se il `🔄 [RECALL CROSS-MODULO]` (E6) viene completato senza aiuto → marcare il "ponte cap.02 Ponte → cap.01 M3" come consolidato in CONTESTO; altrimenti riprendere il punto in cap.02 M3.
 - Per il cap.02 M3 (reti neurali): partire dall'output del progetto incrementale di questo capitolo (neurone manuale vs LogisticRegression M2 cap.04) e generalizzare a `h` neuroni in parallelo (matrice `W` (d, h)).
+
+---
+
+## Note tecniche di stesura (mentor)
+
+- **07/05/2026 — Lucidatura del capitolo (Fix 1-6)**: dopo aver creato la prima versione, applicati 6 fix di calibrazione:
+  1. **`sigmoid` numericamente robusta**: `np.clip(z, -500, +500)` prima di `exp(-z)` → zero `RuntimeWarning` per `|z|` grandi (problema visto nel benchmark). La precisione float64 rende l'arrotondamento irrilevante (tanto sigmoid è già 0.0 o 1.0 oltre `|z| ≈ 36`).
+  2. **E5 [RETRIEVAL]** spostato da `sigmoid_stabile` (presente nello scaffold) a **`coseno`** del cap.01 Ponte (Regola 15: retrieval su funzione di capitolo *precedente*).
+  3. **Aggiunto blocco `RIPASSO 5 PUNTI cap.02 Ponte`** (R1-R5, mini-esercizi 2-4 righe) prima della Sezione 1 (Regola 8: mini-esercizi inline). R4 e R5 ricontrollano lacune #28 e #29.
+  4. **E2 [REFACTORING] splittato in E2 (pattern stilistici) + E3 (logica vettoriale)** per ridurre il sovraccarico (4 pattern in 1 esercizio era troppo). Esercizi rinumerati: E1-E7.
+  5. **TODO 1.1 sostituito** con `top3_contributi(x, w, feature_names)` (più creativo, usa le 7 feature reali del CSV M2, no copia-incolla del `neurone()`).
+  6. **Aggiunta `_infografica_forward_neurone()`** (Matplotlib): pannello 1 = contribuzioni `x * w`, pannello 2 = somma+bias=z, pannello 3 = sigmoid che mappa z→p. Salva in `modulo_03_dl_cv/figures/01_forward_neurone.png` durante il `__main__`.
+- **MAPPA aggiornata** per riflettere R1-R5 e E1-E7.
+- **DoD line 49** e **auto-rating C4** allineati al nuovo numero esercizio recall (E7).

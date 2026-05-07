@@ -46,7 +46,7 @@ Alla fine sai rispondere "in 1 riga" a queste 5 domande:
   4) Come faccio il forward di UN neurone su 1000 pratiche
      SENZA loop Python?                                                -> Sez. 3
   5) Il neurone artificiale e' un caso particolare del layer Dense
-     del Ponte cap.02? Spiega.                                         -> E6
+     del Ponte cap.02? Spiega.                                         -> E7
 
 Hai anche scritto 3 funzioni riutilizzabili: sigmoid, neurone, neurone_batch.
 E hai dimostrato (mini-progetto) che un neurone scritto a mano riproduce
@@ -62,12 +62,14 @@ MAPPA DEL CAPITOLO
    *  RINFORZO Lacuna #26                (perche' BLAS batte il loop)
    *  RINFORZO Lacuna #28                (logit vs probabilita')
    *  RINFORZO Lacuna #29 (re-check)     (X[i] vs X[i:i+1])
+   *  RIPASSO 5 PUNTI cap.02 Ponte       R1 - R5     (mini 2-4 righe)
    *  SEZIONE 1  Il neurone come "if morbido"     1.1 - 1.3
    *  SEZIONE 2  Funzioni di attivazione          2.1 - 2.2
    *  SEZIONE 3  Forward su batch reale (CSV M2)  3.1 - 3.2
    *  QUIZ DI VERIFICA                    V1 - V8
-   *  ESERCIZI FINALI                     E1 - E6
-                                          (colloquio / refactor / debug
+   *  ESERCIZI FINALI                     E1 - E7
+                                          (colloquio / refactor stilistico
+                                           / refactor logica / debug
                                            / retrieval / interleaving
                                            / RECALL CROSS-MODULO)
    *  MINI-PROGETTO                       neurone_vs_logreg
@@ -362,6 +364,49 @@ def _demo_lacuna_29() -> None:
 
 
 # ==========================================================================
+# RIPASSO 5 PUNTI cap.02 Ponte (mini-esercizi 2-4 righe ciascuno)
+# ==========================================================================
+# Prima di passare al neurone, fissa i 5 pilastri del cap.02 Ponte con 5
+# micro-esercizi di "retrieval practice" (Regola 8 + Regola 15). Sono
+# 2-4 righe ciascuno: scrivi senza guardare il cap.02.
+
+# R1) MATRICE = BATCH DI PRATICHE
+# Crea una matrice X di shape (3, 4) di interi qualsiasi. Stampa: shape,
+# dtype, X[0] (la prima pratica) e X[:, 0] (la prima feature di tutte
+# le pratiche).
+# TUO CODICE:
+
+
+# R2) PRODOTTO MATRICE-VETTORE = N DOT PRODUCT IN PARALLELO
+# Dato X (3, 4) random e w (4,) random, calcola z = X @ w. Verifica con
+# un assert che z[i] == np.dot(X[i], w) per ogni i (usa np.allclose
+# sull'array intero, NIENTE for-loop di assert).
+# TUO CODICE:
+
+
+# R3) BROADCASTING DEL BIAS
+# Dato z di shape (3,) e b scalare = 0.5, calcola "z_pre = z + b". Cosa
+# succede a b durante la somma? Stampa la shape di z_pre e di un nuovo
+# z2_pre = z + np.array([0.1, 0.2, 0.3]) (bias vettoriale).
+# TUO CODICE:
+
+
+# R4) LAYER DENSE = h REGRESSIONI IN PARALLELO  [Lacuna #28 ricontrollo]
+# Dato X (3, 4) e W (4, 2) random, calcola Z = X @ W. Che shape ha Z?
+# Cosa rappresenta ogni colonna di Z? E ogni riga? (commentalo in 1 riga)
+# TUO CODICE:
+
+
+# R5) SHAPE 1D vs 2D  [Lacuna #29 ricontrollo]
+# Data X (10, 3) random, stampa la shape di:
+#   X[2]      <- riga 2
+#   X[2:3]    <- "riga 2" come matrice 1xN
+#   X[2, :]   <- equivalente a X[2]?
+# Quale dei tre passi a "clf.predict_proba(...)" di sklearn senza errore?
+# TUO CODICE:
+
+
+# ==========================================================================
 # SEZIONE 1 - IL NEURONE COME "IF MORBIDO"
 # ==========================================================================
 
@@ -412,18 +457,17 @@ def _demo_lacuna_29() -> None:
 
 
 def sigmoid(z: NDArray[np.float64] | float) -> NDArray[np.float64] | float:
-    """Sigmoid stabile numericamente (evita overflow per z molto negativo).
+    """Sigmoid stabile numericamente (zero RuntimeWarning per |z| grandi).
 
     Formula: sigmoid(z) = 1 / (1 + exp(-z))
-    Per z grandi (positivi o negativi) usiamo una forma equivalente che
-    non fa esplodere exp.
+    Trick anti-overflow: clip dell'argomento di exp in [-500, +500].
+    Per z fuori da quel range il valore di sigmoid e' gia' "saturato"
+    a 0 o 1 con precisione float64, quindi clip-pare non cambia il
+    risultato pratico ma evita warning di overflow.
     """
     z_arr = np.asarray(z, dtype=float)
-    out = np.where(
-        z_arr >= 0,
-        1.0 / (1.0 + np.exp(-z_arr)),
-        np.exp(z_arr) / (1.0 + np.exp(z_arr)),
-    )
+    z_safe = np.clip(z_arr, -500.0, 500.0)
+    out = 1.0 / (1.0 + np.exp(-z_safe))
     if np.isscalar(z) or out.ndim == 0:
         return float(out)
     return out
@@ -508,13 +552,37 @@ def _esempio_neurone_batch() -> None:
         print(f"  pratica {i}: prob={A[i]:.4f}")
 
 
-# TODO 1.1 (5 minuti):
-# Implementa "punteggio_e_probabilita(x, w, b) -> tuple[float, float]" che
-# restituisce sia il LOGIT che la PROBABILITA' di una singola pratica.
+# TODO 1.1 (8 minuti) - "perche' una pratica e' alterata?":
+# Quando il neurone classifica una pratica come alterata (prob > 0.5), un
+# auditor umano vorra' sapere "QUALI feature hanno contribuito di piu'
+# alla decisione?". Implementa una funzione:
+#
+#       def top3_contributi(
+#           x: NDArray[np.float64],
+#           w: NDArray[np.float64],
+#           feature_names: list[str],
+#       ) -> list[tuple[str, float]]:
+#           ...
+#
+# che, data UNA pratica x (1D), il vettore pesi w (1D) e i nomi delle
+# feature, restituisce le 3 feature con CONTRIBUTO PIU' GRANDE (in valore
+# assoluto), ordinate decrescente. Il "contributo" della feature j e':
+#       contrib_j = x[j] * w[j]
+#
 # Vincoli:
-#   - type hint corretti (ndarray, non array)
-#   - solleva ValueError se x e w hanno shape incompatibili
-#   - usa la sigmoid che hai scritto sopra
+#   - type hint corretti (ndarray, non array - Pattern #25)
+#   - ValueError se shape incompatibili (x.ndim != 1, mismatch lunghezze)
+#   - niente loop Python: usa np.argsort sul valore assoluto dei contributi
+#
+# Verifica con feature_names = ["delta_netto_lordo", "ratio_trattenute",
+# "match_cf", "coerenza_date", "accrediti", "confidence_ocr", "incoerenze"]
+# (le 7 feature reali del CSV M2). Stampa il risultato per le prime 2
+# pratiche del CSV.
+#
+# Suggerimento operativo: hai gia' fatto qualcosa di simile nel
+# E5 (interleaving) cap.02 Ponte con "contribuzioni = X_scaled * coef".
+# Qui pero' lavori su 1 sola pratica, quindi e' un dot product element-wise
+# fra 2 vettori 1D.
 # TUO CODICE QUI:
 
 
@@ -595,6 +663,79 @@ def _grafico_attivazioni(
     ax.set_ylabel("attivazione")
     ax.legend()
     ax.grid(True, alpha=0.3)
+    if out_path:
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        fig.savefig(out_path, dpi=120, bbox_inches="tight")
+    if show:
+        plt.show()
+    plt.close(fig)
+
+
+def _infografica_forward_neurone(
+    out_path: str | None = None,
+    show: bool = False,
+) -> None:
+    """Infografica didattica: pipeline x -> z -> sigmoid -> p.
+
+    Spiega VISIVAMENTE i 2 passi di un neurone: dot product (= logit z),
+    poi sigmoid (= probabilita' p in [0, 1]). Usa una pratica fittizia
+    dello scenario "controllo documentale".
+    """
+    x = np.array([1200.0, 30.0, 250.0, 180.0, 90.0])
+    nomi = ["delta_netto", "ratio_tratt", "match_cf", "coerenza_date",
+            "confidence_ocr"]
+    w = np.array([+0.001, -0.05, +0.02, -0.03, +0.01])
+    b = -3.0
+    contribuzioni = x * w
+    z = float(contribuzioni.sum() + b)
+    p = float(sigmoid(z))
+
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4.5),
+                             gridspec_kw={"width_ratios": [3, 2, 3]})
+
+    # Pannello 1: feature x pesi = contribuzioni (passo 1 del neurone)
+    ax = axes[0]
+    ax.barh(nomi, contribuzioni, color=["#2ca02c" if c > 0 else "#d62728"
+                                          for c in contribuzioni])
+    ax.axvline(0, color="black", lw=0.7)
+    ax.set_title("Passo 1: x * w (contribuzioni)")
+    ax.set_xlabel("contributo al logit")
+    ax.invert_yaxis()
+    ax.grid(True, axis="x", alpha=0.3)
+
+    # Pannello 2: somma + bias = logit z (numero singolo)
+    ax = axes[1]
+    ax.bar(["sum(x*w)", "bias b", "z (logit)"],
+           [contribuzioni.sum(), b, z],
+           color=["#1f77b4", "#ff7f0e", "#9467bd"])
+    ax.axhline(0, color="black", lw=0.7)
+    ax.set_title("Passo 1bis: + bias = z")
+    ax.set_ylabel("valore")
+    for i, v in enumerate([contribuzioni.sum(), b, z]):
+        ax.text(i, v, f"{v:+.2f}", ha="center",
+                va="bottom" if v >= 0 else "top", fontsize=9)
+    ax.grid(True, axis="y", alpha=0.3)
+
+    # Pannello 3: sigmoid che trasforma z in probabilita' (passo 2)
+    ax = axes[2]
+    z_grid = np.linspace(-6, 6, 400)
+    ax.plot(z_grid, sigmoid(z_grid), color="#2ca02c", lw=2, label="sigmoid")
+    ax.axhline(0.5, color="gray", lw=0.5, ls="--")
+    ax.scatter([z], [p], s=120, color="#d62728", zorder=5,
+               label=f"z = {z:.2f}\np = {p:.3f}")
+    ax.set_title("Passo 2: sigmoid(z) = probabilita'")
+    ax.set_xlabel("z (logit)")
+    ax.set_ylabel("p (probabilita')")
+    ax.set_ylim(-0.05, 1.05)
+    ax.legend(loc="lower right")
+    ax.grid(True, alpha=0.3)
+
+    fig.suptitle(
+        f"Forward di UN neurone su 1 pratica  ->  prob_alterato = {p:.3f}",
+        fontsize=13, y=1.02,
+    )
+    fig.tight_layout()
+
     if out_path:
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
         fig.savefig(out_path, dpi=120, bbox_inches="tight")
@@ -808,31 +949,51 @@ def _esempio_neurone_su_csv() -> None:
 # ...
 
 
-# E2) [REFACTORING]
-#     Questo codice "neurone" funziona ma e' pieno di anti-pattern. Riscrivilo
-#     pulito, applicando le regole gia' fissate nel cap.02 Ponte:
-#       - Pattern #25: type hint con np.ndarray (NON np.array)
-#       - Pattern #23: niente virgole spurie a fine riga
-#       - Pattern #19: usa "is None" / "is not None", non "if var:" sui numeri
-#       - lacuna #28: dai un nome esplicito a "logit" e "probabilita'"
-#       - aggiungi ValueError sulle shape incompatibili
-#       - niente loop Python: vettoriale!
+# E2) [REFACTORING - parte 1: pattern stilistici] - 5 minuti
+#     Questo codice ha 3 problemi STILISTICI che hai gia' visto. NON
+#     toccare la logica: sistema solo lo "stile":
+#       - Pattern #25: type hint corretti (np.ndarray, NON np.array)
+#       - Pattern #23: niente virgole spurie a fine riga (creano tuple)
+#       - Pattern #19: "is None" / "is not None" sui parametri opzionali
+#                       (NON "if b:" su un numero, perche' confonde 0.0 con None)
 #
-#     def neuro(X, w, b=None):
+#     def neuro_v1(X: np.array, w: np.array, b=None) -> np.array:
 #         if b: bias = b,
 #         else: bias = 0.0,
-#         out = []
-#         for i in range(len(X)),:
-#             tot = 0
-#             for j in range(len(X[i])),:
-#                 tot += X[i][j] * w[j]
-#             out.append(1/(1+np.exp(-(tot+bias)))),
-#         return np.array(out),
+#         z = X @ w + bias
+#         return z,
 #
+#     Devi RESTITUIRE z (non una tupla con z dentro!).
+#     NON modificare la logica: rimane "if b is None"-stile, solo pulito.
 # TUO CODICE QUI:
 
 
-# E3) [DEBUG] - autonomo, niente scala progressiva (regola corso)
+# E3) [REFACTORING - parte 2: logica vettoriale + naming] - 10 minuti
+#     Adesso lavora sulla LOGICA. Questo codice gira ma e' brutto e lento.
+#     Riscrivilo con:
+#       - vettorizzazione: niente loop Python (1 sola operazione "@")
+#       - controllo shape: ValueError se X.shape[1] != w.shape[0]
+#       - lacuna #28: dai un nome esplicito a "logit" e "probabilita'",
+#         restituendo entrambi (es. tuple (logit, prob)).
+#       - lacuna #21: usa "round(x, 4)" senza virgola finale.
+#
+#     def neuro_v2(X, w, b):
+#         out = []
+#         for i in range(len(X)):
+#             tot = 0
+#             for j in range(len(X[i])):
+#                 tot += X[i][j] * w[j]
+#             prob = 1 / (1 + np.exp(-(tot + b)))
+#             out.append(round(prob, 4),)
+#         return np.array(out)
+#
+#     Verifica: con X (3, 4) random, w (4,) random, b = 0.0, la tua
+#     funzione DEVE produrre gli stessi numeri (a meno della tolleranza
+#     numerica) della "neuro_v2" originale.
+# TUO CODICE QUI:
+
+
+# E4) [DEBUG] - autonomo, niente scala progressiva (regola corso)
 #     Questo codice gira ma da' risultati STRANI: tutte le probabilita'
 #     sono ~0.5 indipendentemente dai dati. Trova il bug PRIMA di chiedere
 #     aiuto.
@@ -852,21 +1013,28 @@ def _esempio_neurone_su_csv() -> None:
 # ...
 
 
-# E4) [RETRIEVAL] - senza guardare le sezioni precedenti
-#     Riscrivi da zero la funzione "sigmoid_stabile(z)" senza guardare
-#     l'implementazione che hai usato sopra. Deve:
-#       - accettare scalare O np.ndarray
-#       - non andare in overflow per z = -1000 ne' z = +1000
-#       - restituire un valore in (0, 1)
-#     Verifica con:
-#         sigmoid_stabile(0)         -> 0.5
-#         sigmoid_stabile(+1000)     -> ~1.0  (NON nan)
-#         sigmoid_stabile(-1000)     -> ~0.0  (NON nan)
-#         sigmoid_stabile(np.array([-2, 0, +2]))  -> ~[0.119, 0.5, 0.881]
+# E5) [RETRIEVAL] - regola 15: riscrivi da zero una funzione di un capitolo
+#                    PRECEDENTE, senza guardare il file vecchio.
+#     Senza riaprire `ponte_matematico_m2_m3/01_vettori_da_zero.py`,
+#     riscrivi da zero la funzione "coseno(a, b) -> float" che hai gia'
+#     scritto al cap.01 Ponte (e ricontrollata in E4 cap.02 Ponte).
+#
+#     Deve avere TUTTI questi controlli (regole pulite cap.02 Ponte):
+#       - type hint corretti (np.ndarray, non np.array - Pattern #25)
+#       - controllo shape uguale + ndim == 1 sia per a sia per b
+#       - controllo "norma zero" robusto: usa np.isclose con tolleranza
+#       - cast esplicito a float in output
+#       - assert sul range [-1.0 - eps, 1.0 + eps]
+#
+#     Verifica:
+#       coseno([1, 2], [2, 4])      ->  1.0   (paralleli, stesso verso)
+#       coseno([1, 0], [0, 1])      ->  0.0   (perpendicolari)
+#       coseno([1, 0], [-1, 0])     -> -1.0   (paralleli, opposti)
+#
 # TUO CODICE QUI:
 
 
-# E5) [INTERLEAVING] cap.01 Ponte (norma) + cap.01 M3 (neurone)
+# E6) [INTERLEAVING] cap.01 Ponte (norma) + cap.01 M3 (neurone su CSV M2)
 #     Una pratica con norma "molto alta" rispetto alle altre puo' "dominare"
 #     il dot product e far esplodere il logit (z grande -> sigmoid satura
 #     a 0 o 1). Per questo si SCALA prima.
@@ -884,7 +1052,7 @@ def _esempio_neurone_su_csv() -> None:
 # TUO CODICE QUI:
 
 
-# E6) [RECALL CROSS-MODULO] - OBBLIGATORIO (Regola 26 - cap.01 di nuovo modulo)
+# E7) [RECALL CROSS-MODULO] - OBBLIGATORIO (Regola 26 - cap.01 di nuovo modulo)
 #
 #     Questo esercizio dimostra che il NEURONE artificiale di M3 e' un
 #     CASO PARTICOLARE del layer Dense del Ponte cap.02.
@@ -973,7 +1141,7 @@ def _esempio_neurone_su_csv() -> None:
 #       - logit vs probabilita' (#28):         /10
 #       - sigmoid/ReLU/tanh quando usarle:     /10
 #       - forward batch su CSV M2:             /10
-#       - recall cross-modulo (E6):            /10
+#       - recall cross-modulo (E7):            /10
 # TUE RISPOSTE:
 # ...
 
@@ -1109,6 +1277,19 @@ if __name__ == "__main__":
         _esempio_neurone_su_csv()
     except FileNotFoundError as exc:
         print("Skip: CSV M2 non trovato.", exc)
+    except ImportError as exc:
+        print("Skip: scikit-learn non disponibile in questo interprete.", exc)
+
+    print("\n[Genero infografiche PNG nella cartella figures/]")
+    figures_dir = os.path.join(os.path.dirname(__file__), "figures")
+    _grafico_attivazioni(
+        out_path=os.path.join(figures_dir, "01_attivazioni.png"),
+    )
+    _infografica_forward_neurone(
+        out_path=os.path.join(figures_dir, "01_forward_neurone.png"),
+    )
+    print(f"  -> {figures_dir}/01_attivazioni.png")
+    print(f"  -> {figures_dir}/01_forward_neurone.png")
 
     print("\n" + "=" * 70)
     print("Demo finite. Adesso tocca a te: completa i TODO in ordine.")
