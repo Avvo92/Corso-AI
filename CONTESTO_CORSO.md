@@ -39,7 +39,7 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_03_dl_cv/01_neurone_artificiale.py — Modulo 03 (DL & CV): neurone artificiale + forward pass + loss (inizio M3). |
+| **Capitolo in corso** | modulo_03_dl_cv/01_neurone_artificiale.py — **CREATO 07/05/2026** — Neurone artificiale = layer Dense con h=1 + sigmoid; rinforzi mirati lacune #23/#24/#26/#27/#28/#29 + recall cross-modulo verso Ponte cap.02. |
 | **Ultimo completato** | ponte_matematico_m2_m3/02_matrici_e_layer_dense.py (07/05/2026) — Matrici come batch, `X @ w + b`, anteprima layer Dense `X @ W + b`, broadcasting, softmax; esercizi finali + mini-progetto `classifica_batch`; voto difficoltà **9**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision |
 | **Difficoltà media** | ~6.7 (19 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07 + Ponte-01; cap 07 M1 escluso/anomalia; **Ponte-01 = 9/10**) |
@@ -56,10 +56,10 @@
 | Campo | Valore |
 |-------|--------|
 | **Data** | 07/05/2026 |
-| **Cosa è stato fatto** | **Ponte Matematico cap.02 completato e chiuso.** Ripasso 5 blocchi cap.01 (R1–R5), matrici come batch (1.1–1.2), `punteggio_batch` (2.1) + benchmark lento/veloce (2.2), `layer_dense` con attivazione (3.1) + “selezione colonne” (3.2). Quiz di verifica V1–V8 (con correzioni), esercizi finali E1 (softmax), E2 (refactor), E3 (debug), E4 (retrieval coseno), E5 (interleaving broadcasting), mini-progetto guidato `classifica_batch`. Creato anche PNG didattico su shape/broadcasting. |
-| **Errori emersi** | Confusione shape 1D vs 2D (`(N,)` vs `(N,1)`), tupla accidentale `(0.1,)`, Feynman con termini tecnici, e distinzione **logits vs probabilità** (Dense vs softmax). Tutti chiariti con fix post-feedback; da verificare “a freddo” al prossimo quiz. |
-| **Cosa fare nella prossima sessione** | Iniziare **Modulo 03 (DL & CV) cap.01** (neurone artificiale): ripartire da `X @ W + b` e aggiungere loss/gradienti in modo pratico. Inserire blocchi 🔁 di rinforzo mirato per lacune quiz #23/#24/#26/#27/#28 e re-check di #29 (slicing 1D vs 2D). |
-| **Stato motivazione** | Alto (capitolo valutato **9/10**), molte domande “di comprensione” ben poste; buona tenuta su debug e su concetti shape dopo i rinforzi. |
+| **Cosa è stato fatto** | **Ponte cap.02 chiuso (voto 9/10) + creato cap.01 M3** (`01_neurone_artificiale.py`) seguendo il protocollo apertura capitolo. Struttura: header + DoD (5 domande), prontuario tranelli neurone [N1]-[N6], **quiz d'ingresso Q1-Q6** che ricontrolla a freddo le lacune #23/#24/#26/#27/#28 + re-check #29, **5 blocchi 🔁 RINFORZO MIRATO** (uno per lacuna attiva) con demo eseguibili (`_demo_lacuna_23/24/26/28/29` + `_benchmark_loop_vs_blas`), **Sezione 1** (sigmoid + neurone singolo + neurone_batch + 3 TODO), **Sezione 2** (sigmoid/ReLU/tanh con grafico Matplotlib + 2 TODO), **Sezione 3** (forward su CSV M2 reale che riproduce LogisticRegression cap.04 M2 a 1e-10 + 2 TODO), **Quiz V1-V8** (V8 Feynman con vincoli stretti #27), **Esercizi E1-E6** (E1 colloquio, E2 refactor con tutti i pattern attivi, E3 debug autonomo, E4 retrieval sigmoid stabile, E5 interleaving norma+scaling, **E6 RECALL CROSS-MODULO obbligatorio** = neurone come caso particolare di layer_dense Ponte cap.02), **Mini-progetto** `neurone_vs_logreg`, **Checkpoint C1-C4**, soluzioni quiz, entry point `__main__`. Creati anche `sessioni_capitoli/README.md` + `_TEMPLATE_sessione_capitolo.md` + diario `M03_C01_neurone_artificiale_sessione.md` (in corso). Sintassi Python verificata (AST ok). |
+| **Errori emersi** | (chiusura cap.02) shape 1D vs 2D (`(N,)` vs `(N,1)`), tupla accidentale `(0.1,)`, Feynman con termini tecnici, logits vs probabilità (Dense vs softmax). Tutte le 5 lacune attive vengono ricontrollate "a freddo" nel quiz d'ingresso del cap.01 M3 + rinforzate con demo dedicate. |
+| **Cosa fare nella prossima sessione** | Aprire `modulo_03_dl_cv/01_neurone_artificiale.py` e procedere in ordine: leggere PRONTUARIO (5 min) → rispondere QUIZ D'INGRESSO Q1-Q6 (test "a freddo" delle lacune) → eseguire le `_demo_lacuna_*` → poi Sezione 1 (TODO 1.1-1.3) → Sezione 2 (TODO 2.1-2.2). Su Sezione 3 in poi servirà il CSV M2. |
+| **Stato motivazione** | Alto (capitolo Ponte chiuso 9/10), studente ha richiesto esplicitamente i ripassi e ha fatto domande di comprensione molto puntuali su softmax/Eulero/exp. Pronto per neuroni. |
 
 ---
 
