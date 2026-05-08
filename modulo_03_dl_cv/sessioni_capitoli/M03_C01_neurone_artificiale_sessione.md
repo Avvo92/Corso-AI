@@ -88,6 +88,14 @@
 - **Nota:** il fattore **50–1000×** è **ordine di grandezza possibile**, dipende da N,d e macchina — ok come intuizione, non come legge fissa.
 - **Lacuna #26:** da **🔴** a **🟡** — migliorata ma **non chiusa** al 100% finché il **secondo motivo** non è **distinto** e **operativo** (integrare nel commento Q4 una frase sul ciclo/indexing o sulla cache).
 
+### [2026-05-07] — Quiz d'ingresso Q5 (lacuna #29 re-check — slicing righe)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~183–188 (`X[5]` vs `X[5:6]`, `predict_proba`).
+- **Voto (primo tentativo):** **10/10**.
+- **Corretto:** `X[5]` → **`(7,)`** (1D); `X[5:6]` → **`(1, 7)`** (2D — una riga, tutte le feature); **`predict_proba`** vuole forma **`(n_campioni, n_feature)`** → **`X[5:6]`** è la forma giusta per **un** campione.
+- **Micro-nota:** alcune versioni sklearn **accettano** anche `(n_features,)` per **un** solo vettore, ma è **fragile** e fuori convenzione; la risposta **corretta didattica** è **`(1, 7)`**.
+- **Lacuna #29:** **🟢 Superato** su questo checkpoint.
+
 ---
 
 ## Lacune e dubbi ancora aperti

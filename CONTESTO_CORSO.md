@@ -39,11 +39,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_03_dl_cv/01_neurone_artificiale.py — **CREATO 07/05/2026** — Neurone artificiale = layer Dense con h=1 + sigmoid; rinforzi mirati lacune #27/#29 (#26 🟡 post-Q4) + lacune #23/#28/#24 🟢 quiz ingresso + recall Ponte cap.02. |
+| **Capitolo in corso** | modulo_03_dl_cv/01_neurone_artificiale.py — **CREATO 07/05/2026** — Neurone artificiale = layer Dense con h=1 + sigmoid; rinforzi mirati lacune #26 🟡, #27 (#29 quiz Q5 🟢 07/05/2026) + lacune #23/#28/#24 🟢 quiz ingresso + recall Ponte cap.02. |
 | **Ultimo completato** | ponte_matematico_m2_m3/02_matrici_e_layer_dense.py (07/05/2026) — Matrici come batch, `X @ w + b`, anteprima layer Dense `X @ W + b`, broadcasting, softmax; esercizi finali + mini-progetto `classifica_batch`; voto difficoltà **9**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision |
 | **Difficoltà media** | ~6.7 (19 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07 + Ponte-01; cap 07 M1 escluso/anomalia; **Ponte-01 = 9/10**) |
-| **Priorità attive** | 🟡 Lacuna quiz #26: `X @ w` vs loop — secondo motivo distinto (overhead ciclo / cache / SIMD) da consolidare; 🔴 Lacuna quiz #27: Feynman rispettare “niente termini tecnici”; 🟡 Lacuna quiz #29: slicing `X[i]` (1D) vs `X[i:i+1]` (2D) (rinforzata); 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Data leakage (monitoraggio). |
+| **Priorità attive** | 🟡 Lacuna quiz #26: `X @ w` vs loop — secondo motivo distinto (overhead ciclo / cache / SIMD) da consolidare; 🔴 Lacuna quiz #27: Feynman rispettare “niente termini tecnici”; 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Data leakage (monitoraggio). |
 | **Sessione corrente** | Sessione 19 |
 
 ---
@@ -99,6 +99,7 @@
 | 23 | Shape `X @ w`: `(N,)` vs `(N, 1)` in NumPy | 🟢 Superato | Quiz ingresso M3 cap.01 Q1 (07/05/2026): shape + spiegazione `(N,d)@(d,)→(N,)` vs `(N,d)@(d,1)→(N,1)` |
 | 26 | Velocità `X @ w` vs loop Python (`np.dot` per riga) | 🟡 Rinforzato | Quiz ingresso M3 cap.01 Q4 (07/05/2026): BLAS/✓; 2° motivo troppo generico (“interpretato”) — serve distinto (overhead ciclo, cache, SIMD) |
 | 24 | Tupla accidentale `(0.1,)` vs scalare `0.1` (bias) | 🟢 Superato | Quiz ingresso M3 cap.01 Q3 (07/05/2026): `+ 0.1`, motivazione stile + `type((0.1,))` |
+| 29 | Slicing righe `X[i]` (1D) vs `X[i:i+1]` (2D) per sklearn `predict_proba` | 🟢 Superato | Quiz ingresso M3 cap.01 Q5 (07/05/2026): `(7,)`, `(1,7)`, input corretto `X[5:6]` |
 | 28 | Logits (`z`) vs probabilità dopo sigmoid (`a`) | 🟢 Superato | Quiz ingresso M3 cap.01 Q2 (07/05/2026): `a` probabilità, `z` logit |
 | 12 | Diagnosi mismatch shape in reshape | 🟢 Superato | Cap.01 Ponte: uso intensivo di `.shape`, `to_numpy(dtype=float)`, dot product con shape coerenti, controllo `if a.shape != b.shape: raise` nella funzione `coseno`. Diagnosi shape ora autonoma. |
 | 13 | Interpretazione .shape su selezione colonne Pandas | 🟢 Superato | Quiz ingresso cap.02 M2: risposta corretta (50, 2) |
@@ -124,7 +125,7 @@
 | Campo | Valore |
 |-------|--------|
 | **Prossimo capitolo** | modulo_03_dl_cv/01_neurone_artificiale.py — Modulo 03 (DL & CV) cap.01: neurone artificiale (forward), loss e intuizione del gradiente (senza formalismi), collegamento diretto a `X @ w + b` / `X @ W + b`. |
-| **Rinforzi da inserire (🔁)** | 🔁 Lacuna #26 (2° motivo BLAS vs loop: overhead/Python/cache); 🔁 Lacuna #27 (Feynman “solo analogia”); re-check #29 slicing 1D vs 2D. |
+| **Rinforzi da inserire (🔁)** | 🔁 Lacuna #26 (2° motivo BLAS vs loop: overhead/Python/cache); 🔁 Lacuna #27 (Feynman “solo analogia”). |
 | **Concetti ⚠️ da ripassare** | Logits→probabilità (sigmoid/softmax), broadcasting del bias, shape nei batch. |
 | **Pattern 🔴 da monitorare** | #6 consegne (DoD), #19 terminologia None vs null, #21 round/tuple, e le lacune quiz #26/#27. |
 | **Ponte mentale da riusare** | “Batch = matrice”, “neurone = dot + bias”, “probabilità = attivazione (sigmoid/softmax) sopra i punteggi”. |
@@ -1266,7 +1267,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 26 | Perché `X @ w` è più veloce di un for-loop (motivazioni concrete) | Verifica Ponte-02 V6 | Ha citato correttamente “vettorizzato in C/BLAS”, ma mancava un secondo motivo (cache/memoria contigua, SIMD/multithreading, riduzione overhead Python/allocazioni). **Quiz M3 Q4 (07/05/2026):** primo motivo ok; secondo (“interpretato/preprocessato”) ancora generico → consolidare | Ponte-02 / M3 | 🟡 |
 | 27 | Feynman: rispettare vincoli “niente termini tecnici” | Verifica Ponte-02 V8 | Ha spiegato bene a livello di analogia, ma ha inserito termini tecnici (feature/neuroni/regressione/classe) nonostante il vincolo “solo analogia” | Ponte-02 | 🔴 |
 | 28 | Output Dense = punteggi/logits, non probabilità | Checkpoint Ponte-02 C2 | Ha descritto l’output del Dense come “probabilità per ogni neurone”; in realtà `X @ W + b` produce punteggi, le probabilità arrivano dopo attivazione (sigmoid/softmax). **Chiusura:** quiz ingresso M3 cap.01 Q2 (07/05/2026): `a = sigmoid(z)` come probabilità, `z` come logit | Ponte-02 / M3 | 🟢 |
-| 29 | Slicing NumPy: `X[i]` (1D) vs `X[i:i+1]` (2D) e shape `(1, d)` | Checkpoint Ponte-02 C3 | Ha scritto che `X[5:6]` ha shape `(1, 1)`; in realtà con `X.shape=(100,3)`, `X[5:6].shape == (1, 3)`. Slice su righe mantiene la dimensione 2D. Corretto post-feedback in chat. | Ponte-02 / M3 | 🟡 |
+| 29 | Slicing NumPy: `X[i]` (1D) vs `X[i:i+1]` (2D) e shape `(1, d)` | Checkpoint Ponte-02 C3 | Ha scritto che `X[5:6]` ha shape `(1, 1)`; in realtà con `X.shape=(100,3)`, `X[5:6].shape == (1, 3)`. Slice su righe mantiene la dimensione 2D. Corretto post-feedback in chat. **Chiusura:** quiz ingresso M3 cap.01 Q5 (07/05/2026): `(7,)` vs `(1,7)`, `predict_proba(X[5:6])` | Ponte-02 / M3 | 🟢 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
