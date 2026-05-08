@@ -96,6 +96,14 @@
 - **Micro-nota:** alcune versioni sklearn **accettano** anche `(n_features,)` per **un** solo vettore, ma è **fragile** e fuori convenzione; la risposta **corretta didattica** è **`(1, 7)`**.
 - **Lacuna #29:** **🟢 Superato** su questo checkpoint.
 
+### [2026-05-07] — Quiz d'ingresso Q6 (lacuna #27 re-check — Feynman senza jargon)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~193–201.
+- **Voto (primo tentativo):** **10/10**.
+- **Vincoli:** nessuno tra feature / logit / regressione / matrice / sigmoid / vettore; analogia **cuoco / ingredienti → punteggio “primo piatto”** chiara e nel limite **≤ 5 righe**.
+- **Micro-nota:** «un neurone **è** un cuoco» (accento), non «**e**».
+- **Lacuna #27:** **🟢 Superato** su questo checkpoint.
+
 ---
 
 ## Lacune e dubbi ancora aperti
