@@ -131,4 +131,5 @@
   5. **TODO 1.1 sostituito** con `top3_contributi(x, w, feature_names)` (più creativo, usa le 7 feature reali del CSV M2, no copia-incolla del `neurone()`).
   6. **Aggiunta `_infografica_forward_neurone()`** (Matplotlib): pannello 1 = contribuzioni `x * w`, pannello 2 = somma+bias=z, pannello 3 = sigmoid che mappa z→p. Salva in `modulo_03_dl_cv/figures/01_forward_neurone.png` durante il `__main__`.
 - **MAPPA aggiornata** per riflettere R1-R5 e E1-E7.
+- **07/05/2026 — Mini-esercizi per blocchi RINFORZO #23–#29**: dopo la parte teorica / «Regola pratica» di ogni lacuna, aggiunti blocchi `Mini-esercizio [RINFORZO #…]` (2–4 righe, `TUO CODICE` o bullet parole per #26) allineati a Regola 8 — prima delle demo `_demo_lacuna_*` / `_benchmark_loop_vs_blas` dove pertinente.
 - **DoD line 49** e **auto-rating C4** allineati al nuovo numero esercizio recall (E7).

@@ -57,11 +57,11 @@ MAPPA DEL CAPITOLO
 ----------------------------------------------------------------------------
    *  PRONTUARIO TRANELLI NEURONE        [N1] - [N6]
    *  QUIZ D'INGRESSO                    Q1 - Q6     (cerniera cap.02 Ponte)
-   *  RINFORZO Lacuna #23                (shape (N,) vs (N, 1))
-   *  RINFORZO Lacuna #24                (tupla (0.1,) vs scalare 0.1)
-   *  RINFORZO Lacuna #26                (perche' BLAS batte il loop)
-   *  RINFORZO Lacuna #28                (logit vs probabilita')
-   *  RINFORZO Lacuna #29 (re-check)     (X[i] vs X[i:i+1])
+   *  RINFORZO Lacuna #23                (shape (N,) vs (N, 1)) + mini-esercizio
+   *  RINFORZO Lacuna #24                (tupla (0.1,) vs scalare 0.1) + mini-esercizio
+   *  RINFORZO Lacuna #26                (perche' BLAS batte il loop) + mini-esercizio
+   *  RINFORZO Lacuna #28                (logit vs probabilita') + mini-esercizio
+   *  RINFORZO Lacuna #29 (re-check)     (X[i] vs X[i:i+1]) + mini-esercizio
    *  RIPASSO 5 PUNTI cap.02 Ponte       R1 - R5     (mini 2-4 righe)
    *  SEZIONE 1  Il neurone come "if morbido"     1.1 - 1.3
    *  SEZIONE 2  Funzioni di attivazione          2.1 - 2.2
@@ -150,8 +150,10 @@ from numpy.typing import NDArray
 # Q1) [Lacuna #23 - re-check] Hai X di shape (200, 7) e w di shape (7,).
 #     Che shape ha "X @ w"? E "X @ w.reshape(-1, 1)"?
 #     Una delle due e' 1D, l'altra 2D: spiega quale e perche'.
-# TUA RISPOSTA:
-# ...
+# TUA RISPOSTA: la prima => (200, ); la seconda => (200, 1);
+# Il perchè è che il Dot product di una matrice (N, d) per un vettore (d, ) restituisce un vettore di shape (N, ), mentre se lo stesso vettore
+# lo trasformiamo tramite reshape in una matrice  (d, 1) usando .reshape(-1, 1) a qual punto avremo un dot product tra due matrici, che
+# restituirà una matrice di shape (N, 1).
 
 # Q2) [Lacuna #28 - re-check] Hai un neurone con w (7,), b scalare e
 #     applichi sigmoid in fondo. Su un batch X (200, 7) ottieni:
@@ -160,14 +162,15 @@ from numpy.typing import NDArray
 #     Quale dei due (z o a) e' "probabilita' di alterato"?
 #     L'altro come si chiama?
 # TUA RISPOSTA:
-# ...
+# a è la probabilità, il secondo è un logit grezzo
 
 # Q3) [Trova l'errore - Lacuna #24 re-check]
 #     Questo codice "gira" ma e' sbagliato come stile. Perche'?
 #         z = X @ w + (0.1,)
 #     Qual e' la versione corretta? E cosa stampa "type((0.1,))"?
 # TUA RISPOSTA:
-# ...
+# la versione corretta è => z = X @ w + 0.1. Nonostante tutto numpy farebbe cmq bradcasting e matematicamente l'operazione non cambierebbe, ma
+# stiamo dando una tupla come valore di b senza alcun motivo. Infatti, type((0.1,)) darebbe "tuple". 
 
 # Q4) [Lacuna #26 - re-check] Da' DUE motivi DIVERSI per cui:
 #         z = X @ w + b
@@ -175,14 +178,18 @@ from numpy.typing import NDArray
 #         z = np.array([np.dot(X[i], w) + b for i in range(len(X))])
 #     (uno tecnico-NumPy, uno legato all'interprete Python).
 # TUA RISPOSTA:
-# ...
+# 1) z = X@ w + b è un operazione vettorizzata eseguita in C, mentre il secondo è loop python (dalle 50 alle 1000 volte più lento);
+# 2) Esssendo un linguaggio interpretato, il codice python deve essere preprocessato prima di essere eseguito, e questo fa diminuire l'efficienza.
 
 # Q5) [Lacuna #29 - re-check] Hai X.shape == (100, 7).
 #     Che shape ha X[5]? E X[5:6]? Quale dei due passi a:
 #         clf.predict_proba(?)
 #     di sklearn senza ottenere errore?
-# TUA RISPOSTA:
-# ...
+# TUA RISPOSTA: Il primo restituisce un vettore di shape (7, ), secondo ottenuto tramite slicing restituisce una matrice di shape (1, 7). Predict proba accetta in input matrici di shape (1, n), quindi il secondo è quello giusto.
+print("Prova 1")
+X = np.random.randn(100, 7)
+print(X[5])
+print(X[5:6])
 
 # Q6) [Feynman - Lacuna #27 re-check] Spiega cos'e' un NEURONE artificiale
 #     a un collega web dev che non ha mai sentito parlare di reti neurali.
@@ -190,7 +197,8 @@ from numpy.typing import NDArray
 #     niente "matrice", niente "sigmoid", niente "vettore". SOLO analogia
 #     dal mondo reale (cucina, sport, ufficio...). Massimo 5 righe.
 # TUA RISPOSTA:
-# ...
+# un neurone è uno specialista che si occupa di tirare fuori un punteggio da un insieme di valori assegnati a diversi aspetti di qualcosa. 
+# Ad esempio, un neurone e un cuoco che, da un insieme di ingredienti, tira fuori un punteggio riguardo a "Primo piatto". Se gli ingredienti sono adatti a fare un primo piatto, il punteggio sarà alto, altrimenti sarà basso. 
 
 
 # ==========================================================================
@@ -222,6 +230,11 @@ def _demo_lacuna_23() -> None:
 #   - X (N, d) @ w (d,)        -> (N,)   = vettore 1D di logit
 #   - X (N, d) @ W (d, 1)      -> (N, 1) = matrice colonna 2D di logit
 #   - X (N, d) @ W (d, h)      -> (N, h) = matrice 2D, una colonna per neurone
+
+# --- Mini-esercizio [RINFORZO #23] (2-4 righe) ---
+# Con X di shape (6, 3) e w di shape (3,), calcola z1 = X @ w e z2 = X @ w.reshape(-1, 1).
+# Stampa z1.shape, z2.shape e verifica con np.allclose(z1, z2.ravel()) che i numeri coincidano.
+# TUO CODICE:
 
 
 # ==========================================================================
@@ -256,6 +269,11 @@ def _demo_lacuna_24() -> None:
 #     b_vec = np.array([...])  esplicito.
 #   - mai virgole "decorative" a fine espressione: creano tuple involontarie.
 
+# --- Mini-esercizio [RINFORZO #24] (2-4 righe) ---
+# (a) In una riga: cosa stampa print(type((0.05,))) ?
+# (b) Scrivi z_ok = X @ w + 0.05 con X = np.ones((2, 3)), w = np.ones(3) (NO tuple come bias).
+# TUO CODICE:
+
 
 # ==========================================================================
 # RINFORZO Lacuna #26 - perche' BLAS batte il loop Python (DUE motivi)
@@ -277,7 +295,14 @@ def _demo_lacuna_24() -> None:
 #   - X (N, d) e' un blocco contiguo in memoria. BLAS legge a colpi di
 #     cache line (64 byte = 8 float64). Il loop Python tocca oggetti
 #     Python che vivono SPARSI nello heap -> cache miss continui.
-#
+
+# --- Mini-esercizio [RINFORZO #26] (solo parole, poi confronti col benchmark) ---
+# Scrivi in DUE bullet (frasi brevi) due motivi DIVERSI tra loro per cui
+# `X @ w + b` batte `for i in range(N): np.dot(X[i], w) + b`.
+#   - Motivo A (tecnico sulla libreria NumPy/C): ...
+#   - Motivo B (tecnico sul loop Python / memoria): ...
+# Dopo aver eseguito _benchmark_loop_vs_blas() nel __main__, annota lo speedup stampato.
+
 # Verifichiamo con un benchmark mini (deve girare in <1 secondo):
 
 def _benchmark_loop_vs_blas(n: int = 100_000, d: int = 50) -> None:
@@ -338,6 +363,12 @@ def _demo_lacuna_28() -> None:
 #     (sigmoid e' monotona, non cambia l'ordine).
 #   - per "soglia umana" (es. >= 0.7) -> usare p, non z.
 
+# --- Mini-esercizio [RINFORZO #28] (2-4 righe + commento) ---
+# Dato z_test = np.array([-100.0, 0.0, 100.0]), calcola p_test = 1 / (1 + np.exp(-z_test))
+# (usa np.clip(z_test, -500, 500) prima dell'exp se vuoi evitare warning).
+# Stampa z_test e np.round(p_test, 6). In commento: qual e' il logit e qual e' la probabilita'?
+# TUO CODICE:
+
 
 # ==========================================================================
 # RINFORZO Lacuna #29 (re-check) - X[i] (1D) vs X[i:i+1] (2D)
@@ -361,6 +392,11 @@ def _demo_lacuna_29() -> None:
 #   clf.predict_proba(X[5:6])    <- OK
 #   clf.predict_proba(X[[5]])    <- OK
 #   clf.predict_proba(X[5].reshape(1, -1))  <- OK
+
+# --- Mini-esercizio [RINFORZO #29] (2-4 righe) ---
+# Crea X = np.arange(40.0).reshape(8, 5). Stampa shape di X[3], X[3:4], X[[3]].
+# Scrivi una variabile riga_2d = ... che seleziona solo la riga indice 3 con shape (1, 5).
+# TUO CODICE:
 
 
 # ==========================================================================
