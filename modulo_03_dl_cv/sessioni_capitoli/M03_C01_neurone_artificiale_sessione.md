@@ -71,6 +71,14 @@
 - **Nota terminologica:** «logit grezzo» è ridondante; va bene **logit** (o “punteggio lineare”).
 - **Next step:** ripulire il commento nel file con `z` / `a` nominati; lacuna #28 considerabile **superata** su questo checkpoint.
 
+### [2026-05-07] — Quiz d'ingresso Q3 (lacuna #24 re-check — tupla `(0.1,)`)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~166–173.
+- **Voto (primo tentativo):** **10/10**.
+- **Corretto:** versione `z = X @ w + 0.1`; distingue **anti-pattern di stile** (bias espresso come **tupla monoelemento** `(0.1,)` per virgola/ambiguità) dal caso corretto **scalare**; `type((0.1,))` → **`tuple`** (in runtime: `<class 'tuple'>`).
+- **Nota:** osservazione sul **broadcasting** NumPy coerente col Ponte: spesso “gira” comunque, ma si perdono chiarezza e intento (**bias** deve essere numero/array esplicito).
+- **Lacuna #24 (tupla bias):** **superata** su questo checkpoint.
+
 ---
 
 ## Lacune e dubbi ancora aperti
