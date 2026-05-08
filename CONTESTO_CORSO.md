@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 07/05/2026
+> **Ultimo aggiornamento**: 07/05/2026 (strategia prodotto broker / MVP vendibile: § Profilo + `APPUNTI_APPLICATIVO.md` §14.3 e §16.1)
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -56,7 +56,7 @@
 | Campo | Valore |
 |-------|--------|
 | **Data** | 07/05/2026 |
-| **Cosa è stato fatto** | **Ponte cap.02 chiuso (voto 9/10) + creato cap.01 M3** (`01_neurone_artificiale.py`) seguendo il protocollo apertura capitolo. Struttura: header + DoD (5 domande), prontuario tranelli neurone [N1]-[N6], **quiz d'ingresso Q1-Q6** che ricontrolla a freddo le lacune #23/#24/#26/#27/#28 + re-check #29, **5 blocchi 🔁 RINFORZO MIRATO** (uno per lacuna attiva) con demo eseguibili (`_demo_lacuna_23/24/26/28/29` + `_benchmark_loop_vs_blas`), **Sezione 1** (sigmoid + neurone singolo + neurone_batch + 3 TODO), **Sezione 2** (sigmoid/ReLU/tanh con grafico Matplotlib + 2 TODO), **Sezione 3** (forward su CSV M2 reale che riproduce LogisticRegression cap.04 M2 a 1e-10 + 2 TODO), **Quiz V1-V8** (V8 Feynman con vincoli stretti #27), **Esercizi E1-E6** (E1 colloquio, E2 refactor con tutti i pattern attivi, E3 debug autonomo, E4 retrieval sigmoid stabile, E5 interleaving norma+scaling, **E6 RECALL CROSS-MODULO obbligatorio** = neurone come caso particolare di layer_dense Ponte cap.02), **Mini-progetto** `neurone_vs_logreg`, **Checkpoint C1-C4**, soluzioni quiz, entry point `__main__`. Creati anche `sessioni_capitoli/README.md` + `_TEMPLATE_sessione_capitolo.md` + diario `M03_C01_neurone_artificiale_sessione.md` (in corso). Sintassi Python verificata (AST ok). |
+| **Cosa è stato fatto** | **Ponte cap.02 chiuso (voto 9/10) + creato cap.01 M3** (`01_neurone_artificiale.py`). Include rinforzi lacune #23–#29, ripasso R1–R5 cap.02, quiz/esercizi E1–E7 (RECALL cross-modulo in **E7**), mini-progetto `neurone_vs_logreg`, lucidatura post-prima-stesura (sigmoid clip, retrieval `coseno`, refactor splittato, TODO top‑3 contributi, PNG `figures/01_*`). Diario `M03_C01_*` aggiornato. |
 | **Errori emersi** | (chiusura cap.02) shape 1D vs 2D (`(N,)` vs `(N,1)`), tupla accidentale `(0.1,)`, Feynman con termini tecnici, logits vs probabilità (Dense vs softmax). Tutte le 5 lacune attive vengono ricontrollate "a freddo" nel quiz d'ingresso del cap.01 M3 + rinforzate con demo dedicate. |
 | **Cosa fare nella prossima sessione** | Aprire `modulo_03_dl_cv/01_neurone_artificiale.py` e procedere in ordine: leggere PRONTUARIO (5 min) → rispondere QUIZ D'INGRESSO Q1-Q6 (test "a freddo" delle lacune) → eseguire le `_demo_lacuna_*` → poi Sezione 1 (TODO 1.1-1.3) → Sezione 2 (TODO 2.1-2.2). Su Sezione 3 in poi servirà il CSV M2. |
 | **Stato motivazione** | Alto (capitolo Ponte chiuso 9/10), studente ha richiesto esplicitamente i ripassi e ha fatto domande di comprensione molto puntuali su softmax/Eulero/exp. Pronto per neuroni. |
@@ -140,7 +140,17 @@
 - **IDE**: Cursor
 - **Version control**: Git + GitHub (il corso è già in una repository)
 - **Obiettivo finale**: Entrare nel mondo del lavoro tech con competenze solide in Python, AI/ML e web development. Il progetto finale deve essere il **diamante del portfolio**: una full web app (React + FastAPI, con eventuale layer Laravel — decisione aperta D1 in APPUNTI_APPLICATIVO.md) con IA integrata — bella, reattiva, funzionale — da mostrare ai recruiter come prova concreta di competenza.
-- **Obiettivo applicativo concreto**: Costruire un'app di **controllo documentale** per la sua società di consulenze. L'app deve verificare l'integrità di buste paga e documenti reddituali (CU, 730) dei clienti: OCR per leggere i documenti, NLP/LLM per estrarre i campi, regole fiscali per validazione incrociata, dashboard con semafori verde/giallo/rosso. Approccio ibrido: regole locali + API con dati anonimizzati o modello locale. Ha già molto materiale documentale a disposizione per il training/RAG. Questo obiettivo può influenzare gli esercizi dei moduli avanzati (M5-M6: usare dominio fiscale/documentale).
+- **Ruolo professionale di riferimento**: **broker di mutui / intermediazione creditizia** (contesto banca): uso quotidiano di fascicoli reddituali e documentazione cliente. Il perimetro documentale del prodotto (Validator + Fixer — `APPUNTI_APPLICATIVO.md`) resta coerente con quel contesto; il nucleo tecnico (**qualità fascicolo, incrocio multi-documento, semafori, audit, configurabilità**) è ripetibile verso **altri intermediari** con esigenze analoghe di controllo documentale.
+- **Obiettivo applicativo concreto**: Costruire un applicativo di **controllo documentale** per uso **operativo interno** (società / rete di cui fa parte) e, progettando **motore + configurazione + deploy** sin dall'M10, creare una base ripetibile verso **terzi** (licenza, fee di setup, abbonamento), senza confondere il Messaggio Prodotto con una garanzia di esito o di compliance legale — dettaglio in **Strategia prodotto** sotto e in `APPUNTI_APPLICATIVO.md` §14.3 e §16.1.
+  - Scope tecnico (allineato APPUNTI): OCR dove serve, estrazione/parsing campi chiave, **motore regole configurabile**, scoring/semafori, spiegazioni leggibili, audit trail, RAG normativo dove previsto, integrazione ramo visivo M3 (`prob_busta_paga_visivo`) nel modello tabulare M2.
+  - Il materiale documentale disponibile alimenta training/RAG dove coerente con privacy e protocollo corso.
+
+### Strategia prodotto — portfolio, uso interno, riuso commerciale (07/05/2026)
+
+- **Fine corso (M10) → Definition of Done “tecnica vendibile”**: applicativo **deployato**, dimostrabile, con nucleo **Document QA** (ingest → classificazione tipo doc → estrazione → regole → output strutturato + audit). Questo livello è **realistico** con il percorso corso + mentoring; supera la soglia “solo demo locale”.
+- **Vendita / monetizzazione seria** richiede in più (fuori scope didattico primario ma da pianificare): contratti, limitazione responsabilità, pricing ricorrente o progetti, supporto. Il valore economico si ragiona su **EVA per il compratore** (tempo risparmiato, integrazioni richieste in meno, tracciabilità), non sul “prezzo del repository”.
+- **Posizionamento**: layer **qualità fascicolo documentale** e **supporto decisionale**, non sostituto del giudizio umano o dell’istruttoria banca; non “solo OCR” né clone di gestionale mutui — vedi matrice concettuale in APPUNTI §14.3.
+- **Per il mentor**: quando si assegna un task al **progetto incrementale**, preferire funzionalità che ricadono nella checklist **MVP vendibile fuori casa** (APPUNTI §16.1): ingest, classificazione doc, estrazione minima, **regole/config**, semaforo + azioni, export report, audit, narrative privacy-by-design; API/webhook come stretch.
 
 ### Preferenze di spiegazione (aggiornamento 02/04/2026)
 
@@ -1704,6 +1714,7 @@ Quando l'agente prepara un capitolo (M2-M10), DEVE:
 3. Usare terminologia coerente: `score_genuinita`, `prob_alterato`, `anomaly_score`, `semaforo`, `motivi_top3`, `evidenze`, `azione_consigliata` — non inventare nomi diversi
 4. Quando introduce un concetto nuovo (es. train/test split), **collegarlo esplicitamente** alla pipeline del prodotto con un esempio concreto dal dominio documentale
 5. Rinforzare il concetto di data leakage ogni volta che si lavora su feature/target
+6. Per task sul **progetto incrementale** da M5 in poi: verificare allineamento alla checklist **MVP vendibile fuori casa** in `APPUNTI_APPLICATIVO.md` §16.1 (ingest, classificazione doc, estrazione minima, regole configurabili, semaforo + azioni, export, audit, narrative privacy)
 
 ---
 
@@ -1927,6 +1938,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 07/05/2026 | **Strategia prodotto**: integrati contesto **broker mutui / intermediari analoghi**, obiettivo **duplice** (uso interno + architettura ripetibile verso terzi), **Definition of Done “tecnica vendibile”** a fine M10, rimando a `APPUNTI_APPLICATIVO.md` §14.3 (mercato/posizionamento) e §16.1 (checklist MVP vendibile). Profilo studente aggiornato; changelog allineato. | Decisioni da conversazione studente–mentor su valore economico e riuso | Profilo, Strategia prodotto, Changelog; APPUNTI §1 §3 §14.3 §16.1 |
 | 30/04/2026 | **Decisione M3 — target deliverable cap.07**: scelto "busta paga vs non-busta paga" su immagini reali (vs. opzione più semplice "MNIST-like"). Studente conferma di avere ~200 buste paga utilizzabili. Documentati 3 vincoli privacy/GDPR bloccanti (anonimizzazione preprocessing, mai committare buste, mai caricare originali su Colab). Roadmap ramo visivo M3 esplicitata nei cap.05/06/07. Progetto incrementale M3 → 🟡 Pianificato. | Pianificazione anticipata del modulo successivo per scegliere dataset di training fin dal cap.05 | Computer Vision nel Prodotto, Progresso del progetto, Changelog |
 | 30/04/2026 | **Chiusura cap.01 Ponte Matematico**: Stato Attuale, Ultima Sessione, Prossimo Cap, Difficoltà media (~6.7 con voto **9**/10 confermato), Sessione corrente → 18, Pattern #23/#24/#25 (NUOVI: virgole→tuple, iloc/loc, np.array vs np.ndarray), Lacuna #12 → **🟢 Superato** (assorbita dal cap.01 Ponte), Lacuna #19/#20/#21/#22 NUOVE, Anomalia cap.07 M1 chiusa per assorbimento, Glossario "Ponte Matematico" creato, Domande cap.01 Ponte registrate (10 entry), Ponti Mentali (5 nuovi: vettore=istruzione, norma=lunghezza/coseno=direzione, normalizzare=norma1, pratica simile=coseno alto, ecc.), Competenze "Cap.01 Ponte Matematico", Ripasso programmato (sezione Ponte Matematico), Changelog. Cap.02 Ponte da CREARE con rinforzi #23/#24/#25 + sezione mini-esercizi "ripasso 5 blocchi" richiesta dallo studente. | Chiusura capitolo formale con handshake studente | Tutte le sezioni di Stato + Pattern + Lacune + Glossario + Domande + Ponti + Competenze + Ripasso + Changelog |
 | 13/04/2026 | **Regola 13** (progetto incrementale): `modello_base.py` è scritto dallo studente; il mentor non inserisce codice nel file salvo richiesta esplicita. | Evitare che il mentor “consegni” il deliverable progressivo al posto dello studente | Regole progetto incrementale, Changelog |

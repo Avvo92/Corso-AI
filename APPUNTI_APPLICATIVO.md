@@ -15,14 +15,15 @@
 
 ## 1) Visione prodotto
 
-Costruire un applicativo che aiuti un consulente bancario a valutare la genuinita dei documenti reddituali e fiscali dei clienti, con:
+Costruire un applicativo che supporti **operatori e intermediari** nel controllo della qualità e della coerenza dei documenti reddituali e fiscali che entrano in un **fascicolo cliente** (pratica mutuo, istuttoria creditizia, analoghi flussi document-heavy):
 
 - analisi documentale automatica
 - controlli incrociati multi-documento
 - spiegazioni leggibili per operatore
-- proposte di correzione assistite e ri-validazione automatica (vedi
-  `APPUNTI_TOOL_FIXING.md`)
+- proposte di correzione assistite e ri-validazione automatica (vedi `APPUNTI_TOOL_FIXING.md`)
 - tracciamento completo per audit/compliance
+
+**Contesto operativo Gianluca**: intermediario nel campo mutui (banca); il primo utente del sistema è organizzazione/rete di cui fa parte. **Mercato esteso**: altri intermediari con funzioni analoghe (mediazione creditizia, reti broker, in parte outsourcing documentale) possono beneficiare dello **stesso nucleo** (ingest → classificazione → estrazione → regole configurabili → semaforo → audit), purché checklist e mapping campi restino **parametrizzabili** — non hard-coded solo sul primo cliente. Dettaglio strategico: §14.3 e checklist MVP “fuori casa”: §16.1.
 
 ---
 
@@ -44,7 +45,9 @@ Situazione target (to-be):
 
 ## 3) Utenti e ruoli
 
-- Operatore/Consulente bancario: carica documenti, legge esito, decide azione.
+- Operatore / consulente / **broker**: carica documenti per pratica, legge esito, gestisce richieste integrazioni al cliente.
+- Rete o società di mediazione: admin configurazione checklist e soglie **per profilo prodotto** (template mutuo prima casa, switch, ecc.) quando si scala verso multi-organizzazione.
+- Intermediario “esterno” (ipotetico cliente licenza): stessi ruoli sopra, con tenant/config separati — da progettare in M9-M10 se si persegue il riuso commerciale.
 - Revisore senior: valida casi dubbi, conferma/esclude anomalie.
 - Admin: gestisce regole, permessi, versioni e monitoraggio.
 
@@ -346,6 +349,21 @@ Obiettivo di questa sezione:
 
 "Ridurre il rischio di accettare documenti non genuini, accelerando le decisioni creditizie con controlli spiegabili, auditabili e adatti al contesto normativo italiano."
 
+### 14.3 Contesto broker / intermediari e riuso verso terzi
+
+**Ruolo di riferimento**: Gianluca opera come **broker di mutui** (intermediazione creditizia): il fascicolo unisce reddito dichiarato, stabilità lavorativa, coerenza tra fonti ed elementi di rischio documentale. Il Validator copre lo stesso “tipo di dolore” che in consulenza fiscale classica (incoerenze CU/buste/estratti), ma il **messaggio commerciale** verso terzi intermediari enfatizza: meno **tempo di preparazione fascicolo**, meno **integrazioni richieste** dall’istruttoria, **tracciabilità** delle decisioni.
+
+**Matrice di posizionamento (semplificata)**:
+
+| | Bassa profondità documentale | Alta profondità (incrocio multi-fonte) |
+|--|------------------------------|----------------------------------------|
+| **Bassa automazione** | Checklist manuali / Excel | Revisione solo umana (costosa) |
+| **Alta automazione** | Solo OCR / DAM generico | **Sweet spot prodotto**: ingest strutturato + regole + ML/tabular + (opz.) vision + audit |
+
+**Modelli di offerta verso terzi** (da definire con legale/commerciale): licenza d’uso, fee **setup + onboarding checklist**, abbonamento per volume pratiche, white-label per reti. Il corso arriva al livello **MVP deployabile + portfolio**; contratti, SLA e limitazione responsabilità sono fuori dal perimetro didattico ma vanno pianificati prima di una vendita “seria”.
+
+**Da NON promettere** in pitch o materiale marketing senza review legale: sostituzione del compliance officer; garanzia esito positivo in banca; copertura illimitata di tutti i prodotti e istituti day-one.
+
 ---
 
 ## 15) Roadmap esecutiva (release-based)
@@ -425,6 +443,25 @@ Per essere utile e competitivo gia in pilot:
   - [ ] Approve/Reject per ogni proposta + ri-validazione automatica
   - [ ] Blocco fix sostanziali su `semaforo = rosso` per frodi severe
   - [ ] Audit fix base (chi/quando/perche/prove)
+
+### 16.1 MVP "vendibile fuori casa" (checklist corso — allineamento progetto incrementale)
+
+Obiettivo: ogni task sul **progetto incrementale** (M5→M10) dovrebbe avvicinare a questo nucleo, così il deliverable M10 è **tecnica vendibile** (deploy + ripetibilità), non solo demo interna.
+
+**Must-have commerciale** (ordine logico, non strettamente cronologico di sviluppo):
+
+1. **Ingest universale** — caricamento multi-file per pratica (ZIP / drag-drop / API opzionale).
+2. **Classificazione tipo documento** — almeno rule-based + miglioramento progressivo (ML/LLM dove previsto dal modulo).
+3. **OCR + estrazione campi “minimum viable”** — insieme **ristretto** di campi ad alta leva (reddito, periodo, anagrafica base, IBAN se nel perimetro), non “tutti i campi del monso” al giorno 1.
+4. **Motore regole configurabile** — soglie, checklist, mapping campi **senza** ricompilare tutto il codice per un nuovo intermediario.
+5. **Semaforo pratica + lista azioni** — output actionable (cosa manca, cosa contraddice cosa).
+6. **Export report** — PDF o equivalente riutilizzabile verso cliente o verso revisione interna.
+7. **Audit minimale** — chi / quando / cosa caricato / esito controllo (anche log essenziale all’inizio).
+8. **Privacy-by-design narrativo** — retention, anonimizzazione dove previsto (corso: buste M3, dati sensibili), documentazione per il decisore acquisti.
+
+**Stretch**: webhook/API verso gestionale esterno; template multipli “profilo prodotto” (prima casa vs switch); multi-tenant.
+
+**Collegamento corso**: `CONTESTO_CORSO.md` — Profilo → **Strategia prodotto**; Regola mentor su progetto incrementale.
 
 ---
 

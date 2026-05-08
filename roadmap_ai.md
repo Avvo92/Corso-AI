@@ -6,7 +6,7 @@
 > **Profilo di arrivo**: professionista che sa collegare LLM, RAG e agenti a prodotti web reali —
 > il profilo più ricercato nel mercato tech italiano ed europeo nel 2026.
 >
-> **Ultimo aggiornamento**: 22/02/2026
+> **Ultimo aggiornamento**: 22/02/2026 (integrazione obiettivo broker / MVP vendibile: § Modulo 10)
 
 ---
 
@@ -323,6 +323,8 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 ## Modulo 10 — Progetto Finale: Full-Stack AI Product
 
 **Obiettivo**: costruire IL prodotto del portfolio — il diamante. Un prodotto AI completo, deployato, con demo live, documentazione professionale, e video demo.
+
+**Dominio applicativo** (allineato a Gianluca): applicativo di **controllo documentale** (Validator + Fixer — `APPUNTI_APPLICATIVO.md`), contesto **broker/intermediazione mutui** con fascicoli reddituali; il traguardo M10 include una **Definition of Done “tecnica vendibile”**: motore ingest → estrazione/regole configurabili → semafori → audit → deploy (`CONTESTO_CORSO.md` Profilo → Strategia prodotto; APPUNTI §16.1 checklist MVP fuori casa). Monetizzazione e contratti verso terzi restano fuori dal syllabus ma il codice e la modularità devono **non** essere imprigionati in un solo workflow interno.
 
 ### Architettura
 
