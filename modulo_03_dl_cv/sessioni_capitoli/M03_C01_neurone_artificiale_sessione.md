@@ -79,6 +79,15 @@
 - **Nota:** osservazione sul **broadcasting** NumPy coerente col Ponte: spesso “gira” comunque, ma si perdono chiarezza e intento (**bias** deve essere numero/array esplicito).
 - **Lacuna #24 (tupla bias):** **superata** su questo checkpoint.
 
+### [2026-05-07] — Quiz d'ingresso Q4 (lacuna #26 re-check — velocità `X @ w` vs loop)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~174–181.
+- **Voto (primo tentativo):** **8/10**.
+- **Corretto (motivo 1):** confronto **una chiamata vettorizzata** (codice **C/Fortran** dietro NumPy, **BLAS** / `matmul`) vs **molte iterazioni** Python — è il motivo “tecnico-NumPy” richiesto.
+- **Debole (motivo 2):** «linguaggio interpretato / preprocessato» è **vago** e **non ben separato** dal primo (anche il loop è lento perché resta in Python). Meglio uno tra: **overhead per iterazione** (bytecode, `range`, indexing `X[i]` ripetuto); **tante piccole chiamate** (`np.dot` × N); **memoria contigua / cache** (un solo passaggio ottimizzato vs saltare riga per riga); dove applicabile **SIMD** nel kernel BLAS.
+- **Nota:** il fattore **50–1000×** è **ordine di grandezza possibile**, dipende da N,d e macchina — ok come intuizione, non come legge fissa.
+- **Lacuna #26:** da **🔴** a **🟡** — migliorata ma **non chiusa** al 100% finché il **secondo motivo** non è **distinto** e **operativo** (integrare nel commento Q4 una frase sul ciclo/indexing o sulla cache).
+
 ---
 
 ## Lacune e dubbi ancora aperti
