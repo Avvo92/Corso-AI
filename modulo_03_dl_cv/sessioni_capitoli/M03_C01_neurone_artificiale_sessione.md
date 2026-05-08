@@ -56,6 +56,14 @@
 - **Next step:** completare la spiegazione nel commento sotto Q1; poi rivalutare solo quel punto se vuoi un secondo tentativo formale.
 - **Lacuna #23:** shape giuste → ok; **spiegazione “perché”** ancora da chiudere per considerare Q1 al 100%.
 
+### [2026-05-07] — Quiz d'ingresso Q1 — rivalutazione (post-completamento spiegazione)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~150–156.
+- **Voto:** **10/10** (tentativo dopo integrazione spiegazione — registrato come completamento Q1, non nuovo “esame” separato se si vuole rigore solo sul primo tentativo).
+- **Corretto:** shape `(200,)` vs `(200, 1)` + motivazione coerente: `(N,d) @ (d,)` → `(N,)`; `(N,d) @ (d,1)` → `(N,1)` dopo `reshape(-1, 1)`.
+- **Micro-nota didattica:** in NumPy si dice anche **`matmul`** (`@`); “dot product” per riga×colonna va bene come intuizione. Ortografia: “perché”, “a quel punto”.
+- **Lacuna #23 (re-check Q1):** considerabile **chiusa** su questo checkpoint; restano gli altri item del quiz d’ingresso (Q2–Q6) per il voto complessivo del blocco.
+
 ---
 
 ## Lacune e dubbi ancora aperti

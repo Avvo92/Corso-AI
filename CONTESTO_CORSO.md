@@ -39,11 +39,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_03_dl_cv/01_neurone_artificiale.py — **CREATO 07/05/2026** — Neurone artificiale = layer Dense con h=1 + sigmoid; rinforzi mirati lacune #23/#24/#26/#27/#28/#29 + recall cross-modulo verso Ponte cap.02. |
+| **Capitolo in corso** | modulo_03_dl_cv/01_neurone_artificiale.py — **CREATO 07/05/2026** — Neurone artificiale = layer Dense con h=1 + sigmoid; rinforzi mirati lacune #24/#26/#27/#28/#29 (lacuna #23 quiz ingresso Q1 🟢 07/05/2026) + recall cross-modulo verso Ponte cap.02. |
 | **Ultimo completato** | ponte_matematico_m2_m3/02_matrici_e_layer_dense.py (07/05/2026) — Matrici come batch, `X @ w + b`, anteprima layer Dense `X @ W + b`, broadcasting, softmax; esercizi finali + mini-progetto `classifica_batch`; voto difficoltà **9**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision |
 | **Difficoltà media** | ~6.7 (19 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07 + Ponte-01; cap 07 M1 escluso/anomalia; **Ponte-01 = 9/10**) |
-| **Priorità attive** | 🔴 Lacuna quiz #23: shape `X @ w` — `(N,)` vs `(N, 1)`; 🔴 Lacuna quiz #24: tupla accidentale `(0.1,)` vs `0.1`; 🔴 Lacuna quiz #26: 2 motivi performance BLAS vs loop; 🔴 Lacuna quiz #27: Feynman rispettare “niente termini tecnici”; 🔴 Lacuna quiz #28: Dense output = logits (non probabilità); 🟡 Lacuna quiz #29: slicing `X[i]` (1D) vs `X[i:i+1]` (2D) (rinforzata); 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Data leakage (monitoraggio). |
+| **Priorità attive** | 🔴 Lacuna quiz #24: tupla accidentale `(0.1,)` vs `0.1`; 🔴 Lacuna quiz #26: 2 motivi performance BLAS vs loop; 🔴 Lacuna quiz #27: Feynman rispettare “niente termini tecnici”; 🔴 Lacuna quiz #28: Dense output = logits (non probabilità); 🟡 Lacuna quiz #29: slicing `X[i]` (1D) vs `X[i:i+1]` (2D) (rinforzata); 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Data leakage (monitoraggio). |
 | **Sessione corrente** | Sessione 19 |
 
 ---
@@ -96,7 +96,7 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 23 | Shape `X @ w`: `(N,)` vs `(N, 1)` in NumPy | 🔴 Da rinforzare | Quiz V1 Ponte-02; ripasso matmul 2D×1D vs 2D×2D prima M3 |
+| 23 | Shape `X @ w`: `(N,)` vs `(N, 1)` in NumPy | 🟢 Superato | Quiz ingresso M3 cap.01 Q1 (07/05/2026): shape + spiegazione `(N,d)@(d,)→(N,)` vs `(N,d)@(d,1)→(N,1)` |
 | 12 | Diagnosi mismatch shape in reshape | 🟢 Superato | Cap.01 Ponte: uso intensivo di `.shape`, `to_numpy(dtype=float)`, dot product con shape coerenti, controllo `if a.shape != b.shape: raise` nella funzione `coseno`. Diagnosi shape ora autonoma. |
 | 13 | Interpretazione .shape su selezione colonne Pandas | 🟢 Superato | Quiz ingresso cap.02 M2: risposta corretta (50, 2) |
 | 14 | Distinzione Series vs DataFrame | 🟢 Superato | Quiz ingresso cap.02 M2: ha spiegato che doppia parentesi genera DataFrame, non Series |
@@ -121,9 +121,9 @@
 | Campo | Valore |
 |-------|--------|
 | **Prossimo capitolo** | modulo_03_dl_cv/01_neurone_artificiale.py — Modulo 03 (DL & CV) cap.01: neurone artificiale (forward), loss e intuizione del gradiente (senza formalismi), collegamento diretto a `X @ w + b` / `X @ W + b`. |
-| **Rinforzi da inserire (🔁)** | 🔁 Lacuna #23 `(N,)` vs `(N,1)`; 🔁 Lacuna #24 `(0.1,)` vs `0.1`; 🔁 Lacuna #26 (2 motivi performance BLAS vs loop); 🔁 Lacuna #27 (Feynman “solo analogia”); 🔁 Lacuna #28 logits vs probabilità; re-check #29 slicing 1D vs 2D. |
+| **Rinforzi da inserire (🔁)** | 🔁 Lacuna #24 `(0.1,)` vs `0.1`; 🔁 Lacuna #26 (2 motivi performance BLAS vs loop); 🔁 Lacuna #27 (Feynman “solo analogia”); 🔁 Lacuna #28 logits vs probabilità; re-check #29 slicing 1D vs 2D. |
 | **Concetti ⚠️ da ripassare** | Logits→probabilità (sigmoid/softmax), broadcasting del bias, shape nei batch. |
-| **Pattern 🔴 da monitorare** | #6 consegne (DoD), #19 terminologia None vs null, #21 round/tuple, e le lacune quiz #23/#24/#26/#27/#28. |
+| **Pattern 🔴 da monitorare** | #6 consegne (DoD), #19 terminologia None vs null, #21 round/tuple, e le lacune quiz #24/#26/#27/#28. |
 | **Ponte mentale da riusare** | “Batch = matrice”, “neurone = dot + bias”, “probabilità = attivazione (sigmoid/softmax) sopra i punteggi”. |
 | **Note** | Ponte Matematico concluso: da qui la matematica viene introdotta “a dose” dentro M3 (loss/gradienti) con analogia → codice → grafico → formula come etichetta. |
 
@@ -1257,7 +1257,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 20 | Stile chiamate Matplotlib: virgole a fine riga creano tuple | Sez. 4.2 e 5.1 cap.01 Ponte | Per stare dentro al limite di righe ha scritto `ax.quiver(...),` e `plt.savefig(...), plt.close(...)`: Python interpreta come tupla `(None, None)`. Anti-pattern stilistico. Soluzione: usare line continuation `\` o riga normale | Ponte-02 | 🔴 |
 | 21 | `iloc` con etichetta stringa | Mini-progetto cap.01 Ponte | Ha scritto `pratiche.iloc[i, "pratica_id"]` → TypeError. `iloc` accetta SOLO indici numerici. Per accesso misto: `pratiche.iloc[i]["pratica_id"]` oppure `pratiche.loc[i, "pratica_id"]` | Ponte-02 | 🔴 |
 | 22 | Check "vettore nullo" — `a.sum() == 0` non equivale a vettore zero | Sezione 5.1 cap.01 Ponte | Ha usato `if a.sum() == 0` per detectare vettore nullo. Bug: `[1, -1]` ha somma 0 ma non è il vettore zero. Corretto: `if np.linalg.norm(a) == 0` (o `np.all(a == 0)`) | Ponte-02 | 🟡 (autocorretto dopo feedback) |
-| 23 | Shape output `matmul`: `(N, d) @ (d,)` → `(N,)` vs `(N, 1)` | Verifica Ponte-02 V1 | Ha risposto `(100, 1)` invece di `(100,)`. Confusione tra vettore 1D e colonna 2D; `(N, 1)` richiede `w` come `(d, 1)` o reshape esplicito | Ponte-02 / M3 | 🔴 |
+| 23 | Shape output `matmul`: `(N, d) @ (d,)` → `(N,)` vs `(N, 1)` | Verifica Ponte-02 V1 | Ha risposto `(100, 1)` invece di `(100,)`. Confusione tra vettore 1D e colonna 2D; `(N, 1)` richiede `w` come `(d, 1)` o reshape esplicito. **Chiusura:** quiz ingresso M3 cap.01 Q1 (07/05/2026) con shape corrette e spiegazione coerente | Ponte-02 / M3 | 🟢 |
 | 24 | Tuple accidentale da virgola: `(0.1,)` vs `0.1` (bias) | Verifica Ponte-02 V4 | Ha interpretato `X @ w + (0.1,)` come errore di tipo; in NumPy spesso funziona per broadcasting, ma è un anti-pattern (tupla creata da virgola). Corretto: `+ 0.1` o bias array esplicito | Ponte-02 | 🔴 |
 | 25 | Dense lineare = regressione lineare multi-output | Verifica Ponte-02 V5 | Ha risposto “Falso” alla frase “Dense è matematicamente identico a una regressione lineare con più output”. In realtà `z = X @ W + b` è esattamente una regressione lineare multivariata; diventa “rete neurale” quando aggiungi attivazioni non-lineari e più layer | Ponte-02 / M3 | 🔴 |
 | 26 | Perché `X @ w` è più veloce di un for-loop (motivazioni concrete) | Verifica Ponte-02 V6 | Ha citato correttamente “vettorizzato in C/BLAS”, ma mancava un secondo motivo (cache/memoria contigua, SIMD/multithreading, riduzione overhead Python/allocazioni) | Ponte-02 | 🔴 |
