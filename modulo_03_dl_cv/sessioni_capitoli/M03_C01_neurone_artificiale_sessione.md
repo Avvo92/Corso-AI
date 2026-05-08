@@ -47,6 +47,15 @@
 - **Valutazione (primo tentativo — "voto esame"):** —/10.
 - **Pattern errore / ID contesto:** verifica chiusura lacune #23/#24/#26/#27/#28 e re-check #29.
 
+### [2026-05-07] — Quiz d'ingresso Q1 (lacuna #23 re-check)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~150–154 (`X @ w` vs `X @ w.reshape(-1, 1)`).
+- **Voto (primo tentativo):** **7/10** (solo parte numerica delle shape).
+- **Corretto:** `(200,)` per `X @ w`; `(200, 1)` per `X @ w.reshape(-1, 1)` — allineato a `numpy.matmul` / `@`.
+- **Manca (consegna esplicita):** una frase che dica **quale risultato è 1D vs 2D** e **perché** (regola NumPy: secondo operando 1D `(7,)` → output 1D `(200,)`; secondo operando 2D `(7,1)` → output 2D `(200,1)`).
+- **Next step:** completare la spiegazione nel commento sotto Q1; poi rivalutare solo quel punto se vuoi un secondo tentativo formale.
+- **Lacuna #23:** shape giuste → ok; **spiegazione “perché”** ancora da chiudere per considerare Q1 al 100%.
+
 ---
 
 ## Lacune e dubbi ancora aperti
