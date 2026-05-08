@@ -62,7 +62,14 @@
 - **Voto:** **10/10** (tentativo dopo integrazione spiegazione — registrato come completamento Q1, non nuovo “esame” separato se si vuole rigore solo sul primo tentativo).
 - **Corretto:** shape `(200,)` vs `(200, 1)` + motivazione coerente: `(N,d) @ (d,)` → `(N,)`; `(N,d) @ (d,1)` → `(N,1)` dopo `reshape(-1, 1)`.
 - **Micro-nota didattica:** in NumPy si dice anche **`matmul`** (`@`); “dot product” per riga×colonna va bene come intuizione. Ortografia: “perché”, “a quel punto”.
-- **Lacuna #23 (re-check Q1):** considerabile **chiusa** su questo checkpoint; restano gli altri item del quiz d’ingresso (Q2–Q6) per il voto complessivo del blocco.
+### [2026-05-07] — Quiz d'ingresso Q2 (lacuna #28 re-check)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~157–165 (`z` vs `a = sigmoid(z)`).
+- **Voto (primo tentativo):** **9/10**.
+- **Corretto:** **`a`** è la **probabilità stimata** (valore tra 0 e 1 dopo **sigmoid**); **`z`** è il **logit** / punteggio grezzo prima dell’attivazione — ripristina il discrimine della lacuna #28.
+- **Ambiguità:** la frase «**il secondo** è un logit grezzo» è fuorviante: nell’ordine del codice **`z` viene prima**, **`a` dopo** — “secondo” sembrerebbe **`a`**. Meglio scrivere esplicitamente: «**`z`** è il logit».
+- **Nota terminologica:** «logit grezzo» è ridondante; va bene **logit** (o “punteggio lineare”).
+- **Next step:** ripulire il commento nel file con `z` / `a` nominati; lacuna #28 considerabile **superata** su questo checkpoint.
 
 ---
 
