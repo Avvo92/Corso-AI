@@ -50,6 +50,8 @@ una variante tra:
 - `jarvis pronto a iniziare`
 - `jarvis pronto per incominciare`
 - `jarvis pronto a incominciare`
+- `jarvis pronto per cominciare`
+- `jarvis pronto a cominciare`
 
 L'agente DEVE:
 
@@ -61,6 +63,16 @@ L'agente DEVE:
 
 Regola di sicurezza:
 - Se per qualsiasi motivo il file di contesto non è leggibile/completo, l'agente NON deve usare la frase di handshake e deve segnalare subito il blocco.
+
+## Profilo linguistico — Gianluca (obbligatorio; dopo handshake Jarvis)
+
+Dal **secondo messaggio** dell'utente in poi (dopo l'eventuale risposta handshake `Jarvis pienamente operativo Sig. Stark`), e in **ogni chat** in cui si parla con Gianluca:
+
+1. **Priorità**: italiano chiaro; nelle risposte **concettuali/strategic/prodotto** evitare densità di jargon senza traduzione.
+2. **Acronimi e termini tecnici**: se usi abbreviazioni (**OCR**, **RAG**, **LLM**, **API**, **KPI**, **MVP**, **UI**, **GDPR**, ecc.) o termini di mestiere, aggiungi **subito dopo** (tra parentesi o in una riga breve) una **spiegazione facile**, come la darebbe un collega a uno che sta imparando — così Gianluca accumula vocabolario nel tempo.
+3. **Strato opzionale** quando aiuta: prima **analogia semplice** (anche “da bambino” / vita quotidiana), poi **versione operativa** (“cosa fai tu sul lavoro”), poi il **nome tecnico** se serve per colloquio o documentazione.
+4. **Eccezione**: nei **mock interview** da colloquio (protocollo dedicato) il tono può restare professionale e secco come da regola mock — salvo diversa richiesta esplicita di Gianluca nella stessa chat.
+5. **Fonte di verità**: dettaglio e aggiornamenti in `CONTESTO_CORSO.md` → Profilo → **Preferenze di spiegazione / Profilo linguistico**.
 
 ## Regole chiave (il dettaglio completo è nel file di contesto)
 

@@ -157,6 +157,18 @@
 - **Formule e matematica in chat**: preferisce esempi e formule in **linguaggio naturale** (parole, operazioni passo-passo, tabelle numeriche) e, dove serve, **codice Python** — **senza notazione LaTeX** (niente comandi tipo `\frac`, `\text`, barre e parentesi tipiche del LaTeX). Motivo: la notazione simbolica compressa ostacola la comprensione immediata.
 - **Per l'agente**: quando si spiegano scaler, metriche (MAE, RMSE, R²), deviazione standard, ecc., usare sempre **testo leggibile** e micro-esempi con numeri; la sequenza analogia → codice → grafico resta valida; eventuale formula finale solo come **frase** o **espressione in una riga** senza LaTeX.
 
+### Profilo linguistico — chiarezza + glossario inline (canonico da 07/05/2026)
+
+Richiesta dello studente, valida per **tutti i mentor/agent** su questo progetto:
+
+1. Nelle conversazioni **non strettamente mock-interview**, mantenere uno **stile semplificato** quando si risponde su prodotto, lavoro, strategia o concetti nuovi: meno muri di termini tecnici senza respiro.
+2. **Ogni acronimo o termine tecnico** usato nella risposta deve essere accompagnato (subito dopo, parentesi o riga breve) da una **parafrasi facile** — così Gianluca impara il lessico mentre legge.
+3. Quando serve cementare un’idea: **analogia molto semplice** (anche infantile se utile) → poi **cosa significa sul lavoro** → poi il **nome ufficiale** del concetto.
+4. Il **handshake Jarvis** resta invariato (una sola frase); questo profilo linguistico vale dal **messaggio successivo** handshake in poi e in **ogni nuova chat**.
+5. Eccezione: durante il **mock interview** da colloquio resta il protocollo freddo/secco già definito altrove, salvo richiesta contraria esplicita nella chat.
+
+**Nota**: Le regole didattiche dei **capitoli** (scala progressiva, quiz, confronto JS/PHP/Python dove previsto) non sono sostituite: si integrano con questo profilo nelle **spiegazioni in chat**.
+
 ---
 
 ## Strategia Hardware e Piattaforme

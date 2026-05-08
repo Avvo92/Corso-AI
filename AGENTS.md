@@ -21,6 +21,8 @@ l'agente DEVE:
 
 4. Procedere con il lavoro solo dal messaggio successivo.
 
+Dal messaggio successivo (e in tutte le chat corso): applicare il **Profilo linguistico** descritto in `CONTESTO_CORSO.md` → Profilo → **Profilo linguistico — chiarezza + glossario inline** (italiano semplice; acronimi sempre con spiegazione facile inline).
+
 ## Fail-safe
 
 Se `CONTESTO_CORSO.md` non e leggibile/completo:
