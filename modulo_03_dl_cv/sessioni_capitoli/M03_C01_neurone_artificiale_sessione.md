@@ -112,6 +112,15 @@
 - **Da migliorare sulla consegna:** il testo chiedeva esplicitamente **`+ 0.05`** (letterale); hai usato **`b = 0.5`** — va bene come stile **nome bias**, ma per “segui il foglio” conviene **`z_ok = X @ w + 0.05`** oppure **`b = 0.05`** se vuoi il nome.
 - **Extra:** `print` decorativo ok; opzionale aggiungere **`print(type((0.05,)))`** per chiudere (a) nel runner.
 
+### [2026-05-08] — Mini-esercizio RINFORZO #26 (lacuna #26 — BLAS vs loop)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~305–310 (due bullet motivazioni).
+- **Voto (primo tentativo):** **9/10**.
+- **Corretto:** due motivi **non ridondanti**: (A) costo **interprete / ciclo** a ogni `i` vs un’unica chiamata ottimizzata; (B) **memoria contigua** / **località** vs oggetti **sparsi** nell’**heap** — coerente con la lacuna #26 (overhead Python + cache / memoria contigua).
+- **Migliorabile:** etichetta «Motivo A … NumPy/C» — il testo parla soprattutto dell’**interprete**; aggiungere «**una sola** routine **BLAS** (GEMV/matmul) in C» renderebbe il bullet A completo. Ortografia: *chiamare*, *linguaggio*, *efficienza*, *effettuate*, *memoria*, *perché*.
+- **Opzionale consegna:** annotare lo **speedup** stampato dopo `_benchmark_loop_vs_blas()` (una riga nel commento).
+- **Lacuna #26:** da 🟡 a **🟢** in `CONTESTO_CORSO.md`.
+
 ---
 
 ## Lacune e dubbi ancora aperti
