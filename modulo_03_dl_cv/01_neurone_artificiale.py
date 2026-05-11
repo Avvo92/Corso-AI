@@ -674,6 +674,7 @@ def _esempio_neurone_batch() -> None:
 # Qui pero' lavori su 1 sola pratica, quindi e' un dot product element-wise
 # fra 2 vettori 1D.
 # TUO CODICE QUI:
+print("Mini-esercizio 1.1\n")
 pratiche = pd.read_csv(os.path.join(os.path.dirname(os.path.dirname(__file__)), "modulo_02_ml/", "dati", "pratiche_genuinita_mock.csv"))
 X = pratiche.drop(columns=['pratica_id', 'y_alterato']).to_numpy()[:2]
 rng = np.random.default_rng(42)
@@ -707,6 +708,23 @@ print(top3_contributi(X[1], w, feature_names))
 #   - SUGGERIMENTO #29: stampa anche X[0] (1D) e X[0:1] (2D) per fissare
 #     la differenza che hai sbagliato nel Checkpoint C3 cap.02 Ponte.
 # TUO CODICE QUI:
+print("Mini-esercizio 1.2\n")
+rng = np.random.default_rng(42)
+X = rng.random((3, 4))
+w = rng.random((4, ))
+if X.ndim == 2 and w.ndim == 1:
+    if X.shape == (3, 4) and w.shape == (4, ) :
+        print(f"Shape X: {X.shape}")
+        print(f"Shape w: {w.shape}")
+        for i in range(0, X[0, :].size - 1):
+            logit = X[i] @ w
+            print(f"Logit Riga {i}:    {logit}")
+            print(f"Sigmoide Riga {i}: {(1.0 / (1.0 + np.exp(-logit)))}\n")            
+else:
+    raise ValueError("Dimensioni o shape non coerenti con la richiesta")
+print(f"Shape di X[0]   => {X[0].shape}    {X[0]}")
+print(f"Shape di X[0:1] => {X[0:1].shape}  {X[0:1]}")
+
 
 
 # TODO 1.3 (3 minuti) - "if morbido" vs "if rigido":
