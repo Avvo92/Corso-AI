@@ -135,6 +135,13 @@
 - **Corretto:** `X[3].shape` → **(5,)**; `X[3:4].shape` e `X[[3]].shape` → **(1, 5)**; **`riga_2d = X[[3]]`** (equivale anche **`X[3:4]`**) → forma richiesta per **sklearn** / batch una riga.
 - **Opzionale:** `print(riga_2d.shape)` per chiudere esplicitamente la DoD sul `(1, 5)`.
 
+### [2026-05-08] — RIPASSO cap.02 Ponte — mini R1 (matrice = batch)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~428–440.
+- **Voto (primo tentativo):** **10/10**.
+- **Corretto:** `X` **(3, 4)** interi (`randint`); **`shape`**, **`dtype`**; **`X[0]`** = prima riga/pratica; **`X[:, 0]`** = prima colonna/feature su tutte le righe — allineato al Ponte “batch = matrice”.
+- **Extra:** `print(X)` utile per controllo visivo; non richiesto dalla consegna.
+
 ---
 
 ## Lacune e dubbi ancora aperti
