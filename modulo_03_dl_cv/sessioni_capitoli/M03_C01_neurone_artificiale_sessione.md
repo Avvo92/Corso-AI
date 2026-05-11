@@ -128,6 +128,13 @@
 - **Corretto:** `np.clip` prima di `exp` → stabilità; `p_test = 1/(1+exp(-z_test))` **element-wise**; stampa arrotondata; commento **logit = z_test**, **probabilità = p_test** — coerente con lacuna #28.
 - **Micro-nota:** per `-100/100` il clip non cambia i numeri (già dentro ±500); utile come **abitudine** quando gli \(z\) possono essere enormi.
 
+### [2026-05-08] — Mini-esercizio RINFORZO #29 (lacuna #29 — slicing 1D vs 2D)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~410–420 (`X[3]`, `X[3:4]`, `X[[3]]`, `riga_2d`).
+- **Voto (primo tentativo):** **10/10** (post-correzione `X[3:4].shape` e rimozione `X.shape[3]`).
+- **Corretto:** `X[3].shape` → **(5,)**; `X[3:4].shape` e `X[[3]].shape` → **(1, 5)**; **`riga_2d = X[[3]]`** (equivale anche **`X[3:4]`**) → forma richiesta per **sklearn** / batch una riga.
+- **Opzionale:** `print(riga_2d.shape)` per chiudere esplicitamente la DoD sul `(1, 5)`.
+
 ---
 
 ## Lacune e dubbi ancora aperti
