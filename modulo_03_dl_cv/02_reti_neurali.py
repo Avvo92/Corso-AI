@@ -1,47 +1,969 @@
 """
 ============================================================================
-MODULO 3 — CAPITOLO 02 (SEGNAPOSTO): Reti neurali da zero
+MODULO 3 (DL & CV) - CAPITOLO 02
+"Reti neurali da zero": layer impilati = sequenza di X @ W + b + attivazione
 ============================================================================
 
-⚠️ FILE SEGNAPOSTO — DA CREARE alla chiusura del cap.01 M3.
-Qui sotto solo TODO MENTOR. Nessun codice operativo.
+----------------------------------------------------------------------------
+DA DOVE ARRIVI (cap.01 M3)
+----------------------------------------------------------------------------
+Nel cap.01 M3 hai imparato che un NEURONE artificiale e' fatto da 2 passi:
+
+    z = X @ w + b           # logit (punteggio)        shape (N,)
+    a = sigmoid(z)          # probabilita' [0, 1]      shape (N,)
+
+E hai dimostrato (con l'esercizio E7 - RECALL CROSS-MODULO) che il neurone
+e' un caso particolare del layer Dense del Ponte cap.02:
+
+    layer_dense(X, W, b, att) = att(X @ W + b)
+    con W (d, h) e h=1, att=sigmoid -> ritorna esattamente neurone_batch.
+
+In questo capitolo si fa il PASSO successivo: invece di UN layer, ne
+impiliamo DUE (o piu'). Il risultato si chiama RETE NEURALE.
+
+L'oggetto matematico e' identico: una pila di "X @ W + b + attivazione".
+Cambia solo il NUMERO di volte che lo applichi:
+
+    H = ReLU(X @ W1 + b1)        # layer 1 (NASCOSTO)   shape (N, h)
+    P = sigmoid(H @ W2 + b2)     # layer 2 (OUTPUT)     shape (N, 1)
+
+Per chi viene dal web dev: una rete neurale e' come una PIPELINE Laravel
+in cui ogni middleware (layer) trasforma il "request" (X) e lo passa al
+successivo. L'ultimo middleware emette la "response" (la probabilita').
+
+----------------------------------------------------------------------------
+COSA PORTI VIA DA QUESTO CAPITOLO (Definition of Done)
+----------------------------------------------------------------------------
+Alla fine sai rispondere "in 1 riga" a queste 5 domande:
+
+  1) Cos'e' un LAYER DENSE (Fully Connected) e che shape hanno W e b?  -> Sez. 1
+  2) Perche' una rete senza attivazione interna NON e' una vera rete? -> Sez. 2
+  3) Come si scrive il forward di una rete 2-layer in NumPy in 2 righe? -> Sez. 2
+  4) Cosa succede ai pesi se li inizializzi TUTTI a zero (e perche')?  -> Sez. 2
+  5) Cos'e' l'"Universal Approximation Theorem" (in linguaggio umano)? -> Sez. 3
+
+Hai anche scritto 3 funzioni riutilizzabili:
+  - layer_dense (riprende E7 cap.01 M3)
+  - rete_2_layer (input -> hidden ReLU -> output sigmoid)
+  - init_pesi_he   (inizializzazione "He" raccomandata per ReLU)
+
+E hai dimostrato (mini-progetto) che una rete 2-layer NON addestrata fa
+peggio della LogisticRegression M2 (e' giusto cosi': nel cap.03 M3
+imparera' a fare meglio).
+
+----------------------------------------------------------------------------
+MAPPA DEL CAPITOLO
+----------------------------------------------------------------------------
+   *  PRONTUARIO TRANELLI RETE            [R1] - [R6]
+   *  QUIZ D'INGRESSO                     Q1 - Q5     (cerniera cap.01 M3)
+   *  SEZIONE 1  Dal neurone al layer (W matrice)  1.1 - 1.3
+   *  SEZIONE 2  Rete a 2 layer in NumPy puro      2.1 - 2.3
+   *  SEZIONE 3  Forward batch su CSV M2 + UAT      3.1 - 3.2
+   *  QUIZ DI VERIFICA                    V1 - V7
+   *  ESERCIZI FINALI                     E1 - E6
+                                          (colloquio / refactoring / debug /
+                                           retrieval / interleaving / real-world)
+   *  MINI-PROGETTO                       rete_2_layer_vs_logreg
+   *  CHECKPOINT FINALE                   C1 - C4
+   *  SOLUZIONI QUIZ                      in fondo
+
+----------------------------------------------------------------------------
+COME USARE QUESTO FILE (regola del corso)
+----------------------------------------------------------------------------
+   1. Leggi in ORDINE. La sezione N usa la sezione N-1.
+   2. Per ogni TODO scrivi nel blocco "TUO CODICE" (non cancellare lo
+      scaffold, lascialo come traccia).
+   3. Quando vuoi una valutazione: "valuta cap.02 M3 sezione X.Y"
+   4. Se ti blocchi >10 min: "sono bloccato sezione X" -> ti do solo
+      l'IDEA, mai la soluzione.
+   5. Niente LaTeX (preferenza tua): formule in PAROLE + codice.
+   6. Hardware: tutto su CPU + NumPy + Matplotlib. PyTorch arriva al cap.04.
 """
 
-# ============================================================================
-# TODO MENTOR — quando si crea questo capitolo:
-# ----------------------------------------------------------------------------
-# 1) GATE: leggere CONTESTO + diario chiusura cap.01 M3.
+import os
+from typing import Callable
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from numpy.typing import NDArray
+
+
+# ==========================================================================
+# PRONTUARIO TRANELLI RETE - leggilo PRIMA di iniziare (5 minuti)
+# ==========================================================================
+# Sono i tranelli specifici delle RETI multi-layer. Quelli sui vettori
+# (T1-T10) e sulle matrici (M1-M8) li trovi nel Ponte cap.01-02. I tranelli
+# del NEURONE (N1-N6) li trovi nel cap.01 M3.
 #
-# 2) FILO CONDUTTORE: una rete neurale = layer impilati, dove ogni layer e'
-#    "X @ W + b + attivazione". Letteralmente la generalizzazione del cap.02
-#    Ponte (layer Dense) ripetuta piu' volte.
+# [R1] UNA RETE = N LAYER, NON 1.
+#      Layer 1: H = ReLU(X @ W1 + b1)        shape (N, h)
+#      Layer 2: P = sigmoid(H @ W2 + b2)     shape (N, 1) o (N,)
+#      Il NUMERO di layer e l'attivazione fra di mezzo definiscono la rete.
 #
-# 3) STRUTTURA del file:
-#    - Header + DoD (3-5 domande)
-#    - Mappa
-#    - Quiz d'ingresso (cerniera cap.01 M3: neurone, attivazioni)
-#    - SEZIONE 1: dal neurone al layer (h neuroni in parallelo = matrice W)
-#    - SEZIONE 2: rete a 2 layer (input -> hidden -> output) in NumPy puro
-#    - SEZIONE 3: forward pass su batch di pratiche del CSV M2 (X (N, d) -> y_hat (N,))
-#    - Quiz di verifica (1 Feynman: "spiega perche' due layer Dense con
-#      attivazione fra di mezzo possono approssimare funzioni complesse")
-#    - Esercizi: COLLOQUIO, REFACTORING, DEBUG, RETRIEVAL, INTERLEAVING
-#    - 🏗️ PROGETTO INCREMENTALE: rete 2-layer NumPy che predice prob_alterato
-#      sulle stesse feature M2 e si confronta con LogisticRegression cap.04 M2
-#    - Soluzioni quiz
+# [R2] SENZA ATTIVAZIONE INTERNA, NON E' UNA RETE.
+#      Se metti H = X @ W1 + b1 e P = H @ W2 + b2 (senza ReLU in mezzo),
+#      la rete e' EQUIVALENTE a un solo layer X @ (W1 @ W2) + b'.
+#      In altre parole: 2 trasformazioni lineari = 1 trasformazione lineare.
+#      L'attivazione "non lineare" e' cio' che permette di approssimare
+#      funzioni complesse.
 #
-# 4) RINFORZI da inserire (in base allo stato di CONTESTO al momento):
-#    - Pattern shape (n,), (1, n), (n, 1) - sempre chirurgico
-#    - Eventuali lacune residue dal cap.02 Ponte (es. interpretazione W come
-#      "h neuroni in parallelo")
+# [R3] SHAPE DEI PESI - vai SEMPRE a vedere W.shape se hai dubbi.
+#      X (N, d) -> W1 (d, h)     -> H (N, h)
+#      H (N, h) -> W2 (h, k)     -> P (N, k)
+#      Regola: "le colonne di W di un layer == le righe di W del layer
+#      successivo" (in altre parole: l'output di un layer e' l'input del
+#      successivo).
 #
-# 5) TEORIA DA NON SALTARE:
-#    - perche' serve l'attivazione fra layer (senza, e' ancora una sola
-#      trasformazione lineare = regressione lineare con piu' output)
-#    - inizializzazione pesi (random piccolo vs zero - perche' zero non funziona)
-#    - intuizione "universal approximation theorem" senza formule
+# [R4] BIAS: 1 PER NEURONE DEL LAYER, NON 1 PER PRATICA.
+#      b1.shape == (h,)   <- 1 bias per ognuno degli h neuroni del layer 1
+#      b2.shape == (k,)   <- 1 bias per ognuno dei k neuroni di output
+#      Quando fai X @ W1 + b1, b1 viene "broadcast" su tutte le N pratiche.
 #
-# 6) HARDWARE: ancora CPU + NumPy. PyTorch arriva al cap.04.
+# [R5] INIZIALIZZAZIONE: random PICCOLI, mai zero, mai uguali.
+#      W1 = rng.standard_normal((d, h)) * 0.01        <- ok
+#      W1 = rng.standard_normal((d, h)) * np.sqrt(2/d) <- He init (per ReLU)
+#      W1 = np.zeros((d, h))                          <- BUG (symmetry)
+#      Tutti i neuroni con pesi identici imparano la stessa cosa: la rete
+#      "collassa" a un solo neurone.
 #
-# 7) DIARIO: M03_C02_reti_neurali_sessione.md
-# ============================================================================
+# [R6] L'OUTPUT FINALE E' UNA PROBABILITA' SOLO SE METTI SIGMOID/SOFTMAX
+#      ALL'ULTIMO LAYER.
+#      - classificazione binaria -> ultimo layer ha sigmoid e shape (N, 1)
+#      - classificazione multi-classe -> ultimo layer ha softmax e shape (N, k)
+#      Nei layer NASCOSTI usa ReLU (M3 cap.01 N4): non sigmoid, ne' tanh
+#      (saturano e ammazzano il gradiente in M3 cap.03).
+
+
+# ==========================================================================
+# QUIZ D'INGRESSO - cerniera cap.01 M3 -> cap.02 M3
+# ==========================================================================
+# Rispondi nei commenti sotto ogni domanda. Soluzioni a fine file.
+
+# Q1) Hai X (200, 7) e una rete con W1 (7, 16). Che shape ha
+#     H = X @ W1 + b1?  E b1 che shape DEVE avere?
+# TUA RISPOSTA:
+# ...
+
+# Q2) Spiega in 1 riga PERCHE' fra due layer Dense si mette una funzione
+#     di attivazione NON LINEARE (es. ReLU). Cosa succederebbe senza?
+# TUA RISPOSTA:
+# ...
+
+# Q3) sigmoid e ReLU - quale va all'ULTIMO layer di un classificatore
+#     binario? Quale nei layer NASCOSTI? E perche'?
+# TUA RISPOSTA:
+# ...
+
+# Q4) [Trova l'errore]
+#       W1 = np.zeros((7, 16))
+#       b1 = np.zeros(16)
+#       H = X @ W1 + b1
+#       P = sigmoid(H @ W2 + b2)
+#     Che valore avranno tutte le probabilita' P, indipendentemente da
+#     X? Perche'?
+# TUA RISPOSTA:
+# ...
+
+# Q5) [Feynman - no jargon tecnico] Spiega in 3 righe cos'e' una rete
+#     neurale a un collega web dev che non sa nulla di AI. VIETATO usare
+#     "tensore", "gradiente", "neurone", "layer", "sigmoid", "ReLU".
+# TUA RISPOSTA:
+# ...
+
+
+# ==========================================================================
+# SEZIONE 1 - DAL NEURONE AL LAYER: la matrice W
+# ==========================================================================
+
+# ---------------------- ANALOGIA --------------------------------------------
+# Pensa a una commissione bancaria che valuta una pratica di mutuo. Nel
+# cap.01 M3 c'era UN solo commissario (UN neurone) che dava un giudizio.
+#
+# Adesso immagina che il direttore voglia un PARERE COLLEGIALE: invece di
+# UN commissario, ne mette H = 16 in parallelo. Ognuno guarda la stessa
+# pratica con i propri "occhi" (vettore di pesi) e da' il proprio
+# punteggio.
+#
+# Risultato: per ogni pratica hai 16 punteggi diversi (un "ritratto
+# multi-prospettiva" della pratica). Questi 16 punteggi diventeranno
+# l'input del COMMISSARIO FINALE (l'output layer) che dovra' decidere.
+#
+# In codice:
+#     H = ReLU(X @ W1 + b1)    <- pareri dei 16 commissari
+#     P = sigmoid(H @ W2 + b2) <- giudizio finale del direttore
+#
+# Per il web dev: e' come avere 16 "validator" sullo stesso request, e
+# poi un "aggregator" che decide il responso finale in base ai 16
+# validator. Ogni validator vede la stessa cosa ma "pesa" diversamente.
+
+# ---------------------- TEORIA + CODICE -------------------------------------
+# 1.1 - IL LAYER DENSE (Fully Connected): definizione
+#
+# Un layer Dense con h neuroni prende un input X (N, d) e produce un
+# output H (N, h). Sotto il cofano e' UN dot product di matrici:
+#
+#       H = att(X @ W + b)
+#       W.shape == (d, h)     <- "una colonna per neurone"
+#       b.shape == (h,)       <- "un bias per neurone"
+#
+# E' lo STESSO oggetto che hai gia' scritto in E7 cap.01 M3 (con
+# h=1). Qui generalizziamo a qualsiasi h.
+
+
+def layer_dense(
+    X: NDArray[np.float64],
+    W: NDArray[np.float64],
+    b: NDArray[np.float64] | float,
+    att: Callable[[NDArray[np.float64]], NDArray[np.float64]] | None = None,
+) -> NDArray[np.float64]:
+    """Forward di un layer Dense.
+
+    Args:
+        X:   batch di pratiche, shape (N, d)
+        W:   matrice pesi,      shape (d, h)
+        b:   bias,              shape (h,) o scalare (broadcast su h)
+        att: funzione di attivazione element-wise (es. sigmoid, relu, tanh)
+             se None, layer "lineare" (nessuna attivazione).
+
+    Returns:
+        H, shape (N, h)
+    """
+    if X.ndim != 2 or W.ndim != 2:
+        raise ValueError(
+            f"X deve essere 2D e W 2D, invece X{X.shape} W{W.shape}"
+        )
+    if X.shape[1] != W.shape[0]:
+        raise ValueError(
+            f"shape incompatibili: X{X.shape} colonne vs W{W.shape} righe"
+        )
+    z = X @ W + b              # logit, shape (N, h)
+    if att is None:
+        return np.asarray(z, dtype=float)
+    return np.asarray(att(z), dtype=float)
+
+
+# 1.2 - LE 3 ATTIVAZIONI (recap cap.01 M3, le servono qui)
+
+def sigmoid(z: NDArray[np.float64] | float) -> NDArray[np.float64] | float:
+    """Sigmoid stabile numericamente (clip ±500 per evitare overflow)."""
+    z_arr = np.asarray(z, dtype=float)
+    z_safe = np.clip(z_arr, -500.0, 500.0)
+    out = 1.0 / (1.0 + np.exp(-z_safe))
+    if np.isscalar(z) or out.ndim == 0:
+        return float(out)
+    return out
+
+
+def relu(z: NDArray[np.float64]) -> NDArray[np.float64]:
+    """ReLU element-wise: max(0, z)."""
+    return np.maximum(0.0, z)
+
+
+def tanh(z: NDArray[np.float64]) -> NDArray[np.float64]:
+    """Tanh element-wise."""
+    return np.tanh(z)
+
+
+# 1.3 - INIZIALIZZAZIONE DEI PESI: "He" per ReLU
+#
+# Nel cap.01 M3 hai visto che inizializzare a zero NON funziona (R5).
+# La domanda e': quanto "grandi" devono essere i pesi random?
+#
+# Regola moderna (2026): si usa un'inizializzazione che dipende dal
+# numero di input del layer (fan_in = d).
+#
+#   - per LAYER con ReLU      -> He init:     W ~ N(0, sqrt(2/d))
+#   - per LAYER con tanh      -> Xavier init: W ~ N(0, sqrt(1/d))
+#
+# Spiegazione intuitiva: vogliamo che il logit z = X @ W + b abbia una
+# "scala stabile" (ne' troppo piccolo, ne' troppo grande) all'inizio.
+# Se W e' troppo grande, sigmoid satura (R6) e l'apprendimento muore.
+# Se W e' troppo piccolo, z ~ 0 e tutto e' "indistinto".
+
+
+def init_pesi_he(
+    d: int,
+    h: int,
+    seed: int | None = 42,
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+    """Init He: W ~ Normal(0, sqrt(2/d)), b = 0.
+
+    Args:
+        d: numero di input del layer (fan_in)
+        h: numero di neuroni del layer
+        seed: per riproducibilita'. None = casuale ogni volta.
+
+    Returns:
+        (W, b) con W.shape == (d, h), b.shape == (h,)
+    """
+    rng = np.random.default_rng(seed)
+    scala = np.sqrt(2.0 / d)
+    W = rng.standard_normal((d, h)) * scala
+    b = np.zeros(h, dtype=float)
+    return W, b
+
+
+def _esempio_layer_dense() -> None:
+    """Forward di UN layer Dense su 4 pratiche, 5 feature, 3 neuroni."""
+    rng = np.random.default_rng(0)
+    X = rng.standard_normal((4, 5))
+    W, b = init_pesi_he(d=5, h=3, seed=0)
+    H = layer_dense(X, W, b, att=relu)
+    print(f"X.shape = {X.shape}, W.shape = {W.shape}, b.shape = {b.shape}")
+    print(f"H.shape = {H.shape}  (4 pratiche x 3 neuroni)")
+    print("H[0] =", np.round(H[0], 3))
+
+
+# TODO 1.1 (5 minuti):
+# Crea X (5, 3) random con default_rng(1), poi un layer Dense con d=3,
+# h=4, ReLU. Stampa:
+#   - X.shape, W.shape, b.shape
+#   - H.shape
+#   - quante "celle" di H sono == 0 (suggerimento: H == 0 e poi .sum())
+# Perche' alcune celle sono esattamente 0 ? (1 riga di commento)
+# TUO CODICE QUI:
+
+
+# TODO 1.2 (5 minuti):
+# Una sola riga, due reti diverse:
+#   (a) layer_dense con att=None    (lineare puro)
+#   (b) layer_dense con att=sigmoid (output "schiacciato" in [0, 1])
+# Con X (10, 2) random, W (2, 3), b (3,) random:
+#   - stampa H_lineare.min(), H_lineare.max()
+#   - stampa H_sigmoid.min(), H_sigmoid.max()
+# Cosa noti sulla "scala" dei valori? In che senso sigmoid "schiaccia"?
+# TUO CODICE QUI:
+
+
+# TODO 1.3 (3 minuti):
+# Con d=10, h=20, chiama init_pesi_he. Stampa la media e la deviazione
+# standard del W generato. Confrontale con i valori "attesi" (media ~0,
+# deviazione ~sqrt(2/d) ~ 0.447). Perche' la media e' ~0 ma non
+# esattamente 0?
+# TUO CODICE QUI:
+
+
+# ==========================================================================
+# SEZIONE 2 - UNA RETE A 2 LAYER IN NUMPY PURO
+# ==========================================================================
+
+# ---------------------- ANALOGIA --------------------------------------------
+# Una rete a 2 layer e' come una CATENA DI MONTAGGIO con 2 stazioni:
+#
+#   stazione 1 (hidden):  prende le 7 feature della pratica e le trasforma
+#                         in 16 "feature derivate". Ad esempio una di
+#                         queste 16 potrebbe essere "stipendio - rate
+#                         arretrate" (combinazione delle feature originali
+#                         che il modello scopre da solo).
+#
+#   stazione 2 (output):  prende le 16 feature derivate e decide: questa
+#                         pratica e' alterata? (probabilita' fra 0 e 1)
+#
+# La magia: lo studente NON dice alla rete "calcolami stipendio - rate
+# arretrate". La rete IMPARA da sola che combinazione delle feature
+# originali e' utile. Questo si chiama RAPPRESENTAZIONE LEARNATA.
+#
+# Per il web dev: e' come avere un sistema in cui il primo middleware
+# riformatta i dati di input in modo "intelligente" prima di passarli al
+# secondo. Solo che NON e' il developer a programmare quel riformat: e'
+# l'allenamento (M3 cap.03) a sceglierlo.
+
+# ---------------------- TEORIA + CODICE -------------------------------------
+# 2.1 - LA RETE 2-LAYER: forward
+#
+# Architettura standard per classificazione binaria:
+#
+#   layer 1 (hidden):  H = ReLU(X @ W1 + b1)        shape (N, h)
+#   layer 2 (output):  Z = H @ W2 + b2              shape (N, 1)
+#                      P = sigmoid(Z).ravel()       shape (N,)
+#
+# Dimensioni "consigliate" per il nostro CSV M2 (d=7, classificazione
+# binaria):
+#       d = 7    (feature di input)
+#       h = 16   (neuroni nello strato nascosto - puoi sperimentare)
+#       k = 1    (output binario: 1 probabilita' per pratica)
+
+
+def rete_2_layer(
+    X: NDArray[np.float64],
+    W1: NDArray[np.float64],
+    b1: NDArray[np.float64],
+    W2: NDArray[np.float64],
+    b2: NDArray[np.float64] | float,
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+    """Forward di una rete 2-layer (input -> hidden ReLU -> output sigmoid).
+
+    Args:
+        X:  batch, shape (N, d)
+        W1: pesi hidden,  shape (d, h)
+        b1: bias hidden,  shape (h,)
+        W2: pesi output,  shape (h, 1)
+        b2: bias output,  shape (1,) o scalare
+
+    Returns:
+        (H, P) dove:
+          - H: attivazioni hidden, shape (N, h)
+          - P: probabilita' output, shape (N,) - "ravel" applicato gia'
+    """
+    if X.ndim != 2:
+        raise ValueError(f"X deve essere 2D, e' {X.shape}")
+    H = layer_dense(X, W1, b1, att=relu)       # (N, h)
+    Z = layer_dense(H, W2, b2, att=None)       # (N, 1)
+    P = sigmoid(Z).ravel()                      # (N,)
+    return H, np.asarray(P, dtype=float)
+
+
+def _esempio_rete_2_layer_random() -> None:
+    """Forward di una rete con pesi random su un mini-batch fittizio."""
+    rng = np.random.default_rng(0)
+    N, d, h = 8, 7, 16
+    X = rng.standard_normal((N, d))
+    W1, b1 = init_pesi_he(d, h, seed=1)
+    W2, b2 = init_pesi_he(h, 1, seed=2)
+    H, P = rete_2_layer(X, W1, b1, W2, b2)
+    print(f"X.shape = {X.shape}")
+    print(f"H.shape = {H.shape}, P.shape = {P.shape}")
+    print(f"P (prime 4): {np.round(P[:4], 3)}")
+    print(f"P.mean() = {P.mean():.3f}  "
+          f"(pesi random -> circa 0.5: rete NON addestrata)")
+
+
+# 2.2 - PERCHE' SERVE L'ATTIVAZIONE FRA I LAYER (R2 - dimostrazione)
+#
+# Senza attivazione interna, una rete 2-layer collassa a 1 solo layer.
+# Si vede algebricamente:
+#
+#       H = X @ W1 + b1
+#       Z = H @ W2 + b2 = (X @ W1 + b1) @ W2 + b2
+#                       = X @ (W1 @ W2) + (b1 @ W2 + b2)
+#                       = X @ W_combinato + b_combinato
+#
+# 2 layer lineari == 1 layer lineare. NON aggiungi capacita' espressiva.
+# L'attivazione (ReLU) "rompe" questa equivalenza: max(0, x) NON e'
+# lineare, quindi 2 layer con ReLU in mezzo NON si possono fondere in 1.
+
+
+def _demo_collasso_lineare() -> None:
+    """Mostra che 2 layer lineari sono equivalenti a 1 layer lineare."""
+    rng = np.random.default_rng(0)
+    X = rng.standard_normal((50, 4))
+    W1, b1 = init_pesi_he(4, 8, seed=1)
+    W2, b2 = init_pesi_he(8, 1, seed=2)
+
+    # Rete 2-layer LINEARE (NIENTE ReLU)
+    H = layer_dense(X, W1, b1, att=None)
+    Z_due_layer = layer_dense(H, W2, b2, att=None).ravel()
+
+    # Rete EQUIVALENTE a 1 layer
+    W_eq = W1 @ W2                  # (4, 1)
+    b_eq = b1 @ W2 + b2             # (1,)
+    Z_un_layer = (X @ W_eq + b_eq).ravel()
+
+    diff = float(np.max(np.abs(Z_due_layer - Z_un_layer)))
+    print(f"diff_max (2 layer lineari vs 1 layer): {diff:.2e}")
+    assert diff < 1e-10, "qualcosa non torna nella dimostrazione"
+    print("OK: due layer SENZA attivazione = 1 solo layer (R2).")
+
+
+# 2.3 - BUG SCUOLA: inizializzazione ZERO (R5 - dimostrazione)
+
+
+def _demo_init_zero() -> None:
+    """Mostra che con pesi tutti zero la rete e' "rotta": P = 0.5 sempre."""
+    rng = np.random.default_rng(0)
+    X = rng.standard_normal((20, 4))
+    W1 = np.zeros((4, 8))
+    b1 = np.zeros(8)
+    W2 = np.zeros((8, 1))
+    b2 = np.zeros(1)
+    _, P = rete_2_layer(X, W1, b1, W2, b2)
+    print(f"P.mean() = {P.mean():.4f}, P.min() = {P.min():.4f}, "
+          f"P.max() = {P.max():.4f}")
+    print("Tutti 0.5 perche' z = 0 ovunque e sigmoid(0) = 0.5.")
+    print("Anche peggio: durante il training (M3 cap.03) tutti i neuroni")
+    print("dello strato hidden imparerebbero la STESSA cosa "
+          "('symmetry breaking' rotto).")
+
+
+# TODO 2.1 (8 minuti):
+# Replica _esempio_rete_2_layer_random() ma:
+#   - N = 12, d = 5, h = 8
+#   - usa default_rng(7) per X
+#   - usa init_pesi_he con seed diversi (10, 11) per (W1, b1) e (W2, b2)
+#   - stampa H.shape, P.shape, P.min(), P.max(), P.mean()
+# Domanda finale (commento): la P.mean() e' vicina a 0.5? Perche'?
+# TUO CODICE QUI:
+
+
+# TODO 2.2 (10 minuti):
+# Verifica empirica del crollo lineare di R2 ma su una rete A 3 LAYER
+# senza attivazioni in mezzo. Mostra che e' equivalente a UN solo layer.
+# Usa shape X (30, 4), W1 (4, 8), W2 (8, 6), W3 (6, 1). Stampa il
+# diff_max fra le due implementazioni e fai un assert < 1e-10.
+# TUO CODICE QUI:
+
+
+# TODO 2.3 (5 minuti):
+# Replica _demo_init_zero ma usa init_pesi_he per i pesi (zero solo per
+# i bias). Cosa cambia in P.mean() / P.min() / P.max() ? Spiega in 1
+# riga perche' (suggerimento: ora i neuroni "vedono cose diverse").
+# TUO CODICE QUI:
+
+
+# ==========================================================================
+# SEZIONE 3 - FORWARD SU CSV REALE + UNIVERSAL APPROXIMATION
+# ==========================================================================
+#
+# Adesso usiamo i veri dati del Modulo 2 (pratiche_genuinita_mock.csv) e
+# mostriamo:
+#   (a) il forward di una rete 2-layer (NON addestrata) su tutto il batch
+#   (b) che la rete NON addestrata fa malissimo (accuracy ~ 0.5)
+#   (c) che la LogisticRegression M2 (allenata) la batte facilmente
+#
+# E' giusto cosi'. Nel cap.03 M3 (backpropagation) imparerai ad ALLENARE
+# la rete, e li' iniziera' a battere la LogisticRegression.
+
+# ---------------------- TEORIA + CODICE -------------------------------------
+# 3.1 - CARICAMENTO DATI (riusa il pattern del cap.01 M3)
+
+CSV_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)),
+    "modulo_02_ml",
+    "dati",
+    "pratiche_genuinita_mock.csv",
+)
+
+
+def carica_pratiche() -> tuple[NDArray[np.float64], NDArray[np.int64]]:
+    """Carica X (N, d) e y (N,) dal CSV M2."""
+    df = pd.read_csv(CSV_PATH)
+    X = df.drop(columns=["pratica_id", "y_alterato"]).to_numpy(dtype=float)
+    y = df["y_alterato"].to_numpy(dtype=int)
+    return X, y
+
+
+# 3.2 - FORWARD DELLA RETE 2-LAYER SU TUTTE LE PRATICHE
+
+
+def _esempio_rete_2_layer_su_csv() -> None:
+    """Forward di una rete random + confronto con LogisticRegression M2."""
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics import accuracy_score
+
+    X, y = carica_pratiche()
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    d = X_scaled.shape[1]
+    h = 16
+
+    # Rete 2-layer NON addestrata (pesi random)
+    W1, b1 = init_pesi_he(d, h, seed=42)
+    W2, b2 = init_pesi_he(h, 1, seed=43)
+    _, P_rete = rete_2_layer(X_scaled, W1, b1, W2, b2)
+    pred_rete = (P_rete >= 0.5).astype(int)
+    acc_rete = accuracy_score(y, pred_rete)
+
+    # LogisticRegression M2 (allenata)
+    clf = LogisticRegression(max_iter=1000, random_state=42)
+    clf.fit(X_scaled, y)
+    pred_lr = clf.predict(X_scaled)
+    acc_lr = accuracy_score(y, pred_lr)
+
+    print(f"X_scaled.shape = {X_scaled.shape}")
+    print(f"Rete 2-layer (RANDOM, non addestrata):   accuracy = {acc_rete:.3f}")
+    print(f"LogisticRegression M2 (ALLENATA):        accuracy = {acc_lr:.3f}")
+    print("La rete random fa peggio: e' giusto cosi'.")
+    print("Nel cap.03 M3 la addestriamo con la backpropagation.")
+
+
+# 3.3 - INTUIZIONE: UNIVERSAL APPROXIMATION THEOREM (no formule)
+#
+# UAT (Universal Approximation Theorem - 1989): una rete neurale a 2
+# layer con un numero "sufficiente" di neuroni nascosti puo' approssimare
+# QUALSIASI funzione continua a piacere, con la precisione che vuoi.
+#
+# In parole umane: con abbastanza neuroni, la rete puo' "imparare" a
+# riprodurre qualsiasi pattern matematico. La LogisticRegression e' una
+# linea retta nello spazio delle feature: separa due classi solo se sono
+# linearmente separabili. La rete neurale puo' tracciare confini di
+# qualunque forma (curvi, a S, a spirale).
+#
+# Limite: il teorema dice CHE ESISTE una rete che funziona, NON come
+# trovarla. E' come dire "esiste una strada per Milano" senza dare il
+# GPS. Il "GPS" e' la BACKPROPAGATION (cap.03 M3).
+#
+# Per il web dev: l'UAT e' come dire "qualunque API tu voglia esporre,
+# esiste un modo di scriverla in Laravel". Vero ma poco utile finche'
+# non sai come scrivere il codice.
+
+
+# TODO 3.1 (10 minuti):
+# Riproduci _esempio_rete_2_layer_su_csv() senza guardarlo. Pero':
+#   (a) prova SEI valori diversi di h: 4, 8, 16, 32, 64, 128
+#   (b) per ogni h stampa l'accuracy della rete RANDOM
+#   (c) le accuracy sono tutte vicino a 0.5? Spiega in 1 riga perche' (sugg.:
+#       cosa fa una rete random sui dati?)
+# TUO CODICE QUI:
+
+
+# TODO 3.2 (8 minuti):
+# Genera un grafico PNG che mostra la forma di ReLU(X @ W1 + b1) su un
+# input 1D. Cioe':
+#   - x_grid = np.linspace(-5, 5, 200).reshape(-1, 1)
+#   - W1 (1, 5), b1 (5,) random
+#   - H = ReLU(X_grid @ W1 + b1)
+#   - plotta le 5 colonne di H (5 attivazioni) sovrapposte
+# Vedrai 5 "rampe" che partono ognuna da un punto diverso: e' cosi' che
+# la rete "compone" funzioni complesse da pezzi semplici (intuizione UAT).
+# Salva in: modulo_03_dl_cv/figures/02_relu_attivazioni.png
+# TUO CODICE QUI:
+
+
+# ==========================================================================
+# QUIZ DI VERIFICA (fai PRIMA di passare agli esercizi)
+# ==========================================================================
+
+# V1) X (N, d), W1 (d, h1), W2 (h1, h2), W3 (h2, k). Che shape ha
+#     l'output finale Z = (((X @ W1) @ W2) @ W3) ? Spiega.
+# TUA RISPOSTA:
+# ...
+
+# V2) Una rete 2-layer con ReLU nello strato nascosto. Se imposti tutti
+#     i pesi a zero, P.mean() vale circa: (a) 0  (b) 0.5  (c) 1  (d) random
+#     Perche'?
+# TUA RISPOSTA:
+# ...
+
+# V3) Cosa dice (in parole umane) l'Universal Approximation Theorem?
+#     E qual e' il suo limite pratico?
+# TUA RISPOSTA:
+# ...
+
+# V4) [Trova l'errore]
+#       W1 = rng.standard_normal((4, 8)) * 100.0
+#       b1 = np.zeros(8)
+#       H = sigmoid(X @ W1 + b1)
+#     Cosa succede a H se i pesi sono "troppo grandi"? Perche' usare He
+#     init invece?
+# TUA RISPOSTA:
+# ...
+
+# V5) Quale di queste reti e' EQUIVALENTE a una LogisticRegression?
+#     (a) 1 layer Dense con sigmoid
+#     (b) 2 layer Dense con ReLU+sigmoid
+#     (c) 2 layer Dense senza attivazione interna + sigmoid finale
+#     Spiega anche le altre (perche' non sono LR).
+# TUA RISPOSTA:
+# ...
+
+# V6) [Recap shape] In una rete X (N=100, d=7) -> hidden (h=32) -> output
+#     binario, quanti PARAMETRI ALLENABILI ha la rete in totale?
+#     (suggerimento: W1, b1, W2, b2)
+# TUA RISPOSTA:
+# ...
+
+# V7) [Feynman - vincoli stretti] Spiega in 4 righe a tua madre (zero
+#     informatica) cos'e' una rete neurale. VIETATO: matematica, codice,
+#     "intelligenza artificiale", "computer".
+# TUA RISPOSTA:
+# ...
+
+
+# ==========================================================================
+# ESERCIZI FINALI
+# ==========================================================================
+
+# E1) [COLLOQUIO] - 15 minuti
+#     "Disegna a mano (o descrivi a parole) una rete neurale 2-layer per
+#     classificare le pratiche del nostro CSV M2 (7 feature, classe
+#     binaria 'alterata'). Indica:
+#       - shape di X, W1, b1, H, W2, b2, Z, P
+#       - attivazione su ogni layer (e perche')
+#       - quanti parametri ha la rete (numeri concreti)
+#       - come si confronta con la LogisticRegression del Modulo 2"
+#     Massimo 12 righe in totale, niente codice (puoi descrivere
+#     le shape con "(N, d)" ecc.).
+# TUA RISPOSTA:
+# ...
+
+
+# E2) [REFACTORING] - 10 minuti
+#     Questo codice gira ma e' brutto su 3 dimensioni:
+#       - pattern #25: type hint usa "np.array" (e' una funzione, non un tipo)
+#       - pattern #23: virgole spurie a fine return
+#       - logica: 2 loop annidati invece di X @ W
+#       - leggibilita': variabili "tmp" senza significato
+#
+#     def forward_brutto(X: np.array, W: np.array, b) -> np.array:
+#         tmp = []
+#         for i in range(len(X)):
+#             riga = []
+#             for j in range(W.shape[1]):
+#                 t = 0
+#                 for k in range(W.shape[0]):
+#                     t += X[i][k] * W[k][j]
+#                 riga.append(t + b[j])
+#             tmp.append(riga)
+#         return np.array(tmp),
+#
+#     Riscrivilo con type hint corretti, vettorizzato (1 sola "@") e
+#     ValueError se le shape non sono coerenti.
+# TUO CODICE QUI:
+
+
+# E3) [DEBUG] - autonomo, niente scala progressiva (regola corso)
+#     Questo codice gira ma la P.mean() viene SEMPRE 0.5 esatto. Eppure
+#     i pesi NON sono zero. Trova il bug.
+#
+#         rng = np.random.default_rng(0)
+#         X = rng.standard_normal((50, 7))
+#         W1, b1 = init_pesi_he(7, 16, seed=1)
+#         W2, b2 = init_pesi_he(16, 1, seed=2)
+#         # FORWARD
+#         H = layer_dense(X, W1, b1, att=None)   # <-- guarda qui
+#         Z = layer_dense(H, W2, b2, att=None)
+#         P = sigmoid(Z).ravel()
+#         print(P.mean())
+#
+#     Quando hai trovato il bug, scrivi qui sotto:
+#       - cosa hai diagnosticato (1 riga)
+#       - come l'hai sistemato (1 riga di codice corretto)
+# TUA RISPOSTA / FIX:
+# ...
+
+
+# E4) [RETRIEVAL] - regola 15: riscrivi da zero una funzione di un capitolo
+#                    PRECEDENTE, senza guardare il file vecchio.
+#     Senza riaprire `modulo_03_dl_cv/01_neurone_artificiale.py`, riscrivi
+#     da zero la funzione "neurone_batch(X, w, b) -> NDArray" del cap.01 M3.
+#     Deve:
+#       - shape check: X 2D, w 1D, X.shape[1] == w.shape[0]
+#       - usare la TUA sigmoid (gia' importata in questo file)
+#       - NON usare loop Python
+#       - type hint con NDArray[np.float64] (Pattern #25)
+#
+#     Verifica:
+#       neurone_batch(X(3,4), w(4,), 0.0) -> shape (3,) con tutti valori in (0, 1).
+# TUO CODICE QUI:
+
+
+# E5) [INTERLEAVING] cap.01 M3 (sigmoid stabile) + cap.02 M3 (rete 2-layer)
+#     Hai una rete 2-layer con W1, W2 init He su 7 feature, h=16. Se
+#     "scaliamo" i pesi W1, W2 di un fattore 100 (cioe' W1 *= 100,
+#     W2 *= 100):
+#       (a) cosa succede ai logit Z dell'ultimo layer? (suggerimento:
+#           prova in codice e stampa Z.min(), Z.max())
+#       (b) cosa succede alle probabilita' P? (suggerimento: sigmoid
+#           satura, R6)
+#       (c) la sigmoid stabile di cap.01 M3 (con clip ±500) ha
+#           comportamento "graceful" o esplode in NaN/Inf?
+#
+#     Usa X dal CSV M2 scalato. Mostra le statistiche min/max/mean prima
+#     e dopo la scalatura dei pesi.
+# TUO CODICE QUI:
+
+
+# E6) [REAL-WORLD] - REGOLA NEL CORSO DAL M5, MA UTILE GIA' QUI
+#     Scenario vago: "il tuo capo broker dice 'voglio una rete neurale
+#     che decide se la pratica e' alterata, ma piu' precisa di quella
+#     vecchia (LogisticRegression)'. Ha sentito che 'le reti neurali
+#     sono migliori'." Tu, prima di lanciarti a scrivere codice:
+#       (a) quali 3 DOMANDE fai al capo prima di scegliere l'architettura?
+#       (b) quale POTENZIALE PROBLEMA c'e' nel dire "rete neurale meglio
+#           di LR" su questo dataset specifico? (suggerimento: dimensione
+#           dataset, interpretabilita', deploy)
+#       (c) se accettassi l'incarico, partiresti con una rete 2-layer
+#           h=16, h=128, o ancora piu' grande? Perche'?
+#
+#     Massimo 8 righe per ogni punto, ragionamento di sistema.
+# TUA RISPOSTA:
+# ...
+
+
+# ==========================================================================
+# MINI-PROGETTO - "rete_2_layer_vs_logreg"
+# ==========================================================================
+#
+# OBIETTIVO: misurare le predizioni di una rete 2-layer NON addestrata
+# (pesi random He) e confrontarle con LogisticRegression M2 (allenata).
+# Risultato atteso: la rete NON addestrata va peggio (accuracy ~ 0.5,
+# AUC ~ 0.5). E' una baseline su cui il cap.03 M3 dovra' migliorare.
+#
+# Firma:
+#     def rete_2_layer_vs_logreg(h: int = 16, seed: int = 42) -> dict[str, float]:
+#         """
+#         Ritorna un dict con:
+#             'acc_rete'     : accuracy della rete random
+#             'acc_logreg'   : accuracy di LogisticRegression
+#             'auc_rete'     : roc_auc della rete random
+#             'auc_logreg'   : roc_auc di LogisticRegression
+#             'n_param_rete' : numero di parametri allenabili della rete
+#         """
+#
+# Vincoli OBBLIGATORI:
+#   - usa StandardScaler per scalare X (come M2 e cap.01 M3)
+#   - init_pesi_he per (W1, b1) e (W2, b2)
+#   - usa la TUA rete_2_layer, non scikit-learn MLPClassifier
+#   - calcola anche roc_auc_score (sklearn.metrics)
+#   - n_param_rete = W1.size + b1.size + W2.size + b2.size
+#
+# Verifica: stampa il dict alla fine. Ti aspetti:
+#   - acc_rete ~ 0.5      (random)
+#   - acc_logreg > 0.85   (allenata + dataset separabile)
+#   - auc_rete ~ 0.5      (la rete non distingue)
+#   - auc_logreg > 0.85   (la LR distingue molto)
+#   - n_param_rete = 7*16 + 16 + 16*1 + 1 = 145
+# TUO CODICE QUI:
+
+
+# ==========================================================================
+# CHECKPOINT FINALE (auto-verifica)
+# ==========================================================================
+
+# C1) In 1 frase: cos'e' un LAYER DENSE e quale operazione esegue?
+# TUA RISPOSTA:
+# ...
+
+# C2) Hai una rete con W1 (5, 8) e W2 (8, 3). Che shape ha l'output finale
+#     su X (50, 5)? (NO codice, ragionamento a mano)
+# TUA RISPOSTA:
+# ...
+
+# C3) Perche' una rete con SOLO attivazioni lineari non e' "potente"
+#     come una rete con ReLU? Risposta in 2 righe, no formule.
+# TUA RISPOSTA:
+# ...
+
+# C4) Auto-rating onesto (compila in chiusura capitolo):
+#       - layer Dense = X @ W + b:           /10
+#       - importanza dell'attivazione (R2):   /10
+#       - inizializzazione He vs zero (R5):   /10
+#       - forward rete 2-layer su CSV M2:     /10
+#       - Universal Approximation (intuiz.):  /10
+# TUE RISPOSTE:
+# ...
+
+
+# ==========================================================================
+# SOLUZIONI QUIZ (NON BARARE - leggi solo dopo aver risposto)
+# ==========================================================================
+"""
+QUIZ D'INGRESSO
+
+Q1) X @ W1 ha shape (200, 16). b1 DEVE avere shape (16,) - un bias per
+    ogni neurone del layer 1. Il bias viene "broadcast" sulle 200 righe.
+
+Q2) Senza attivazione non lineare in mezzo, due layer Dense collassano a
+    UNO solo: X @ W1 @ W2 = X @ (W1 @ W2). Non aggiungi capacita'
+    espressiva. L'attivazione (ReLU/tanh/sigmoid) "rompe" la linearita'
+    e permette alla rete di approssimare funzioni complesse.
+
+Q3) sigmoid -> ULTIMO layer di classificatore binario (vuoi output [0, 1]).
+    ReLU    -> layer NASCOSTI (non satura, gradiente sano, M3 cap.03).
+    Sigmoid nei layer nascosti satura e fa "vanishing gradient" (un
+    classico problema del DL anni '90 risolto proprio sostituendola con
+    ReLU).
+
+Q4) P.mean() = 0.5 esatto. Pesi zero -> H = ReLU(0) = 0 -> Z = 0 + b2 = b2.
+    Se anche b2 = 0, Z = 0 e sigmoid(0) = 0.5. La rete e' "rotta": tutti
+    i neuroni dello strato hidden imparerebbero la stessa cosa, e nemmeno
+    li addestrandola con backprop si separerebbero ("symmetry breaking"
+    rotto).
+
+Q5) (Feynman, esempio):
+    "Pensa a una macchina che prende dei numeri in input e li mescola
+    con dei 'pesi' che decide lei. Lo fa due volte di fila, fra una
+    mescolata e l'altra c'e' un 'filtro' che butta via i numeri negativi.
+    Alla fine ti dice un voto fra 'nessun mutuo' e 'mutuo sicuro'. E'
+    bravo a mescolare i numeri in modi che noi non sapremmo programmare
+    a mano."
+
+
+QUIZ DI VERIFICA
+
+V1) Output shape: (N, k). Le moltiplicazioni matrici si compongono:
+    (N, d) @ (d, h1) @ (h1, h2) @ (h2, k) = (N, k). Le dimensioni
+    "intermedie" si cancellano: ogni layer "trasforma" lo spazio.
+
+V2) (b) 0.5. ReLU(0) = 0, sigmoid(0) = 0.5. Inoltre tutti i neuroni
+    dello strato hidden sono identici (symmetry breaking rotto -> bug R5).
+
+V3) UAT: una rete 2-layer con abbastanza neuroni nascosti puo'
+    approssimare QUALSIASI funzione continua. Limite: il teorema dice
+    CHE ESISTE una rete che funziona, non COME trovarla (il "come" e' la
+    backpropagation - cap.03 M3). E nella pratica "abbastanza neuroni"
+    puo' significare milioni, quindi conta anche l'efficienza.
+
+V4) Con W1 * 100 i logit Z1 = X @ W1 saranno enormi -> sigmoid satura a
+    0 o 1 -> derivata di sigmoid in saturazione ~ 0 -> impari poco o
+    nulla (M3 cap.03). He init scala W con sqrt(2/d) proprio per evitare
+    questo: tiene |Z1| in un range "sano" all'inizio.
+
+V5) (a). 1 layer Dense + sigmoid = LogisticRegression letteralmente
+    (e' il caso h=1, att=sigmoid: lo hai dimostrato in E7 cap.01 M3).
+    (b) e' una vera rete 2-layer (piu' potente).
+    (c) collassa a 1 layer lineare ma con sigmoid finale = LR... sui
+    coefficienti combinati (W1 @ W2). E' "moralmente" una LR, ma
+    riparametrizzata in modo strano.
+
+V6) W1: 7 * 32 = 224 parametri. b1: 32. W2: 32 * 1 = 32. b2: 1.
+    Totale: 224 + 32 + 32 + 1 = 289 parametri allenabili.
+
+V7) (Feynman tipo):
+    "E' come una squadra di assaggiatori in cucina. Ogni assaggiatore
+    sente un sapore (dolce, salato, amaro...) e gli da' un voto. Poi
+    i loro voti li sente un capo-cuoco che, mescolandoli, decide se la
+    minestra e' 'buona' o 'da rifare'. Gli assaggiatori e il capo
+    imparano col tempo a dare i voti giusti, guardando i risultati."
+
+
+CHECKPOINT FINALE
+
+C1) Un layer Dense (Fully Connected) e' la trasformazione
+    H = att(X @ W + b), dove W ha shape (d_input, h) e b shape (h,).
+    Mappa N pratiche da d feature in h "feature derivate".
+
+C2) Output: (50, 3). Step:
+    X (50, 5) @ W1 (5, 8) = (50, 8)
+    (50, 8) @ W2 (8, 3) = (50, 3).
+
+C3) Una rete tutta lineare equivale a UN solo layer lineare (puoi
+    collassare W1 @ W2 in un'unica matrice). Con ReLU la composizione
+    non e' piu' "appiattibile": la rete puo' approssimare funzioni con
+    curvature (UAT).
+"""
+
+
+# ==========================================================================
+# ENTRY POINT (esegui solo le demo che esistono nel file, niente di tuo)
+# ==========================================================================
+if __name__ == "__main__":
+    print("=" * 70)
+    print("Cap.02 M3 - demo di riferimento")
+    print("=" * 70)
+
+    print("\n[Demo Sez.1 - 1 layer Dense]")
+    _esempio_layer_dense()
+
+    print("\n[Demo Sez.2 - rete 2-layer random]")
+    _esempio_rete_2_layer_random()
+
+    print("\n[Demo R2 - collasso lineare di 2 layer senza attivazione]")
+    _demo_collasso_lineare()
+
+    print("\n[Demo R5 - bug dell'init a zero]")
+    _demo_init_zero()
+
+    print("\n[Demo Sez.3 - rete 2-layer random vs LogisticRegression sul CSV M2]")
+    try:
+        _esempio_rete_2_layer_su_csv()
+    except FileNotFoundError as exc:
+        print("Skip: CSV M2 non trovato.", exc)
+    except ImportError as exc:
+        print("Skip: scikit-learn non disponibile in questo interprete.", exc)
+
+    print("\n" + "=" * 70)
+    print("Demo finite. Adesso tocca a te: completa i TODO in ordine.")
+    print("Quando vuoi una valutazione: 'valuta cap.02 M3 sezione X.Y'.")
+    print("=" * 70)
