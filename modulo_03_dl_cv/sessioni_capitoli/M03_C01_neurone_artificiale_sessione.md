@@ -104,6 +104,14 @@
 - **Micro-nota:** «un neurone **è** un cuoco» (accento), non «**e**».
 - **Lacuna #27:** **🟢 Superato** su questo checkpoint.
 
+### [2026-05-08] — Mini-esercizio RINFORZO #24 (lacuna #24 — tuple bias)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~272–282 (`type((0.05,))`, `z_ok` senza tuple bias).
+- **Voto (primo tentativo):** **9/10**.
+- **Corretto:** (a) `tuple` / `<class 'tuple'>` — ok; (b) **`z_ok = X @ w + b`** con **`b` scalare** — niente `(0.1,)`, intento della lacuna rispettato.
+- **Da migliorare sulla consegna:** il testo chiedeva esplicitamente **`+ 0.05`** (letterale); hai usato **`b = 0.5`** — va bene come stile **nome bias**, ma per “segui il foglio” conviene **`z_ok = X @ w + 0.05`** oppure **`b = 0.05`** se vuoi il nome.
+- **Extra:** `print` decorativo ok; opzionale aggiungere **`print(type((0.05,)))`** per chiudere (a) nel runner.
+
 ---
 
 ## Lacune e dubbi ancora aperti
