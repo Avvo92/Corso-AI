@@ -273,7 +273,13 @@ def _demo_lacuna_24() -> None:
 # (a) In una riga: cosa stampa print(type((0.05,))) ?
 # (b) Scrivi z_ok = X @ w + 0.05 con X = np.ones((2, 3)), w = np.ones(3) (NO tuple come bias).
 # TUO CODICE:
+#(a) => tuple
+print("\nMini-esercizio Rinforzo 24\n")
 
+X = np.ones((2, 3))
+w = np.ones(3)
+b = 0.05
+z_ok = X @ w + b
 
 # ==========================================================================
 # RINFORZO Lacuna #26 - perche' BLAS batte il loop Python (DUE motivi)
@@ -299,8 +305,8 @@ def _demo_lacuna_24() -> None:
 # --- Mini-esercizio [RINFORZO #26] (solo parole, poi confronti col benchmark) ---
 # Scrivi in DUE bullet (frasi brevi) due motivi DIVERSI tra loro per cui
 # `X @ w + b` batte `for i in range(N): np.dot(X[i], w) + b`.
-#   - Motivo A (tecnico sulla libreria NumPy/C): ...
-#   - Motivo B (tecnico sul loop Python / memoria): ...
+#   - Motivo A (tecnico sulla libreria NumPy/C): Invece di chiara una funzione scritta in C, Python essendo un liguaggio interpretato passa per l'interprete ad ogni iterazione: overhead molto grande, perdita di efficenza.
+#   - Motivo B (tecnico sul loop Python / memoria): le operazioni vettorizzaate effeettuate su blocchi contigui di memeoria sfruttano la vicinanza della info in memoria: con Python questo non avviene, perchè gli oggetti python vivono sparsi nell'heap.
 # Dopo aver eseguito _benchmark_loop_vs_blas() nel __main__, annota lo speedup stampato.
 
 # Verifichiamo con un benchmark mini (deve girare in <1 secondo):
@@ -355,6 +361,8 @@ def _demo_lacuna_28() -> None:
     print("logit z:", z)
     print("prob  a:", np.round(p, 3))
     print("note   : z>0 <-> p>0.5; z=0 <-> p=0.5; z e' senza limiti, p in [0,1]")
+    
+print(_demo_lacuna_28())
 
 
 # Regola pratica:
@@ -368,6 +376,12 @@ def _demo_lacuna_28() -> None:
 # (usa np.clip(z_test, -500, 500) prima dell'exp se vuoi evitare warning).
 # Stampa z_test e np.round(p_test, 6). In commento: qual e' il logit e qual e' la probabilita'?
 # TUO CODICE:
+print("\nMini-esercizio Rinforzo 28\n")
+z_test = np.clip(np.array([-100.0, 0.0, 100.0]), -500, 500)
+p_test = 1 / (1 + np.exp(-z_test))
+print(z_test)
+print(np.round(p_test, 6))
+# z_test è l'array dei logit, mentre p_test sono le probabilità
 
 
 # ==========================================================================
@@ -397,7 +411,13 @@ def _demo_lacuna_29() -> None:
 # Crea X = np.arange(40.0).reshape(8, 5). Stampa shape di X[3], X[3:4], X[[3]].
 # Scrivi una variabile riga_2d = ... che seleziona solo la riga indice 3 con shape (1, 5).
 # TUO CODICE:
-
+print("\nMini-esercizio Rinforzo 29\n")
+X = np.arange(40.0).reshape(8, 5)
+print(f"X[3]   => {X[3].shape}")
+print(f"X[3:4] => {X[3:4].shape}")
+print(f"X[[3]] => {X[[3]].shape}")
+riga_2d = X[[3]]
+print(riga_2d)
 
 # ==========================================================================
 # RIPASSO 5 PUNTI cap.02 Ponte (mini-esercizi 2-4 righe ciascuno)
@@ -411,6 +431,13 @@ def _demo_lacuna_29() -> None:
 # dtype, X[0] (la prima pratica) e X[:, 0] (la prima feature di tutte
 # le pratiche).
 # TUO CODICE:
+print("\nMini-esercizio R1\n")
+X = np.random.randint(1, 40, size=(3, 4), dtype=np.int64)
+print(f"Shape: {X.shape}")
+print(f"Dtype: {X.dtype}")
+print(f"Prima pratica: {X[0]}")
+print(f"Prima feature: {X[:, 0]}")
+print(X)
 
 
 # R2) PRODOTTO MATRICE-VETTORE = N DOT PRODUCT IN PARALLELO
@@ -418,6 +445,11 @@ def _demo_lacuna_29() -> None:
 # un assert che z[i] == np.dot(X[i], w) per ogni i (usa np.allclose
 # sull'array intero, NIENTE for-loop di assert).
 # TUO CODICE:
+print("\nMini-esercizio R2\n")
+X = np.random.randn(3, 4)
+w = np.random.randn(4)
+z = X @ w
+assert np.allclose(z, np.dot(X, w)), "i valori devono coincidere"
 
 
 # R3) BROADCASTING DEL BIAS
@@ -425,13 +457,28 @@ def _demo_lacuna_29() -> None:
 # succede a b durante la somma? Stampa la shape di z_pre e di un nuovo
 # z2_pre = z + np.array([0.1, 0.2, 0.3]) (bias vettoriale).
 # TUO CODICE:
+z = np.arange(3)
+b = 0.5
+z_pre = z + b
+# durante l'operazione di somma di z e b, dove z ha shape (3, ), e b è uno scalare, viene fatto il broadcasting di b in un vettore di shape (3, ), dove ogni elemento è uguale al valore scalare di b. In questo modo si ottiene una somma element-wise (operazione vettorizzata) di agni elemento del vettore z con l'elemento corrispondente (posizionato allo stesso indice) del vettore b.
+z2_pre = z + np.array([0.1, 0.2, 0.3])
+
+print(z_pre.shape)
+print(z2_pre.shape)
 
 
 # R4) LAYER DENSE = h REGRESSIONI IN PARALLELO  [Lacuna #28 ricontrollo]
 # Dato X (3, 4) e W (4, 2) random, calcola Z = X @ W. Che shape ha Z?
 # Cosa rappresenta ogni colonna di Z? E ogni riga? (commentalo in 1 riga)
 # TUO CODICE:
-
+print("\nMini-esercizio R4\n")
+rng = np.random.default_rng(42)
+X = rng.random(12).reshape(3, 4)
+W = rng.random(8).reshape(4, 2)
+Z = X @ W
+# Nel nostro dominio, ogni colonna di Z rappresenta una feature differente di una pratica (es. delta netto-lordo), mentre ogni riga rappresenta una pratica differente (la quale è di fatto costituita da un vettore di feature).
+# nel dot product vettorizzato tra X di shape (N, d) e di W di shape (d, h), come risultato di otterrà una matrice di risultadi di shape (N, h).
+print(Z.shape)
 
 # R5) SHAPE 1D vs 2D  [Lacuna #29 ricontrollo]
 # Data X (10, 3) random, stampa la shape di:
@@ -440,6 +487,13 @@ def _demo_lacuna_29() -> None:
 #   X[2, :]   <- equivalente a X[2]?
 # Quale dei tre passi a "clf.predict_proba(...)" di sklearn senza errore?
 # TUO CODICE:
+print("\nMini-esercizio R5\n")
+X = np.random.randn(10, 3)
+print(X[2].shape)
+print(X[2:3].shape)
+print(X[2, :].shape)
+
+# predict_proba necessita in una matrice con shape (1, N), quindi bisogna passare valore tramite slicing tipo X[r:r+1]
 
 
 # ==========================================================================
@@ -620,6 +674,29 @@ def _esempio_neurone_batch() -> None:
 # Qui pero' lavori su 1 sola pratica, quindi e' un dot product element-wise
 # fra 2 vettori 1D.
 # TUO CODICE QUI:
+pratiche = pd.read_csv(os.path.join(os.path.dirname(os.path.dirname(__file__)), "modulo_02_ml/", "dati", "pratiche_genuinita_mock.csv"))
+X = pratiche.drop(columns=['pratica_id', 'y_alterato']).to_numpy()[:2]
+rng = np.random.default_rng(42)
+w = rng.standard_normal(X[0].size)
+feature_names = pratiche.drop(columns=["pratica_id", "y_alterato"]).columns
+def top3_contributi(
+    x: NDArray[np.float64],
+    w: NDArray[np.float64],
+    feature_names: list[str],
+) -> list[tuple[str, float]]:
+    if x.ndim != 1 or w.ndim !=  1:
+        raise ValueError("Il numero di dimensioni di x e w devono coincidere, e entrambi devono essere vettori 1D")
+    if x.shape != w.shape:
+        raise ValueError("Entrambi i vettori devono avere shape uguale")
+    if x.shape[0] != len(feature_names):
+        raise ValueError("Il numero delle features non combacia con la lista dei nomi")
+    contrib_values = x * w
+    contrib = np.argsort(np.abs(contrib_values))[::-1]
+    out = [(feature_names[i], float((contrib_values)[i])) for i in contrib[0:3]]
+    return out    
+    
+print(top3_contributi(X[0], w, feature_names))
+print(top3_contributi(X[1], w, feature_names))
 
 
 # TODO 1.2 (5 minuti):
