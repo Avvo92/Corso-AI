@@ -164,6 +164,14 @@
 - **Affinare terminologia:** la **riga** = **un campione / una pratica** (vettore di **due uscite lineari**) è giusta; la **colonna** è più precisamente l’**uscita della j-esima regressione (neurone) su tutti i campioni**, non una “feature” nel senso delle colonne di **`X`** (feature di input). In linguaggio corso: **due neuroni in parallelo → due colonne di logits/punteggi**.
 - **Ortografia:** *si otterrà*, *risultati* (non «di otterrà» / «risultadi»).
 
+### [2026-05-08] — RIPASSO cap.02 Ponte — mini R5 (shape 1D vs 2D, lacuna #29 ricontrollo)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~483–496 (`X[2]`, `X[2:3]`, `X[2, :]`, `predict_proba`).
+- **Voto (primo tentativo):** **9/10**.
+- **Corretto:** **`X`** `(10, 3)`; **`X[2].shape` → `(3,)`**; **`X[2:3].shape` → `(1, 3)`**; **`X[2, :].shape` → `(3,)`** (equivalente a **`X[2]`** per i valori e la forma); commento sullo slicing **`X[r:r+1]`** per avere **batch 1×N** — allineato alla lacuna #29 / sklearn `(n_campioni, n_feature)`.
+- **Chiudere la consegna in una frase:** esplicitare che **`predict_proba` al sicuro didattico** riceve **`X[2:3]`**; **`X[2]`** e **`X[2, :]`** sono **`(3,)`** — alcune versioni sklearn **possono** accettare il vettore 1D per **un** campione, ma è **fragile** e fuori convenzione rispetto a **`(1, n_feature)`**.
+- **Stile:** *richiede* / *ha bisogno di* una matrice **`(1, N)`** (non «necessita in una matrice»).
+
 ---
 
 ## Lacune e dubbi ancora aperti
