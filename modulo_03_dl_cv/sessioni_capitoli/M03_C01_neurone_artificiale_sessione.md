@@ -156,6 +156,14 @@
 - **Corretto:** `z (3,)`, `b` scalare, `z_pre = z + b`; commento sul **broadcast** dello scalare su forma **`(3,)`** e somma **element-wise**; **`z2_pre`** con bias **vettoriale** `(3,)` coerente; **`print` delle shape** (`z_pre` e `z2_pre` → **(3,)**).
 - **Micro-nota:** ortografia *ogni* (non “agni”); opzionale stampare **`z_pre`** / **`z2_pre`** per vedere dtype/promo dopo la somma.
 
+### [2026-05-08] — RIPASSO cap.02 Ponte — mini R4 (Dense = h regressioni in parallelo, lacuna #28 ricontrollo)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~470–482 (`X @ W`, shape `Z`, commento righe/colonne).
+- **Voto (primo tentativo):** **9/10**.
+- **Corretto:** **`rng = np.random.default_rng(42)`**; **`X (3, 4)`**, **`W (4, 2)`**, **`Z = X @ W`**; **`print(Z.shape)`** → **`(3, 2)`** coerente con **`(N, d) @ (d, h) → (N, h)`**; commento secondario sulla moltiplicazione matriciale allineato al Ponte.
+- **Affinare terminologia:** la **riga** = **un campione / una pratica** (vettore di **due uscite lineari**) è giusta; la **colonna** è più precisamente l’**uscita della j-esima regressione (neurone) su tutti i campioni**, non una “feature” nel senso delle colonne di **`X`** (feature di input). In linguaggio corso: **due neuroni in parallelo → due colonne di logits/punteggi**.
+- **Ortografia:** *si otterrà*, *risultati* (non «di otterrà» / «risultadi»).
+
 ---
 
 ## Lacune e dubbi ancora aperti
