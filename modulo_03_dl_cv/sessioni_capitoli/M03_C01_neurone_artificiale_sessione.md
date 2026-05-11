@@ -186,6 +186,14 @@
 - **Corretto:** **`X`** come mini-batch **`(2, 7)`** (`[:2]`); **`w = rng.standard_normal(X[0].size)`**; **`print`** separati per **`X[0]`** e **`X[1]`** → DoD «prime 2 pratiche» soddisfatto; **`top3_contributi`** invariata e corretta su **`np.abs` + ordine decrescente**.
 - **Micro-affinamenti:** **`contrib_values = x * w`** una volta (DRY); **`feature_names = list(df_feat.columns)`** + un solo **`drop`**; path **`modulo_02_ml`** senza slash nel **`join`**.
 
+### [2026-05-11] — TODO 1.2 Sez.1 — mini-batch logit + sigmoid + suggerimento #29
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~703–726 (`X (3,4)`, `w (4,)`, logit, sigmoid, `X[0]` vs `X[0:1]`).
+- **Voto (primo tentativo):** **7/10**.
+- **Corretto:** **`rng.default_rng(42)`**; **`X.shape == (3, 4)`**, **`w.shape == (4,)`** coerenti con **`X @ w`**; tre **logit** riga per riga; **sigmoid** coerente su ogni logit; stampa **`X[0].shape`** vs **`X[0:1].shape`** — lacuna **#29** consolidata.
+- **Manca sulla consegna:** il testo chiede esplicitamente **`X @ w + b`**: manca un **`b`** scalare (es. **`b = 0.3`**) usato nei logit (**`X @ w + b`** vettoriale o **`float(X[i] @ w + b)`**).
+- **Stile / robustezza:** usa **`sigmoid(...)`** già definita nel file (clip ±500, zero warning); evita **`for`** dove **`z = X @ w + b`** poi **`sigmoid(z)`** in una mossa (allineato al neurone batch); **`range(0, X[0, :].size - 1)`** è contorto → **`range(X.shape[0])`** o **`range(3)`**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
