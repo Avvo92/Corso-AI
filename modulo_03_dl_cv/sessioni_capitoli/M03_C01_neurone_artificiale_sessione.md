@@ -121,6 +121,13 @@
 - **Opzionale consegna:** annotare lo **speedup** stampato dopo `_benchmark_loop_vs_blas()` (una riga nel commento).
 - **Lacuna #26:** da 🟡 a **🟢** in `CONTESTO_CORSO.md`.
 
+### [2026-05-08] — Mini-esercizio RINFORZO #28 (lacuna #28 — logit vs probabilità)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~374–384 (`z_test`, `clip`, `p_test`, commento).
+- **Voto (primo tentativo):** **10/10**.
+- **Corretto:** `np.clip` prima di `exp` → stabilità; `p_test = 1/(1+exp(-z_test))` **element-wise**; stampa arrotondata; commento **logit = z_test**, **probabilità = p_test** — coerente con lacuna #28.
+- **Micro-nota:** per `-100/100` il clip non cambia i numeri (già dentro ±500); utile come **abitudine** quando gli \(z\) possono essere enormi.
+
 ---
 
 ## Lacune e dubbi ancora aperti
