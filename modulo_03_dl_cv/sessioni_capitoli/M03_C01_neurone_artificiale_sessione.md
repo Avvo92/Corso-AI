@@ -149,6 +149,13 @@
 - **Corretto:** `X (3,4)`, `w (4,)`, `z = X @ w`; **`np.dot(X, w)`** con queste shape è **il prodotto matrice–vettore** le cui componenti sono proprio **`np.dot(X[i], w)`** — quindi **`np.allclose(z, np.dot(X, w))`** verifica l’equivalenza richiesta **senza** ciclo di assert.
 - **Nota:** equivalente alla lista comprehension sulle righe, ma tutto **vettorizzato** in una chiamata.
 
+### [2026-05-08] — RIPASSO cap.02 Ponte — mini R3 (broadcasting bias)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~455–467.
+- **Voto (primo tentativo):** **9/10**.
+- **Corretto:** `z (3,)`, `b` scalare, `z_pre = z + b`; commento sul **broadcast** dello scalare su forma **`(3,)`** e somma **element-wise**; **`z2_pre`** con bias **vettoriale** `(3,)` coerente; **`print` delle shape** (`z_pre` e `z2_pre` → **(3,)**).
+- **Micro-nota:** ortografia *ogni* (non “agni”); opzionale stampare **`z_pre`** / **`z2_pre`** per vedere dtype/promo dopo la somma.
+
 ---
 
 ## Lacune e dubbi ancora aperti
