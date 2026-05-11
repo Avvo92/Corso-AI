@@ -142,6 +142,13 @@
 - **Corretto:** `X` **(3, 4)** interi (`randint`); **`shape`**, **`dtype`**; **`X[0]`** = prima riga/pratica; **`X[:, 0]`** = prima colonna/feature su tutte le righe — allineato al Ponte “batch = matrice”.
 - **Extra:** `print(X)` utile per controllo visivo; non richiesto dalla consegna.
 
+### [2026-05-08] — RIPASSO cap.02 Ponte — mini R2 (X @ w vs dot per riga)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~443–452.
+- **Voto (primo tentativo):** **10/10**.
+- **Corretto:** `X (3,4)`, `w (4,)`, `z = X @ w`; **`np.dot(X, w)`** con queste shape è **il prodotto matrice–vettore** le cui componenti sono proprio **`np.dot(X[i], w)`** — quindi **`np.allclose(z, np.dot(X, w))`** verifica l’equivalenza richiesta **senza** ciclo di assert.
+- **Nota:** equivalente alla lista comprehension sulle righe, ma tutto **vettorizzato** in una chiamata.
+
 ---
 
 ## Lacune e dubbi ancora aperti
