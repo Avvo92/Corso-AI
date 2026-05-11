@@ -172,6 +172,13 @@
 - **Chiudere la consegna in una frase:** esplicitare che **`predict_proba` al sicuro didattico** riceve **`X[2:3]`**; **`X[2]`** e **`X[2, :]`** sono **`(3,)`** — alcune versioni sklearn **possono** accettare il vettore 1D per **un** campione, ma è **fragile** e fuori convenzione rispetto a **`(1, n_feature)`**.
 - **Stile:** *richiede* / *ha bisogno di* una matrice **`(1, N)`** (non «necessita in una matrice»).
 
+### [2026-05-11] — TODO 1.1 Sez.1 — `top3_contributi(x, w, feature_names)`
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~677–698 (setup CSV + funzione + print).
+- **Voto (iterazione dopo correzioni in chat):** **8/10** *(come “chiusura esercizio”: funzione ok; DoD/setup ancora da rifinire)*.
+- **Corretto nella funzione:** controllo **`x.ndim != 1 or w.ndim != 1`**; **`x.shape == w.shape`** e **`len(feature_names)`** allineati; **`np.argsort(np.abs(x * w))[::-1][:3]`** = **top-3 per modulo**, ordine **decrescente** di **|**contributo**|**; output **`list[tuple[str, float]]`** con contributo **con segno** tramite **`(x * w)[i]`**.
+- **Da sistemare (consegna / stile):** (1) **`X`** alla riga setup è in realtà **una sola pratica** `(7,)` → usa **`x`** (minuscolo) e **`X_full`** `(N, 7)` per le **prime 2 righe** richieste dal testo; (2) **`feature_names`**: evita secondo `.drop`, usa **una** variabile `df_feat` + **`list(df_feat.columns)`** per matchare il type hint; (3) micro-DRY: salva **`contrib_values = x * w`** una volta; (4) path: **`"modulo_02_ml"`** senza **`/`** finale in `join`.
+
 ---
 
 ## Lacune e dubbi ancora aperti
