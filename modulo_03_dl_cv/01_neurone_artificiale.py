@@ -95,6 +95,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
+from sklearn.preprocessing import StandardScaler
 
 
 # ==========================================================================
@@ -734,7 +735,36 @@ print(f"Shape di X[0:1] => {X[0:1].shape}  {X[0:1]}")
 # Stampa la coppia (y_morbido[i], y_rigido[i]) per ogni pratica.
 # Cosa noti? In che situazione "y_rigido" perde informazione?
 # TUO CODICE QUI:
+print("\nMini-esercizio 1.3\n")
 
+def my_sigmoid(
+    v: NDArray[np.float64]
+) -> NDArray[np.float64]:
+    if v.ndim != 1:
+        raise ValueError("v deve essere un vettore 1D")
+    v_clip = np.clip(v, -500, +500)
+    return 1 / (1 + np.exp(-v_clip) )
+
+def my_neurone_batch(
+    X: NDArray[np.float64],
+    w: NDArray[np.float64],
+    b: float = 0.0
+) -> NDArray[np.float64]:
+    if X.ndim != 2 or w.ndim != 1:
+        raise ValueError("X deve essere una matrice 2D e w deve essere un vettore 1D")
+    if X.shape[1] != w.shape[0]:
+        raise ValueError(f"{X.shape[1]} shape delle Colonne di X  vs {w.shape[0]} della Righe di w! Le shape devono combaciare")
+    out = X @ w + b
+    return my_sigmoid(out)
+
+rng = np.random.default_rng(42)
+X = rng.uniform(0, 1, (10, 3))
+w = np.array([1, 0.2, -3.1], dtype=float)
+y_morbido = my_neurone_batch(X, w)
+y_rigido = (y_morbido >= 0.5).astype(int)
+for soft, hard in zip(y_morbido, y_rigido):
+    print(f"y_morbido: {soft.astype(str):20s} => y_rigido: {hard}")
+# y_rigido sembra perdere informazione per i valori che sono molto ravvicinati alla sogli (quindi valori (\approx \) 0.5), ma la perdita di informazione è generale perchè annulla il concetto di confidenza.
 
 # ==========================================================================
 # SEZIONE 2 - FUNZIONI DI ATTIVAZIONE: sigmoid, ReLU, tanh
@@ -778,11 +808,11 @@ def tanh(z: NDArray[np.float64]) -> NDArray[np.float64]:
 
 
 def _grafico_attivazioni(
+    z: NDArray[np.float64] = np.linspace(-6, 6, 400),
     out_path: str | None = None,
     show: bool = False,
 ) -> None:
     """Plot di sigmoid/ReLU/tanh per visualizzarne la forma."""
-    z = np.linspace(-6, 6, 400)
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.plot(z, sigmoid(z), label="sigmoid")
     ax.plot(z, tanh(z),    label="tanh")
@@ -800,6 +830,7 @@ def _grafico_attivazioni(
     if show:
         plt.show()
     plt.close(fig)
+# _grafico_attivazioni(show=True)
 
 
 def _infografica_forward_neurone(
@@ -873,6 +904,7 @@ def _infografica_forward_neurone(
     if show:
         plt.show()
     plt.close(fig)
+# _infografica_forward_neurone(show=True)
 
 
 # 2.2 - QUANDO USO CHE COSA?
@@ -895,10 +927,18 @@ def _infografica_forward_neurone(
 #   - relu(z)
 #   - tanh(z)
 # E rispondi (commenti):
-#   (a) quale attivazione fa la cosa MENO interessante su z=-1?
-#   (b) quale e' l'unica che restituisce 0 esatto per z negativi?
+#   (a) quale attivazione fa la cosa MENO interessante su z=-1? => tutte fanno cose interessanti, dipende in quale contesto
+#   (b) quale e' l'unica che restituisce 0 esatto per z negativi? => ReLU
 # TUO CODICE QUI:
+print("\nMini-esercizio 2.1\n")
+z = np.array([-3.0, -1.0, 0.0, 1.0, 3.0])
+print(sigmoid(z))
+print(relu(z))
+print(tanh(z))
 
+print(sigmoid(z[1]))
+print(relu(z[1]))
+print(tanh(z[1]))
 
 # TODO 2.2 (5 minuti):
 # Genera il grafico delle 3 attivazioni e salvalo in
@@ -906,7 +946,11 @@ def _infografica_forward_neurone(
 # Suggerimento: usa la funzione _grafico_attivazioni() gia' pronta.
 # Verifica che il file esista.
 # TUO CODICE QUI:
-
+# _grafico_attivazioni(
+#     z,
+#     out_path="modulo_03_dl_cv/figures/02_01_attivazioni.png",
+#     show=True
+# )
 
 # ==========================================================================
 # SEZIONE 3 - FORWARD DI UN NEURONE SUL CSV REALE DEL MODULO 2
@@ -985,7 +1029,34 @@ def _esempio_neurone_su_csv() -> None:
 #       ALTA, > 0.6) e la media sulle pratiche dove y == 0 (deve essere
 #       BASSA, < 0.4). Se non torna -> qualcosa non va nel forward.
 # TUO CODICE QUI:
+print("\nMini-esercizio 3.1\n")
+def my_esempio_neurone_csv(
+):
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.linear_model import LogisticRegression
+        
+    X, y = carica_pratiche()
+    pipe = Pipeline([
+        ("scaler", StandardScaler()),
+        ("model", LogisticRegression(max_iter=1_000, random_state=42))            
+        ]
+    )
+    
+    pipe.fit(X, y)
+    
+    w = pipe.named_steps["model"].coef_.ravel()
+    b = float(pipe.named_steps["model"].intercept_[0])
+    X_scaled = pipe.named_steps["scaler"].transform(X)
+    
+    manuale_sorted =  np.sort(sigmoid(X_scaled @ w + b))[::-1][:5]
+    predict = pipe.predict_proba(X)[:, 1]
+    idx = np.argsort(-predict)
+    predict_sorted = predict[idx][:5]
+    # return np.array(manuale, predict)
+    return np.array([predict_sorted, manuale_sorted])
 
+print(my_esempio_neurone_csv())   
 
 # TODO 3.2 (5 minuti):
 # Sulle stesse pratiche del CSV, prova a mettere SCALARE = 0.0 (cioe'
