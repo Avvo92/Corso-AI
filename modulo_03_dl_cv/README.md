@@ -26,6 +26,14 @@ Classificatore visivo **busta paga vs non-busta paga** + demo Gradio deployata. 
 
 **Tempo stimato**: 2-3 settimane.
 
+## Quiz ripasso fondamentali tra capitoli (Regola 40)
+
+**Obbligatorio dal Modulo 3**: dopo ogni capitolo e prima del successivo, completare il file bridge corrispondente nella cartella:
+
+`modulo_03_dl_cv/quiz_ripasso_tra_capitoli/`
+
+(~10 mini-esercizi facili ciascuno — Python, NumPy, Pandas, recall ML; soluzioni in coda ai file). Indice e naming in `quiz_ripasso_tra_capitoli/README.md`.
+
 ## Vincoli operativi (BLOCCANTI)
 
 ### Hardware
@@ -56,6 +64,7 @@ Il modulo costruisce il **ramo visivo** del prodotto "Controllo Documentale AI":
 
 Ogni capitolo M3 DEVE includere (regole del corso):
 - Quiz d'ingresso + Quiz di verifica (1 domanda Feynman per quiz)
+- **Quiz ripasso fondamentali tra capitoli** (`quiz_ripasso_tra_capitoli/…`) — da fare dopo la chiusura del capitolo precedente (**Regola 40**, `CONTESTO_CORSO.md`)
 - 1 esercizio `🎯 [COLLOQUIO]`
 - 1 `🔧 [REFACTORING]` + 1 `🔍 [DEBUG]`
 - 1 `🧠 [RETRIEVAL]` + 1 `🔀 [INTERLEAVING]`

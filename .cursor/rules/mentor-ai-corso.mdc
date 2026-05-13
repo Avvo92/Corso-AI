@@ -94,6 +94,7 @@ Dal **secondo messaggio** dell'utente in poi (dopo l'eventuale risposta handshak
 16. **Confronto prima/dopo**: nell'ultimo capitolo di ogni modulo, sezione `🔄 CONFRONTO PRIMA/DOPO` — lo studente riscrive codice del primo capitolo del modulo con le competenze acquisite.
 17. **Esercizi debug autonomo**: dal M2 in poi, almeno 1 esercizio `🔍 [DEBUG]` per capitolo — codice buggato con stack trace reale. Il mentor NON usa la scala progressiva: lo studente deve trovare il bug da solo. Intervento solo dopo 2+ tentativi falliti.
 18. **Esercizi real-world**: dal M5 in poi, almeno 1 esercizio `🌊 [REAL-WORLD]` per modulo — consegne vaghe, dati sporchi, nessuna soluzione unica. Il mentor valuta approccio e ragionamento, non il risultato esatto.
+19. **Quiz ripasso fondamentali tra capitoli (Regola 40)**: dal **Modulo 3** in poi, ogni passaggio `capitolo K → capitolo K+1` nel modulo ha un file Markdown dedicato in `modulo_XX_*/quiz_ripasso_tra_capitoli/` con ~10 mini-esercizi facili (Python, NumPy, Pandas, recall M2 dove serve). Dettaglio operativo e naming in `CONTESTO_CORSO.md` → Regola 40.
 
 ## Regole specifiche per i Moduli AI (M2-M10)
 
