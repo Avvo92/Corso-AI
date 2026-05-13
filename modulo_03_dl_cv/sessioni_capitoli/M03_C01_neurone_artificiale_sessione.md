@@ -203,6 +203,13 @@
 - **Consegna / riuso:** il testo chiede **`neurone_batch(X, w, 0.0)`** già nel file — riusala per non duplicare; **`my_sigmoid`**: anche batch produce **`(N,)`** → ok solo per questo uso; per robustezza usare **`sigmoid`** del capitolo (clip); **`w`**: preferire **`dtype=float`** esplicito.
 - **Commento:** chiudere la riflessione (oltre la soglia 0.5): **due `y_morbido` diversi** possono collassare nello **stesso** **`y_rigido`** → si perde il **grado di confidenza**.
 
+### [2026-05-11] — TODO 1.3 Sez.1 — rivalutazione post-fix
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~729–765.
+- **Voto (secondo tentativo):** **9/10**.
+- **Corretto:** **`raise ValueError`** (non più **`return ValueError`**); **`w`** con **`dtype=float`**; pipeline **`X @ w + b`** → sigmoid; **`y_rigido`** con soglia **0.5**; **`zip`** per le coppie; commento che generalizza la perdita di informazione (**confidenza** collassata nel binario).
+- **Micro-nota consegna:** il testo chiede esplicitamente **`neurone_batch(...)`** del file — va bene **`my_neurone_batch`** come esercizio mentale, ma per chiudere al **100%** usa la funzione già fornita (meno duplicazione); **`sigmoid`** del capitolo resta preferibile (**clip** anti-warning).
+
 ---
 
 ## Lacune e dubbi ancora aperti
