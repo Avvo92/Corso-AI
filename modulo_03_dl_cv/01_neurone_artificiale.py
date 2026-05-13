@@ -1048,15 +1048,33 @@ def my_esempio_neurone_csv(
     w = pipe.named_steps["model"].coef_.ravel()
     b = float(pipe.named_steps["model"].intercept_[0])
     X_scaled = pipe.named_steps["scaler"].transform(X)
-    
-    manuale_sorted =  np.sort(sigmoid(X_scaled @ w + b))[::-1][:5]
+    p_man = sigmoid(X_scaled @ w + b)
+    manuale_sorted =  np.sort(p_man)[::-1]
     predict = pipe.predict_proba(X)[:, 1]
-    idx = np.argsort(-predict)
-    predict_sorted = predict[idx][:5]
-    # return np.array(manuale, predict)
-    return np.array([predict_sorted, manuale_sorted])
+    predict_sorted = np.sort(predict)[::-1]
+    prob_magg_50 = int(np.sum(manuale_sorted >= 0.5))
+    mean_alt = float(np.mean(p_man[y == 1]))
+    mean_gen = float(np.mean(p_man[y == 0]))
+    if mean_alt < 0.6 or mean_gen > 0.4:
+        raise ValueError("qualcosa non va!!")
+        
+    df_top5 = pd.DataFrame({
+    "#": range(1, 6),
+    "manuale": np.round(manuale_sorted[:5], 3),
+    "sklearn": np.round(predict_sorted[:5], 3),
+    })
+    riepilogo = pd.Series({
+        "Pratiche prob >= 0.5": int(prob_magg_50),
+        "Media Sigmoide Alterati": round(mean_alt, 4),
+        "Media Sigmoide Genuini": round(mean_gen, 4),
+    }, name="valore")
 
-print(my_esempio_neurone_csv())   
+    print("\n(a) Prime 5 prob (decrescente)")
+    print(df_top5.to_string(index=False))
+    print("\n(b)-(c) Riepilogo")
+    print(riepilogo.to_frame().to_string())   
+
+my_esempio_neurone_csv()  
 
 # TODO 3.2 (5 minuti):
 # Sulle stesse pratiche del CSV, prova a mettere SCALARE = 0.0 (cioe'

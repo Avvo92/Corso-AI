@@ -226,6 +226,29 @@
 - **Debole — (a):** la consegna chiede quale attivazione è **«MENO interessante»** proprio in **`z = -1`** (punto didattico: in quel punto **ReLU** ha già **«spento tutto il ramo negativo»** → valore **0** come per **qualsiasi** **`z < 0`**, derivata **0** → localmente **piatta / non discrime** tra negativi; **tanh** e **sigmoid** restano **non costanti** sui negativi). La risposta *«dipende dal contesto»* **elude** il confronto richiesto.
 - **Stile codice:** **`z = -1`** **sovrascrive** l’array **`z`** → nome riutilizzato per tipo diverso (**scalare**); stampa ridondante (il **`-1`** era già nel vettore). Meglio **`z_scalar = -1.0`** o iterare **`for zi in z:`** / indicizzare **`z[z == -1]`** senza shadowing.
 
+### [2026-05-11] — TODO 3.1 Mini-esercizio — Pipeline + forward manuale vs `predict_proba`
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1033–1075 (`my_esempio_neurone_csv`).
+- **Voto (primo tentativo):** **6/10**.
+- **Corretto:** **`Pipeline`**, **`named_steps["model"]`**, **`coef_`/`intercept_`**, **`scaler.transform(X)`** → **`X_scaled`** coerente col forward manuale; **`sigmoid(X_scaled @ w + b)`**; **`predict_proba(X)[:, 1]`**; **(b)** conteggio **`prob >= 0.5`** sul vettore probabilità (anche su ordinato il conteggio coincide); stampa **top 5** arrotondate e **`to_string`** leggibile.
+- **Errore concettuale su (c):** il testo chiede media delle probabilità dove **`y == 1`** e dove **`y == 0`** (etichette vere). Nel codice risultano **`manuale_sorted[manuale_sorted >= 0.6]`** e **`< 0.4`** → maschere sulla **probabilità**, non su **`y`** → si risponde a un’altra domanda (sottoinsiemi “molto sicuri”), non al sanity check richiesto (`p[y == 1].mean()` alta, `p[y == 0].mean()` bassa).
+- **Micro:** **`print(my_esempio_neurone_csv())`** stampa **`None`** in fondo (meglio chiamare senza **`print`** se la funzione stampa già tutto); **`(a)`** — se il capitolato intendeva le prime pratiche **in ordine CSV**, servirebbe **`p[:5]`** non ordinato.
+### [2026-05-11] — TODO 3.1 Mini-esercizio — rivalutazione post-fix (maschera su `y`)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1033–1077 (`my_esempio_neurone_csv`).
+- **Voto (post-feedback / secondo stato):** **9/10**.
+- **Corretto:** **`p_man = sigmoid(...)`**; **(c)** con **`np.mean(p_man[y == 1])`** e **`p_man[y == 0]`** — allineato al testo dell’esercizio e alla lacuna #30; **`raise ValueError`** se le medie non rispettano le soglie didattiche (>0.6 / <0.4) → rende esplicito il “sanity check”.
+- **Micro:** etichette nel **`pd.Series`** ancora **`Media (manuale >= 0.6)`** / **`Media (manuale < 0.4)`** ma i valori sono **medie condizionate a `y`**, non a soglie su `p` → rinominare es. **`Media p | y==1`** / **`Media p | y==0`** per non confondere chi rilegge; **`prob_magg_50`** più leggibile come **`np.sum(p_man >= 0.5)`** (equivalente all’ordinato).
+- **Micro:** **`print(my_esempio_neurone_csv())`** stampa ancora **`None`** → chiamata senza **`print`** attorno.
+- **Lacuna #30:** comportamento corretto su questo checkpoint → 🟢 in `CONTESTO_CORSO.md`.
+
+### [2026-05-11] — TODO 3.1 — rivalutazione (etichette riepilogo + niente `print(None)`)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1033–1077 (`my_esempio_neurone_csv`).
+- **Voto (stato attuale / micro-fix):** **10/10**.
+- **Corretto:** stessa logica solida (**`p_man`**, **`y == 1` / `y == 0`**, assert soglie); **`Media Sigmoide Alterati` / `Media Sigmoide Genuini`** leggibili e coerenti col dominio (sottoinsieme da **`y`**, non da soglie su **`p`**); invocazione **`my_esempio_neurone_csv()`** senza **`print`** → niente **`None`** in console.
+- **Micro-opzionale:** **`prob_magg_50 = int(np.sum(p_man >= 0.5))`** rende esplicito che il conteggio è sulle pratiche nel **ordine naturale** del dataset (equivale all’ordinato); messaggio **`ValueError`** più descrittivo (`mean_alt`, `mean_gen`) aiuta in debug.
+
 ---
 
 ## Lacune e dubbi ancora aperti
