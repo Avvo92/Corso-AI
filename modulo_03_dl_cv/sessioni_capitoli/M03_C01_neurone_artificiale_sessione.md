@@ -194,6 +194,15 @@
 - **Manca sulla consegna:** il testo chiede esplicitamente **`X @ w + b`**: manca un **`b`** scalare (es. **`b = 0.3`**) usato nei logit (**`X @ w + b`** vettoriale o **`float(X[i] @ w + b)`**).
 - **Stile / robustezza:** usa **`sigmoid(...)`** già definita nel file (clip ±500, zero warning); evita **`for`** dove **`z = X @ w + b`** poi **`sigmoid(z)`** in una mossa (allineato al neurone batch); **`range(0, X[0, :].size - 1)`** è contorto → **`range(X.shape[0])`** o **`range(3)`**.
 
+### [2026-05-11] — TODO 1.3 Sez.1 — if morbido vs rigido
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~730–765 (`y_morbido`, `y_rigido`, `zip`, commento).
+- **Voto (primo tentativo):** **6/10** (logica principale ok; **return ValueError** è un bug serio di API).
+- **Corretto:** flusso **(a)(b)**; **`X (10,3)`**, **`w (3,)`**; **`y_rigido = (y_morbido >= 0.5).astype(int)`**; stampa coppie con **`zip`**; intuizione sulle **probabilità vicine a 0.5** (incertezza) come perdita di dettaglio.
+- **Bug bloccante (se i check falliscono):** in **`my_sigmoid`** / **`my_neurone_batch`**, **`return ValueError(...)`** restituisce un **oggetto** `ValueError` come se fosse l’output del neurone, **non** interrompe l’esecuzione → va **`raise ValueError(...)`**. Con codice che passa i check oggi “sembra” funzionare, ma l’API è **rotta**.
+- **Consegna / riuso:** il testo chiede **`neurone_batch(X, w, 0.0)`** già nel file — riusala per non duplicare; **`my_sigmoid`**: anche batch produce **`(N,)`** → ok solo per questo uso; per robustezza usare **`sigmoid`** del capitolo (clip); **`w`**: preferire **`dtype=float`** esplicito.
+- **Commento:** chiudere la riflessione (oltre la soglia 0.5): **due `y_morbido` diversi** possono collassare nello **stesso** **`y_rigido`** → si perde il **grado di confidenza**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
