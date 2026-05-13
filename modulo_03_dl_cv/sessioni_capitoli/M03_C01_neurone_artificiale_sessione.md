@@ -218,6 +218,14 @@
 - **Micro-stile print:** **`soft.astype(str)`** con **`:20s`** funziona ma è poco idiomatico per float — preferibile **`f"{float(soft):.4f}"`** o **`round(float(soft), 4)`**; così eviti conversioni strane su **`numpy.float64`**.
 - **DoD letterale:** sostituisci **`my_neurone_batch`** con **`neurone_batch(X, w, 0.0)`** e **`sigmoid`** globale → **10/10** “da foglio”.
 
+### [2026-05-11] — TODO 2.1 Sez.2 — attivazioni su `z` vettore + domande (a)(b)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~922–940 (`sigmoid`/`relu`/`tanh`, commenti).
+- **Voto (primo tentativo):** **6/10**.
+- **Corretto:** **`z`** come **`np.array([-3, -1, 0, 1, 3])`**; stampa delle tre attivazioni su tutto il vettore con **`sigmoid`/`relu`/`tanh`** già nel file; **(b)** in commento: **ReLU** è l’unica che per **`z < 0`** dà **0 esatto** — OK.
+- **Debole — (a):** la consegna chiede quale attivazione è **«MENO interessante»** proprio in **`z = -1`** (punto didattico: in quel punto **ReLU** ha già **«spento tutto il ramo negativo»** → valore **0** come per **qualsiasi** **`z < 0`**, derivata **0** → localmente **piatta / non discrime** tra negativi; **tanh** e **sigmoid** restano **non costanti** sui negativi). La risposta *«dipende dal contesto»* **elude** il confronto richiesto.
+- **Stile codice:** **`z = -1`** **sovrascrive** l’array **`z`** → nome riutilizzato per tipo diverso (**scalare**); stampa ridondante (il **`-1`** era già nel vettore). Meglio **`z_scalar = -1.0`** o iterare **`for zi in z:`** / indicizzare **`z[z == -1]`** senza shadowing.
+
 ---
 
 ## Lacune e dubbi ancora aperti
