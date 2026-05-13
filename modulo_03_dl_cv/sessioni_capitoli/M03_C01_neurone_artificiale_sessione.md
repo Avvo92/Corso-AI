@@ -210,6 +210,14 @@
 - **Corretto:** **`raise ValueError`** (non più **`return ValueError`**); **`w`** con **`dtype=float`**; pipeline **`X @ w + b`** → sigmoid; **`y_rigido`** con soglia **0.5**; **`zip`** per le coppie; commento che generalizza la perdita di informazione (**confidenza** collassata nel binario).
 - **Micro-nota consegna:** il testo chiede esplicitamente **`neurone_batch(...)`** del file — va bene **`my_neurone_batch`** come esercizio mentale, ma per chiudere al **100%** usa la funzione già fornita (meno duplicazione); **`sigmoid`** del capitolo resta preferibile (**clip** anti-warning).
 
+### [2026-05-11] — TODO 1.3 Sez.1 — rivalutazione (clip su sigmoid + print)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~730–766.
+- **Voto (terzo tentativo / stato attuale):** **9.5/10**.
+- **Corretto:** **`np.clip(v, -500, +500)`** prima di **`exp`** → stesso spirito della **`sigmoid`** del capitolo; **`raise ValueError`**; **`dtype=float`** su **`w`**; pipeline morbido/rigido e **`zip`**; commento sulla **confidenza** / collasso binario.
+- **Micro-stile print:** **`soft.astype(str)`** con **`:20s`** funziona ma è poco idiomatico per float — preferibile **`f"{float(soft):.4f}"`** o **`round(float(soft), 4)`**; così eviti conversioni strane su **`numpy.float64`**.
+- **DoD letterale:** sostituisci **`my_neurone_batch`** con **`neurone_batch(X, w, 0.0)`** e **`sigmoid`** globale → **10/10** “da foglio”.
+
 ---
 
 ## Lacune e dubbi ancora aperti
