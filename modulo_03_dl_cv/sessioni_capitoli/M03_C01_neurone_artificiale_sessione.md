@@ -249,6 +249,66 @@
 - **Corretto:** stessa logica solida (**`p_man`**, **`y == 1` / `y == 0`**, assert soglie); **`Media Sigmoide Alterati` / `Media Sigmoide Genuini`** leggibili e coerenti col dominio (sottoinsieme da **`y`**, non da soglie su **`p`**); invocazione **`my_esempio_neurone_csv()`** senza **`print`** → niente **`None`** in console.
 - **Micro-opzionale:** **`prob_magg_50 = int(np.sum(p_man >= 0.5))`** rende esplicito che il conteggio è sulle pratiche nel **ordine naturale** del dataset (equivale all’ordinato); messaggio **`ValueError`** più descrittivo (`mean_alt`, `mean_gen`) aiuta in debug.
 
+### [2026-05-11] — TODO 3.2 — forward su `X` grezzo con `w`,`b` del modello allenato su dati scalati
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1088–1107 (`my_neurone_non_scalato`).
+- **Voto (primo tentativo):** **9/10**.
+- **Corretto:** **`Pipeline`** + **`StandardScaler`** + **`LogisticRegression`**; **`pipe.fit(X,y)`**; estrazione **`w`/`b`** da **`named_steps["model"]`**; **`manual_logits = X @ w + b`** su **`X` non trasformato** → dimostra incoerenza rispetto allo spazio in cui sono stati stimati i parametri; commento che collega **unità di misura / confrontabilità colonne** alla necessità dello scaling — coerente col M2 cap.04.
+- **Micro-precisione terminologica:** **`StandardScaler`** non si limita a “dividere per la deviazione standard”: applica **\((x - \mu) / \sigma\)** per colonna (centrare e scalare). Vale la pena di dirlo in una frase nel commento per chiudere al 100% con il richiamo M2.
+- **Micro-output:** stampare anche **`pipe.predict_proba(X)[:, 1][:30]`** (o **`np.max(np.abs(manual_pred_alt - p_sk))`**) rende **numerico** il contrasto “corretto vs sbagliato spazio”; riusare **`sigmoid`** globale del capitolo (**clip**) evita warning su logit estremi.
+
+### [2026-05-11] — TODO 3.2 — rivalutazione (tabella + `transform` + formula scaler nel commento)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1088–1116 (`my_neurone_non_scalato`).
+- **Voto (stato attuale):** **10/10**.
+- **Corretto:** **`X_scaled = pipe.named_steps["scaler"].transform(X)`** dopo **`fit`** (no doppio **`fit_transform`** improprio); confronto esplicito **logit/probabilità** su **`X` grezzo vs `X_scaled`** con **`w`,`b` identici**; **`DataFrame`** senza **`str(...)`** sul vettore → **5 righe** leggibili; **`to_string(index=False)`**; commento aggiornato con **\((x-\mu)/\sigma\)** per colonna + messaggio su **coerenza dello spazio** parametri vs input.
+- **Micro-opzionale:** una riga **`np.max(np.abs(scaled_manual_pred_alt - pipe.predict_proba(X)[:, 1]))`** mostra che la colonna “Scalato” coincide col **`predict_proba`** (~1e-10); **`sigmoid(...)`** del capitolo al posto di **`exp`** manuale.
+
+### [2026-05-11] — Quiz di verifica V1 (lacuna #28) — logit vs probabilità vs F1
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1123–1134 (domanda V1 + commento risposta).
+- **Voto (primo tentativo):** **9/10**.
+- **Corretto:** scelta **(b) logit**; **logit** = output lineare **`X @ w + b`** prima dell’attivazione; distinzione dalla **probabilità** ottenuta dopo **sigmoid**; **(c)** correttamente escluso perché **F1** è una **metrica** su predizioni/etichette (precision/recall), non un output di layer.
+- **Micro-testo:** ortografia **“probabilità”**, **“ultimo”**; nella frase sulla probabilità, più preciso dirlo così: **la probabilità stimata è `sigmoid(logit)`**, non che la sigmoid sia “l’ultimo layer” in sé — il layer lineare produce il **logit**, la **sigmoid** è la **funzione di attivazione** che lo mappa in \([0,1]\).
+- **Riga “in più”:** formula **`1/(1+e^-z)`** coerente col capitolo (accetta anche rimando alla **`sigmoid`** con clip del file).
+
+### [2026-05-11] — Quiz di verifica V2 — `sigmoid(0)` e limiti
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1135–1140 (domanda V2 + risposta).
+- **Voto (primo tentativo):** **10/10**.
+- **Corretto:** **`sigmoid(0) = 0.5`** → scelta **(b)**; limite **`z → +∞`** → **1**, **`z → -∞`** → **0**; intuizione del **punto centrale** sul grafico coerente (origine tra i due limiti asintotici).
+- **Micro-stile:** nella domanda “**inf**” è bene specificare sempre **`+∞`** / **`-∞`** come hai fatto subito dopo — così non si confonde con “infinito” generico.
+
+### [2026-05-11] — Quiz di verifica V3 — shape `(100, 1)` vs `(100,)`
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1141–1150 (domanda V3 + risposta).
+- **Voto (primo tentativo):** **9.5/10**.
+- **Corretto:** con **`w`** di shape **`(4, 1)`**, **`X @ w`** ha shape **`(100, 1)`** → **`p = sigmoid(z)`** resta **`(100, 1)`**; **`reshape(100,)`** (o **`(-1,)`**) appiattisce correttamente per **`roc_auc_score(y_true, y_score)`** che vuole un vettore 1D allineato alle **`n_samples`**.
+- **Micro:** **`p.ravel()`** / **`np.squeeze(p)`** sono alternative idiomatiche (stesso effetto se non ci sono ambiguità di dimensione); ortografia **“rappresentata”**.
+- **Nota quiz:** nel frammento **`b`** non è definito → in esecuzione saltresti prima sul **`NameError`**; la parte “shape strana” resta comunque la colonna **`(100,1)`** vs **`(100,)`**.
+
+### [2026-05-11] — Quiz di verifica V4 — attivazioni layer nascosti vs sigmoid
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1151–1156 (domanda V4 + risposta).
+- **Voto (primo tentativo):** **7/10**.
+- **Corretto:** serve **non-linearità** nei layer nascosti (altrimenti composizione di lineari = ancora lineare); **tanh** centrato su zero conserva il **segno** (utile rispetto a sigmoid tutta positiva); **sigmoid in uscita** per interpretazione **probabilistica** `(0,1)` è coerente.
+- **Manca il punto chiave del quiz (“cosa schiaccia troppo”):** la **sigmoid** nei layer profondi **satura** (`→0` o `→1`) → **gradiente quasi zero** (**vanishing gradients**, gradienti che “muoiono”) → reti profonde faticano ad aggiornare i primi layer; **ReLU** mitiga (derivata 1 per `z>0`) anche se ha altri trade-off (es. “dying ReLU”).
+- **Micro:** **“si usa”** non “di usa”; **tanh** ortografia.
+
+### [2026-05-11] — Quiz di verifica V5 — inizializzazione pesi a zero
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1157–1166 (domanda V5 + risposta).
+- **Voto (primo tentativo — rubrica “completa” incluso richiamo cap.03):** **6/10**.
+- **Corretto:** con **`w = 0`** e **`b = 0`**, **`z = 0`** per ogni riga → **`sigmoid(0)=0.5`** → **`p.mean() == 0.5`**; intuizione “**incertezza massima**” (probabilità a metà) è sensata sul piano della predizione.
+- **Preview cap.03 (non prerequisito del cap.01):** con **più neuroni** (layer nascosti), **pesi tutti uguali** → **simmetria**: neuroni identici ricevono **stessi gradienti** e restano **identici** → la rete non esprime **rappresentazioni diverse**; serve **rompere la simmetria** (inizializzazione casuale piccola, Xavier/He, ecc.). **Questa parte va rivalutata dopo il cap.03**, non come lacuna obbligatoria “ora”.
+- **Micro:** **“perché”** con accento.
+
+### [2026-05-11] — Quiz V5 — nota equità curricolare (richiesta studente)
+
+- La domanda V5 mescola (a) output **sigmoid/neurone** già visto nel cap.01 e (b) motivazione **allenamento** che nel syllabus è **cap.03 (backprop / gradiente)**.
+- **Voto atteso sul solo prerequisito cap.01** (media di **`p`**, significato di **0.5**, incertezza): **8.5/10** — la risposta di Gianluca copre bene questo livello.
+- **Regola mentor:** nelle valutazioni del cap.01 non penalizzare per non citare **gradiente/simmetria**; eventualmente etichettare la seconda sotto-domanda come **“Da ripetere dopo cap.03”** nel file capitolo.
+
 ---
 
 ## Lacune e dubbi ancora aperti
