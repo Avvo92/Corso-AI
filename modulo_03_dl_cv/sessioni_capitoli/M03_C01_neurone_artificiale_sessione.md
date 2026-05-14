@@ -309,6 +309,73 @@
 - **Voto atteso sul solo prerequisito cap.01** (media di **`p`**, significato di **0.5**, incertezza): **8.5/10** — la risposta di Gianluca copre bene questo livello.
 - **Regola mentor:** nelle valutazioni del cap.01 non penalizzare per non citare **gradiente/simmetria**; eventualmente etichettare la seconda sotto-domanda come **“Da ripetere dopo cap.03”** nel file capitolo.
 
+### [2026-05-11] — Quiz di verifica V6 — sigmoid su logit ±1.5
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1167–1172 (domanda V6 + risposta).
+- **Voto (primo tentativo):** **10/10**.
+- **Corretto:** **`sigmoid(1.5) ≈ 0.8176`**, **`sigmoid(-1.5) ≈ 0.1824`** (coerenti con **`1/(1+e^-z)`**); interpretazione **probabilità alta (~82%)** per classe positiva quando **`z = +1.5`** (sopra soglia 0.5); simmetria **sigmoid(z) + sigmoid(-z) = 1** riflessa nei due numeri.
+- **Micro-opzionale:** in quiz veloci può bastare **“≈ 0.82 / ≈ 0.18”** senza troppe cifre.
+
+### [2026-05-11] — Quiz di verifica V7 — forward batch `(N,d) @ (d,)`
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1174–1183 (domanda V7 + risposta).
+- **Voto (primo tentativo):** **10/10**.
+- **Corretto:** **(b) `X @ w + b`** è l’idioma più moderno/alineato a **`numpy.matmul`** e stack numpy/sklearn/PyTorch; **(a)** e **(c)** sono equivalenti numericamente; output shape **`(N,)`** (un logit per riga).
+- **Micro-notazione:** convenzione chiara **`(N,)`** al posto di “righe di X” — stesso significato.
+
+### [2026-05-11] — Quiz di verifica V8 — Feynman attivazione (vincolo #27)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1185–1189 (domanda V8 + risposta).
+- **Voto (primo tentativo):** **10/10**.
+- **Corretto:** analogia **estrusione pasta / stampo** rispetta i vincoli (**nessun** uso di “non lineare”, “logit”, “sigmoid”, “rete”); messaggio chiaro: **trasforma** l’output grezzo prima del passo successivo — adeguato per pubblico **web dev**.
+- **Micro-opzionale:** una frase sul fatto che è una **regola di trasformazione applicata numero per numero** (come uno stampo che agisce su ogni filo) avvicina ancora di più al neurone senza introdurre jargon vietato.
+
+### [2026-05-11] — E1 [COLLOQUIO] — “Cos’è un neurone artificiale?”
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1195–1205 (testo risposta E1).
+- **Voto (primo tentativo):** **7/10**.
+- **Corretto:** definizione **operativa** (combinazione pesata degli input + **bias**) richiamata con **`X @ w + b`** in parole; distinzione **logit grezzo** vs **probabilità** dopo funzione di uscita tipo sigmoid; motivazione **non-linearità** (**ReLU** ecc.) vs solo composizioni lineari — tutto utile in colloquio.
+- **Errore da correggere:** espressione **“dot product element-wise”** è **contraddittoria**: *dot product* (qui **`X @ w`**) non è moltiplicazione ** elemento per elemento** tra `X` e `w` (quella sarebbe **`X * w`** solo se broadcastabile, contesto diverso). Dire in colloquio: **combinazione lineare per riga** = **prodotto righe-per-colonna** tra la riga di `X` e il vettore `w`.
+- **Struttura consegna:** i **4 punti** richiesti sono **un po’ mescolati** in un unico paragrafo — in interview conviene **enumerare (1)–(4)** in **8–10 righe** nette; ortografia **tanh** non “tahn”.
+- **Micro:** “**cuore pulsante**” va bene come metafora; evita di dare esempi di shape troppo lunghi se il recruiter vuole sintesi — una frase su **`N` esempi × `d` feature** basta.
+
+### [2026-05-11] — E2 [REFACTORING parte 1] — `neuro_v1` pattern #25 / #23 / #19
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1208–1232 (`neuro_v1`).
+- **Voto (primo tentativo):** **8/10**.
+- **Corretto:** **`NDArray[np.float64]`** al posto di **`np.array`** nei hint; niente **tuple spurie** (`,` fine riga / `return z,`); **`if b is None`** poi **`0.0`** — pattern **#19** rispettato; **`return X @ w + b`** (scala/array, non tupla).
+- **Bug API:** firma **`b: float | None`** senza **`= None`** rendeva **`b` obbligatorio** alla chiamata — diverso dall’originale **`b=None`**. **Fix applicato nel file:** **`b: float | None = None`**.
+
+### [2026-05-11] — E2 [REFACTORING parte 1] — rivalutazione stato attuale
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1225–1232 (`neuro_v1`).
+- **Voto (dopo fix `= None`):** **10/10**.
+- **Corretto:** **`b: float | None = None`** ripristina parametro opzionale; **pattern #25 / #23 / #19** soddisfati; corpo minimo con **`if b is None`** e **`return X @ w + b`** coerente col testo dell’esercizio.
+
+### [2026-05-11] — E3 [REFACTORING parte 2] — `my_neuro_v2` vettoriale vs `neuro_v2` loop
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1258–1280 (`my_neuro_v2`, verifica RNG).
+- **Voto (primo tentativo):** **7/10**.
+- **Corretto:** **`logits = X @ w + b`** (una **`@`**, niente loop); controllo **`X.shape[1] != w.shape[0]`** con **`ValueError`**; nomi **`logits`** / **`probs`** nel corpo; **`np.round(..., 4)`** senza virgola spuria; **`np.allclose`** vs **`neuro_v2`** originale — confronto sensato; check **`ndim`** utile (extra rispetto alla consegna).
+- **Manca punto esplicito consegna (lacuna #28):** il testo chiede di **restituire entrambi** — es. **`tuple (logit, prob)`** (logit **non arrotondato**, prob come nell’originale con 4 decimali). Attualmente **`return`** è **solo** le probabilità → **`-> NDArray`** ok per quel return ma non per la tuple richiesta; verifica **`allclose`** andrebbe su **`my_neuro_v2(...)[1]`** (o unpack) dopo il fix.
+- **Micro:** messaggio errore “**righe di w**” → più preciso “**lunghezza di `w`**” / **`w.shape[0]`** vs **`X.shape[1]`**; riuso **`sigmoid`** globale del capitolo possibile.
+
+### [2026-05-11] — E3 [REFACTORING parte 2] — rivalutazione (tuple + assert su prob)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1258–1280 (`my_neuro_v2`).
+- **Voto (stato attuale):** **8.5/10**.
+- **Corretto:** **`return` tuple** con **logit** e **prob** separati; **`np.allclose(...)[0]`** confronta le **probabilità** con **`neuro_v2`** — coerente col testo “stessi numeri”; messaggio **`ValueError`** sulla lunghezza di **`w`** corretto; vettorizzazione **`@`** e controlli mantenuti.
+- **Micro-consegna:** ordine suggerito nel capitolo è **`(logit, prob)`**; qui è **`(prob, logit)`** — va bene se documentato/unpack esplicito, altrimenti allineare per leggibilità (#28).
+- **Micro:** di solito si **arrotonda solo `prob`** (come il loop originale); **`logits`** è utile **grezzo** per debug/metriche — **`np.round(logits, 4)`** opzionale ma meno fedele alla separazione logit vs prob.
+- **Type hint:** **`-> NDArray[...]`** non riflette più una **tuple** — meglio **`tuple[NDArray[np.float64], NDArray[np.float64]]`** (o **`tuple`** generico).
+
+### [2026-05-11] — E3 [REFACTORING parte 2] — rivalutazione finale (ordine + hint + assert)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1258–1280 (`my_neuro_v2`).
+- **Voto (stato attuale):** **10/10**.
+- **Corretto:** **`return (logits, np.round(probs, 4))`** — ordine **`(logit, prob)`** come nel testo; **logit grezzo**, prob arrotondata come **`neuro_v2`**; **`assert ... [1]`** allineato alla seconda componente; **`-> tuple[NDArray[np.float64], NDArray[np.float64]]`**; vettorizzazione **`@`**, **`ValueError`** su shape, controlli **`ndim`**.
+- **Micro-opzionale:** **`probs = sigmoid(logits)`** usando la **`sigmoid`** del capitolo (**clip**).
+
 ---
 
 ## Lacune e dubbi ancora aperti

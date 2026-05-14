@@ -95,6 +95,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
+import sklearn
 from sklearn.preprocessing import StandardScaler
 
 
@@ -1084,6 +1085,37 @@ my_esempio_neurone_csv()
 # X scalato e non sui valori grezzi (ricorda M2 cap.04).
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 3.2\n")
+def my_neurone_non_scalato():
+    from sklearn.pipeline import Pipeline
+    from sklearn.linear_model import LogisticRegression
+    
+    X, y = carica_pratiche()
+    pipe = Pipeline([
+        ("scaler", StandardScaler()),
+        ("model", LogisticRegression(max_iter=1_000, random_state=42))
+    ])
+    
+    pipe.fit(X, y)    
+    w = pipe.named_steps["model"].coef_[0]
+    b = float(pipe.named_steps["model"].intercept_[0])
+    
+    X_scaled = pipe.named_steps['scaler'].transform(X)   
+    
+    non_scaled_manual_logits = X @ w + b
+    scaled_manual_logits = X_scaled @ w + b
+    non_scaled_manual_pred_alt = 1 / (1 + np.exp(-non_scaled_manual_logits))
+    scaled_manual_pred_alt = 1 / (1 + np.exp(-scaled_manual_logits))
+    report = pd.DataFrame({
+        "#": range(1, 6),
+        "Non Scalato": np.round(non_scaled_manual_pred_alt[:5], 5),
+        "Scalato": np.round(scaled_manual_pred_alt[:5], 5),
+    })
+    print(report.to_string(index=False))
+    
+    # I numeri ovviamente esplodono. Questo avviene perchè nella pipe tutti valori delle colonne di X vengono trasformati facendo valore - media_della_col_di_app / dev_std_col_di_app, dunque tutti i valori del DataSet vengono tradotti in un unica unità di misura, rendendo le colonne confrontabili tra loro. Dunque i pesi vengono poi generati dal modello sulla base di questa unità di misura scalata, ma se noi nel calcolo manuale usiamo questi pesi sui valori di X NON scalata, i calcoli saltano e perdono completamente coerenza.
+    
+my_neurone_non_scalato()
 
 # ==========================================================================
 # QUIZ DI VERIFICA (fai PRIMA di passare agli esercizi)
@@ -1096,13 +1128,16 @@ my_esempio_neurone_csv()
 #       (c) score F1
 #     Spiega in 1 riga la differenza.
 # TUA RISPOSTA:
-# ...
+# La risposta corretta è (b)
+# Probilità: E' di fatto derivata dalla sigmoide, ossia l'ulitimo layer di un neurone binario. In pratica schiacciamo tutti i valori prodotti dai dot product X @ w + b in un range che ha come limiti estremi 0 e 1. Lo si fa sfruttando il numero di Eulero, facendo 1 / 1 + e^-dot_product.
+# Logit: è il dato per così dire "grezzo" (non ancora trasformato tramite sigmoide), e sono il risultato del dot product X @ w + b.
+# F1 Score: F1 è una media di precision e recall che penalizza molto il fatto che uno dei due sia basso: non basta averne uno altissimo e l’altro pessimo.
 
 # V2) sigmoid(0) vale:
 #       (a) 0      (b) 0.5     (c) 1     (d) e
 # E sigmoid(z) tende a quanto per z -> +inf? E per z -> -inf?
 # TUA RISPOSTA:
-# ...
+# la sigmoide di 0 è 0.5. Per z che tende ad inf si ha sigmoid(z) che tende a 1. Viceversa, per z che tende a -inf si ha sigmoid(z) che tende a 0. Lo 0 si pone concettualmente a metà dei due infiniti, rendendo anche intuitivamente chiaro che il valore della sua sigmoide si ponga a metà strada tra i due limiti delle sigmoidi.
 
 # V3) [Trova l'errore] - Questo codice da' shape strana. Perche'?
 #       X = rng.standard_normal((100, 4))
@@ -1112,13 +1147,13 @@ my_esempio_neurone_csv()
 #     Che shape ha p? Come la "appiattisci" a (100,) per usarla con sklearn
 #     (es. metrics.roc_auc_score)?
 # TUA RISPOSTA:
-# ...
+# Nonostante w possa essere di fatto rapresentata come vettore, nella scrittura qui sopra si è scelto di rappresentarlo come matrice 2D di shape (4, 1). di conseguenza si avrà p di shape(100, 1). Per appiattirlo basta fare p.reshape(100, )
 
 # V4) Per quale motivo le ATTIVAZIONI nei layer NASCOSTI di una rete sono
 #     ReLU/tanh e NON sigmoid? Da' 1 motivo concettuale (anche solo
 #     intuitivo: pensa a "cosa schiaccia troppo").
 # TUA RISPOSTA:
-# ...
+# Nel caso di ReLU di usa per avere delle attivazioni non lineari. Serve per avere una maggior possibilità di complessità dei passaggi tra livelli, che altrimenti sarebbero solo un unico grande layer di operazioni lineari. tahn invece si utilizza quanto il range oltre a schiacciare i valori ne deve conservare anche il segno. Sigmoid è adatto alla fine perchè si presta bene a rappresentare i valori prodotti dal passaggio nei vari layer come probabilità.
 
 # V5) [Trova l'errore] - Inizializzazione pesi:
 #       w = np.zeros(4)
@@ -1128,13 +1163,14 @@ my_esempio_neurone_csv()
 #     Cosa stampa "p.mean()"? E perche' mettere tutti zero non funziona
 #     quando poi vuoi imparare i pesi (M3 cap.03)?
 # TUA RISPOSTA:
-# ...
+# la risposta è 0.5. Non funziona perchè in pratica ci pone nel massimo dell'incertezza.
 
 # V6) Hai z (logit) = +1.5. Quanto vale sigmoid(z), circa? E z = -1.5?
 #     Un cliente con z = +1.5 ha probabilita' ALTA o BASSA di essere
 #     classificato "positivo"?
 # TUA RISPOSTA:
-# ...
+# sigmoid(+1.5) = 0,81757; sigmoid(-1.5) = 0.18242. Se ne deduce che un cliente con z = +1.5 ha probabilità relativamente alta di essere classificato come positivo (81,76 % circa).
+
 
 # V7) [Recap shape - cerniera #23] Hai X (N, d), w (d,), b scalare.
 #     Quale di queste righe e' la PIU' Pythonic e idiomatica per fare il
@@ -1144,13 +1180,13 @@ my_esempio_neurone_csv()
 #       (c) X.dot(w) + b
 #     E che shape hanno tutte e tre?
 # TUA RISPOSTA:
-# ...
+# la più Pythonic è la (b). tutte hanno shape (X_n_righe, ) se w ha shape (X_n_colonne)
 
 # V8) [Feynman - vincolo #27] Spiega cos'e' una "funzione di attivazione"
 #     a un collega web dev. VINCOLI STRETTI: niente "non lineare", niente
 #     "logit", niente "sigmoid", niente "rete". Solo analogia.
 # TUA RISPOSTA:
-# ...
+# Immagina un estrusore per fare la pasta. Quando la pasta grezza viene passata attraverso lo stampo dell'estrusore, questa, passando, si adatta e cambia forma. Ecco, una funzione di attivazione fa più o meno questo, prende del materiale grezzo e lo trasforma facendolo passare allo step successivo.
 
 
 # ==========================================================================
@@ -1166,7 +1202,7 @@ my_esempio_neurone_csv()
 #       (4) perche' serve l'attivazione (cosa succederebbe senza)
 #     Massimo 8-10 righe in totale, niente codice.
 # TUA RISPOSTA:
-# ...
+# Un neurone è un "nodo" di una rete neurale. Prende in input N valori e genera in output il dot product di questi N valori per N pesi più eventuale b (bias). la sua formula per X (matrice di valori) di shape (10, 3), w (vettore di pesi, ossia il cuore pulsante del neurone) di shape (3, ) e un bias (scalare) di valore 1.5, il risultato sara X @ w + b. In questo modo, per ogni riga di X, il neurone produce un valore "grezzo" chiamato logit. Nel caso in cui ci si trovi all'ultimo layer di una rete neurale, si potrebbe usare la sigmoide per trasformare il valore del logit prodotto in probabilità, oppure usare una fattura di attivazione diversa come ReLU o tanh in caso di layer intermedi. In particolare, senza questi layer intermedi si avrebbe solo una sequenza di operazioni lineari, mentre usando ReLU ad. esempio possiamo aggiungere non linearità al processo, e aumentare la complessità del modello.
 
 
 # E2) [REFACTORING - parte 1: pattern stilistici] - 5 minuti
@@ -1186,7 +1222,15 @@ my_esempio_neurone_csv()
 #     Devi RESTITUIRE z (non una tupla con z dentro!).
 #     NON modificare la logica: rimane "if b is None"-stile, solo pulito.
 # TUO CODICE QUI:
-
+def neuro_v1(
+    X: NDArray[np.float64],
+    w: NDArray[np.float64],
+    b: float | None = None,
+) -> NDArray[np.float64]:
+    if b is None:
+        b = 0.0
+    return X @ w + b
+        
 
 # E3) [REFACTORING - parte 2: logica vettoriale + naming] - 10 minuti
 #     Adesso lavora sulla LOGICA. Questo codice gira ma e' brutto e lento.
@@ -1197,20 +1241,43 @@ my_esempio_neurone_csv()
 #         restituendo entrambi (es. tuple (logit, prob)).
 #       - lacuna #21: usa "round(x, 4)" senza virgola finale.
 #
-#     def neuro_v2(X, w, b):
-#         out = []
-#         for i in range(len(X)):
-#             tot = 0
-#             for j in range(len(X[i])):
-#                 tot += X[i][j] * w[j]
-#             prob = 1 / (1 + np.exp(-(tot + b)))
-#             out.append(round(prob, 4),)
-#         return np.array(out)
+def neuro_v2(X, w, b):
+    out = []
+    for i in range(len(X)):
+        tot = 0
+        for j in range(len(X[i])):
+            tot += X[i][j] * w[j]
+        prob = 1 / (1 + np.exp(-(tot + b)))
+        out.append(round(prob, 4),)
+    return np.array(out)
 #
 #     Verifica: con X (3, 4) random, w (4,) random, b = 0.0, la tua
 #     funzione DEVE produrre gli stessi numeri (a meno della tolleranza
 #     numerica) della "neuro_v2" originale.
 # TUO CODICE QUI:
+print("\nEsercizio 2\n")
+def my_neuro_v2(
+    X: NDArray[np.float64],
+    w: NDArray[np.float64],
+    b: float = 0.0
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+    if X.ndim != 2 or w.ndim != 1:
+        raise ValueError("X deve avere 2 dimensioni e w 1 dimensione")
+    if X.shape[1] != w.shape[0]:
+        raise ValueError("Colonne di X devono coincidere con la lunghezza di w")
+    logits = X @ w + b # dot + bias
+    probs = 1 / (1 + np.exp(-logits)) # sigmoide
+    return (logits, np.round(probs, 4))
+
+rng = np.random.default_rng(42)
+X = rng.uniform(1, 5, (3, 4))
+w = rng.uniform(-2, 2, (4))
+b = 0.0
+
+assert np.allclose(my_neuro_v2(X, w, b)[1], neuro_v2(X, w, b)), "Tutti i valori dei due array devono coincidere"
+
+print(my_neuro_v2(X, w, b)[1])
+print(neuro_v2(X, w, b))
 
 
 # E4) [DEBUG] - autonomo, niente scala progressiva (regola corso)
