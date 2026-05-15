@@ -376,6 +376,52 @@
 - **Corretto:** **`return (logits, np.round(probs, 4))`** — ordine **`(logit, prob)`** come nel testo; **logit grezzo**, prob arrotondata come **`neuro_v2`**; **`assert ... [1]`** allineato alla seconda componente; **`-> tuple[NDArray[np.float64], NDArray[np.float64]]`**; vettorizzazione **`@`**, **`ValueError`** su shape, controlli **`ndim`**.
 - **Micro-opzionale:** **`probs = sigmoid(logits)`** usando la **`sigmoid`** del capitolo (**clip**).
 
+### [2026-05-11] — E5 [RETRIEVAL] — `coseno(a, b)` da Ponte
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1325–1348 (`coseno` + prove).
+- **Voto (primo tentativo):** **5.5/10**.
+- **Corretto:** **`NDArray[...]`** (spirito pattern #25); **`ndim == 1`**, **`shape` uguale**; **`float(...)`** sull’output; **`a @ b`**, **`np.linalg.norm`**; **`assert`** sul range con **`eps`**; tre **`np.allclose`** di sanity geometrico (**1, 0, -1**) ben scelti.
+- **Bug bloccante — typo:** **`np.flaot64`** → **`np.float64`** (prima del fix il tipo nel hint è illegale / analyzer fallisce).
+- **Bug logica — norma zero:** **`np.allclose([norm_a, norm_b], 0)`** è vero solo se **entrambe** le norme ≈ 0; se **`norm_a ≈ 0`** e **`b`** no (o viceversa) si va comunque in **`/` degenerato** senza **`raise`**. Richiesto: **`np.isclose(norm_a, 0)` or `np.isclose(norm_b, 0)`** (come da testo esercizio). **Fix applicato nel file.**
+- **Messaggio errore:** parlava di **`v.sum()`** ma il controllo è sulla **norma** — **Fix:** messaggio su norma nulla.
+- **Micro:** `print("Retrival")` → **Retrieval**; dopo fix stato codice → rivalutabile come esercizio chiuso.
+
+### [2026-05-11] — E5 [RETRIEVAL] — rivalutazione post-fix
+
+- **Blocco:** stesso (`coseno`).
+- **Voto:** **9.5/10** (correzioni typo, **`isclose`** OR, messaggio, **`float`** nei **`assert`** con **`-1.0`**).
+- **Micro-opzionale:** naming **`cos_sim`** invece di **`cos`** (non sovrascrivere nome **`math.cos`** mentalmente).
+- **Micro fatto:** intestazione **`print`** **`Retrival`** → **`Retrieval`**.
+
+### [2026-05-11] — E5 [RETRIEVAL] — rivalutazione (codice aggiornato Gianluca)
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1325–1348 (`coseno` + prove).
+- **Voto (nuovo tentativo / stato attuale nel file):** **10/10**.
+- **Corretto:** **`NDArray[np.float64]`** senza typo; **`ndim`/`shape`** con **`ValueError`** chiaro; **`np.isclose(..., 0.0)` in OR** (copre anche **solo uno** dei due vettori nullo); messaggio **«norma quasi zero in a o in b»** allineato al controllo; **`float(...)`** sul risultato; **`assert`** con **`eps`** sul range; prove con **`dtype=float`** + **`np.allclose`** su **1 / 0 / -1**.
+- **Micro-opzionale:** nell’**`assert`** usare **`1.0`** / **`-1.0`** come nella lettera della consegna (equivale numericamente a **`1`** / **`-1`**); **`dtype=np.float64`** esplicito per combaciare al tipo nei hint; virgola finale dopo **`b: NDArray[np.float64]`** se format con Black/ruff.
+
+### [2026-05-11] — E6 [INTERLEAVING] — norme righe `X` vs `StandardScaler`
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1362–1378 (`carica_pratiche`, norme, scaler, confronto qualitativo).
+- **Voto (primo tentativo):** **8.5/10**.
+- **Corretto:** **`X, y = carica_pratiche()`** ( **`X`** è **`(N, d)`** come da helper); **`np.linalg.norm(X, axis=1)`** vettorizzato; **min/max/media** delle norme grezze; **`StandardScaler().fit_transform(X)`** e stesso calcolo norme sulle righe; niente loop; allineamento al filo narrativo del capitolo (**feature** su scale diverse → logit dominato → serve scaling (**StandardScaler** = per ogni colonna media ~0 e varianza ~1, termine tecnico **z-score**)).
+- **Manca per chiudere (e):** la consegna chiede di **confrontare** se le norme sono più uniformi: il commento *«decisamente più uniformi»* è sensato ma resta opinione senza numero. Meglio stampare almeno **due** confronti vettoriali senza loop, es. **`np.std(norm_X)`** vs **`np.std(norm_X_scaled)`** e/o **`np.ptp(norm_X)`** vs **`np.ptp(norm_X_scaled)`** (**`ptp`** = *peak-to-peak*, max−min su NumPy).
+- **Micro:** ordine stampe **max/min/media** vs testo **min/max/media** (irrilevante per la correttezza); **`y`** non usato (ok per questo task).
+
+### [2026-05-11] — E6 [INTERLEAVING] — rivalutazione post-feedback
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1362–1379 (`disp_non_scal` / `disp_scal` + rapporto).
+- **Voto:** **10/10**.
+- **Corretto:** punto **(e)** chiuso con **dispersione quantitativa** — **`np.std(norm_X)`** vs **`np.std(norm_X_scaled)`** (tutto vettoriale, niente loop); rapporto **`disp_non_scal / disp_scal`** con **`round(..., 2)`** e interpretazione in italiano coerente col confronto “norme più uniformi”; media delle norme anche sul dataset scalato con **`f-string`**.
+- **Micro-opzionale:** se un giorno **`disp_scal`** fosse ~**0** (dataset degeneri / floating point), il rapporto va gestito — qui sul CSV mock non è un problema; opzionale aggiungere **`np.ptp`** come secondo indice di uniformità.
+
+### [2026-05-11] — E7 [RECALL CROSS-MODULO] — `layer_dense` ↔ `neurone_batch`
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1410–1448 (`layer_dense`, mini-batch random, **`assert`**).
+- **Voto (primo tentativo):** **10/10**.
+- **Corretto:** **`layer_dense`** implementa **`att(X @ W + b)`** con **`return`** esplicito e **`callable(att)`**; promozione **`W`** **`(d,)` → `(d, 1)`**; controlli **`W`** (**`ndarray`**, **`float64`**, **`ndim`**, compatibilità **`X.shape[1]`**); punto **(b–c)** — **`w`** **`1D`** per **`neurone_batch`**, **`W = w.reshape(-1, 1)`** per il layer, **`b`** scalare, **`att=sigmoid`**, confronto con **`.ravel()`** vs **`(N,)`**; **`np.allclose(..., atol=1e-9)`** su batch **`default_rng(42)`**; stampa prime componenti per occhio umano.
+- **Micro-opzionale:** allineare validazioni anche su **`X`** (**`isinstance`**, **`dtype`**) come per **`W`**; **`rtol`** esplicito in **`allclose`** se vuoi documentare tolleranza relativa; **`-> NDArray[np.float64]`** sulla firma di **`layer_dense`**.
+
 ---
 
 ## Lacune e dubbi ancora aperti

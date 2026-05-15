@@ -1297,7 +1297,8 @@ print(neuro_v2(X, w, b))
 #       - cosa hai diagnosticato (1 riga)
 #       - come l'hai sistemato (1 riga di codice corretto)
 # TUA RISPOSTA / FIX:
-# ...
+# Il problema risiede nel fatto che i pesi sono tutti 0. Dunque si avrà p = sigmoid(0), ossia ogni elemento di p di valore 0.5.
+# Il fix, per avere un test valido, consiste nel inizializzare w = rng.standard_normal(4)
 
 
 # E5) [RETRIEVAL] - regola 15: riscrivi da zero una funzione di un capitolo
@@ -1319,7 +1320,28 @@ print(neuro_v2(X, w, b))
 #       coseno([1, 0], [-1, 0])     -> -1.0   (paralleli, opposti)
 #
 # TUO CODICE QUI:
+print("\nEsercizio 5 Retrieval\n")
 
+def coseno(
+    a: NDArray[np.float64],
+    b: NDArray[np.float64]
+) -> float:
+    if a.ndim != 1 or b.ndim != 1 or b.shape != a.shape:
+        raise ValueError("Sia a che b devono essere vettori 1D di shape identica!")
+    norm_a = np.linalg.norm(a)
+    norm_b = np.linalg.norm(b)
+    if np.isclose(norm_a, 0.0) or np.isclose(norm_b, 0.0):
+        raise ValueError("Norma (quasi) zero in a o in b: il coseno non è definito!")
+    cos = float(a @ b / (norm_a * norm_b))
+    eps = 1e-12    
+    assert  -1 - eps < cos < 1 + eps, "Il coseno deve essere di valore compreso tra -1 e 1!"
+    return cos
+
+prova_1 = coseno(np.array([1, 2], dtype=float), np.array([2, 4], dtype=float))
+prova_2 = coseno(np.array([1, 0], dtype=float), np.array([0, 1], dtype=float))
+prova_3 = coseno(np.array([1, 0], dtype=float), np.array([-1, 0], dtype=float))
+
+assert np.allclose([prova_1, prova_2, prova_3], [1, 0, -1]), "Controllo con valori di prova non riuscito"
 
 # E6) [INTERLEAVING] cap.01 Ponte (norma) + cap.01 M3 (neurone su CSV M2)
 #     Una pratica con norma "molto alta" rispetto alle altre puo' "dominare"
@@ -1337,6 +1359,24 @@ print(neuro_v2(X, w, b))
 #     Usa SOLO operazioni vettoriali (NIENTE loop). Suggerimento per (b):
 #         np.linalg.norm(X, axis=1)
 # TUO CODICE QUI:
+print("\nEsercizio 6 Interleaving\n")
+
+X, y = carica_pratiche()
+norm_X = np.linalg.norm(X, axis=1)
+print("Norme su Dataset non scalato\n")
+print(norm_X.max())
+print(norm_X.min())
+print(f"{norm_X.mean()}\n")
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+norm_X_scaled = np.linalg.norm(X_scaled, axis=1)
+print("Norme su Dataset scalato\n")
+print(norm_X_scaled.max())
+print(norm_X_scaled.min())
+print(f"{norm_X_scaled.mean()}\n")
+disp_non_scal = np.std(norm_X)
+disp_scal = np.std(norm_X_scaled)
+print(f"{disp_non_scal} vs {disp_scal} => Circa {round(disp_non_scal / disp_scal, 2)} volte meno dispersione")
 
 
 # E7) [RECALL CROSS-MODULO] - OBBLIGATORIO (Regola 26 - cap.01 di nuovo modulo)
@@ -1367,7 +1407,45 @@ print(neuro_v2(X, w, b))
 #     OBIETTIVO MENTALE: nel cap.02 M3 metteremo h>1 (vera rete), il
 #     codice del layer_dense sara' lo stesso, cambia solo W.
 # TUO CODICE QUI:
+print("\nEsercizio 7 Recall/Cross-modulo\n")
 
+def layer_dense(
+    X: NDArray[np.float64],
+    W: NDArray[np.float64],
+    b: NDArray[np.float64] | float = 0.0,
+    att: callable | None = None,
+):
+    if not isinstance(W, np.ndarray):
+        raise ValueError("La W deve essere un np.ndarray!")
+    if W.dtype != np.float64:
+        raise ValueError("I valori contenuti in W devono essere dei float64")
+    if W.ndim == 1:
+        W = W.reshape(len(W), 1)
+    if W.ndim != 2 or X.ndim != 2:
+        raise ValueError("W e X non possono avere più di 2 dimensioni o una sola dimensione")
+    if W.shape[0] != X.shape[1]:
+        raise ValueError("Colonne di X devono coincidere con le righe di W")
+    logits = X @ W + b
+    if att is not None:
+        if not callable(att):
+            raise TypeError("att deve essere una funzione richiamabile (callable)")
+        return att(logits)
+    return logits
+
+rng = np.random.default_rng(42)
+N, d = 10, 5
+X = rng.uniform(1.0, 5.0, size=(N, d)).astype(np.float64)
+w = rng.uniform(-3.0, 3.0, size=(d,)).astype(np.float64)
+W = w.reshape(-1, 1)                                    
+b = 3.0
+
+prova_layer_dense = layer_dense(X, W, b, sigmoid).ravel()
+prova_neurone_batch = neurone_batch(X, w, b)                                
+
+assert np.allclose(prova_layer_dense, prova_neurone_batch, atol=1e-9), "Qualcosa non va"
+
+print(prova_layer_dense[:5])
+print(prova_neurone_batch[:5])
 
 # ==========================================================================
 # MINI-PROGETTO - "neurone_vs_logreg"
