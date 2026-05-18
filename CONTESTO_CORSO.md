@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 07/05/2026 (strategia prodotto broker / MVP vendibile: § Profilo + `APPUNTI_APPLICATIVO.md` §14.3 e §16.1)
+> **Ultimo aggiornamento**: 11/05/2026 (chiusura **M3 cap.01** — `01_neurone_artificiale.py`; handshake Jarvis)
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -39,12 +39,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_03_dl_cv/01_neurone_artificiale.py — **CREATO 07/05/2026** — Neurone artificiale = layer Dense con h=1 + sigmoid; lacune quiz ingresso #23/#28/#24/#29/#27 🟢 + mini RINFORZO #26 🟢 (08/05/2026) + recall Ponte cap.02. |
-| **Ultimo completato** | ponte_matematico_m2_m3/02_matrici_e_layer_dense.py (07/05/2026) — Matrici come batch, `X @ w + b`, anteprima layer Dense `X @ W + b`, broadcasting, softmax; esercizi finali + mini-progetto `classifica_batch`; voto difficoltà **9**/10. |
+| **Capitolo in corso** | modulo_03_dl_cv/02_reti_neurali.py — Reti a più layer (stack di Dense + attivazioni), forward NumPy, confronto con baseline. |
+| **Ultimo completato** | modulo_03_dl_cv/01_neurone_artificiale.py (11/05/2026) — Neurone = Dense h=1 + sigmoid; `layer_dense`; recall Ponte (E7); mini-progetto `neurone_vs_logreg`; checkpoint C1–C4; voto difficoltà **8**/10 (auto-rating C4 mediato; conferma studente se vuoi cambiarlo). |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision |
-| **Difficoltà media** | ~6.7 (19 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07 + Ponte-01; cap 07 M1 escluso/anomalia; **Ponte-01 = 9/10**) |
+| **Difficoltà media** | ~6.8 (20 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07 + Ponte-01 + **M3 cap.01**; cap 07 M1 escluso/anomalia) |
 | **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Data leakage (monitoraggio). |
-| **Sessione corrente** | Sessione 19 |
+| **Sessione corrente** | Sessione 20 |
 
 ---
 
@@ -55,11 +55,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 07/05/2026 |
-| **Cosa è stato fatto** | **Ponte cap.02 chiuso (voto 9/10) + creato cap.01 M3** (`01_neurone_artificiale.py`). Include rinforzi lacune #23–#29, ripasso R1–R5 cap.02, quiz/esercizi E1–E7 (RECALL cross-modulo in **E7**), mini-progetto `neurone_vs_logreg`, lucidatura post-prima-stesura (sigmoid clip, retrieval `coseno`, refactor splittato, TODO top‑3 contributi, PNG `figures/01_*`). Diario `M03_C01_*` aggiornato. |
-| **Errori emersi** | (chiusura cap.02) shape 1D vs 2D (`(N,)` vs `(N,1)`), tupla accidentale `(0.1,)`, Feynman con termini tecnici, logits vs probabilità (Dense vs softmax). Tutte le 5 lacune attive vengono ricontrollate "a freddo" nel quiz d'ingresso del cap.01 M3 + rinforzate con demo dedicate. |
-| **Cosa fare nella prossima sessione** | Aprire `modulo_03_dl_cv/01_neurone_artificiale.py` e procedere in ordine: leggere PRONTUARIO (5 min) → rispondere QUIZ D'INGRESSO Q1-Q6 (test "a freddo" delle lacune) → eseguire le `_demo_lacuna_*` → poi Sezione 1 (TODO 1.1-1.3) → Sezione 2 (TODO 2.1-2.2). Su Sezione 3 in poi servirà il CSV M2. |
-| **Stato motivazione** | Alto (capitolo Ponte chiuso 9/10), studente ha richiesto esplicitamente i ripassi e ha fatto domande di comprensione molto puntuali su softmax/Eulero/exp. Pronto per neuroni. |
+| **Data** | 11/05/2026 |
+| **Cosa è stato fatto** | **Chiusura formale M3 cap.01** (`01_neurone_artificiale.py`): esercizi E5–E7 + mini-progetto `neurone_vs_logreg` portati a DoD (incluso `np.allclose` su tutto il vettore probabilità); checkpoint C1–C4 compilati; diario `sessioni_capitoli/M03_C01_neurone_artificiale_sessione.md` completo di valutazioni. Handshake Jarvis chiusura capitolo 1 M3. |
+| **Errori emersi** | Sessione studio: confusione **boolean indexing** (`arr[arr > 0.5]` filtra) vs **maschera di classe** `(arr >= 0.5).astype`; rapporto errato al posto di **`mean(pred_a == pred_b)`** per accordo tra modelli; tentativo **`isinstance(..., NDArray[...])`** a runtime; typo **`form`** vs **`from`** negli import; richiesta esplicita: **nessuna modifica al codice dello studente senza permesso**. |
+| **Cosa fare nella prossima sessione** | Aprire `modulo_03_dl_cv/02_reti_neurali.py`: PRONTUARIO R1–R6 → quiz ingresso → Sezione 1–3 nel ordine del file; mantenere ponti mentali shape `(N,d)@(d,h)→(N,h)` e **non-linearità** tra layer. Opzionale: file bridge `quiz_ripasso_tra_capitoli/M03_R01_*` cap.01→cap.02. |
+| **Stato motivazione** | Solido: capitolo lungo ma chiuso con prove quantitative (mini-progetto vs sklearn) e auto-rating C4 realistico (7–10 per area). |
 
 ---
 
@@ -126,12 +126,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_03_dl_cv/01_neurone_artificiale.py — Modulo 03 (DL & CV) cap.01: neurone artificiale (forward), loss e intuizione del gradiente (senza formalismi), collegamento diretto a `X @ w + b` / `X @ W + b`. |
-| **Rinforzi da inserire (🔁)** | Nessuno bloccante da quiz Ponte/M3 cap.01 su questo tema; in cap.02 M3 ripassare shape batch se serve. |
-| **Concetti ⚠️ da ripassare** | Logits→probabilità (sigmoid/softmax), broadcasting del bias, shape nei batch. |
-| **Pattern 🔴 da monitorare** | #6 consegne (DoD), #19 terminologia None vs null, #21 round/tuple. |
-| **Ponte mentale da riusare** | “Batch = matrice”, “neurone = dot + bias”, “probabilità = attivazione (sigmoid/softmax) sopra i punteggi”. |
-| **Note** | Ponte Matematico concluso: da qui la matematica viene introdotta “a dose” dentro M3 (loss/gradienti) con analogia → codice → grafico → formula come etichetta. |
+| **Prossimo capitolo** | modulo_03_dl_cv/02_reti_neurali.py — Modulo 03 cap.02: **stack di layer** (`ReLU` nascosto + `sigmoid` output), perché serve non-linearità, forward 2-layer in NumPy, init He; mini-progetto `rete_2_layer_vs_logreg`. |
+| **Rinforzi da inserire (🔁)** | In **cap.02**: micro-richiami su **shape** `(N,d)→(N,h)→(N,k)` e su **`layer_dense`** come mattone (già dimostrato = neurone con h=1); opzionale richiamo **sigmoid vs ReLU** (da auto-rating C4: attivazioni ancora in consolidamento). |
+| **Concetti ⚠️ da ripassare** | Quando serve **ReLU vs sigmoid vs tanh**; **vanishing** intuitivo; **pesi tutti zero** (simmetria). |
+| **Pattern 🔴 da monitorare** | #6 consegne / lettura DoD; #21 tuple/`round`; **non editare il repo studente senza richiesta esplicita**. |
+| **Ponte mentale da riusare** | Pipeline Laravel ≈ **layer in serie**; “senza attivazione interna = una sola trasformazione lineare equivalente”. |
+| **Note** | Cap.01 M3 chiuso 11/05/2026; prossimo salto concettuale = **profondità >1** (vera rete). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -751,8 +751,9 @@ completezza del self-check e chiedere correzioni.
 | M2-05_overfitting_validazione | 8 | +1 ↑ vs M2-04 (validazione/CV, bias-varianza, pipeline per evitare leakage in CV; voto studente 22/04/2026) |
 | M2-06_progetto_streamlit | 7 | -1 ↓ vs M2-05 (progetto Streamlit "da zero": demo end-to-end, cache_data/cache_resource, predict_proba 2D, motivi_top3 con segno; voto studente 27/04/2026) |
 | M2-07_deploy_streamlit_cloud | 6 | -1 ↓ vs M2-06 (capitolo operativo: pulizia dipendenze, requirements, push GitHub, deploy cloud, smoke test; primo URL portfolio LIVE; voto studente 27/04/2026) |
+| **M3-01_neurone_artificiale** | **8** | **Nuovo** — workload alto (quiz + E1–E7 + mini-progetto + checkpoint); auto-rating C4 (topic mix 7–10); conferma studente 11/05/2026 |
 
-**Media attuale**: ~6.6 (18 capitoli con voto, cap 07 M1 escluso/anomalia aperta).
+**Media attuale**: ~6.8 (20 capitoli con voto, cap 07 M1 escluso/anomalia aperta).
 
 ---
 
@@ -890,6 +891,16 @@ completezza del self-check e chiedere correzioni.
 | Algebra lineare | "La matematica delle frecce e delle tabelle di numeri": vettori, matrici, prodotti, trasformazioni. Fondamenta di ML/DL: ogni rete neurale = sequenza di prodotti matrice-vettore + funzioni non-lineari | Ponte-01 | 1/3 | 🔄 |
 | `numpy.linalg.norm` | `linalg` = linear algebra. Modulo NumPy con norm, det, inv, eig, ecc. `np.linalg.norm(v)` = norma euclidea (L2) di default | Ponte-01 | 1/3 | 🔄 |
 
+### Modulo 3 — Deep Learning (cap.01 neurone)
+
+| Termine | Significato | Capitolo | Ripassi | Stato |
+|---------|-------------|----------|---------|-------|
+| Logit (`z`) | Punteggio lineare prima dell’attivazione: combinazione `X @ w + b` (batch: ogni riga una pratica). Valore reale non limitato | M3-01 | 0/3 | 🔄 |
+| Sigmoid | Funzione che comprime un reale in `(0, 1)` — nel binario interpretabile come probabilità stimata della classe positiva | M3-01 | 0/3 | 🔄 |
+| `layer_dense` | Layer fully-connected: calcola `X @ W + b` poi applica attivazione opzionale; con `h=1` e sigmoid coincide col neurone singolo | M3-01 | 0/3 | 🔄 |
+| Forward pass | Una passata “avanti” dalla input alle probabilità/output senza aggiornare i pesi | M3-01 | 0/3 | 🔄 |
+| `callable` | In Python, oggetto invocabile come funzione (`()`); si verifica con builtin `callable(x)`, non `isinstance(x, callable)` | M3-01 | 0/3 | 🔄 |
+
 ---
 
 ## Domande Fatte Durante i Capitoli
@@ -971,6 +982,18 @@ completezza del self-check e chiedere correzioni.
 | 8 | Differenza `np.array` vs `np.ndarray` | `np.ndarray` = la classe (TIPO); `np.array(...)` = funzione factory che crea ndarray. Per type hint: `np.ndarray` (o `numpy.typing.NDArray`) |
 | 9 | `iloc` vs `loc` per accesso a celle | `iloc[i, j]` solo indici numerici (int); `loc[i, "col"]` etichette (chiavi). Mai mescolare etichette stringa in `iloc` |
 | 10 | Algebra lineare in una frase | "La matematica delle frecce e delle tabelle di numeri": grammatica per descrivere trasformazioni lineari di dati. Fondamenta di tutto il ML/DL |
+
+### Cap.01 M3 — Neurone artificiale
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | Sintassi `reshape` / `len(W)` vs `-1` per `(d,)`→`(d,1)` | `W.reshape(-1, 1)` o `reshape(len(W), 1)` dopo `ndim==1`; non usare `len(w)` se il parametro è `W` |
+| 2 | `isinstance(W, NDArray[np.float64])` a runtime | Non adatto: `NDArray[...]` è per type checker; usare `isinstance(W, np.ndarray)` + check `dtype` se serve |
+| 3 | Messaggio errore “norma zero” vs somma componenti | Somma 0 non implica norma 0 (es. `[1,-1]`); il controllo è sulla **norma euclidea** |
+| 4 | Maschera booleana `p[p > 0.5]` vs classi 0/1 per tutte le righe | La prima **filtra** (lunghezza variabile); per etichette per pratica usare `(p >= 0.5).astype(...)` |
+| 5 | “Accuracy” tra due modelli | Media di `(pred_a == pred_b)` su tutte le righe, non rapporto tra conteggi di positivi |
+| 6 | Parentesi nella formula sigmoid scritta a mano | `1 / (1 + exp(-z))` — il denominatore è tutto `1 + ...` |
+| 7 | Preferenza workflow codice | Non modificare file studente senza richiesta esplicita |
 
 ---
 
@@ -1140,6 +1163,17 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - **Lacuna #12 (NumPy shape)**: chiusa definitivamente — uso autonomo di `.shape`, `dtype`, controlli early-exit su `shape != shape`, conversioni `to_numpy(dtype=float)` corrette.
 - **Pattern emersi (#23 virgole→tuple, #24 iloc/loc, #25 type hint NumPy)**: registrati per rinforzo nel cap.02 Ponte.
 - **Deliverable**: `ponte_matematico_m2_m3/01_vettori_da_zero.py` (1020 righe, completo) + `genera_infografiche_png.py` + 5 PNG didattici in `figures/`.
+
+### Cap.01 M3 — Neurone artificiale (completato; voto difficoltà: **8**/10)
+
+- Forward **batch**: `neurone_batch` = `sigmoid(X @ w + b)` con shape `(N,)`; broadcasting bias; validazioni shape/`ndim`.
+- Equivalenza **Dense h=1**: `layer_dense(X, W, b, att)` con `W` `(d,)` o `(d,1)`, `att=sigmoid`, confronto `.ravel()` vs `neurone_batch` (**E7** RECALL cross-modulo).
+- **Retrieval** Ponte: `coseno(a,b)` con `np.isclose` sulle norme, `NDArray[np.float64]`, assert range coseno.
+- **Interleaving** norme righe + `StandardScaler` su CSV M2 (**E6**): confronto dispersione `std`/`ptp` delle norme prima/dopo scaling.
+- Mini-progetto **`neurone_vs_logreg`**: estrae `w`,`b` da `Pipeline(StandardScaler+LogisticRegression)`, riproduce `predict_proba[:,1]` con `sigmoid` manuale; `diff_max`, `accuracy_match`, `recall_alterato`; assert `allclose` globale `atol=1e-10`.
+- Checkpoint **C1–C4**: logit vs probabilità; Feynman if vs neurone; calcolo manuale `z`/`sigmoid`; auto-rating aree (cap.02 M3 = focus ReLU/tanh stack).
+- Artefatti: `modulo_03_dl_cv/figures/01_attivazioni.png`, `01_forward_neurone.png`.
+- Tag esercizi: refactoring (`neuro_v2`), DEBUG (pesi zero), retrieval (`coseno`), interleaving (norme), recall (`layer_dense`), mini-progetto.
 
 ---
 
@@ -1461,7 +1495,9 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M2 cap.03 — Regressione | ✅ Completato | Confronto lineare vs albero + scaling; `motivi_top_n`/motivi_top3; `modello_base.py` esteso (metriche + spiegabilità) |
 | M2 cap.04 — Classificazione | ✅ Completato | Metriche classificazione, semaforo, coefficienti logistica; `modello_base.py` con sezione classificazione + assert recall |
 | M2 cap.05 — Overfitting/Validazione | ✅ Completato | CV su train (media±std), bias-varianza, distinzione tuning vs test; `modello_base.py`: `Pipeline(StandardScaler + LogisticRegression)` in `cross_val_score` per evitare leakage intra-fold |
-| M3 — DL & CV | 🟡 Pianificato | Deliverable cap.07 deciso (30/04/2026): classificatore "busta paga vs altro" su 200 buste paga reali anonimizzate + ~200 immagini "altro" da dataset pubblici. Vincoli privacy/GDPR documentati nella sezione "Computer Vision nel Prodotto". |
+| M2-07_deploy_streamlit_cloud | 6 | -1 ↓ vs M2-06 (capitolo operativo: pulizia dipendenze, requirements, push GitHub, deploy cloud, smoke test; primo URL portfolio LIVE; voto studente 27/04/2026) |
+| M3 cap.01 — Neurone artificiale | ✅ Completato (11/05/2026) | Forward batch `neurone_batch`, `layer_dense`, confronto `Pipeline(StandardScaler+LR)` vs `sigmoid(X_scaled@w+b)`; `neurone_vs_logreg`; PNG `figures/01_*`; voto difficoltà **8**/10 |
+| M3 — DL & CV (portfolio CNN cap.07) | 🟡 Pianificato | Deliverable cap.07 deciso (30/04/2026): classificatore "busta paga vs altro" su 200 buste paga reali anonimizzate + ~200 immagini "altro" da dataset pubblici. Vincoli privacy/GDPR documentati nella sezione "Computer Vision nel Prodotto". |
 | M4 — NLP | ⬜ Da fare | |
 | M5 — LLM | ⬜ Da fare | |
 | M6 — RAG | ⬜ Da fare | |
@@ -1966,6 +2002,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 11/05/2026 | **Chiusura M3 cap.01** (`01_neurone_artificiale.py`): Stato → **02_reti_neurali.py**; Ultimo completato + Ultima Sessione; Prossimo Capitolo; diff media ~**6.8** (20 cap); Valutazioni + **M3-01** **8**/10; Progresso progetto + riga cap.01 ✅; Competenze + Domande + Glossario (logit/sigmoid/layer_dense/forward/callable); Sessione **20**. Jarvis handshake. File capitolo **non modificato** (H). | Chiusura formale modulo 03 capitolo 1 | Stato, sessioni, roadmap cap.02, tabelle, glossario, changelog |
 | 11/05/2026 | **Regola 40**: quiz ripasso fondamentali **tra capitoli** (dal M3 in poi): cartella `quiz_ripasso_tra_capitoli/` nel modulo, ~10 mini-esercizi per bridge `cap.K→cap.K+1`, soluzioni in coda; consolidamento Python/NumPy/Pandas/M2 mentre si affronta DL. Creati **6 file bridge** per M3 + `_TEMPLATE` + README cartella; aggiornati `CONTESTO`, `.cursor/rules/mentor-ai-corso.mdc`, `modulo_03_dl_cv/README.md`. | Richiesta studente: non perdere le basi mentre la complessità sale | Regole 39→40, Changelog, file M3 |
 | 30/04/2026 | **Decisione M3 — target deliverable cap.07**: scelto "busta paga vs non-busta paga" su immagini reali (vs. opzione più semplice "MNIST-like"). Studente conferma di avere ~200 buste paga utilizzabili. Documentati 3 vincoli privacy/GDPR bloccanti (anonimizzazione preprocessing, mai committare buste, mai caricare originali su Colab). Roadmap ramo visivo M3 esplicitata nei cap.05/06/07. Progetto incrementale M3 → 🟡 Pianificato. | Pianificazione anticipata del modulo successivo per scegliere dataset di training fin dal cap.05 | Computer Vision nel Prodotto, Progresso del progetto, Changelog |
 | 30/04/2026 | **Chiusura cap.01 Ponte Matematico**: Stato Attuale, Ultima Sessione, Prossimo Cap, Difficoltà media (~6.7 con voto **9**/10 confermato), Sessione corrente → 18, Pattern #23/#24/#25 (NUOVI: virgole→tuple, iloc/loc, np.array vs np.ndarray), Lacuna #12 → **🟢 Superato** (assorbita dal cap.01 Ponte), Lacuna #19/#20/#21/#22 NUOVE, Anomalia cap.07 M1 chiusa per assorbimento, Glossario "Ponte Matematico" creato, Domande cap.01 Ponte registrate (10 entry), Ponti Mentali (5 nuovi: vettore=istruzione, norma=lunghezza/coseno=direzione, normalizzare=norma1, pratica simile=coseno alto, ecc.), Competenze "Cap.01 Ponte Matematico", Ripasso programmato (sezione Ponte Matematico), Changelog. Cap.02 Ponte da CREARE con rinforzi #23/#24/#25 + sezione mini-esercizi "ripasso 5 blocchi" richiesta dallo studente. | Chiusura capitolo formale con handshake studente | Tutte le sezioni di Stato + Pattern + Lacune + Glossario + Domande + Ponti + Competenze + Ripasso + Changelog |
