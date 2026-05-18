@@ -422,6 +422,21 @@
 - **Corretto:** **`layer_dense`** implementa **`att(X @ W + b)`** con **`return`** esplicito e **`callable(att)`**; promozione **`W`** **`(d,)` → `(d, 1)`**; controlli **`W`** (**`ndarray`**, **`float64`**, **`ndim`**, compatibilità **`X.shape[1]`**); punto **(b–c)** — **`w`** **`1D`** per **`neurone_batch`**, **`W = w.reshape(-1, 1)`** per il layer, **`b`** scalare, **`att=sigmoid`**, confronto con **`.ravel()`** vs **`(N,)`**; **`np.allclose(..., atol=1e-9)`** su batch **`default_rng(42)`**; stampa prime componenti per occhio umano.
 - **Micro-opzionale:** allineare validazioni anche su **`X`** (**`isinstance`**, **`dtype`**) come per **`W`**; **`rtol`** esplicito in **`allclose`** se vuoi documentare tolleranza relativa; **`-> NDArray[np.float64]`** sulla firma di **`layer_dense`**.
 
+### [2026-05-11] — Mini-progetto `neurone_vs_logreg`
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1485–1523 (`neurone_vs_logreg` + stampa DataFrame).
+- **Voto (primo tentativo):** **8/10**.
+- **Corretto:** **`Pipeline`** + scaler interno a **`fit`** + **`LogisticRegression`**; **`coef_`/`intercept_`**; **`transform(X)`** coerente col modello addestrato; forward **`sigmoid(X_scaled @ w + b)`** vettoriale; **`diff_max`**; **`accuracy_match`** come **`mean`** degli accordi tra classi soglia; **`recall_score`** per **`recall_alterato`**; **`return`** con chiavi richieste; assert recall > **0.7**.
+- **Gap DoD:** vincolo **`assert np.allclose(p_sklearn, p_manuale, atol=1e-10)`** su **intero** vettore — in codice **`assert`** solo su **`[:5]`**.
+- **Micro:** **`manual_class`** usa **`>= 0.5`**, **`pipe_class`** usa **`> 0.5`** — meglio allineare al testo (**≥**); **`recall_pipe`** solo assert (ok).
+
+### [2026-05-11] — Mini-progetto `neurone_vs_logreg` — rivalutazione post-feedback
+
+- **Blocco:** `01_neurone_artificiale.py` righe ~1485–1523 (versione con **`allclose`** su tutto il vettore).
+- **Voto:** **10/10**.
+- **Corretto:** **`assert np.allclose(pipe_proba, manual_proba, atol=1e-10)`** su **intero** **`N`** — DoD rispettato; soglia **`>= 0.5`** allineata tra **`manual_class`** e **`pipe_class`**; resto invariato (**`diff_max`**, **`accuracy_match`**, **`recall_alterato`**, assert recall, **`return`** + stampa DataFrame).
+- **Micro-opzionale:** **`recall_score(..., pos_label=1)`** esplicito per chiarezza su dataset binario; spazio dopo **`=`** in **`atol= 1e-10`** (**PEP 8** suggerisce **`atol=1e-10`**).
+
 ---
 
 ## Lacune e dubbi ancora aperti

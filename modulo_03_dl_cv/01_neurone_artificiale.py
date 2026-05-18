@@ -1480,6 +1480,48 @@ print(prova_neurone_batch[:5])
 #
 # TUO CODICE QUI:
 
+print("\nMINI-PROGETTO\n")
+
+def neurone_vs_logreg() -> dict[str, float]:
+    
+    from sklearn.pipeline import Pipeline
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics import recall_score
+    
+    X, y = carica_pratiche()
+    pipe = Pipeline([
+        ('scaler', StandardScaler()),
+        ('model', LogisticRegression(max_iter=1_000, random_state=42))
+    ])
+    
+    pipe.fit(X, y)
+    pipe_proba = pipe.predict_proba(X)[:, 1]
+    
+    w = pipe.named_steps['model'].coef_.ravel()
+    b = pipe.named_steps['model'].intercept_[0]
+    X_scaled = pipe.named_steps['scaler'].transform(X)    
+    manual_logits = X_scaled @ w + b
+    manual_proba = sigmoid(manual_logits)
+    
+    assert np.allclose(pipe_proba, manual_proba, atol= 1e-10), "ooooh no!!"
+    
+    diff_max = float(np.abs(pipe_proba - manual_proba).max())
+    
+    manual_class = (manual_proba >= 0.5).astype(np.int64)
+    pipe_class = (pipe_proba >= 0.5).astype(np.int64)
+    accuracy_match = float(np.mean(pipe_class == manual_class))
+    recall_manual = float(recall_score(y, manual_class))
+    recall_pipe = recall_score(y, pipe_class)
+    
+    assert recall_manual > 0.7 and recall_pipe > 0.7, "Il recall deve essere maggiore di 0.7"
+    return {
+        "diff_max": diff_max,
+        "accuracy_match": accuracy_match,
+        "recall_alterato": recall_manual
+    }
+print(pd.DataFrame([neurone_vs_logreg()]).to_string())
+
 
 # ==========================================================================
 # CHECKPOINT FINALE (auto-verifica)
@@ -1488,25 +1530,28 @@ print(prova_neurone_batch[:5])
 # C1) [Lacuna #28 finale] In 1 frase: differenza fra "z" (logit) e "a"
 #     (output di sigmoid)?
 # TUA RISPOSTA:
-# ...
+# il logit è il dato grezzo, ossia il dot product + bias tra x (riga di X) e w (vettore di pesi).
+# l'output di sigmoid è il logit inserito in una scala che va da 0 a 1 (quindi la conversione in probabilità)
 
 # C2) [Feynman - vincolo #27] Spiega in 2 righe (no termini tecnici!) la
 #     differenza fra un "if" classico e un "neurone".
 # TUA RISPOSTA:
-# ...
+# in un if classico siamo noi a dare la condizione per fare succedere o meno qualcosa. Il neurone invece
+# si da da solo una regola sulla base dei dati.
 
 # C3) Hai un neurone con w = [+0.5, -1.0, +2.0] e b = -1.0. Su una pratica
 #     x = [1, 1, 1] quanto vale z? E sigmoid(z), circa?
 #     Mostra il calcolo a mano (no codice).
 # TUA RISPOSTA:
-# ...
+# z = (0.5 * 1 + -1 * 1 + 2 * 1) + (-1) = 0.5
+# s = 1 / 1 + e^(-z) = circa 0,622
 
 # C4) Auto-rating onesto (compila in chiusura capitolo):
-#       - neurone come "if morbido":           /10
-#       - logit vs probabilita' (#28):         /10
-#       - sigmoid/ReLU/tanh quando usarle:     /10
-#       - forward batch su CSV M2:             /10
-#       - recall cross-modulo (E7):            /10
+#       - neurone come "if morbido":           8/10
+#       - logit vs probabilita' (#28):         10/10
+#       - sigmoid/ReLU/tanh quando usarle:     7/10
+#       - forward batch su CSV M2:             8/10
+#       - recall cross-modulo (E7):            7/10
 # TUE RISPOSTE:
 # ...
 

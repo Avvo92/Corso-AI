@@ -65,6 +65,7 @@ print((p >= 0.5).sum())
 
 Cosa restituisce `predict_proba(X)[:, 1]` in un classificatore binario sklearn (forma dell’output + significato della colonna 1)?
 
+l'output ha shape (N, ). Il significato della colonna 1, ad esempio nel nostro dominio, è la percentuale di appartenenza alla classe alterato.
 ---
 
 ### 7. Completa
@@ -72,8 +73,8 @@ Cosa restituisce `predict_proba(X)[:, 1]` in un classificatore binario sklearn (
 Per leggere pesi e bias da un `Pipeline` con step `"model"` che è una `LogisticRegression`:
 
 ```python
-w = pipe.named_steps["model"].coef_.___()
-b = float(pipe.named_steps["model"].intercept_[___])
+w = pipe.named_steps["model"].coef_.___() => .ravel()
+b = float(pipe.named_steps["model"].intercept_[___]) => 0
 ```
 
 ---
@@ -82,13 +83,13 @@ b = float(pipe.named_steps["model"].intercept_[___])
 
 “Dopo `pipe.fit(X_train, y_train)`, posso valutare su `X_train` per decidere se il modello è buono.”  
 Rispondi in una frase richiamando un anti-pattern del M2.
-
+Falso, la valutazione va effettuata sul Test Set, che si tiene separato dalla fase di addestramento e valdazione (eseguita tramite la pipe), per poter essere l'arbitro finale che ci fornisce un giudizio imparziale. Altrimenti commetteremmo l'errore di leakage.
 ---
 
 ### 9. Spiega con parole tue (Feynman leggero)
 
 Senza scrivere codice: che differenza c’è tra il **logit** grezzo (`z = X @ w + b`) e la **probabilità** che esce dalla sigmoid?
-
+logit e il dato grezzo, ossia il la somma pesata dei valori di X per i pesi di w (più eventuale bias). La probabilità la estrapoliamo con la sigmoide, ossia l'attivazione che trasforma il dato grezzo in un valore tra 0 e 1, e dunque trasformabile in probabilità
 ---
 
 ### 10. Mini-debug
@@ -96,6 +97,8 @@ Senza scrivere codice: che differenza c’è tra il **logit** grezzo (`z = X @ w
 ```python
 def conta_positivi(p):
     return p[p >= 0.5].len()
+
+    return len(p[p>= 0.5]) => len va chiamato come funzione e non come metodo
 ```
 
 Perché in NumPy questo rompe? Scrivi la correzione in una riga (usa ciò che useresti davvero su un array 1D).

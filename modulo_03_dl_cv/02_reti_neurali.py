@@ -142,17 +142,19 @@ from numpy.typing import NDArray
 # Q1) Hai X (200, 7) e una rete con W1 (7, 16). Che shape ha
 #     H = X @ W1 + b1?  E b1 che shape DEVE avere?
 # TUA RISPOSTA:
-# ...
+# H ha shape = (200, 16), b1 ha shape = (16,)
 
 # Q2) Spiega in 1 riga PERCHE' fra due layer Dense si mette una funzione
 #     di attivazione NON LINEARE (es. ReLU). Cosa succederebbe senza?
 # TUA RISPOSTA:
-# ...
+# Si mette una funzione di attivazione per non avere una semplice sequenza di layer che fanno 
+# operazione lineari, dove di fatto si avrebbe alla fine solo un unico grande layer. Le attivazioni
+# non lineari come ReLU permettono di seguire la complessita di funzioni non lineari.
 
 # Q3) sigmoid e ReLU - quale va all'ULTIMO layer di un classificatore
 #     binario? Quale nei layer NASCOSTI? E perche'?
 # TUA RISPOSTA:
-# ...
+# nei layer nascosti va il ReLU, metre nel layer di output va la sigmoid. Questo perchè ReLU restituisce i valori cosi come sono, eccetto per i valori inferiori di 0 per i quali restituisce proprio 0. In questo modo, possiamo seguire un andamento non lineare nel passaggio tra i vai layer. Alla fine del percorso invece sigmoid (o softmax) ci da delle probabilità che sono utili per determinare che tipo di output è più corretto ai nostri scopi
 
 # Q4) [Trova l'errore]
 #       W1 = np.zeros((7, 16))
@@ -162,13 +164,13 @@ from numpy.typing import NDArray
 #     Che valore avranno tutte le probabilita' P, indipendentemente da
 #     X? Perche'?
 # TUA RISPOSTA:
-# ...
+# Il valore è 0.5. questo perchè se i pesi di w e il bias sono tutti 0, inevitabilmente il dot product + b produrra sempre valori = 0. le sigmoidi di 0 saranno 0.5, ossia massima incertezza (questo perchè se sigmoid schiaccia tutti i valori da -inf a +inf tra 0 e 1, a meta strada, ossia a 0.5, c'è proprio lo 0)
 
 # Q5) [Feynman - no jargon tecnico] Spiega in 3 righe cos'e' una rete
 #     neurale a un collega web dev che non sa nulla di AI. VIETATO usare
 #     "tensore", "gradiente", "neurone", "layer", "sigmoid", "ReLU".
 # TUA RISPOSTA:
-# ...
+# immagine una fabbrica di oggetti. Ogni livello della rete neurale è come uno pezzo di una catena di montaggio di una fabbrica. Ad ogni step della catena, il prodotto che si sta fabricando viene trasformato, e alla fine ne esce il prodotto finito
 
 
 # ==========================================================================
@@ -315,31 +317,63 @@ def _esempio_layer_dense() -> None:
 
 
 # TODO 1.1 (5 minuti):
-# Crea X (5, 3) random con default_rng(1), poi un layer Dense con d=3,
-# h=4, ReLU. Stampa:
-#   - X.shape, W.shape, b.shape
-#   - H.shape
-#   - quante "celle" di H sono == 0 (suggerimento: H == 0 e poi .sum())
-# Perche' alcune celle sono esattamente 0 ? (1 riga di commento)
+# Obiettivo: vedere ReLU "tagliare" i logit negativi → molti zeri in H.
+#
+# Traccia (usa funzioni GIÀ definite sopra: layer_dense, relu, init_pesi_he):
+#   1) rng = np.random.default_rng(1)
+#   2) X con shape (5, 3) — es. numeri gaussiani o uniformi, come preferisci.
+#   3) Layer con d=3 input e h=4 neuroni → W deve essere (3, 4), b (4,).
+#      Puoi costruire W,b con init_pesi_he(d=3, h=4, seed=...) oppure a mano,
+#      ma resta coerente con le shape del dot X @ W.
+#   4) H = layer_dense(X, W, b, att=relu)  → ti aspetti H.shape == (5, 4).
+#   5) Stampa X.shape, W.shape, b.shape e H.shape.
+#   6) Conta le celle esattamente 0: (H == 0) è una maschera booleana;
+#      .sum() su quella maschera conta i True (equivalente a np.count_nonzero(H == 0)).
+#   7) Sotto, UNA riga di commento: perche' ReLU azzera quelle celle?
 # TUO CODICE QUI:
-
+print("\nTODO 1.1\n")
+rng = np.random.default_rng(1)
+X = rng.uniform(-5, 5, size=(5, 3))
+W, b = init_pesi_he(X.shape[1], 4)
+# z = X @ W + b
+# H = relu(z)
+H = layer_dense(X, W, b, att=relu)
+print(X.shape) # controllo visuale della shape coerente con la richiesta della traccia
+print(W.shape)
+print(b.shape)
+print(H.shape)
+celle_0 = (H == 0).sum()
+print(H)
+print(celle_0)
+# relu azzera quelle celle perchè la sua funzione è quella di riportare 0 al posto dei logit z negativi.
 
 # TODO 1.2 (5 minuti):
-# Una sola riga, due reti diverse:
-#   (a) layer_dense con att=None    (lineare puro)
-#   (b) layer_dense con att=sigmoid (output "schiacciato" in [0, 1])
-# Con X (10, 2) random, W (2, 3), b (3,) random:
-#   - stampa H_lineare.min(), H_lineare.max()
-#   - stampa H_sigmoid.min(), H_sigmoid.max()
-# Cosa noti sulla "scala" dei valori? In che senso sigmoid "schiaccia"?
+# Obiettivo: stessi pesi e bias, ma cambia SOLO l'attivazione → cambia la "scala"
+# dei numeri in uscita (lineare illimitato vs probabilita'-like in (0, 1)).
+#
+# Traccia:
+#   1) rng = np.random.default_rng(...) e crea X (10, 2), W (2, 3), b (3,) tutti random.
+#   2) Due forward sullo STESSO triplo (X, W, b):
+#        H_lineare = layer_dense(X, W, b, att=None)
+#        H_sigmoid = layer_dense(X, W, b, att=sigmoid)
+#      (Se vuoi restare sintetico: una riga per assegnazione va bene.)
+#   3) print min/max di H_lineare e di H_sigmoid — confronta ordini di grandezza e limiti.
+#   4) Rispondi in 2-3 parole tue (anche solo commento): cosa cambia nella scala?
+#      Suggerimento: ricorda R6 nel prontuario (saturazione sigmoid) vs output lineare.
 # TUO CODICE QUI:
 
 
 # TODO 1.3 (3 minuti):
-# Con d=10, h=20, chiama init_pesi_he. Stampa la media e la deviazione
-# standard del W generato. Confrontale con i valori "attesi" (media ~0,
-# deviazione ~sqrt(2/d) ~ 0.447). Perche' la media e' ~0 ma non
-# esattamente 0?
+# Obiettivo: He init produce W con campioni ~ N(0, scala^2) dove scala = sqrt(2/d).
+#
+# Traccia:
+#   1) W, b = init_pesi_he(d=10, h=20, seed=42)   # o altro seed, ma tienilo fisso
+#      Verifica con uno sguardino: W.shape == (10, 20), b.shape == (20,) e b e' tutto zero.
+#   2) Stampa float(W.mean()) e float(W.std()) — oppure np.mean/np.std su W.ravel().
+#   3) Confronto teorico: dev_std atteso circa sqrt(2/d) con d=10 → ~0.447;
+#      la media teorica del processo e' 0.
+#   4) Una frase (commento): perche' la media campionaria non e' ESATTAMENTE 0?
+#      (Indizio: stai osservando un numero FINITO di campioni da una Gaussiana.)
 # TUO CODICE QUI:
 
 

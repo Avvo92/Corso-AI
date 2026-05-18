@@ -33,14 +33,19 @@
 > - Riferimento puntuale al blocco/righe del file `02_reti_neurali.py`.
 > - Collegare ogni lacuna emersa al suo ID in `CONTESTO_CORSO.md`.
 
-### [YYYY-MM-DD] — Riferimento (placeholder)
+### [2026-05-11] — `02_reti_neurali.py` — TODO 1.1 (Dense + ReLU, conteggio zeri)
 
-- **Esercizio / blocco:** …
-- **Valutazione (primo tentativo — "voto esame"):** **X/10**.
-- **Punti di forza:** …
-- **Errori / lacune:** …
-- **Correzione / suggerimento:** …
-- **Pattern errore / ID contesto** (se applicabile): …
+- **Esercizio / blocco:** Sezione 1, TODO 1.1 (~righe 334–348 dopo traccia commentata).
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**.
+- **Punti di forza:** Pipeline corretta: `X (5,3)`, `init_pesi_he` con `d` coerente alle colonne di `X`, `W (3,4)`, `b (4,)`, `layer_dense(..., relu)` valido (4° argomento = `att`). Conteggio `(H == 0).sum()` corretto. Commento finale: concetto giusto — ReLU annulla i **logit** negativi (`z = X@W+b`), non “i valori di X” in generale.
+- **Errori / lacune:** Traccia richiedeva `default_rng(1)` — usato `42` (ok per seed ma non allineato al testo). `X` uniforme in `[0,10]` rende l’esperimento meno “transparente” sul motivo dei negativi rispetto a input anche negativi (es. gaussiani): non è sbagliato, ma indebolisce un po’ l’intuizione richiesta. `len(X[1])` per `d`: funziona qui; più idiomatico `X.shape[1]`.
+- **Correzione / suggerimento:** Opzionale: `layer_dense(X, W, b, att=relu)` per leggibilità; stampare solo una riga di `H` se serve debug compatto.
+- **Pattern errore / ID contesto** (se applicabile): monitoraggio **Pattern #6** (lettura consegna dettagli tipo seed rng) — singolo caso, non ancora ricorrente.
+
+### [2026-05-11] — POST-FEEDBACK — stesso TODO 1.1 (`02_reti_neurali.py`)
+
+- **Fix applicato:** `default_rng(1)` come da traccia; `X` uniforme su intervallo bilanciato (`[-5, 5]`) così i logit negativi sono più facili da “vedere”; `X.shape[1]` per `d`; `att=relu` esplicito.
+- **Nota:** il voto **primo tentativo** della entry precedente resta **8/10** (regola diario). La versione corrente è **allineata al 100% alla consegna** e mostra cura su seed + API leggibile.
 
 ---
 
