@@ -40,7 +40,7 @@
 | Campo | Valore |
 |-------|--------|
 | **Capitolo in corso** | modulo_03_dl_cv/02_reti_neurali.py — Reti a più layer (stack di Dense + attivazioni), forward NumPy, confronto con baseline. |
-| **Ultimo completato** | modulo_03_dl_cv/01_neurone_artificiale.py (11/05/2026) — Neurone = Dense h=1 + sigmoid; `layer_dense`; recall Ponte (E7); mini-progetto `neurone_vs_logreg`; checkpoint C1–C4; voto difficoltà **8**/10 (auto-rating C4 mediato; conferma studente se vuoi cambiarlo). |
+| **Ultimo completato** | modulo_03_dl_cv/01_neurone_artificiale.py (11/05/2026) — Neurone = Dense h=1 + sigmoid; `layer_dense`; recall Ponte (E7); mini-progetto `neurone_vs_logreg`; checkpoint C1–C4; **voto difficoltà** **8**/10 — confermato da Gianluca in chat. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision |
 | **Difficoltà media** | ~6.8 (20 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07 + Ponte-01 + **M3 cap.01**; cap 07 M1 escluso/anomalia) |
 | **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Data leakage (monitoraggio). |
@@ -751,7 +751,7 @@ completezza del self-check e chiedere correzioni.
 | M2-05_overfitting_validazione | 8 | +1 ↑ vs M2-04 (validazione/CV, bias-varianza, pipeline per evitare leakage in CV; voto studente 22/04/2026) |
 | M2-06_progetto_streamlit | 7 | -1 ↓ vs M2-05 (progetto Streamlit "da zero": demo end-to-end, cache_data/cache_resource, predict_proba 2D, motivi_top3 con segno; voto studente 27/04/2026) |
 | M2-07_deploy_streamlit_cloud | 6 | -1 ↓ vs M2-06 (capitolo operativo: pulizia dipendenze, requirements, push GitHub, deploy cloud, smoke test; primo URL portfolio LIVE; voto studente 27/04/2026) |
-| **M3-01_neurone_artificiale** | **8** | **Nuovo** — workload alto (quiz + E1–E7 + mini-progetto + checkpoint); auto-rating C4 (topic mix 7–10); conferma studente 11/05/2026 |
+| **M3-01_neurone_artificiale** | **8** | Confermato studente **8**/10; capitolo denso (quiz + E1–E7 + mini-progetto + checkpoint C1–C4); coerente con auto-rating C4 per topic |
 
 **Media attuale**: ~6.8 (20 capitoli con voto, cap 07 M1 escluso/anomalia aperta).
 
