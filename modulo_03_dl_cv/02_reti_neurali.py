@@ -361,6 +361,63 @@ print(celle_0)
 #   4) Rispondi in 2-3 parole tue (anche solo commento): cosa cambia nella scala?
 #      Suggerimento: ricorda R6 nel prontuario (saturazione sigmoid) vs output lineare.
 # TUO CODICE QUI:
+print("\nTODO 1.2\n")
+# rng = np.random.default_rng(1)
+# X = rng.uniform(-5, + 5, (10, 2))
+# d = X.shape[1]
+# h = 3
+# W = rng.standard_normal((d, h)) * np.sqrt(2 / d)
+# b = rng.standard_normal(h)
+
+# def layer_dense(
+#     X: NDArray[np.float64],
+#     W: NDArray[np.float64],
+#     b: NDArray[np.float64] | float,
+#     att: Callable[[NDArray[np.float64] | float], NDArray[np.float64] | float] | None = None,
+# ) -> NDArray[np.float64]:
+    
+#     if X.ndim != 2 or W.ndim != 2:
+#         raise ValueError(
+#             f"X deve essere 2D e W 2D, invece X{X.shape} W{W.shape}"
+#         )
+#     if X.shape[1] != W.shape[0]:
+#         raise ValueError(
+#             f"shape incompatibili: X{X.shape} colonne vs W{W.shape} righe"
+#         )
+#     z = X @ W + b
+#     if att is None:
+#         return np.asarray(z, dtype=float)
+#     return np.asarray(att(z), dtype=float)
+
+# def relu(
+#     z: NDArray[np.float64] | float
+# ) -> NDArray[np.float64] | float:
+#     z_arr = np.asarray(z, dtype=float)
+#     out = np.maximum(0, z_arr)
+#     if np.isscalar(out) or out.ndim == 0:
+#         return float(out)
+#     return out
+
+# def sigmoid(
+#     z: NDArray[np.float64] | float
+# ) -> NDArray[np.float64] | float:
+#     z_arr = np.asarray(z, dtype=float)
+#     z_clip = np.clip(z_arr, -500, +500)
+#     out = 1 / (1 + np.exp(-z_clip))
+#     if np.isscalar(out) or out.ndim == 0:
+#         return float(out)
+#     return out
+
+# H_lineare = layer_dense(X, W, b)
+# H_sigmoid = layer_dense(X, W, b, att=sigmoid)
+# print(f"{H_lineare}\n")
+# np.set_printoptions(precision=4, suppress=True)
+# print(f"{H_sigmoid}\n")
+# print(H_lineare.min(), H_lineare.max())
+# print(H_sigmoid.min(), H_sigmoid.max())
+
+# la scala, se lasciamo i logit così come sono, può essere piccola come enorme, dipende dal risultato delle operazione.
+# se schiacciamo i valori tramite sigmoid, avremo valori gestibili tra 0 e 1.
 
 
 # TODO 1.3 (3 minuti):
@@ -373,9 +430,19 @@ print(celle_0)
 #   3) Confronto teorico: dev_std atteso circa sqrt(2/d) con d=10 → ~0.447;
 #      la media teorica del processo e' 0.
 #   4) Una frase (commento): perche' la media campionaria non e' ESATTAMENTE 0?
+# perchè i valori sono estratti da una gaussiana a media 0 e dev std 1.Si avrà dunque che la media sarà circa 0, mentra dato che tutti valori sono poi moltiplicati per la scala (np.sqrt(2/d)) la dev std (sigma) che di base e' 1 verrà moltiplicato * sqrt(2 / 10), diventando circa 0.447.
 #      (Indizio: stai osservando un numero FINITO di campioni da una Gaussiana.)
 # TUO CODICE QUI:
+print("\nTODO 1.2\n")
 
+W, b = init_pesi_he(10, 20, seed=42)
+assert W.shape == (10, 20), "Errore con la shape di W"
+print(W.shape)
+assert b.shape == (20, ), "Errore con la shape di b"
+print(b.shape)
+W_1d = W.ravel()
+print(np.mean(W_1d))
+print(np.std(W_1d))
 
 # ==========================================================================
 # SEZIONE 2 - UNA RETE A 2 LAYER IN NUMPY PURO
@@ -527,7 +594,24 @@ def _demo_init_zero() -> None:
 #   - stampa H.shape, P.shape, P.min(), P.max(), P.mean()
 # Domanda finale (commento): la P.mean() e' vicina a 0.5? Perche'?
 # TUO CODICE QUI:
+print("\nTODO 2.1\n")
 
+def my_esempio_rete_2_layer_random():
+    rng = np.random.default_rng(7)
+    N, d, h = 12, 5, 8
+    X = rng.uniform(-5, +5, size=(N, d))
+    W1, b1 = init_pesi_he(d, h, seed=10)
+    W2, b2 = init_pesi_he(h, 1, seed=11)
+    return rete_2_layer(X, W1, b1, W2, b2)
+
+H, P = my_esempio_rete_2_layer_random()
+print(H.shape)
+print(P.shape)
+print(P.min())
+print(P.max())
+print(P.mean())
+
+# Perchè usando valori random, la rete non è allenata, e i logit sono circa 0. Sigmoide di valori circa 0 da circa 0.5.
 
 # TODO 2.2 (10 minuti):
 # Verifica empirica del crollo lineare di R2 ma su una rete A 3 LAYER
@@ -536,12 +620,52 @@ def _demo_init_zero() -> None:
 # diff_max fra le due implementazioni e fai un assert < 1e-10.
 # TUO CODICE QUI:
 
+print("\nTODO 2.2\n")
+rng = np.random.default_rng(42)
+N, d, h, k = 30, 4, 8, 6
+X = rng.standard_normal((N, d))
+W1 = rng.standard_normal((d, h)) * np.sqrt(2 / d)
+b1 = np.zeros(h)
+W2 = rng.standard_normal((h, k)) * np.sqrt(2 / h)
+b2 = np.zeros(k)
+W3 = rng.standard_normal((k, 1)) * np.sqrt(2 / k)
+b3 = 0.0
+
+Z = layer_dense(X, W1, b1, att=None)
+H = layer_dense(Z, W2, b2, att=None)
+K = layer_dense(H, W3, b3)
+
+W_eq = W1 @ W2 @ W3
+b_eq = ((b1 @ W2 + b2) @ W3 + b3)
+
+K_eq = layer_dense(
+    X,
+    W_eq,
+    b_eq
+    )
+diff_max = np.max(np.abs(K - K_eq))
+assert np.allclose(K, K_eq, atol=1e-10), "Qualcosa è andato storto!, gli Array K e K_eq non combaciano"
+print(f"Max differenza: {diff_max}")
+
 
 # TODO 2.3 (5 minuti):
 # Replica _demo_init_zero ma usa init_pesi_he per i pesi (zero solo per
 # i bias). Cosa cambia in P.mean() / P.min() / P.max() ? Spiega in 1
 # riga perche' (suggerimento: ora i neuroni "vedono cose diverse").
 # TUO CODICE QUI:
+
+# ora non avendo restituiti dei dot product = 0, in neuroni effettuano delle operazione che producono risultati diversi in base alle feature di partenza e i pesi dei vari layer
+print("\nTODO 2.3\n")
+    
+def my_demo_init_zero() -> None:
+    rng = np.random.default_rng(42)
+    N, d, h = 20, 4, 8, 
+    X = rng.standard_normal((N, d))
+    W1, b1 = init_pesi_he(d, h)
+    W2, b2 = init_pesi_he(h, 1)
+    _, P = rete_2_layer(X, W1, b1, W2, b2)
+    print(f"P.mean() = {P.mean():.4f}, P.min() = {P.min():.4f}, P.max() = {P.max():.4f}")
+my_demo_init_zero()
 
 
 # ==========================================================================
