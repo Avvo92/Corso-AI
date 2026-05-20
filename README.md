@@ -139,7 +139,17 @@ PRODUZIONE (Mese 5-6)
 Specifiche e architettura delle due app del portfolio (fine corso M10):
 
 - Indice: [`docs/prodotto/README.md`](docs/prodotto/README.md) (stub rapido: [`APPUNTI_APPLICATIVO.md`](APPUNTI_APPLICATIVO.md))
-- Codice scaffold: [`aplicativo/`](aplicativo/README.md)
+- Codice scaffold: [`aplicativo/`](aplicativo/README.md) — **serve** dal M4 in poi (non è codice del corso giorno per giorno)
+
+## Archivi moduli completati
+
+| Modulo | File |
+|--------|------|
+| M1 Python & Dati | [`ARCHIVIO_MODULO_01.md`](ARCHIVIO_MODULO_01.md) |
+| M2 Machine Learning | [`ARCHIVIO_MODULO_02.md`](ARCHIVIO_MODULO_02.md) |
+| Ponte Matematico | [`ARCHIVIO_PONTE_MATEMATICO.md`](ARCHIVIO_PONTE_MATEMATICO.md) |
+
+Stato corso attivo: [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md)
 
 ---
 

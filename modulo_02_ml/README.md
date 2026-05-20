@@ -1,5 +1,7 @@
 # MODULO 2 — Machine Learning Fundamentals
 
+> **Modulo completato** — storico e voti: [`ARCHIVIO_MODULO_02.md`](../ARCHIVIO_MODULO_02.md)
+
 ## Obiettivo del Modulo
 
 In questo modulo passi da "analisi dati" a "modello che impara dai dati".

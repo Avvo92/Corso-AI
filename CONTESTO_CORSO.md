@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 20/05/2026 (canonizzazione prodotto due app + fix gate documentazione; studio in corso **M3 cap.02**)
+> **Ultimo aggiornamento**: 20/05/2026 (housekeeping: archivi **M2** + **Ponte Matematico**; canonizzazione prodotto; studio **M3 cap.02**)
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -13,7 +13,8 @@
 > - Se il primo messaggio in una nuova chat contiene (case-insensitive) le parole
 >   "jarvis" e "iniziare" in qualsiasi ordine (anche con altre parole o punteggiatura),
 >   l'agente deve leggere integralmente `CONTESTO_CORSO.md`, `APPUNTI_APPLICATIVO.md`
->   (stub) e `docs/prodotto/README.md`, più l'archivio del modulo precedente (se esiste)
+>   (stub) e `docs/prodotto/README.md`, più — se esistono — `ARCHIVIO_MODULO_02.md`,
+>   `ARCHIVIO_PONTE_MATEMATICO.md`, `ARCHIVIO_MODULO_01.md`
 >   PRIMA di qualunque altra azione.
 > - Solo dopo allineamento completo deve rispondere esattamente:
 >   `Jarvis pienamente operativo Sig. Stark`
@@ -43,7 +44,7 @@
 | **Capitolo in corso** | modulo_03_dl_cv/02_reti_neurali.py — Reti a più layer (stack di Dense + attivazioni), forward NumPy, confronto con baseline. |
 | **Ultimo completato** | modulo_03_dl_cv/01_neurone_artificiale.py (11/05/2026) — Neurone = Dense h=1 + sigmoid; `layer_dense`; recall Ponte (E7); mini-progetto `neurone_vs_logreg`; checkpoint C1–C4; **voto difficoltà** **8**/10 — confermato da Gianluca in chat. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision |
-| **Difficoltà media** | ~6.8 (20 capitoli con voto: M1 01-06, 08-12 + M2-01…M2-07 + Ponte-01 + **M3 cap.01**; cap 07 M1 escluso/anomalia) |
+| **Difficoltà media** | ~6.8 (22 capitoli con voto; archivi M1/M2/Ponte — vedi file `ARCHIVIO_*`) |
 | **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Data leakage (monitoraggio). |
 | **Sessione corrente** | Sessione 20 |
 
@@ -57,10 +58,10 @@
 | Campo | Valore |
 |-------|--------|
 | **Data** | 20/05/2026 |
-| **Cosa è stato fatto** | **Canonizzazione prodotto**: split Validator/Replicator in `docs/prodotto/`; `ARCHITETTURA_PRODOTTO_DUE_APP.md`; schemi `transfer_route` + `imputation_profile`; scaffold `aplicativo/`; stub root `APPUNTI_APPLICATIVO.md`; rimosso `APPUNTI_TOOL_REPLICA_PDF.md`. Allineati `AGENTS.md`, `.cursorrules`, `roadmap_ai.md`, riferimenti in `CONTESTO`. |
-| **Errori emersi** | Nessuno didattico. **Debito procedurale**: Passo 13 (archivio M2) mai eseguito alla chiusura M2-07 — vedi Promemoria Mentor. |
-| **Cosa fare nella prossima sessione** | (1) Studio: `modulo_03_dl_cv/02_reti_neurali.py` (PRONTUARIO → quiz ingresso → teoria). (2) Opzionale housekeeping: `ARCHIVIO_MODULO_02.md` + snellire `CONTESTO`. |
-| **Stato motivazione** | Buono: focus su organizzazione prodotto per il traguardo M10. |
+| **Cosa è stato fatto** | **Housekeeping**: creati `ARCHIVIO_MODULO_02.md` e `ARCHIVIO_PONTE_MATEMATICO.md` (Passo 13 in ritardo); `CONTESTO` snellito con puntatori. **Canonizzazione prodotto** (sessione precedente): `docs/prodotto/`, `aplicativo/`, commit `88225f2`. |
+| **Errori emersi** | Nessuno didattico. |
+| **Cosa fare nella prossima sessione** | `modulo_03_dl_cv/02_reti_neurali.py` — PRONTUARIO R1–R6 → quiz ingresso → teoria; opzionale bridge `M03_R01_*`. |
+| **Stato motivazione** | Buono: repo più ordinata, pronto a concentrarsi sul DL. |
 
 ---
 
@@ -677,14 +678,35 @@ completezza del self-check e chiedere correzioni.
 | Periodo | 17/02/2026 – 25/03/2026 |
 | Pattern portati al M2 | #6 (consegne), #18 (Series/DataFrame), #19 (is not None) |
 
+### Modulo 2 — Machine Learning (archiviato)
+
+> Dettaglio in [`ARCHIVIO_MODULO_02.md`](ARCHIVIO_MODULO_02.md).
+
+| Riepilogo | Valore |
+|-----------|--------|
+| Capitoli | 7/7 (01–07) |
+| Media difficoltà | ~6.4 |
+| Demo LIVE | https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/ |
+| Archiviato il | 20/05/2026 |
+
+### Ponte Matematico M2→M3 (archiviato)
+
+> Dettaglio in [`ARCHIVIO_PONTE_MATEMATICO.md`](ARCHIVIO_PONTE_MATEMATICO.md).
+
+| Riepilogo | Valore |
+|-----------|--------|
+| Capitoli | 2/2 (`01_vettori_da_zero`, `02_matrici_e_layer_dense`) |
+| Voti difficoltà | 9/10, 9/10 |
+| Archiviato il | 20/05/2026 |
+
 ### Moduli Successivi
 
 > **Cross-ref**: dettaglio componenti pipeline per modulo → vedi "Pipeline ML del Prodotto — Mapping Moduli → Componenti Pipeline".
 
 | Modulo | Focus | Componente pipeline prodotto | Librerie principali | Stato |
 |--------|-------|------------------------------|---------------------|-------|
-| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore supervisionato (vero/alterato) + anomaly detector + `score_genuinita` + `anomaly_score` + **primo test verificabile** + **deploy Streamlit Cloud** | scikit-learn, streamlit | 🟢 **Completato 27/04/2026** — cap.01-07 chiusi; demo live: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/ |
-| **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, coseno, gradiente, discesa — tutto in codice + Matplotlib | Fondamenta per embedding e backpropagation | numpy, matplotlib | 🟡 **In corso** — cap.01 vettori_da_zero in svolgimento |
+| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore + anomaly + deploy | scikit-learn, streamlit | 🟢 **Completato** — archivio [`ARCHIVIO_MODULO_02.md`](ARCHIVIO_MODULO_02.md) |
+| **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, Dense — codice + Matplotlib | Fondamenta M3 (shape, `X @ W + b`, coseno) | numpy, matplotlib | 🟢 **Completato** 07/05/2026 — vedi `ARCHIVIO_PONTE_MATEMATICO.md` |
 | 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | ⬜ Da creare |
 | 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | ⬜ Da creare |
 | 5 — LLM Integration & Prompt Engineering | API OpenAI, prompt engineering, structured output, function calling, Pydantic, Ollama, multimodale, sicurezza AI | Interfaccia intelligente: assistente operatore + structured extraction documenti variabili | openai, pydantic-ai, ollama | ⬜ Da creare |
@@ -751,10 +773,12 @@ completezza del self-check e chiedere correzioni.
 | M2-04_classificazione_metriche | 7 | +1 ↑ vs M2-03 (carico: metriche, quiz, esercizi prodotto; voto studente confermato 13/04/2026) |
 | M2-05_overfitting_validazione | 8 | +1 ↑ vs M2-04 (validazione/CV, bias-varianza, pipeline per evitare leakage in CV; voto studente 22/04/2026) |
 | M2-06_progetto_streamlit | 7 | -1 ↓ vs M2-05 (progetto Streamlit "da zero": demo end-to-end, cache_data/cache_resource, predict_proba 2D, motivi_top3 con segno; voto studente 27/04/2026) |
-| M2-07_deploy_streamlit_cloud | 6 | -1 ↓ vs M2-06 (capitolo operativo: pulizia dipendenze, requirements, push GitHub, deploy cloud, smoke test; primo URL portfolio LIVE; voto studente 27/04/2026) |
-| **M3-01_neurone_artificiale** | **8** | Confermato studente **8**/10; capitolo denso (quiz + E1–E7 + mini-progetto + checkpoint C1–C4); coerente con auto-rating C4 per topic |
+| M2-07_deploy_streamlit_cloud | 6 | *(dettaglio in ARCHIVIO_MODULO_02)* |
+| PM-01_vettori_da_zero | 9 | *(ARCHIVIO_PONTE_MATEMATICO)* |
+| PM-02_matrici_layer_dense | 9 | *(ARCHIVIO_PONTE_MATEMATICO)* |
+| **M3-01_neurone_artificiale** | **8** | Confermato studente **8**/10; capitolo denso (quiz + E1–E7 + mini-progetto + checkpoint C1–C4) |
 
-**Media attuale**: ~6.8 (20 capitoli con voto, cap 07 M1 escluso/anomalia aperta).
+**Media attuale**: ~6.8 (22 capitoli con voto; dettaglio M1/M2/Ponte negli archivi).
 
 ---
 
@@ -906,83 +930,8 @@ completezza del self-check e chiedere correzioni.
 
 ## Domande Fatte Durante i Capitoli
 
-> Storico completo M1 migrato in `ARCHIVIO_MODULO_01.md`.
-> Qui si registrano solo le domande dal M2 in poi.
-
-### Cap.01 M2 — Cos'è il ML
-
-| # | Domanda | Risposta breve |
-|---|---------|----------------|
-| 1 | Come si usa `value_counts()`? | Conta occorrenze/valori unici; con `normalize=True` dà proporzioni 0-1 |
-| 2 | `null` e `False` sono entrambi valori falsy? | In Python si dice `None`, non `null`. Sì, `None`, `False`, `0`, `""`, `[]` sono falsy |
-| 3 | `pratiche.loc[mask]` restituisce un DataFrame? | Sì, `.loc` con mask booleana restituisce un DataFrame filtrato |
-| 4 | Cosa si intende per validation? | Sotto-set per tuning iperparametri, intermedio tra train e test |
-| 5 | Cosa è il modello, i parametri e le soglie? | Modello = algoritmo che impara; parametri = configurazioni pre-training; soglie = valori di taglio per classificazione |
-| 6 | Come funzionano i vari tipi di modelli? | Decision Tree, Random Forest, Regressione, Neural Network, Transformer — spiegati con analogie |
-| 7 | Cosa è una rete neurale Transformer? | Architettura con attenzione che legge tutto il contesto in parallelo (usata nei LLM) |
-| 8 | Concetto di recall e metrica | Recall = quanti veri positivi trovo su tutti i veri positivi; metrica = misura quantitativa di performance |
-| 9 | Come può essere tradotta la parola "feature"? | Caratteristica/variabile/attributo — nel ML indica una colonna di input |
-| 10 | Feature categoriche e one-hot encoding | Feature non numeriche vanno trasformate; one-hot crea colonne binarie per ogni valore |
-| 11 | Cosa è la varianza del prezzo? | Misura di dispersione: quanto i prezzi si allontanano dalla media |
-| 12 | Come salvare un report in CSV? | `df.to_csv(path, index=False)` |
-
-### Cap.02 M2 — Ciclo ML
-
-| # | Domanda / tema | Risposta breve |
-|---|----------------|----------------|
-| 1 | Differenza anti-pattern valutazione vs preparazione dati | Valutazione: misura su train/test sbagliati; preparazione: feature/target, leakage nelle X |
-| 2 | Perché `(x, 2)` non arrotonda | La virgola crea una tupla `(x, 2)`; usare `round(x, 2)` |
-
-### Cap.03 M2 — Regressione
-
-| # | Domanda / tema | Risposta breve |
-|---|----------------|----------------|
-| 1 | Valutazione es.8 `motivi_top_n` (formato coef, return, modello scalato) | Iterazioni: `return` lista, `:+.1f`, uso `modello_lineare_scalato` coerente con PARTE 4 |
-| 2 | Progetto incrementale `modello_base.py` | DataFrame metriche + RMSE test + `motivi_top_3`; assert baseline; compatibilità sklearn `root_mean_squared_error` |
-
-### Cap.04 M2 — Classificazione e metriche
-
-| # | Domanda / tema | Risposta breve |
-|---|----------------|----------------|
-| 1 | Collegamento coefficienti → `motivi_top3` (quiz ingresso Feynman) | Pesi scalati indicano importanza relativa delle feature per spiegare l’esito |
-| 2 | Metrica critica nel documentale | Recall su classe alterato (FN più gravi dei FP) — consolidato in quiz ed es. colloquio |
-
-### Cap.06 M2 — Progetto Streamlit
-
-| # | Domanda / tema | Risposta breve |
-|---|----------------|----------------|
-| 1 | Cos'è il parametro `C` di `LogisticRegression`? | Inverso della regolarizzazione: `C` alto → modello "morbido" che si fida dei dati; `C` basso → modello "duro" che teme l'overfitting |
-| 2 | `os` è una libreria? | Sì, è una libreria standard Python per interagire col sistema operativo (path, file, env vars) |
-| 3 | Cosa restituisce `cross_val_score`? | Array NumPy di score (uno per fold); con 5 fold → 5 valori da cui calcolare media e std |
-| 4 | `.to_frame().T` a cosa serve? | Metodo di Series (non DataFrame): converte una Series in DataFrame 1-col, `.T` la traspone in 1-riga 2D — utile quando serve shape `(1, N)` per `predict` |
-| 5 | Cosa restituisce `predict` di `LogisticRegression`? | Array di etichette di classe (0/1), non probabilità (per quelle serve `predict_proba`) |
-| 6 | Cos'è una funzione di policy? | Regola di prodotto sopra al modello (es. mappa score→semaforo); cambia indipendentemente dal modello ML |
-| 7 | Come si usa `pipe.named_steps`? | Dict-like access: `pipe.named_steps['scaler']`, NON `pipe.named_steps('scaler')` (non è una funzione) |
-| 8 | Come generare una `Series` da due `np.array` (indici + valori)? | `pd.Series(data=valori, index=etichette)` |
-
-### Cap.07 M2 — Deploy Streamlit Cloud
-
-| # | Domanda / tema | Risposta breve |
-|---|----------------|----------------|
-| 1 | "Se funziona in locale funziona anche in cloud" V/F? | Falso: path deploy-safe, requirements allineati, no dipendenze inutili, differenze ambiente (Python version, FS, CWD) |
-| 2 | File minimi per Streamlit Cloud | (1) `requirements.txt` con dipendenze pinned, (2) main file path (l'app principale), (3) i file dati che l'app legge a runtime |
-| 3 | Perché un import inutile è un problema in cloud? | Build più lenta, possibili conflitti di versione, superficie di attacco/maintenance maggiore, confusione per chi legge |
-| 4 | FN nel dominio documentale | Pratica alterata (classe 1) classificata come genuina (classe 0) — il rischio più grave, motiva l'uso di `recall` come metrica primaria |
-
-### Cap.01 Ponte Matematico — Vettori da zero
-
-| # | Domanda / tema | Risposta breve |
-|---|----------------|----------------|
-| 1 | `||V||` — cosa indica la doppia barra | Norma del vettore V (di default norma euclidea/L2); è uno scalare ≥ 0 = "lunghezza dello spostamento" |
-| 2 | Norma vs Coseno: cosa misura cosa | Norma = grandezza/lunghezza (`sqrt(sum(v_i^2))`); Coseno = direzione/forma (`dot(a,b)/(||a||·||b||)`) |
-| 3 | Perché si quadrano gli elementi nella norma | (a) Elimina i segni (componenti negative non si "annullano"); (b) Pesa di più le componenti grandi (scarto principale) — concetto di varianza |
-| 4 | Coseno indefinito su vettore nullo — perché | Norma di un vettore nullo è 0 → divisione per zero; intuitivamente: un vettore senza grandezza non ha direzione definibile |
-| 5 | Normalizzare = ? | Dividere ogni componente per la norma → versore (norma = 1). Mantiene la direzione, scarta la grandezza. Su vettori normalizzati il coseno = `dot(a,b)` diretto |
-| 6 | Direzione in spazi alti (>3D) — cosa significa | Non è "verso dove punta nello spazio" (visivamente impossibile); è il "rapporto/pattern relativo tra le componenti". Due vettori hanno coseno alto se le proporzioni tra le loro componenti sono simili |
-| 7 | Come si collega il coseno al RAG (M4-M6) | Embeddings = vettori che catturano significato; cercare "documenti simili a query" = top-k coseni più alti tra embedding query e embeddings dei chunk → retrieval |
-| 8 | Differenza `np.array` vs `np.ndarray` | `np.ndarray` = la classe (TIPO); `np.array(...)` = funzione factory che crea ndarray. Per type hint: `np.ndarray` (o `numpy.typing.NDArray`) |
-| 9 | `iloc` vs `loc` per accesso a celle | `iloc[i, j]` solo indici numerici (int); `loc[i, "col"]` etichette (chiavi). Mai mescolare etichette stringa in `iloc` |
-| 10 | Algebra lineare in una frase | "La matematica delle frecce e delle tabelle di numeri": grammatica per descrivere trasformazioni lineari di dati. Fondamenta di tutto il ML/DL |
+> Storico M1 → `ARCHIVIO_MODULO_01.md` · M2 → `ARCHIVIO_MODULO_02.md` · Ponte → `ARCHIVIO_PONTE_MATEMATICO.md`.
+> Qui: domande **M3** in corso (e successive).
 
 ### Cap.01 M3 — Neurone artificiale
 
@@ -1095,75 +1044,10 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - Visualizzazione: Matplotlib (plot, bar, pie, subplot, styling)
 - Web: FastAPI (endpoint, query parameters, JSON response, CORSMiddleware, Swagger)
 
-### Cap.01 M2 — Cos'è il ML (completato, media 9.1/10)
-- Concetti ML: supervised vs unsupervised vs reinforcement, feature/target, X/y, leakage, train/test
-- Pandas avanzato: pd.cut, groupby().agg() con lambda e var, reset_index, sort_values, to_csv
-- FastAPI: endpoint con Query() parametrizzato (ge/le), type hint str | None, limit
-- Workflow ML: frase business → target → EDA → X/y → split → baseline → metriche → iterazione
-- Terminologia pipeline: score_genuinita, prob_alterato, anomaly_score, semaforo, motivi_top3
+### Riepilogo M2 e Ponte (archiviati)
 
-### Cap.02 M2 — Ciclo completo ML (completato; voto difficoltà: **5**/10)
-- Preprocessing: missing, one-hot, feature engineering (`eta_casa`, `prezzo_al_mq`, es. log/mq per stanza)
-- Train/test split riproducibile; ordine corretto preprocessing vs leakage (teoria)
-- DecisionTreeRegressor: `fit` / `predict`, `max_depth`, confronto overfitting (gap train-test, es.8)
-- Metriche regressione: MAE, R², RMSE (teoria); baseline media vs modello; assert su test
-- Tag esercizi: colloquio overfitting, refactoring, debug categoriche, interleaving groupby+ML, retrieval, confronto modelli DataFrame
-- Deliverable: `modello_base.py` — ciclo ML autonomo con assert anti-baseline
-- Teoria applicata: ciclo ML su prodotto documentale (es.9)
-
-### Cap.03 M2 — Regressione lineare (completato; voto difficoltà: **6**/10)
-- `LinearRegression`: coefficienti, intercetta, confronto con `DecisionTreeRegressor`
-- `StandardScaler`: fit su train, transform su train/test; coefficienti interpretabili a parità di scala
-- Metriche: MAE, RMSE, R²; lettura RMSE >> MAE (errori grossi / outlier nelle previsioni)
-- Funzione tipo `motivi_top_n` / top |coef| → collegamento a `motivi_top3` in pipeline prodotto
-- Tag esercizi: colloquio (lineare vs albero, bias-varianza), refactoring split/scaling, debug leakage, interleaving groupby+ML, retrieval pipeline completa, analisi prodotto
-- Deliverable: `modello_base.py` — confronto tabellare (baseline, albero, lineare scalato) + `motivi_top_3()` su coefficienti
-
-### Cap.04 M2 — Classificazione e metriche (completato; voto difficoltà: **7**/10)
-- Classificazione binaria su `pratiche_genuinita_mock.csv`: `DecisionTreeClassifier`, `LogisticRegression` con `StandardScaler` (fit su train)
-- Metriche: accuracy, precision, recall, F1; `confusion_matrix`, `classification_report`; ordine argomenti `metriche(y_true, y_pred)`
-- `predict_proba` → `prob_alterato` / `score_genuinita` / soglie operative; collegamento a `semaforo` Blueprint (85/60)
-- Data leakage (es. debug es.5): target non deve restare in X
-- Tag esercizi: colloquio metriche, refactoring, debug leakage, interleaving Pandas+ML, retrieval logistica, analisi prodotto es.8
-- Deliverable: `modello_base.py` — sezione CLASSIFICAZIONE: confronto modelli, `semaforo`, `motivi_top_3(clf_log, …)` con `coef_.ravel()`, assert `max(recall_albero, recall_log) >= 0.5`
-
-### Cap.05 M2 — Overfitting e validazione (completato; voto difficoltà: **8**/10)
-- Generalizzazione: gap train-test, rischio overfitting/underfitting, distinzione “imparare vs scegliere vs stimare” (train vs CV/validation vs test).
-- Cross-validation sul solo train: `StratifiedKFold(5)` + `cross_val_score` con metrica coerente col dominio (recall sugli alterati) e lettura **media ± std**.
-- Bias–varianza operativo: complessità (es. `max_depth`) vs stabilità delle metriche; lettura base di una `validation_curve`.
-- Preprocessing leakage: fit di scaler/encoder **solo su train**; in CV usare `Pipeline` per rifare il fit dello scaler dentro ogni fold.
-- Deliverable: `modello_base.py` — task progetto cap.05 completato: CV recall su `X_train,y_train` con `Pipeline(StandardScaler + LogisticRegression)` e stampa fold/media/std + commento sul valore aggiunto della CV.
-
-### Cap.06 M2 — Progetto Streamlit (completato; voto difficoltà: **7**/10)
-- Streamlit operativo: `set_page_config`, `sidebar`, widget (`slider`, `number_input`, `selectbox`, `checkbox`, `metric`), `st.columns`, `st.divider`, `st.write`/`st.warning`.
-- Caching: `@st.cache_data` per dati/array (deterministici a parità di input), `@st.cache_resource` per modelli/oggetti pesanti (Pipeline addestrata, connessioni). Gli argomenti della funzione fanno da chiave cache.
-- Demo "da zero" (`app_streamlit_da_zero.py`): path deploy-safe (`__file__` + `os.path.join`), funzioni ML separate da UI, raccolta parametri sidebar in un dict `ui`, pipeline con `StandardScaler() → LogisticRegression(C, max_iter, random_state)`.
-- Predizione singola pratica: `predict_proba(X_una)[0, 1]` (input 2D, colonna classe 1 = alterato); conversione prob (0–1) → score (0–100); policy semaforo (verde/giallo/rosso) sopra al modello.
-- Motivi_top3 onesti: `x_scaled = scaler.transform(X_una)[0]`, `coef = model.coef_[0]`, `contrib = x_scaled * coef`; ordinamento per `|contrib|` mantenendo il segno (`sort_values(key=lambda s: s.abs(), ascending=False)`); ritorno `list[tuple[str, float]]`; disclaimer "spiegazione del modello, non causalità".
-- Stabilità + test in UI: CV recall media ± std (su X_train) per stabilità; `recall_score(y_test, pipe.predict(X_test))` come arbitro finale (test = una volta sola).
-- Deliverable: `modulo_02_ml/app_streamlit_da_zero.py` — demo portfolio-ready completa.
-
-### Cap.07 M2 — Deploy Streamlit Cloud (completato; voto difficoltà: **6**/10)
-- Differenza locale → cloud: path deploy-safe (no assoluti), differenze ambiente (Python version, FS, CWD), `requirements.txt` come "manifesto" delle dipendenze.
-- File obbligatori per Streamlit Cloud: (1) `requirements.txt` con dipendenze reali e idealmente versioni pinned, (2) main file path (`modulo_02_ml/app_streamlit_da_zero.py`), (3) file dati che l'app legge a runtime.
-- Pulizia deploy: rimuovere import inutili (riducono build time, superficie di attacco e conflitti di versione); leggere i log Streamlit Cloud è la prima diagnostica (FileNotFoundError = path; ModuleNotFoundError = requirements).
-- **Deliverable LIVE**: https://appappdazeropy-g5tde3wvxdewl5arzmeq2j.streamlit.app/ — primo URL portfolio.
-
-### Cap.01 Ponte Matematico — Vettori da zero (completato; voto difficoltà: **9**/10)
-- Vettore come `np.ndarray` 1D: shape `(n,)`, dtype, distinzione vettore-libero vs vettore-posizione, intuizione "lista di istruzioni di spostamento" e "punto nello spazio se ancorato all'origine".
-- Operazioni element-wise: somma/differenza/prodotto (scalare e tra vettori), distinzione operazioni element-wise NumPy vs operazioni "tra vettori" in algebra lineare.
-- **Dot product** (`np.dot(a,b)` = `a @ b`): somma element-wise dei prodotti `a_i * b_i`, output scalare. Collegamento esplicito a `z = x · w + b` di regressione lineare/logistica e a `contrib = x_scaled * coef` del cap.06 M2 (motivi_top3).
-- **Norma euclidea** (L2): `np.linalg.norm(v) = sqrt(sum(v_i^2))`. Funzione `norma(v) -> float` implementata con `np.linalg.norm` + cast esplicito; comprensione del perché si quadrano (segno + peso scarti grandi → varianza).
-- **Normalizzazione**: divisione element-wise per la norma → versore (lunghezza 1). Mantiene direzione, scarta grandezza. Reso visivamente con PNG didattici (`figures/04_normalizza_norma1.png`, `05_coseno_vs_distanza.png`).
-- **Coseno** (`coseno(a, b)`): formula `dot(a,b) / (||a|| * ||b||)`, range [-1, +1]. Funzione robusta con controllo `shape mismatch` (early return) e `vettore nullo` via `np.linalg.norm == 0`. Verificata su vettori paralleli (cos=1), perpendicolari (cos=0), opposti (cos=-1).
-- **Coseno vs distanza euclidea**: due metriche distinte. Coseno = "stessa direzione/forma proporzionale", Euclidea = "vicinanza assoluta". Esempio: `[1,2,3]` e `[10,20,30]` hanno coseno 1 (stessa direzione) ma distanza grande.
-- **Direzione in spazi alti-dimensionali**: capito come "rapporto proporzionale tra componenti" — non è una freccia visualizzabile, ma un pattern di pesi relativi. Una pratica con coseno alto rispetto a un'altra ha le stesse "proporzioni interne" tra feature, anche se i valori assoluti differiscono.
-- **Mini-progetto top-k similarità**: `classifica_per_similarita(pratiche, pratica_id_query, k)` → top-k pratiche più simili per coseno (escludendo la query stessa). Preludio diretto a embeddings (M4) e retrieval RAG (M6). Iterazione `df.iterrows()`, conversione `Series.to_numpy(dtype=float)`, sorting con `sorted(..., key=lambda x: x[1], reverse=True)`, slicing `[:k]`, validazione `k ≤ len-1`.
-- **Tooling Matplotlib**: `fig, ax = plt.subplots()`, `ax.quiver(x, y, dx, dy)` per disegnare vettori-frecce, `set_aspect('equal')`, `fig.savefig` + `plt.close`. Generati 5 PNG didattici riusabili come materiale visivo.
-- **Tag esercizi**: NumPy/algebra lineare, retrieval mini-progetto preludio RAG, debug shape (mini-progetto), refactoring funzione `coseno` (più round di feedback su robustezza ed efficienza).
-- **Lacuna #12 (NumPy shape)**: chiusa definitivamente — uso autonomo di `.shape`, `dtype`, controlli early-exit su `shape != shape`, conversioni `to_numpy(dtype=float)` corrette.
-- **Pattern emersi (#23 virgole→tuple, #24 iloc/loc, #25 type hint NumPy)**: registrati per rinforzo nel cap.02 Ponte.
-- **Deliverable**: `ponte_matematico_m2_m3/01_vettori_da_zero.py` (1020 righe, completo) + `genera_infografiche_png.py` + 5 PNG didattici in `figures/`.
+- **M2** (7 capitoli, ML + Streamlit deploy): competenze e domande in [`ARCHIVIO_MODULO_02.md`](ARCHIVIO_MODULO_02.md).
+- **Ponte** (2 capitoli, vettori/matrici/Dense): in [`ARCHIVIO_PONTE_MATEMATICO.md`](ARCHIVIO_PONTE_MATEMATICO.md).
 
 ### Cap.01 M3 — Neurone artificiale (completato; voto difficoltà: **8**/10)
 
@@ -1794,9 +1678,11 @@ Quando l'agente prepara un capitolo (M2-M10), DEVE:
 - **Prima del Modulo 3 (DL & CV)**: preparare un notebook Google Colab con PyTorch + torchvision pre-installati, istruzioni per connettere GPU, e un test rapido per verificare che CUDA funzioni su Colab. Idem per il Modulo 8 (Fine-Tuning) con PEFT + bitsandbytes
 - **Prima del file 07**: arricchire con più esempi visivi e mini-esercizi intermedi
 - **Prima del file 08**: aggiungere rappresentazioni ASCII di tensori 2D/3D/4D
-- **✅ MODULO 1 ARCHIVIATO** (25/03/2026): `ARCHIVIO_MODULO_01.md` — consultare per rinforzi su concetti M1.
-- **⚠️ MODULO 2 NON ARCHIVIATO** (20/05/2026): M2 completato (cap.01–07 + deploy Streamlit) ma **Passo 13 non eseguito** alla chiusura `M2_C07`. Creare `ARCHIVIO_MODULO_02.md` quando Gianluca chiede housekeeping o alla chiusura M3 (ultimo cap.07). Fino ad allora: handshake Jarvis può leggere `modulo_02_ml/sessioni_capitoli/` e `ARCHIVIO_MODULO_01.md` per M1.
-  - **Regola file size**: `CONTESTO_CORSO.md` ~2000+ righe — oltre target ~1600; priorità migrazione: **M2** poi dettaglio M1 già puntato in archivio.
+- **✅ MODULO 1 ARCHIVIATO**: `ARCHIVIO_MODULO_01.md`
+- **✅ MODULO 2 ARCHIVIATO** (20/05/2026): `ARCHIVIO_MODULO_02.md`
+- **✅ PONTE MATEMATICO ARCHIVIATO** (20/05/2026): `ARCHIVIO_PONTE_MATEMATICO.md`
+- **Cartella `aplicativo/`**: scaffold codice Validator + Replicator (M4→M10) — vedi sotto e `aplicativo/README.md`
+  - **Regola file size**: `CONTESTO_CORSO.md` resta focalizzato su **M3 attivo** + priorità; storico M1/M2/Ponte negli archivi.
 - **A inizio di ogni nuovo modulo (M2-M10)**: creare la cartella del modulo (`modulo_XX_nome/`) con un `README.md` che segue la struttura del README del Modulo 1
 - **Per i moduli M2-M10**: ogni modulo finale produce una demo deployabile. Il Mentor deve guidare il deploy e verificare che il link sia funzionante
 - **Al modulo M5**: quando i confronti PHP/JS non hanno equivalente diretto (es. embedding, backpropagation), usare analogie dal mondo web/documentale. Registrare i nuovi ponti mentali nella sezione apposita
@@ -2007,6 +1893,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 20/05/2026 | **Housekeeping archivi**: `ARCHIVIO_MODULO_02.md`, `ARCHIVIO_PONTE_MATEMATICO.md`; CONTESTO snellito; handshake Jarvis aggiornato; tabella moduli Ponte → completato. | Passo 13 M2 + Ponte | Archivi, Promemoria, Moduli, Changelog |
 | 20/05/2026 | **Canonizzazione prodotto due app**: doc in `docs/prodotto/`; stub `APPUNTI_APPLICATIVO.md`; schemi transfer/imputation; scaffold `aplicativo/`; gate AGENTS + `.cursorrules` + handshake chiusura; riferimenti APPUNTI uniformati; tabella M10 allineata; nota M2 non archiviato. | Organizzazione per sviluppo M10 | Header, Ultima Sessione, Strategia, Evoluzione progetto, Promemoria, Changelog |
 | 11/05/2026 | **Chiusura M3 cap.01** (`01_neurone_artificiale.py`): Stato → **02_reti_neurali.py**; Ultimo completato + Ultima Sessione; Prossimo Capitolo; diff media ~**6.8** (20 cap); Valutazioni + **M3-01** **8**/10; Progresso progetto + riga cap.01 ✅; Competenze + Domande + Glossario (logit/sigmoid/layer_dense/forward/callable); Sessione **20**. Jarvis handshake. File capitolo **non modificato** (H). | Chiusura formale modulo 03 capitolo 1 | Stato, sessioni, roadmap cap.02, tabelle, glossario, changelog |
 | 11/05/2026 | **Regola 40**: quiz ripasso fondamentali **tra capitoli** (dal M3 in poi): cartella `quiz_ripasso_tra_capitoli/` nel modulo, ~10 mini-esercizi per bridge `cap.K→cap.K+1`, soluzioni in coda; consolidamento Python/NumPy/Pandas/M2 mentre si affronta DL. Creati **6 file bridge** per M3 + `_TEMPLATE` + README cartella; aggiornati `CONTESTO`, `.cursor/rules/mentor-ai-corso.mdc`, `modulo_03_dl_cv/README.md`. | Richiesta studente: non perdere le basi mentre la complessità sale | Regole 39→40, Changelog, file M3 |

@@ -34,8 +34,10 @@ Se `CONTESTO_CORSO.md` non e leggibile/completo:
 
 Dopo il gate corso, per task sul **prodotto Validator/Replicator**:
 
-1. [`APPUNTI_APPLICATIVO.md`](APPUNTI_APPLICATIVO.md) — stub indice (gate corso)
-2. [`docs/prodotto/README.md`](docs/prodotto/README.md) — indice completo
+1. [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md) — stato attivo (M3)
+2. Se serve storico: [`ARCHIVIO_MODULO_01.md`](ARCHIVIO_MODULO_01.md), [`ARCHIVIO_MODULO_02.md`](ARCHIVIO_MODULO_02.md), [`ARCHIVIO_PONTE_MATEMATICO.md`](ARCHIVIO_PONTE_MATEMATICO.md)
+3. [`APPUNTI_APPLICATIVO.md`](APPUNTI_APPLICATIVO.md) — stub indice prodotto
+4. [`docs/prodotto/README.md`](docs/prodotto/README.md) — indice completo prodotto
 3. [`docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md`](docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md) — piano, gap, DoD M10
 4. [`docs/prodotto/DOCUMENT_SPECTRUM.md`](docs/prodotto/DOCUMENT_SPECTRUM.md) — 10 tipi, P0/P1/P2
 5. Validator → `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` + `aplicativo/validator/`
