@@ -108,6 +108,20 @@
 - **Correzione / suggerimento:** Aggiungere **due righe** di stampa: output demo init-zero vs output He; commento **una riga** tipo *«non più tutti 0.5 perché `z` dipende da `X` e da pesi distinti per neurone»*. Opzionale: rimuovere la virgola finale dopo **`8`** in **`N, d, h = 20, 4, 8,`** (solo stile).
 - **Pattern errore / ID contesto** (se applicabile): monitoraggio **consegna “cosa cambia”** (prima/dopo) — Pattern lettura traccia legato a #6 se ricorrente.
 
+### [2026-05-19] — `02_reti_neurali.py` — TODO 3.1 (accuracy rete random vs `h` su CSV)
+
+- **Esercizio / blocco:** Sezione 3, TODO 3.1 (~righe 759–797).
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**.
+- **Punti di forza:** **`carica_pratiche`** + **`StandardScaler`** + **`rete_2_layer` su `X_scaled`** allineati all’`_esempio_rete_2_layer_su_csv`; **LR su `X_scaled`** (fit + soglia da `predict_proba`); loop su **`h ∈ {4,8,16,32,64,128}`**; **`init_pesi_he`** per **`W1,W2`**; **`accuracy_score`** sulla rete random con soglia **0.5**. Commento: osservazione che **`h`** non struttura l’accuracy (nessuna “cura” sul numero di neuroni senza training) è pertinente.
+- **Errori / lacune:** **`acc_clf`** calcolato ma **mai usato/stampato** (rumore computazionale: **`fit`** LR ripetuto 6× identico sullo stesso dato — ok ma inutile se non parte del confronto). Stampa **`acc_rete` senza `h`** rende illeggibile il log a colpo d’occhio. Punto (**c**) chiedeva esplicitamente **vicinanza a ~0.5**: il commento non lo nominalizza (solo “randomico / correlazione con h”): aggiungere **«~0.5 come indovinare a caso su classificazione binaria bilanciata / rete senza allenamento»**.
+- **Correzione / suggerimento:** `print(h, acc_rete)` o f-string unica; eventualmente **`seed` diversi per layer** come nell’esempio del capitolo (`42`,`43`) o parametro fisso **`random_state`**; una riga su **~0.5**.
+- **Pattern errore / ID contesto** (se applicabile): —
+
+### [2026-05-19] — POST-FEEDBACK — TODO 3.1 (`02_reti_neurali.py`)
+
+- **Fix applicato:** rimosso/commentato blocco LR non richiesto per (b)(c); stampa con **`h`** esplicito; commento aggiornato con **vicinanza a ~0.5** e analogia **moneta / caso**.
+- **Valutazione qualità attuale:** **~9.5–10/10**. Il **primo tentativo** storico resta **8/10**. Micro-opzionale: formattare **`acc_rete`** con **`:.4f`**; evitare `fit_transform`/`carica_pratiche` dentro la funzione a ogni `h` (spostare fuori dal loop una volta).
+
 ---
 
 ## Lacune e dubbi ancora aperti

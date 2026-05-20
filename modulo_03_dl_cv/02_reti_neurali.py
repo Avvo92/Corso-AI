@@ -765,8 +765,40 @@ _esempio_rete_2_layer_su_csv()
 #       cosa fa una rete random sui dati?)
 # TUO CODICE QUI:
 
-def my_rete_2_layer_su_csv(d: float, h: float):
-    return
+print("\nTODO 3.1\n")
+
+def my_rete_2_layer_su_csv(h: int):
+    # from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics import accuracy_score
+    
+    X, y = carica_pratiche()
+    
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
+    # clf = LogisticRegression(max_iter=1_000, random_state=42)
+    # clf.fit(X_scaled, y)
+    # pred_clf = (clf.predict_proba(X_scaled)[:, 1] >= 0.5).astype(int)
+    # acc_clf = accuracy_score(y, pred_clf)
+    
+    d = X_scaled.shape[1]
+    
+    W1, b1 = init_pesi_he(d, h)
+    W2, b2 = init_pesi_he(h, 1)
+    
+    _, P = rete_2_layer(X_scaled, W1, b1, W2, b2)
+    pred_rete = (P >= 0.5).astype(int)
+    acc_rete = accuracy_score(y, pred_rete)
+    print(f"h: {h} => {acc_rete}")
+    
+h_values = np.array([4, 8, 16, 32, 64, 128])
+
+for h in h_values:
+    my_rete_2_layer_su_csv(h)
+    
+# in realtà i valori sono del tutto randomici, e non sembrano avere nessuna correlazione con il valore di h.
+# molte volte si avvicinano allo 0.5, ma per ogni riga del csv equivale a lanciare una moneta.
 
 # TODO 3.2 (8 minuti):
 # Genera un grafico PNG che mostra la forma di ReLU(X @ W1 + b1) su un
