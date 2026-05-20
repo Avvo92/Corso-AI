@@ -324,7 +324,7 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 **Obiettivo**: costruire IL prodotto del portfolio — il diamante. Un prodotto AI completo, deployato, con demo live, documentazione professionale, e video demo.
 
-**Dominio applicativo** (allineato a Gianluca): applicativo di **controllo documentale** (Validator + Fixer — `APPUNTI_APPLICATIVO.md`), contesto **broker/intermediazione mutui** con fascicoli reddituali; il traguardo M10 include una **Definition of Done “tecnica vendibile”**: motore ingest → estrazione/regole configurabili → semafori → audit → deploy (`CONTESTO_CORSO.md` Profilo → Strategia prodotto; APPUNTI §16.1 checklist MVP fuori casa). Monetizzazione e contratti verso terzi restano fuori dal syllabus ma il codice e la modularità devono **non** essere imprigionati in un solo workflow interno.
+**Dominio applicativo** (allineato a Gianluca): **due applicativi** sullo stesso spettro documentale — **Validator** (controllo fascicolo) e **Replicator** (generazione PDF fedele, transfer X→Y, imputazione). Indice: `docs/prodotto/README.md` (stub root: `APPUNTI_APPLICATIVO.md`); piano e spettro in `docs/prodotto/`. Contesto **broker/intermediazione mutui**. M10: deploy di entrambe le app; Replicator P0 = `busta_paga` + `transfer_xy` (hold-out QA). Monetizzazione verso terzi fuori syllabus; codice modulare e configurabile.
 
 ### Architettura
 

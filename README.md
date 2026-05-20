@@ -134,6 +134,15 @@ PRODUZIONE (Mese 5-6)
 
 ---
 
+## Documentazione prodotto (Validator + Replicator)
+
+Specifiche e architettura delle due app del portfolio (fine corso M10):
+
+- Indice: [`docs/prodotto/README.md`](docs/prodotto/README.md) (stub rapido: [`APPUNTI_APPLICATIVO.md`](APPUNTI_APPLICATIVO.md))
+- Codice scaffold: [`aplicativo/`](aplicativo/README.md)
+
+---
+
 ## Passo 4 — Cosa Fare a Inizio Modulo
 
 Quando inizi un nuovo modulo:

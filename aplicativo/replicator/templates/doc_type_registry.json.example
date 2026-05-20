@@ -1,0 +1,50 @@
+{
+  "version": "v1",
+  "doc_types": [
+    {
+      "doc_type_id": "busta_paga",
+      "display_name": "Busta paga",
+      "phase": "P0",
+      "enabled_modes": ["transfer_xy", "discursive", "partial_inputs"],
+      "transfer_routes": [
+        {
+          "route_id": "software_x_to_y_v1",
+          "source_software": "SOFTWARE_X_PLACEHOLDER",
+          "target_template_version": "v1",
+          "transfer_route_artifact": "artifacts/transfer_route_v01.json"
+        }
+      ],
+      "active_template_version": "v1",
+      "partial_field_ids": [
+        "periodo_riferimento",
+        "codice_fiscale",
+        "lordo",
+        "netto",
+        "datore_lavoro"
+      ],
+      "data_paths": {
+        "corpus_y": "dati/replica/busta_paga/raw/",
+        "corpus_x": "dati/replica/busta_paga/source_x/",
+        "holdout": "dati/replica/busta_paga/holdout/"
+      }
+    },
+    {
+      "doc_type_id": "cu",
+      "display_name": "Certificazione Unica",
+      "phase": "P1",
+      "enabled_modes": ["discursive", "partial_inputs"],
+      "transfer_routes": [],
+      "active_template_version": "v1",
+      "partial_field_ids": [
+        "anno_fiscale",
+        "codice_fiscale",
+        "reddito_lavoro_dipendente",
+        "sostituto_imposta"
+      ],
+      "data_paths": {
+        "corpus_y": "dati/replica/cu/raw/",
+        "holdout": "dati/replica/cu/holdout/"
+      }
+    }
+  ]
+}

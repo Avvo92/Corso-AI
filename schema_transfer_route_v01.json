@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema_transfer_route_v01.json",
+  "title": "Transfer Route v0.1 - Replicator X to Y",
+  "description": "Mapping campi da software emittente X verso template Y per doc_type_id.",
+  "type": "object",
+  "required": ["doc_type_id", "version", "source_software", "target_template_version", "field_mappings"],
+  "properties": {
+    "doc_type_id": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "pattern": "^v[0-9]+(\\.[0-9]+)*$" },
+    "source_software": {
+      "type": "string",
+      "description": "Identificativo software/profilo PDF sorgente (X)"
+    },
+    "target_template_version": {
+      "type": "string",
+      "description": "Versione geometry_template / field_map su Y"
+    },
+    "field_mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_field_id", "target_field_id"],
+        "properties": {
+          "source_field_id": { "type": "string" },
+          "target_field_id": { "type": "string" },
+          "transform": {
+            "type": "string",
+            "enum": ["identity", "normalize_date", "normalize_currency", "lookup_table", "custom_python"],
+            "default": "identity"
+          },
+          "transform_config": { "type": "object" },
+          "required_on_target": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    "unmapped_source_policy": {
+      "type": "string",
+      "enum": ["ignore", "log_warning", "fail"],
+      "default": "log_warning"
+    },
+    "unmapped_target_policy": {
+      "type": "string",
+      "enum": ["impute", "leave_empty", "fail"],
+      "default": "impute"
+    }
+  }
+}

@@ -69,3 +69,10 @@ streamlit>=1.40
 
 # --- MODULO 10: Progetto Finale ---
 # (Usa tutte le dipendenze dei moduli precedenti)
+
+# --- APPLICATIVO: Replicator PDF (scommentare dal M4) ---
+# Vedi docs/prodotto/APPUNTI_APPLICATIVO_REPLICATOR.md e aplicativo/replicator/
+# pdfplumber>=0.11
+# pymupdf>=1.24
+# reportlab>=4.2
+# pypdf>=5.0

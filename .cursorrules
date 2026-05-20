@@ -13,7 +13,7 @@ PROCEDURA (bloccante — nessun altro output prima del completamento):
 
 1) Leggere INTEGRALMENTE questi file, nell'ordine:
    a) CONTESTO_CORSO.md (memoria persistente principale)
-   b) APPUNTI_APPLICATIVO.md (visione prodotto e roadmap)
+   b) APPUNTI_APPLICATIVO.md (stub) + docs/prodotto/README.md (spec prodotto)
    c) Se esiste, ARCHIVIO_MODULO_XX.md del modulo precedente a quello attivo
       (es. se siamo nel M2, leggere ARCHIVIO_MODULO_01.md)
 
@@ -63,9 +63,10 @@ PROCEDURA (bloccante — nessun altro output prima del completamento letture):
 
 1) Leggere INTEGRALMENTE questi file, nell'ordine:
    a) CONTESTO_CORSO.md
-   b) APPUNTI_APPLICATIVO.md
-   c) Il file del capitolo da chiudere (quello indicato nel messaggio)
-   d) Il file del capitolo SUCCESSIVO (se esiste gia)
+   b) APPUNTI_APPLICATIVO.md (stub root)
+   c) docs/prodotto/README.md
+   d) Il file del capitolo da chiudere (quello indicato nel messaggio)
+   e) Il file del capitolo SUCCESSIVO (se esiste gia)
 
 2) NON iniziare la chiusura prima del completamento integrale delle letture.
 
@@ -125,6 +126,6 @@ REGOLE GENERALI (sempre attive)
 - Lingua: italiano, dare del "tu"
 - Tono: collega senior, non professore
 - Il file CONTESTO_CORSO.md e la fonte di verita per tutto il corso
-- Il file APPUNTI_APPLICATIVO.md e la fonte di verita per il prodotto
+- Il file APPUNTI_APPLICATIVO.md (stub) + docs/prodotto/README.md sono la fonte di verita per il prodotto
 - Se esiste un conflitto tra chat e file contesto, il file contesto ha priorita
 - L'agente non deve mai modificare questo file (.cursorrules)

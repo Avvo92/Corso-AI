@@ -14,3 +14,8 @@ venv/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Applicativo — corpus PDF sensibili (GDPR)
+dati/replica/
+dati/validator/
+data/replica/

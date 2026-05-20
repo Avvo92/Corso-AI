@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema_imputation_profile_v01.json",
+  "title": "Imputation Profile v0.1 - Replicator",
+  "description": "Distribuzioni e regole condizionate per autocompletare campi mancanti dal corpus template Y.",
+  "type": "object",
+  "required": ["doc_type_id", "version", "trained_on_corpus_hash", "fields"],
+  "properties": {
+    "doc_type_id": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "pattern": "^v[0-9]+(\\.[0-9]+)*$" },
+    "trained_on_corpus_hash": { "type": "string" },
+    "sample_count": { "type": "integer", "minimum": 1 },
+    "fields": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "strategy": {
+            "type": "string",
+            "enum": ["marginal", "conditional", "constant", "forbidden"]
+          },
+          "marginal": {
+            "type": "object",
+            "properties": {
+              "distribution": {
+                "type": "string",
+                "enum": ["categorical", "numeric_gaussian", "numeric_uniform"]
+              },
+              "params": { "type": "object" }
+            }
+          },
+          "conditional_rules": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["when", "then"],
+              "properties": {
+                "when": { "type": "object" },
+                "then": { "type": "object" },
+                "priority": { "type": "integer", "default": 0 }
+              }
+            }
+          },
+          "hard_bounds": {
+            "type": "object",
+            "properties": {
+              "min": { "type": "number" },
+              "max": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

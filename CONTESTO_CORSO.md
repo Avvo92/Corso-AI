@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 11/05/2026 (chiusura **M3 cap.01** — `01_neurone_artificiale.py`; handshake Jarvis)
+> **Ultimo aggiornamento**: 20/05/2026 (canonizzazione prodotto due app + fix gate documentazione; studio in corso **M3 cap.02**)
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -13,15 +13,16 @@
 > - Se il primo messaggio in una nuova chat contiene (case-insensitive) le parole
 >   "jarvis" e "iniziare" in qualsiasi ordine (anche con altre parole o punteggiatura),
 >   l'agente deve leggere integralmente `CONTESTO_CORSO.md`, `APPUNTI_APPLICATIVO.md`
->   e l'archivio del modulo precedente (se esiste) PRIMA di qualunque altra azione.
+>   (stub) e `docs/prodotto/README.md`, più l'archivio del modulo precedente (se esiste)
+>   PRIMA di qualunque altra azione.
 > - Solo dopo allineamento completo deve rispondere esattamente:
 >   `Jarvis pienamente operativo Sig. Stark`
 > - La procedura completa e definita in `.cursorrules` (fonte di verita per i trigger).
 >
 > **HANDSHAKE DI CHIUSURA CAPITOLO (OBBLIGATORIO)**:
 > - Se un messaggio contiene "jarvis", "chiusura" (o "correzione") e "capitolo" + numero,
->   l'agente deve leggere integralmente `CONTESTO_CORSO.md`, `APPUNTI_APPLICATIVO.md`,
->   il file del capitolo da chiudere, e il file del capitolo successivo.
+>   l'agente deve leggere integralmente `CONTESTO_CORSO.md`, `APPUNTI_APPLICATIVO.md` (stub),
+>   `docs/prodotto/README.md`, il file del capitolo da chiudere, e il file del capitolo successivo.
 > - Poi esegue la procedura di chiusura (Fasi A-B-C-D) definita in `.cursorrules`
 >   e nella sezione H) di questo file.
 > - La procedura completa e definita in `.cursorrules` (fonte di verita per i trigger).
@@ -55,11 +56,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 11/05/2026 |
-| **Cosa è stato fatto** | **Chiusura formale M3 cap.01** (`01_neurone_artificiale.py`): esercizi E5–E7 + mini-progetto `neurone_vs_logreg` portati a DoD (incluso `np.allclose` su tutto il vettore probabilità); checkpoint C1–C4 compilati; diario `sessioni_capitoli/M03_C01_neurone_artificiale_sessione.md` completo di valutazioni. Handshake Jarvis chiusura capitolo 1 M3. |
-| **Errori emersi** | Sessione studio: confusione **boolean indexing** (`arr[arr > 0.5]` filtra) vs **maschera di classe** `(arr >= 0.5).astype`; rapporto errato al posto di **`mean(pred_a == pred_b)`** per accordo tra modelli; tentativo **`isinstance(..., NDArray[...])`** a runtime; typo **`form`** vs **`from`** negli import; richiesta esplicita: **nessuna modifica al codice dello studente senza permesso**. |
-| **Cosa fare nella prossima sessione** | Aprire `modulo_03_dl_cv/02_reti_neurali.py`: PRONTUARIO R1–R6 → quiz ingresso → Sezione 1–3 nel ordine del file; mantenere ponti mentali shape `(N,d)@(d,h)→(N,h)` e **non-linearità** tra layer. Opzionale: file bridge `quiz_ripasso_tra_capitoli/M03_R01_*` cap.01→cap.02. |
-| **Stato motivazione** | Solido: capitolo lungo ma chiuso con prove quantitative (mini-progetto vs sklearn) e auto-rating C4 realistico (7–10 per area). |
+| **Data** | 20/05/2026 |
+| **Cosa è stato fatto** | **Canonizzazione prodotto**: split Validator/Replicator in `docs/prodotto/`; `ARCHITETTURA_PRODOTTO_DUE_APP.md`; schemi `transfer_route` + `imputation_profile`; scaffold `aplicativo/`; stub root `APPUNTI_APPLICATIVO.md`; rimosso `APPUNTI_TOOL_REPLICA_PDF.md`. Allineati `AGENTS.md`, `.cursorrules`, `roadmap_ai.md`, riferimenti in `CONTESTO`. |
+| **Errori emersi** | Nessuno didattico. **Debito procedurale**: Passo 13 (archivio M2) mai eseguito alla chiusura M2-07 — vedi Promemoria Mentor. |
+| **Cosa fare nella prossima sessione** | (1) Studio: `modulo_03_dl_cv/02_reti_neurali.py` (PRONTUARIO → quiz ingresso → teoria). (2) Opzionale housekeeping: `ARCHIVIO_MODULO_02.md` + snellire `CONTESTO`. |
+| **Stato motivazione** | Buono: focus su organizzazione prodotto per il traguardo M10. |
 
 ---
 
@@ -145,9 +146,9 @@
 - **Python installato**: 3.14.3
 - **IDE**: Cursor
 - **Version control**: Git + GitHub (il corso è già in una repository)
-- **Obiettivo finale**: Entrare nel mondo del lavoro tech con competenze solide in Python, AI/ML e web development. Il progetto finale deve essere il **diamante del portfolio**: una full web app (React + FastAPI, con eventuale layer Laravel — decisione aperta D1 in APPUNTI_APPLICATIVO.md) con IA integrata — bella, reattiva, funzionale — da mostrare ai recruiter come prova concreta di competenza.
-- **Ruolo professionale di riferimento**: **broker di mutui / intermediazione creditizia** (contesto banca): uso quotidiano di fascicoli reddituali e documentazione cliente. Il perimetro documentale del prodotto (Validator + Fixer — `APPUNTI_APPLICATIVO.md`) resta coerente con quel contesto; il nucleo tecnico (**qualità fascicolo, incrocio multi-documento, semafori, audit, configurabilità**) è ripetibile verso **altri intermediari** con esigenze analoghe di controllo documentale.
-- **Obiettivo applicativo concreto**: Costruire un applicativo di **controllo documentale** per uso **operativo interno** (società / rete di cui fa parte) e, progettando **motore + configurazione + deploy** sin dall'M10, creare una base ripetibile verso **terzi** (licenza, fee di setup, abbonamento), senza confondere il Messaggio Prodotto con una garanzia di esito o di compliance legale — dettaglio in **Strategia prodotto** sotto e in `APPUNTI_APPLICATIVO.md` §14.3 e §16.1.
+- **Obiettivo finale**: Entrare nel mondo del lavoro tech con competenze solide in Python, AI/ML e web development. Il progetto finale deve essere il **diamante del portfolio**: **due applicativi** deployati (Validator + Replicator — vedi `docs/prodotto/`) con stack React + FastAPI e IA integrata — da mostrare ai recruiter come prova concreta di competenza.
+- **Ruolo professionale di riferimento**: **broker di mutui / intermediazione creditizia** (contesto banca): uso quotidiano di fascicoli reddituali e documentazione cliente. Il perimetro documentale del prodotto (**due applicativi**: Validator + Replicator — indice `APPUNTI_APPLICATIVO.md` → `docs/prodotto/`, architettura e spettro in `docs/prodotto/`) resta coerente con quel contesto; il nucleo tecnico (**qualità fascicolo, incrocio multi-documento, semafori, audit, configurabilità**) è ripetibile verso **altri intermediari** con esigenze analoghe di controllo documentale.
+- **Obiettivo applicativo concreto**: Costruire un applicativo di **controllo documentale** per uso **operativo interno** (società / rete di cui fa parte) e, progettando **motore + configurazione + deploy** sin dall'M10, creare una base ripetibile verso **terzi** (licenza, fee di setup, abbonamento), senza confondere il Messaggio Prodotto con una garanzia di esito o di compliance legale — dettaglio in **Strategia prodotto** sotto e in `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` §14.3 e §16.1.
   - Scope tecnico (allineato APPUNTI): OCR dove serve, estrazione/parsing campi chiave, **motore regole configurabile**, scoring/semafori, spiegazioni leggibili, audit trail, RAG normativo dove previsto, integrazione ramo visivo M3 (`prob_busta_paga_visivo`) nel modello tabulare M2.
   - Il materiale documentale disponibile alimenta training/RAG dove coerente con privacy e protocollo corso.
 
@@ -155,8 +156,8 @@
 
 - **Fine corso (M10) → Definition of Done “tecnica vendibile”**: applicativo **deployato**, dimostrabile, con nucleo **Document QA** (ingest → classificazione tipo doc → estrazione → regole → output strutturato + audit). Questo livello è **realistico** con il percorso corso + mentoring; supera la soglia “solo demo locale”.
 - **Vendita / monetizzazione seria** richiede in più (fuori scope didattico primario ma da pianificare): contratti, limitazione responsabilità, pricing ricorrente o progetti, supporto. Il valore economico si ragiona su **EVA per il compratore** (tempo risparmiato, integrazioni richieste in meno, tracciabilità), non sul “prezzo del repository”.
-- **Posizionamento**: layer **qualità fascicolo documentale** e **supporto decisionale**, non sostituto del giudizio umano o dell’istruttoria banca; non “solo OCR” né clone di gestionale mutui — vedi matrice concettuale in APPUNTI §14.3.
-- **Per il mentor**: quando si assegna un task al **progetto incrementale**, preferire funzionalità che ricadono nella checklist **MVP vendibile fuori casa** (APPUNTI §16.1): ingest, classificazione doc, estrazione minima, **regole/config**, semaforo + azioni, export report, audit, narrative privacy-by-design; API/webhook come stretch.
+- **Posizionamento**: layer **qualità fascicolo documentale** e **supporto decisionale**, non sostituto del giudizio umano o dell’istruttoria banca; non “solo OCR” né clone di gestionale mutui — vedi matrice concettuale in `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` §14.3.
+- **Per il mentor**: quando si assegna un task al **progetto incrementale**, preferire funzionalità che ricadono nella checklist **MVP vendibile fuori casa** (`docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` §16.1): ingest, classificazione doc, estrazione minima, **regole/config**, semaforo + azioni, export report, audit, narrative privacy-by-design; API/webhook come stretch.
 
 ### Preferenze di spiegazione (aggiornamento 02/04/2026)
 
@@ -722,7 +723,7 @@ completezza del self-check e chiedere correzioni.
 | **Smart Tool** | M3-M4 | + classificatore visivo CNN per segnali grafici di alterazione + estrazione campi da OCR + matching semantico cross-documento | Feature CV integrata nel modello, campi estratti da testo, coerenza semantica |
 | **AI-Powered** | M5-M6 | + assistente LLM operatore (spiega esiti, function calling su pratiche) + RAG normativo con citazioni obbligatorie + structured extraction per documenti variabili | Spiegazioni naturali, compliance normativa verificabile, estrazione intelligente |
 | **Autonomous** | M7-M8 | + agente orchestratore pipeline end-to-end (OCR → parsing → feature → modelli → regole → report) + modello fine-tunato sul dominio aziendale specifico | Pipeline orchestrata automaticamente, precisione massima su documenti aziendali |
-| **Production** | M9-M10 | + containerizzato, deployato, testato, monitorato, con CI/CD + frontend React + feedback loop revisore → retraining — il diamante del portfolio | Prodotto completo usabile da operatori, con monitoring e miglioramento continuo |
+| **Production** | M9-M10 | + containerizzato, deployato, testato, monitorato, con CI/CD + frontend React + feedback loop revisore → retraining + **Replicator** (template PDF per tipo documento) — il diamante del portfolio | Prodotto completo usabile da operatori; generazione PDF fedele per tipi registrati |
 
 ---
 
@@ -1475,7 +1476,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M7 — Agents | **Orchestratore pipeline** | Agente che coordina l'intera pipeline: OCR → parsing → feature engineering → modelli (supervisionato + non supervisionato) → regole deterministiche → output combinato → report operatore + MCP server custom | LangGraph, tool use, agentic RAG, MCP, multi-agent |
 | M8 — Fine-Tuning | **Specializzazione dominio** | Modello personalizzato sul dominio documentale aziendale: fine-tuning per classificazione/triage documenti con dati specifici del contesto lavorativo di Gianluca | LoRA, QLoRA, PEFT, dataset curation, valutazione base vs fine-tunato |
 | M9 — MLOps | **Produzione stabile** | Tutto containerizzato e deployato: Docker + CI/CD + monitoring metriche modello + semantic caching + testing AI + alert su drift/regressioni | Docker, GitHub Actions, Redis, pytest, monitoring |
-| M10 — Finale | **Prodotto completo** | Frontend React + Backend FastAPI + servizi AI/RAG integrati + feedback loop revisore → nuove label → retraining — deploy live per uso operatori reali | Full-stack, architettura microservizi, deploy cloud, workflow team |
+| M10 — Finale | **Due app deployate** (Validator + Replicator) | Validator P0 (busta, CU, estratto) + Replicator P0 (`busta_paga` transfer_xy) + P1 opzionale; integrazione antagonista; deploy separati | React + FastAPI, `docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md` |
 
 ### Progresso del progetto
 
@@ -1629,7 +1630,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 - Precision su classe "alterato" >= 70% (falsi allarmi tollerabili ma non dominanti)
 - F1 complessivo >= 80%
 - Tempo medio pipeline per pratica (upload → esito) < 30 secondi
-- RAG grounding rate >= 85% (risposte con citazione fonte verificabile) — soglia minima DoD; il target operativo pilot in APPUNTI_APPLICATIVO.md e >= 95%
+- RAG grounding rate >= 85% (risposte con citazione fonte verificabile) — soglia minima DoD; il target operativo pilot in `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` e >= 95%
 - Anomaly detection: tasso falsi allarmi < 15% su dataset di validazione
 - Test suite automatizzata: >= 20 test (unit + integration + end-to-end) con CI green
 - Uptime demo deployata: URL raggiungibile e funzionante al momento della presentazione
@@ -1694,6 +1695,9 @@ Feature Engineering ──► Tabella numerica (X = DataFrame, una riga per docu
     │
     ▼
 Output Combinato ──► Dashboard Operatore + Report + API
+    │
+    ├──► (opzionale) Replicator ──► PDF generato da geometry_template + payload
+    │         └──► ri-validazione opzionale (stesso flusso OCR + Parsing)
     │
     ▼
 Feedback Loop ──► Revisore conferma/corregge ──► nuove label ──► retraining
@@ -1762,13 +1766,13 @@ Quando il dataset cresce a centinaia/migliaia di documenti, l'estrazione manuale
 |--------|-------------------------------------|------------------------|
 | M2 — ML | Modello supervisionato + anomaly detection + metriche + demo Streamlit | Il cuore predittivo: classificazione vero/alterato + anomaly_score |
 | M3 — DL & CV | Classificatore visivo documenti + feature CV | Ramo visivo: rileva alterazioni grafiche non visibili a occhio |
-| M4 — NLP | Estrazione campi da testo OCR + matching semantico | Ramo testuale: parsing intelligente + coerenza semantica tra documenti |
+| M4 — NLP | Estrazione campi da testo OCR + matching semantico + prime estrazioni bbox PDF | Ramo testuale; fondamenta Replicator (layout) |
 | M5 — LLM | Assistente operatore + structured extraction + function calling | Interfaccia intelligente + estrazione campi da layout variabili |
 | M6 — RAG | Base conoscenza normativa + citazioni + evaluation | Verifica compliance con norme fiscali aggiornate e versionate |
 | M7 — Agents | Orchestratore pipeline end-to-end + agentic RAG + MCP | Il "cervello" che coordina OCR → parsing → scoring → report |
 | M8 — Fine-Tuning | Modello specializzato per il dominio aziendale | Precisione massima su documenti specifici del contesto lavorativo |
 | M9 — MLOps | Containerizzazione + CI/CD + monitoring + caching | Tutto in produzione: stabile, monitorato, testato |
-| M10 — Finale | Frontend React + Backend FastAPI + servizi AI integrati | Il prodotto completo, deployato e usabile da operatori reali |
+| M10 — Finale | Frontend React + Backend FastAPI + **due app** (Validator + Replicator) | Deploy separati; Validator P0 + Replicator P0 (`busta_paga` transfer_xy) — vedi `docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md` |
 
 ### Regola per l'agente — Coerenza pipeline in ogni capitolo
 
@@ -1778,7 +1782,7 @@ Quando l'agente prepara un capitolo (M2-M10), DEVE:
 3. Usare terminologia coerente: `score_genuinita`, `prob_alterato`, `anomaly_score`, `semaforo`, `motivi_top3`, `evidenze`, `azione_consigliata` — non inventare nomi diversi
 4. Quando introduce un concetto nuovo (es. train/test split), **collegarlo esplicitamente** alla pipeline del prodotto con un esempio concreto dal dominio documentale
 5. Rinforzare il concetto di data leakage ogni volta che si lavora su feature/target
-6. Per task sul **progetto incrementale** da M5 in poi: verificare allineamento alla checklist **MVP vendibile fuori casa** in `APPUNTI_APPLICATIVO.md` §16.1 (ingest, classificazione doc, estrazione minima, regole configurabili, semaforo + azioni, export, audit, narrative privacy)
+6. Per task sul **progetto incrementale** da M5 in poi: verificare allineamento alla checklist **MVP vendibile fuori casa** in `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` §16.1 (ingest, classificazione doc, estrazione minima, regole configurabili, semaforo + azioni, export, audit, narrative privacy)
 
 ---
 
@@ -1790,8 +1794,9 @@ Quando l'agente prepara un capitolo (M2-M10), DEVE:
 - **Prima del Modulo 3 (DL & CV)**: preparare un notebook Google Colab con PyTorch + torchvision pre-installati, istruzioni per connettere GPU, e un test rapido per verificare che CUDA funzioni su Colab. Idem per il Modulo 8 (Fine-Tuning) con PEFT + bitsandbytes
 - **Prima del file 07**: arricchire con più esempi visivi e mini-esercizi intermedi
 - **Prima del file 08**: aggiungere rappresentazioni ASCII di tensori 2D/3D/4D
-- **✅ MODULO 1 ARCHIVIATO** (25/03/2026): `ARCHIVIO_MODULO_01.md` creato con progresso dettagliato, domande cap 01-05, pattern storico, competenze, ritmo studio, lacune quiz. Regola: per rinforzi su concetti M1, consultare l'archivio. **Il Passo 13 del Protocollo di Aggiornamento formalizza questo processo per ogni modulo futuro.**
-  - **Regola file size**: il file principale CONTESTO_CORSO.md mantiene solo contenuto ATTIVO. Obiettivo: restare sotto le ~1600 righe; se supera, migrare contenuto storico nell'archivio del modulo (vedi Passo 13)
+- **✅ MODULO 1 ARCHIVIATO** (25/03/2026): `ARCHIVIO_MODULO_01.md` — consultare per rinforzi su concetti M1.
+- **⚠️ MODULO 2 NON ARCHIVIATO** (20/05/2026): M2 completato (cap.01–07 + deploy Streamlit) ma **Passo 13 non eseguito** alla chiusura `M2_C07`. Creare `ARCHIVIO_MODULO_02.md` quando Gianluca chiede housekeeping o alla chiusura M3 (ultimo cap.07). Fino ad allora: handshake Jarvis può leggere `modulo_02_ml/sessioni_capitoli/` e `ARCHIVIO_MODULO_01.md` per M1.
+  - **Regola file size**: `CONTESTO_CORSO.md` ~2000+ righe — oltre target ~1600; priorità migrazione: **M2** poi dettaglio M1 già puntato in archivio.
 - **A inizio di ogni nuovo modulo (M2-M10)**: creare la cartella del modulo (`modulo_XX_nome/`) con un `README.md` che segue la struttura del README del Modulo 1
 - **Per i moduli M2-M10**: ogni modulo finale produce una demo deployabile. Il Mentor deve guidare il deploy e verificare che il link sia funzionante
 - **Al modulo M5**: quando i confronti PHP/JS non hanno equivalente diretto (es. embedding, backpropagation), usare analogie dal mondo web/documentale. Registrare i nuovi ponti mentali nella sezione apposita
@@ -2002,6 +2007,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 20/05/2026 | **Canonizzazione prodotto due app**: doc in `docs/prodotto/`; stub `APPUNTI_APPLICATIVO.md`; schemi transfer/imputation; scaffold `aplicativo/`; gate AGENTS + `.cursorrules` + handshake chiusura; riferimenti APPUNTI uniformati; tabella M10 allineata; nota M2 non archiviato. | Organizzazione per sviluppo M10 | Header, Ultima Sessione, Strategia, Evoluzione progetto, Promemoria, Changelog |
 | 11/05/2026 | **Chiusura M3 cap.01** (`01_neurone_artificiale.py`): Stato → **02_reti_neurali.py**; Ultimo completato + Ultima Sessione; Prossimo Capitolo; diff media ~**6.8** (20 cap); Valutazioni + **M3-01** **8**/10; Progresso progetto + riga cap.01 ✅; Competenze + Domande + Glossario (logit/sigmoid/layer_dense/forward/callable); Sessione **20**. Jarvis handshake. File capitolo **non modificato** (H). | Chiusura formale modulo 03 capitolo 1 | Stato, sessioni, roadmap cap.02, tabelle, glossario, changelog |
 | 11/05/2026 | **Regola 40**: quiz ripasso fondamentali **tra capitoli** (dal M3 in poi): cartella `quiz_ripasso_tra_capitoli/` nel modulo, ~10 mini-esercizi per bridge `cap.K→cap.K+1`, soluzioni in coda; consolidamento Python/NumPy/Pandas/M2 mentre si affronta DL. Creati **6 file bridge** per M3 + `_TEMPLATE` + README cartella; aggiornati `CONTESTO`, `.cursor/rules/mentor-ai-corso.mdc`, `modulo_03_dl_cv/README.md`. | Richiesta studente: non perdere le basi mentre la complessità sale | Regole 39→40, Changelog, file M3 |
 | 30/04/2026 | **Decisione M3 — target deliverable cap.07**: scelto "busta paga vs non-busta paga" su immagini reali (vs. opzione più semplice "MNIST-like"). Studente conferma di avere ~200 buste paga utilizzabili. Documentati 3 vincoli privacy/GDPR bloccanti (anonimizzazione preprocessing, mai committare buste, mai caricare originali su Colab). Roadmap ramo visivo M3 esplicitata nei cap.05/06/07. Progetto incrementale M3 → 🟡 Pianificato. | Pianificazione anticipata del modulo successivo per scegliere dataset di training fin dal cap.05 | Computer Vision nel Prodotto, Progresso del progetto, Changelog |
