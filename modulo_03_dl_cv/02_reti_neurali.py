@@ -733,7 +733,8 @@ def _esempio_rete_2_layer_su_csv() -> None:
     print(f"LogisticRegression M2 (ALLENATA):        accuracy = {acc_lr:.3f}")
     print("La rete random fa peggio: e' giusto cosi'.")
     print("Nel cap.03 M3 la addestriamo con la backpropagation.")
-
+print ("\nsezione 3\n")
+_esempio_rete_2_layer_su_csv()
 
 # 3.3 - INTUIZIONE: UNIVERSAL APPROXIMATION THEOREM (no formule)
 #
@@ -764,6 +765,8 @@ def _esempio_rete_2_layer_su_csv() -> None:
 #       cosa fa una rete random sui dati?)
 # TUO CODICE QUI:
 
+def my_rete_2_layer_su_csv(d: float, h: float):
+    return
 
 # TODO 3.2 (8 minuti):
 # Genera un grafico PNG che mostra la forma di ReLU(X @ W1 + b1) su un
