@@ -1,6 +1,6 @@
 # Ponte Matematico (M2 → M3)
 
-> **Completato** — archivio: [`ARCHIVIO_PONTE_MATEMATICO.md`](../ARCHIVIO_PONTE_MATEMATICO.md)
+> **Completato** — archivio: [`archivi/ARCHIVIO_PONTE_MATEMATICO.md`](../archivi/ARCHIVIO_PONTE_MATEMATICO.md)
 
 | # | File | Argomento |
 |---|------|-----------|

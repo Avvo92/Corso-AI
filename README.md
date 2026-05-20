@@ -143,11 +143,13 @@ Specifiche e architettura delle due app del portfolio (fine corso M10):
 
 ## Archivi moduli completati
 
+Tutti in [`archivi/`](archivi/README.md):
+
 | Modulo | File |
 |--------|------|
-| M1 Python & Dati | [`ARCHIVIO_MODULO_01.md`](ARCHIVIO_MODULO_01.md) |
-| M2 Machine Learning | [`ARCHIVIO_MODULO_02.md`](ARCHIVIO_MODULO_02.md) |
-| Ponte Matematico | [`ARCHIVIO_PONTE_MATEMATICO.md`](ARCHIVIO_PONTE_MATEMATICO.md) |
+| M1 Python & Dati | [`archivi/ARCHIVIO_MODULO_01.md`](archivi/ARCHIVIO_MODULO_01.md) |
+| M2 Machine Learning | [`archivi/ARCHIVIO_MODULO_02.md`](archivi/ARCHIVIO_MODULO_02.md) |
+| Ponte Matematico | [`archivi/ARCHIVIO_PONTE_MATEMATICO.md`](archivi/ARCHIVIO_PONTE_MATEMATICO.md) |
 
 Stato corso attivo: [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md)
 
@@ -176,7 +178,7 @@ Quando inizi un nuovo modulo:
 
 1. Completa la sezione `CONFRONTO PRIMA/DOPO` nell'ultimo capitolo
 2. Verifica che la **demo del modulo** sia deployata e funzionante
-3. Il Mentor crea un file archivio (`ARCHIVIO_MODULO_XX.md`) per liberare spazio nel contesto
+3. Il Mentor crea un file archivio in `archivi/` (`ARCHIVIO_MODULO_XX.md`) per liberare spazio nel contesto
 
 ---
 

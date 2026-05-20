@@ -1,7 +1,7 @@
 # Archivio Modulo 01 — Python & Dati
 
 > Questo file contiene il dettaglio storico del Modulo 1 (12 capitoli, 17/02/2026 – 25/03/2026).
-> Migrato da CONTESTO_CORSO.md per mantenere il file principale snello e focalizzato sul modulo attivo.
+> Migrato da [`CONTESTO_CORSO.md`](../CONTESTO_CORSO.md) (cartella [`archivi/`](README.md)).
 >
 > **Regola**: quando l'agente prepara un capitolo del M2+ e deve fare rinforzo su concetti del M1,
 > DEVE consultare questo file per il contesto storico completo.

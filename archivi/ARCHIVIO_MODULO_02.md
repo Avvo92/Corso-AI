@@ -1,10 +1,10 @@
 # Archivio Modulo 02 — Machine Learning Fundamentals
 
 > Dettaglio storico del Modulo 2 (7 capitoli, ~marzo–aprile 2026).
-> Migrato da `CONTESTO_CORSO.md` il **20/05/2026** (Passo 13).
+> Migrato da [`CONTESTO_CORSO.md`](../CONTESTO_CORSO.md) il **20/05/2026** (Passo 13).
 >
 > **Regola**: per rinforzi su ML classico, Streamlit deploy, `modello_base.py`, consultare questo file.
-> **Codice**: `modulo_02_ml/` · **Diari**: `modulo_02_ml/sessioni_capitoli/`
+> **Codice**: [`../modulo_02_ml/`](../modulo_02_ml/) · **Diari**: `../modulo_02_ml/sessioni_capitoli/`
 
 ---
 

@@ -1,6 +1,6 @@
 # MODULO 2 — Machine Learning Fundamentals
 
-> **Modulo completato** — storico e voti: [`ARCHIVIO_MODULO_02.md`](../ARCHIVIO_MODULO_02.md)
+> **Modulo completato** — storico e voti: [`archivi/ARCHIVIO_MODULO_02.md`](../archivi/ARCHIVIO_MODULO_02.md)
 
 ## Obiettivo del Modulo
 

@@ -1,10 +1,10 @@
 # Archivio Ponte Matematico (M2 → M3)
 
 > Bridge **2 capitoli** tra Machine Learning e Deep Learning.
-> Migrato da `CONTESTO_CORSO.md` il **20/05/2026** (Passo 13).
+> Migrato da [`CONTESTO_CORSO.md`](../CONTESTO_CORSO.md) il **20/05/2026** (Passo 13).
 >
 > **Regola**: per rinforzi su vettori, matrici, `X @ W + b`, coseno, shape — consultare questo file.
-> **Codice**: `ponte_matematico_m2_m3/` · **Diari**: `ponte_matematico_m2_m3/sessioni_capitoli/`
+> **Codice**: [`../ponte_matematico_m2_m3/`](../ponte_matematico_m2_m3/) · **Diari**: `../ponte_matematico_m2_m3/sessioni_capitoli/`
 
 ---
 

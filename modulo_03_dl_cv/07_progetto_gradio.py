@@ -62,7 +62,7 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 #      [ ] aggiornare tabella Portfolio con URL HuggingFace Spaces
 #      [ ] scommentare dipendenze del modulo successivo (M4 NLP) in
 #          requirements.txt
-#      [ ] creare ARCHIVIO_MODULO_03.md con storico e migrare il dettaglio
+#      [ ] creare archivi/ARCHIVIO_MODULO_03.md con storico e migrare il dettaglio
 #      [ ] decidere se il dataset "alterato vs genuino" entra come capitolo
 #          bonus M3 o si rimanda a M8 (fine-tuning specializzato)
 #

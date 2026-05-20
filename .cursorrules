@@ -14,7 +14,7 @@ PROCEDURA (bloccante — nessun altro output prima del completamento):
 1) Leggere INTEGRALMENTE questi file, nell'ordine:
    a) CONTESTO_CORSO.md (memoria persistente principale)
    b) APPUNTI_APPLICATIVO.md (stub) + docs/prodotto/README.md (spec prodotto)
-   c) Se esistono (M3+): ARCHIVIO_MODULO_02.md, ARCHIVIO_PONTE_MATEMATICO.md, ARCHIVIO_MODULO_01.md
+   c) archivi/README.md (indice archivi moduli completati)
 
 2) NON iniziare alcun task, risposta o produzione di contenuto prima
    del completamento integrale delle letture al punto 1.

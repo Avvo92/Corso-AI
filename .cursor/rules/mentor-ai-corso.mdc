@@ -212,4 +212,4 @@ Quando si completa l'**ultimo capitolo di un modulo**:
 3. Verificare che la demo del modulo sia **deployata e funzionante**
 4. Aggiornare la tabella "Portfolio" in CONTESTO_CORSO.md con il link alla demo
 5. Scommentare le dipendenze del modulo successivo in `requirements.txt` e guidare l'installazione
-6. **Creare l'archivio del modulo completato** (`ARCHIVIO_MODULO_XX.md`) seguendo le regole nella sezione "Note per il Mentor" di CONTESTO_CORSO.md — migrare il dettaglio storico e mantenere il file principale snello
+6. **Creare l'archivio del modulo completato** in `archivi/ARCHIVIO_MODULO_XX.md` seguendo le regole nella sezione "Note per il Mentor" di CONTESTO_CORSO.md — migrare il dettaglio storico e mantenere il file principale snello

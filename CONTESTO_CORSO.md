@@ -13,8 +13,7 @@
 > - Se il primo messaggio in una nuova chat contiene (case-insensitive) le parole
 >   "jarvis" e "iniziare" in qualsiasi ordine (anche con altre parole o punteggiatura),
 >   l'agente deve leggere integralmente `CONTESTO_CORSO.md`, `APPUNTI_APPLICATIVO.md`
->   (stub) e `docs/prodotto/README.md`, più — se esistono — `ARCHIVIO_MODULO_02.md`,
->   `ARCHIVIO_PONTE_MATEMATICO.md`, `ARCHIVIO_MODULO_01.md`
+>   (stub) e `docs/prodotto/README.md`, più `archivi/README.md` (indice moduli completati)
 >   PRIMA di qualunque altra azione.
 > - Solo dopo allineamento completo deve rispondere esattamente:
 >   `Jarvis pienamente operativo Sig. Stark`
@@ -44,7 +43,7 @@
 | **Capitolo in corso** | modulo_03_dl_cv/02_reti_neurali.py — Reti a più layer (stack di Dense + attivazioni), forward NumPy, confronto con baseline. |
 | **Ultimo completato** | modulo_03_dl_cv/01_neurone_artificiale.py (11/05/2026) — Neurone = Dense h=1 + sigmoid; `layer_dense`; recall Ponte (E7); mini-progetto `neurone_vs_logreg`; checkpoint C1–C4; **voto difficoltà** **8**/10 — confermato da Gianluca in chat. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision |
-| **Difficoltà media** | ~6.8 (22 capitoli con voto; archivi M1/M2/Ponte — vedi file `ARCHIVIO_*`) |
+| **Difficoltà media** | ~6.8 (22 capitoli con voto; archivi M1/M2/Ponte — vedi `archivi/`) |
 | **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Data leakage (monitoraggio). |
 | **Sessione corrente** | Sessione 20 |
 
@@ -58,7 +57,7 @@
 | Campo | Valore |
 |-------|--------|
 | **Data** | 20/05/2026 |
-| **Cosa è stato fatto** | **Housekeeping**: creati `ARCHIVIO_MODULO_02.md` e `ARCHIVIO_PONTE_MATEMATICO.md` (Passo 13 in ritardo); `CONTESTO` snellito con puntatori. **Canonizzazione prodotto** (sessione precedente): `docs/prodotto/`, `aplicativo/`, commit `88225f2`. |
+| **Cosa è stato fatto** | **Housekeeping**: creati `archivi/ARCHIVIO_MODULO_02.md` e `archivi/ARCHIVIO_PONTE_MATEMATICO.md` (Passo 13 in ritardo); `CONTESTO` snellito con puntatori. **Canonizzazione prodotto** (sessione precedente): `docs/prodotto/`, `aplicativo/`, commit `88225f2`. |
 | **Errori emersi** | Nessuno didattico. |
 | **Cosa fare nella prossima sessione** | `modulo_03_dl_cv/02_reti_neurali.py` — PRONTUARIO R1–R6 → quiz ingresso → teoria; opzionale bridge `M03_R01_*`. |
 | **Stato motivazione** | Buono: repo più ordinata, pronto a concentrarsi sul DL. |
@@ -669,7 +668,7 @@ completezza del self-check e chiedere correzioni.
 
 ### Modulo 1 — Python & Dati (COMPLETATO)
 
-> Dettaglio per capitolo migrato in `ARCHIVIO_MODULO_01.md`.
+> Dettaglio per capitolo migrato in `archivi/ARCHIVIO_MODULO_01.md`.
 
 | Riepilogo | Valore |
 |-----------|--------|
@@ -680,7 +679,7 @@ completezza del self-check e chiedere correzioni.
 
 ### Modulo 2 — Machine Learning (archiviato)
 
-> Dettaglio in [`ARCHIVIO_MODULO_02.md`](ARCHIVIO_MODULO_02.md).
+> Dettaglio in [`archivi/ARCHIVIO_MODULO_02.md`](archivi/ARCHIVIO_MODULO_02.md).
 
 | Riepilogo | Valore |
 |-----------|--------|
@@ -691,7 +690,7 @@ completezza del self-check e chiedere correzioni.
 
 ### Ponte Matematico M2→M3 (archiviato)
 
-> Dettaglio in [`ARCHIVIO_PONTE_MATEMATICO.md`](ARCHIVIO_PONTE_MATEMATICO.md).
+> Dettaglio in [`archivi/ARCHIVIO_PONTE_MATEMATICO.md`](archivi/ARCHIVIO_PONTE_MATEMATICO.md).
 
 | Riepilogo | Valore |
 |-----------|--------|
@@ -705,8 +704,8 @@ completezza del self-check e chiedere correzioni.
 
 | Modulo | Focus | Componente pipeline prodotto | Librerie principali | Stato |
 |--------|-------|------------------------------|---------------------|-------|
-| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore + anomaly + deploy | scikit-learn, streamlit | 🟢 **Completato** — archivio [`ARCHIVIO_MODULO_02.md`](ARCHIVIO_MODULO_02.md) |
-| **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, Dense — codice + Matplotlib | Fondamenta M3 (shape, `X @ W + b`, coseno) | numpy, matplotlib | 🟢 **Completato** 07/05/2026 — vedi `ARCHIVIO_PONTE_MATEMATICO.md` |
+| 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore + anomaly + deploy | scikit-learn, streamlit | 🟢 **Completato** — archivio [`archivi/ARCHIVIO_MODULO_02.md`](archivi/ARCHIVIO_MODULO_02.md) |
+| **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, Dense — codice + Matplotlib | Fondamenta M3 (shape, `X @ W + b`, coseno) | numpy, matplotlib | 🟢 **Completato** 07/05/2026 — vedi `archivi/ARCHIVIO_PONTE_MATEMATICO.md` |
 | 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | ⬜ Da creare |
 | 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | ⬜ Da creare |
 | 5 — LLM Integration & Prompt Engineering | API OpenAI, prompt engineering, structured output, function calling, Pydantic, Ollama, multimodale, sicurezza AI | Interfaccia intelligente: assistente operatore + structured extraction documenti variabili | openai, pydantic-ai, ollama | ⬜ Da creare |
@@ -773,9 +772,9 @@ completezza del self-check e chiedere correzioni.
 | M2-04_classificazione_metriche | 7 | +1 ↑ vs M2-03 (carico: metriche, quiz, esercizi prodotto; voto studente confermato 13/04/2026) |
 | M2-05_overfitting_validazione | 8 | +1 ↑ vs M2-04 (validazione/CV, bias-varianza, pipeline per evitare leakage in CV; voto studente 22/04/2026) |
 | M2-06_progetto_streamlit | 7 | -1 ↓ vs M2-05 (progetto Streamlit "da zero": demo end-to-end, cache_data/cache_resource, predict_proba 2D, motivi_top3 con segno; voto studente 27/04/2026) |
-| M2-07_deploy_streamlit_cloud | 6 | *(dettaglio in ARCHIVIO_MODULO_02)* |
-| PM-01_vettori_da_zero | 9 | *(ARCHIVIO_PONTE_MATEMATICO)* |
-| PM-02_matrici_layer_dense | 9 | *(ARCHIVIO_PONTE_MATEMATICO)* |
+| M2-07_deploy_streamlit_cloud | 6 | *(dettaglio in archivi/ARCHIVIO_MODULO_02)* |
+| PM-01_vettori_da_zero | 9 | *(archivi/ARCHIVIO_PONTE_MATEMATICO)* |
+| PM-02_matrici_layer_dense | 9 | *(archivi/ARCHIVIO_PONTE_MATEMATICO)* |
 | **M3-01_neurone_artificiale** | **8** | Confermato studente **8**/10; capitolo denso (quiz + E1–E7 + mini-progetto + checkpoint C1–C4) |
 
 **Media attuale**: ~6.8 (22 capitoli con voto; dettaglio M1/M2/Ponte negli archivi).
@@ -930,7 +929,7 @@ completezza del self-check e chiedere correzioni.
 
 ## Domande Fatte Durante i Capitoli
 
-> Storico M1 → `ARCHIVIO_MODULO_01.md` · M2 → `ARCHIVIO_MODULO_02.md` · Ponte → `ARCHIVIO_PONTE_MATEMATICO.md`.
+> Storico M1 → `archivi/ARCHIVIO_MODULO_01.md` · M2 → `archivi/ARCHIVIO_MODULO_02.md` · Ponte → `archivi/ARCHIVIO_PONTE_MATEMATICO.md`.
 > Qui: domande **M3** in corso (e successive).
 
 ### Cap.01 M3 — Neurone artificiale
@@ -949,7 +948,7 @@ completezza del self-check e chiedere correzioni.
 
 ## Pattern di Errore Ricorrenti — Solo Attivi
 
-> Storico completo M1 migrato in `ARCHIVIO_MODULO_01.md`.
+> Storico completo M1 migrato in `archivi/ARCHIVIO_MODULO_01.md`.
 > Qui restano solo i pattern ancora attivi o emersi nella transizione M1 → M2.
 
 | # | Pattern | Stato | Note |
@@ -986,7 +985,7 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠�
 
 ## Ritmo di Studio
 
-> Dettaglio sessioni M1 migrato in `ARCHIVIO_MODULO_01.md`.
+> Dettaglio sessioni M1 migrato in `archivi/ARCHIVIO_MODULO_01.md`.
 
 - **Durata M1**: 17/02/2026 – 25/03/2026 (~5 settimane, 12 capitoli)
 - **Ritmo effettivo**: ~1 file ogni 2-3 giorni
@@ -1033,7 +1032,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 ## Cosa So Fare Adesso — Competenze Acquisite
 
-> Dettaglio capitolo-per-capitolo M1 migrato in `ARCHIVIO_MODULO_01.md`.
+> Dettaglio capitolo-per-capitolo M1 migrato in `archivi/ARCHIVIO_MODULO_01.md`.
 > Qui restano il riepilogo M1 e le competenze dal M2 in poi.
 
 ### Riepilogo M1 — Python & Dati (completato)
@@ -1046,8 +1045,8 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 
 ### Riepilogo M2 e Ponte (archiviati)
 
-- **M2** (7 capitoli, ML + Streamlit deploy): competenze e domande in [`ARCHIVIO_MODULO_02.md`](ARCHIVIO_MODULO_02.md).
-- **Ponte** (2 capitoli, vettori/matrici/Dense): in [`ARCHIVIO_PONTE_MATEMATICO.md`](ARCHIVIO_PONTE_MATEMATICO.md).
+- **M2** (7 capitoli, ML + Streamlit deploy): competenze e domande in [`archivi/ARCHIVIO_MODULO_02.md`](archivi/ARCHIVIO_MODULO_02.md).
+- **Ponte** (2 capitoli, vettori/matrici/Dense): in [`archivi/ARCHIVIO_PONTE_MATEMATICO.md`](archivi/ARCHIVIO_PONTE_MATEMATICO.md).
 
 ### Cap.01 M3 — Neurone artificiale (completato; voto difficoltà: **8**/10)
 
@@ -1678,9 +1677,9 @@ Quando l'agente prepara un capitolo (M2-M10), DEVE:
 - **Prima del Modulo 3 (DL & CV)**: preparare un notebook Google Colab con PyTorch + torchvision pre-installati, istruzioni per connettere GPU, e un test rapido per verificare che CUDA funzioni su Colab. Idem per il Modulo 8 (Fine-Tuning) con PEFT + bitsandbytes
 - **Prima del file 07**: arricchire con più esempi visivi e mini-esercizi intermedi
 - **Prima del file 08**: aggiungere rappresentazioni ASCII di tensori 2D/3D/4D
-- **✅ MODULO 1 ARCHIVIATO**: `ARCHIVIO_MODULO_01.md`
-- **✅ MODULO 2 ARCHIVIATO** (20/05/2026): `ARCHIVIO_MODULO_02.md`
-- **✅ PONTE MATEMATICO ARCHIVIATO** (20/05/2026): `ARCHIVIO_PONTE_MATEMATICO.md`
+- **✅ MODULO 1 ARCHIVIATO**: `archivi/ARCHIVIO_MODULO_01.md`
+- **✅ MODULO 2 ARCHIVIATO** (20/05/2026): `archivi/ARCHIVIO_MODULO_02.md`
+- **✅ PONTE MATEMATICO ARCHIVIATO** (20/05/2026): `archivi/ARCHIVIO_PONTE_MATEMATICO.md`
 - **Cartella `aplicativo/`**: scaffold codice Validator + Replicator (M4→M10) — vedi sotto e `aplicativo/README.md`
   - **Regola file size**: `CONTESTO_CORSO.md` resta focalizzato su **M3 attivo** + priorità; storico M1/M2/Ponte negli archivi.
 - **A inizio di ogni nuovo modulo (M2-M10)**: creare la cartella del modulo (`modulo_XX_nome/`) con un `README.md` che segue la struttura del README del Modulo 1
@@ -1878,7 +1877,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 - [ ] Registrare la modifica nel Changelog Regole e Decisioni
 
 ### Passo 13 — Archiviazione e Pulizia (a fine modulo)
-- [ ] Se e l'ultimo capitolo del modulo: creare `ARCHIVIO_MODULO_XX.md` con lo stesso pattern di ARCHIVIO_MODULO_01.md (progresso dettagliato, domande, pattern errore storico, competenze per capitolo, ritmo studio, lacune quiz)
+- [ ] Se e l'ultimo capitolo del modulo: creare `archivi/ARCHIVIO_MODULO_XX.md` con lo stesso pattern di archivi/ARCHIVIO_MODULO_01.md (progresso dettagliato, domande, pattern errore storico, competenze per capitolo, ritmo studio, lacune quiz)
 - [ ] Nel file principale: sostituire il dettaglio del modulo chiuso con tabella riepilogativa (come fatto per M1)
 - [ ] Migrare nell'archivio le lacune quiz con stato 🟢 (superate) e i pattern di errore con stato 🟢 (superati da 3+ capitoli)
 - [ ] Aggiornare il Ripasso Programmato: aggiungere i concetti chiave del nuovo modulo, rimuovere quelli del modulo chiuso che sono in stato OK stabile
@@ -1893,7 +1892,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
-| 20/05/2026 | **Housekeeping archivi**: `ARCHIVIO_MODULO_02.md`, `ARCHIVIO_PONTE_MATEMATICO.md`; CONTESTO snellito; handshake Jarvis aggiornato; tabella moduli Ponte → completato. | Passo 13 M2 + Ponte | Archivi, Promemoria, Moduli, Changelog |
+| 20/05/2026 | **Housekeeping archivi**: M2 + Ponte in `archivi/` (indice `archivi/README.md`); CONTESTO snellito. | Passo 13 + ordine repo | Archivi, Promemoria, Moduli, Changelog |
 | 20/05/2026 | **Canonizzazione prodotto due app**: doc in `docs/prodotto/`; stub `APPUNTI_APPLICATIVO.md`; schemi transfer/imputation; scaffold `aplicativo/`; gate AGENTS + `.cursorrules` + handshake chiusura; riferimenti APPUNTI uniformati; tabella M10 allineata; nota M2 non archiviato. | Organizzazione per sviluppo M10 | Header, Ultima Sessione, Strategia, Evoluzione progetto, Promemoria, Changelog |
 | 11/05/2026 | **Chiusura M3 cap.01** (`01_neurone_artificiale.py`): Stato → **02_reti_neurali.py**; Ultimo completato + Ultima Sessione; Prossimo Capitolo; diff media ~**6.8** (20 cap); Valutazioni + **M3-01** **8**/10; Progresso progetto + riga cap.01 ✅; Competenze + Domande + Glossario (logit/sigmoid/layer_dense/forward/callable); Sessione **20**. Jarvis handshake. File capitolo **non modificato** (H). | Chiusura formale modulo 03 capitolo 1 | Stato, sessioni, roadmap cap.02, tabelle, glossario, changelog |
 | 11/05/2026 | **Regola 40**: quiz ripasso fondamentali **tra capitoli** (dal M3 in poi): cartella `quiz_ripasso_tra_capitoli/` nel modulo, ~10 mini-esercizi per bridge `cap.K→cap.K+1`, soluzioni in coda; consolidamento Python/NumPy/Pandas/M2 mentre si affronta DL. Creati **6 file bridge** per M3 + `_TEMPLATE` + README cartella; aggiornati `CONTESTO`, `.cursor/rules/mentor-ai-corso.mdc`, `modulo_03_dl_cv/README.md`. | Richiesta studente: non perdere le basi mentre la complessità sale | Regole 39→40, Changelog, file M3 |
