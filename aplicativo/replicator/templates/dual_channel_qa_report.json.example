@@ -1,0 +1,21 @@
+{
+  "doc_type_id": "busta_paga",
+  "template_version": "v1",
+  "pratica_id": "pratica-esempio-001",
+  "vector_qa": {
+    "placement_score": 0.99,
+    "rules_ok": true,
+    "geometry_unknown": false
+  },
+  "raster_qa": {
+    "dpi": 200,
+    "layout_match_score": 0.97,
+    "roi_diff_max": 0.03,
+    "failed_field_ids": [],
+    "micro_adjust_applied": false,
+    "passed": true
+  },
+  "channels_agree": true,
+  "passed": true,
+  "generated_at": "2026-05-21T12:00:00Z"
+}

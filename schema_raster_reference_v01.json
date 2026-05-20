@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema_raster_reference_v01.json",
+  "title": "Raster Reference & Dual-Channel QA v0.1 - Replicator",
+  "description": "Riferimento visivo (raster) per template_version e report QA dual-channel (vettoriale + raster) su generazione e ingest.",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/$defs/RasterReference" },
+    { "$ref": "#/$defs/DualChannelQAReport" }
+  ],
+  "$defs": {
+    "RasterReference": {
+      "type": "object",
+      "description": "Artefatto training offline: impronta visiva per un template_version",
+      "required": [
+        "doc_type_id",
+        "template_version",
+        "dpi",
+        "page_index",
+        "render_engine",
+        "static_mask_path",
+        "dynamic_rois"
+      ],
+      "properties": {
+        "doc_type_id": { "type": "string", "minLength": 1 },
+        "template_version": {
+          "type": "string",
+          "pattern": "^v[0-9]+(\\.[0-9]+)*$",
+          "description": "Allineato a geometry_template.version"
+        },
+        "software_emittente": { "type": "string", "examples": ["Zucchetti"] },
+        "dpi": {
+          "type": "integer",
+          "minimum": 72,
+          "maximum": 600,
+          "description": "DPI fisso per train e runtime (es. 200)"
+        },
+        "page_index": { "type": "integer", "minimum": 0, "default": 0 },
+        "render_engine": {
+          "type": "string",
+          "enum": ["pymupdf_pixmap"],
+          "description": "Motore rasterizzazione canonico"
+        },
+        "reference_page_png_path": {
+          "type": "string",
+          "description": "PNG master o mediana layout (zone statiche) — path relativo artifacts/"
+        },
+        "static_mask_path": {
+          "type": "string",
+          "description": "Maschera zone fisse (intestazione, griglia) — esclusa dal diff"
+        },
+        "dynamic_rois": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/DynamicROI" }
+        },
+        "layout_fingerprint": {
+          "type": "string",
+          "description": "Hash/impronta strutturale per classificare template_version"
+        },
+        "corpus_cluster_id": {
+          "type": "string",
+          "description": "Cluster corpus Y (es. busta_zucchetti_2024_a)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DynamicROI": {
+      "type": "object",
+      "required": ["field_id", "bbox_pt", "reference_patch_path"],
+      "properties": {
+        "field_id": { "type": "string" },
+        "bbox_pt": {
+          "type": "object",
+          "required": ["x0", "y0", "x1", "y1"],
+          "properties": {
+            "x0": { "type": "number" },
+            "y0": { "type": "number" },
+            "x1": { "type": "number" },
+            "y1": { "type": "number" }
+          },
+          "additionalProperties": false
+        },
+        "reference_patch_path": {
+          "type": "string",
+          "description": "Patch PNG media del campo su hold-out (solo layout attorno al valore)"
+        },
+        "ssim_threshold_min": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.92,
+          "description": "Soglia minima similarità strutturale (SSIM) per ROI"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DualChannelQAReport": {
+      "type": "object",
+      "description": "Report runtime post-render: coerenza vettoriale + visiva",
+      "required": [
+        "doc_type_id",
+        "template_version",
+        "vector_qa",
+        "raster_qa",
+        "channels_agree",
+        "passed",
+        "generated_at"
+      ],
+      "properties": {
+        "doc_type_id": { "type": "string" },
+        "template_version": { "type": "string" },
+        "pratica_id": { "type": "string" },
+        "vector_qa": {
+          "type": "object",
+          "required": ["placement_score", "rules_ok"],
+          "properties": {
+            "placement_score": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Frazione campi in bbox atteso (hold-out / runtime)"
+            },
+            "rules_ok": { "type": "boolean" },
+            "geometry_unknown": {
+              "type": "boolean",
+              "default": false,
+              "description": "true se layout fingerprint non matcha nessun template"
+            }
+          },
+          "additionalProperties": false
+        },
+        "raster_qa": {
+          "type": "object",
+          "required": ["dpi", "layout_match_score", "roi_diff_max", "passed"],
+          "properties": {
+            "dpi": { "type": "integer" },
+            "layout_match_score": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Similarità pagina vs reference (zone dinamiche pesate)"
+            },
+            "roi_diff_max": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Massimo diff normalizzato sulle ROI dinamiche"
+            },
+            "failed_field_ids": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "micro_adjust_applied": {
+              "type": "boolean",
+              "default": false,
+              "description": "true se sono stati applicati delta x/y guidati dal raster"
+            },
+            "passed": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "channels_agree": {
+          "type": "boolean",
+          "description": "false = caso tipico matematica/regole OK ma visivo KO (o viceversa)"
+        },
+        "passed": {
+          "type": "boolean",
+          "description": "Gate release PDF: richiede vector_qa e raster_qa entrambi OK"
+        },
+        "generated_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

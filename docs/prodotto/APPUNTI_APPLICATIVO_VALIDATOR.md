@@ -129,11 +129,21 @@ Note:
 Il Validator può analizzare un PDF prodotto dal Replicator come qualsiasi altro documento in pratica, più:
 
 - ingest di `imputation_report.json` (campi `extracted_from_x` vs `imputed_*`)
+- ingest di `dual_channel_qa_report.json` (Replicator §4.3):
+  - se `channels_agree === false` → **semaforo giallo/rosso** anche con `rules_ok` e totali coerenti (caso “matematica ok, visivo no”)
+  - se `raster_qa.passed === false` → motivo `layout_visivo_non_conforme` in `motivi_top3`
+  - se `vector_qa.geometry_unknown === true` → `layout_non_riconosciuto` (template drift / alterazione)
+- ingest di `fix_report.json` (Replicator §3b): ogni voce = correzione tracciata (`strategy`, `run_id`, timestamp); se strategia `patch_allowlist` → regole di rischio dedicato (M10)
 - regole dedicate: segnalare campi imputati a bassa `confidence` su documenti fiscali critici
+- regole **geometriche** (M4+): campo fuori bbox atteso per `template_version`
 - confronto cross-documento (busta generata vs CU in fascicolo)
 - metriche per migliorare entrambi i prodotti (dataset errori condiviso)
 
-**Bundle minimo Replicator → Validator:** `pdf` + `payload.json` + `imputation_report.json` + stesso `pratica_id`.
+**Ingest documenti reali (non solo Replicator):** stesso principio dual-channel opzionale — vettoriale (bbox/regole) + raster (fingerprint vs cluster noto) per buste native e scansioni.
+
+**Bundle minimo Replicator → Validator:** `pdf` + `payload.json` + `imputation_report.json` + `dual_channel_qa_report.json` + stesso `pratica_id` (+ `fix_report` se presenti correzioni §3b Replicator).
+
+Schema QA raster: [`schema_raster_reference_v01.json`](../../schema_raster_reference_v01.json).
 
 ---
 
@@ -786,8 +796,10 @@ NEXT STEP:
 - 2026-03-19: Creato file appunti operativo con struttura completa.
 - 2026-03-19: Integrato studio competitor e trasformato il file in roadmap esecutiva competitiva (waterfall, forensics, HITL, score+routing, audit, release plan).
 - 2026-03-19: Migliorata governabilita v0.1: owner aggiunti alla roadmap 90 giorni, sezione Open questions allineata a OPEN_DECISIONS, versioning policy Waterfall introdotta.
-- 2026-04-30: Integrato il Tool di Fixing (poi deprezzato — vedi voce 2026-05-20).
-- 2026-05-20: Fixer rimosso; avviata spec Replicator (poi in file dedicato).
+- 2026-04-30: Integrato il Tool di Fixing (poi ridefinito — vedi 2026-05-22 §3b Replicator).
+- 2026-05-20: Fixer “libero” rimosso dal perimetro; spec Replicator dedicata.
+- 2026-05-22: **Fixer controllato** (Replicator §3b): bundle include `fix_report` opzionale; Validator ingesta e regole rischio su `patch_allowlist`.
 - 2026-05-21: **Canonizzazione split** — questo file è solo Validator. Replicator in
   `APPUNTI_APPLICATIVO_REPLICATOR.md`. Perimetro documenti in `DOCUMENT_SPECTRUM.md`.
+- 2026-05-21: **Dual-channel ingest** — bundle `dual_channel_qa_report`; semaforo su `channels_agree` e layout visivo (§6.7).
 

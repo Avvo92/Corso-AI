@@ -1530,7 +1530,18 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 > mini-task prodotto e capitoli dei moduli M2-M10, per garantire che ogni attività didattica sia
 > coerente con l'architettura reale del sistema.
 >
-> **Ultima revisione**: 25/03/2026
+> **Ultima revisione**: 21/05/2026
+
+### Replicator — Dual-channel QA (vettoriale + raster)
+
+> Canonico in [`docs/prodotto/APPUNTI_APPLICATIVO_REPLICATOR.md`](docs/prodotto/APPUNTI_APPLICATIVO_REPLICATOR.md) §4.3 e gap **G9** in [`ARCHITETTURA_PRODOTTO_DUE_APP.md`](docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md).
+
+- **Uscita unica:** PDF **vettoriale** (testo nativo, es. buste Zucchetti — strategie A fill_master / B overlay).
+- **Canale V:** extract, placement, regole, compute — necessario ma non sufficiente.
+- **Canale R:** rasterizza la stessa pagina (DPI fisso, es. 200) e confronta con `raster_reference` appreso dal corpus train (ROI dinamiche + maschera statica).
+- **Obiettivo:** fedeltà **a schermo** (identico visivo al cluster Y); **non** clone forense byte-identico; metadati onesti restano obbligatori ma non sono il focus QA visivo.
+- **Gate:** `dual_channel_qa_report.json` — release PDF solo se `passed` e preferibilmente `channels_agree`; Validator segnala disaccordo V/R (§6.7 Validator).
+- **Schema:** [`schema_raster_reference_v01.json`](schema_raster_reference_v01.json).
 
 ### Architettura Dual-Model (supervisionato + non supervisionato)
 
@@ -1579,8 +1590,9 @@ Feature Engineering ──► Tabella numerica (X = DataFrame, una riga per docu
     ▼
 Output Combinato ──► Dashboard Operatore + Report + API
     │
-    ├──► (opzionale) Replicator ──► PDF generato da geometry_template + payload
-    │         └──► ri-validazione opzionale (stesso flusso OCR + Parsing)
+    ├──► (opzionale) Replicator ──► PDF vettoriale (geometry + payload)
+    │         ├──► Raster QA vs reference train (dual-channel)
+    │         └──► ri-validazione Validator (regole + dual_channel_qa_report)
     │
     ▼
 Feedback Loop ──► Revisore conferma/corregge ──► nuove label ──► retraining
@@ -1649,7 +1661,7 @@ Quando il dataset cresce a centinaia/migliaia di documenti, l'estrazione manuale
 |--------|-------------------------------------|------------------------|
 | M2 — ML | Modello supervisionato + anomaly detection + metriche + demo Streamlit | Il cuore predittivo: classificazione vero/alterato + anomaly_score |
 | M3 — DL & CV | Classificatore visivo documenti + feature CV | Ramo visivo: rileva alterazioni grafiche non visibili a occhio |
-| M4 — NLP | Estrazione campi da testo OCR + matching semantico + prime estrazioni bbox PDF | Ramo testuale; fondamenta Replicator (layout) |
+| M4 — NLP | Estrazione campi da testo OCR + matching semantico + estrazioni bbox PDF | Ramo testuale; Replicator layout (V) + `raster_reference` (R) |
 | M5 — LLM | Assistente operatore + structured extraction + function calling | Interfaccia intelligente + estrazione campi da layout variabili |
 | M6 — RAG | Base conoscenza normativa + citazioni + evaluation | Verifica compliance con norme fiscali aggiornate e versionate |
 | M7 — Agents | Orchestratore pipeline end-to-end + agentic RAG + MCP | Il "cervello" che coordina OCR → parsing → scoring → report |

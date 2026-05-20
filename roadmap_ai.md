@@ -324,7 +324,7 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 **Obiettivo**: costruire IL prodotto del portfolio — il diamante. Un prodotto AI completo, deployato, con demo live, documentazione professionale, e video demo.
 
-**Dominio applicativo** (allineato a Gianluca): **due applicativi** sullo stesso spettro documentale — **Validator** (controllo fascicolo) e **Replicator** (generazione PDF fedele, transfer X→Y, imputazione). Indice: `docs/prodotto/README.md` (stub root: `APPUNTI_APPLICATIVO.md`); piano e spettro in `docs/prodotto/`. Contesto **broker/intermediazione mutui**. M10: deploy di entrambe le app; Replicator P0 = `busta_paga` + `transfer_xy` (hold-out QA). Monetizzazione verso terzi fuori syllabus; codice modulare e configurabile.
+**Dominio applicativo** (allineato a Gianluca): **due applicativi** sullo stesso spettro documentale — **Validator** (controllo fascicolo) e **Replicator** (generazione PDF **vettoriale** fedele **a schermo**, transfer X→Y, imputazione, **QA dual-channel vettoriale+raster** — `docs/prodotto/APPUNTI_APPLICATIVO_REPLICATOR.md` §4.3). Indice: `docs/prodotto/README.md` (stub root: `APPUNTI_APPLICATIVO.md`); piano e spettro in `docs/prodotto/`. Contesto **broker/intermediazione mutui**. M10: deploy di entrambe le app; Replicator P0 = `busta_paga` + `transfer_xy` (hold-out QA V+R). Monetizzazione verso terzi fuori syllabus; codice modulare e configurabile.
 
 ### Architettura
 

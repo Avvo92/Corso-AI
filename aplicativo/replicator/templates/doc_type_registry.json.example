@@ -5,7 +5,7 @@
       "doc_type_id": "busta_paga",
       "display_name": "Busta paga",
       "phase": "P0",
-      "enabled_modes": ["transfer_xy", "discursive", "partial_inputs"],
+      "enabled_modes": ["transfer_xy", "discursive", "partial_inputs", "controlled_fix"],
       "transfer_routes": [
         {
           "route_id": "software_x_to_y_v1",

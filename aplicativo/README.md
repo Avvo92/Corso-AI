@@ -11,7 +11,7 @@ Documentazione: [`docs/prodotto/README.md`](../docs/prodotto/README.md) · Archi
 
 ## Schemi (root repo)
 
-`schema_canonico_v01.json`, `schema_geometry_template_v01.json`, `schema_transfer_route_v01.json`, `schema_imputation_profile_v01.json`
+`schema_canonico_v01.json`, `schema_geometry_template_v01.json`, `schema_transfer_route_v01.json`, `schema_imputation_profile_v01.json`, `schema_raster_reference_v01.json` (dual-channel QA V+R)
 
 ## Dataset locale (non in git)
 
