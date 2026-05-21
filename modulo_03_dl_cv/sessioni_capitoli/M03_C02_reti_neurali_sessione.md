@@ -187,6 +187,61 @@
 - **Valutazione qualità attuale:** **9.5/10**. Il **primo tentativo** storico resta **5.5/10**.
 - **Micro:** opzionale esplicitare shape `W1(7,32), b1(32), W2(32,1), b2(1)`.
 
+### [2026-05-21] — `02_reti_neurali.py` — Quiz verifica V7 (Feynman rete neurale)
+
+- **Risposta studente:** analogia macchina che sforna biscotti: ingredienti → più passaggi → biscotti; trasformazione input→output.
+- **Valutazione (primo tentativo):** **7/10** — rispetta **vincoli** (no math/codice/IA/computer); analogia **concreta**; manca il “cuore” rete: **più stazioni** che mescolano in modi diversi, **filtro** che scarta (tipo ReLU), **giudizio finale** (tipo probabilità).
+- **Correzione:** aggiungere 1 riga su passaggi interni diversi + esito finale (“quanto è buono il biscotto” / sì-no) senza jargon.
+
+### [2026-05-21] — POST-FEEDBACK — Quiz verifica V7 (Feynman rivalutazione)
+
+- **Risposta aggiornata:** macchina biscotti; passaggi sequenziali; scarta ingredienti marci; decide vaniglia vs cioccolato (2 uscite).
+- **Valutazione qualità attuale:** **8.5/10**. Il **primo tentativo** storico resta **7/10**.
+- **Punti di forza:** filtro (scarto) ≈ ReLU; decisione binaria finale ≈ sigmoid/classificazione; più passaggi ≈ layer.
+- **Micro:** typo `un una`, `out`; ultima frase un po’ ridondante; opzionale “più postazioni che mescolano in modi diversi” per hidden.
+
+### [2026-05-21] — `02_reti_neurali.py` — E1 [COLLOQUIO] (architettura rete 2-layer su CSV M2)
+
+- **Valutazione (primo tentativo):** **5.5/10**.
+- **Punti di forza:** flusso layer1 → ReLU (perché taglia negativi) → layer2 → sigmoid (probabilità 0–1); idea batch N pratiche; distinzione logit vs probabilità sul finale.
+- **Errori / lacune:** **W2** scritto come vettore `(h,)` invece di **`W2 (h, 1)`** (binario = 1 uscita); **mancano numeri concreti** del CSV (**d=7**, es. **h=32**, **289** parametri); **mancano** tutti i nomi richiesti in forma compatta (`X,W1,b1,H,W2,b2,Z,P`); **nessun confronto** con LogisticRegression; testo **>> 12 righe** (consegna colloquio).
+
+### [2026-05-21] — `02_reti_neurali.py` — E2 [REFACTORING] `forward_bello`
+
+- **Valutazione (primo tentativo):** **8/10**.
+- **Punti di forza:** `NDArray` ok (#25); `W` 2D; `X.shape[1]==W.shape[0]`; **`return X @ W + b`** vettorizzato (niente loop); niente virgola tuple (#23).
+- **Errore:** check bias confronta `b.shape[0]` con **`W.shape[0]`** (fan-in **d**) — corretto è **`W.shape[1]`** (fan-out **h**, un bias per colonna di W). Con `W(7,32)` e `b(32,)` il tuo testo non segnala errore se `b` ha 7 elementi per sbaglio.
+- **Fix:** `if b.shape[0] != W.shape[1]:` (o `len(b) != W.shape[1]`); opzionale messaggi con `f"{X.shape} {W.shape}"`.
+
+### [2026-05-21] — POST-FEEDBACK — E2 `forward_bello` (fix bias check)
+
+- **Fix:** condizione `b.shape[0] != W.shape[1]` corretta; messaggio errore ancora dice `W.shape[0]` (typo testo).
+- **Valutazione qualità attuale:** **9/10**. Primo tentativo storico **8/10**.
+
+### [2026-05-21] — `02_reti_neurali.py` — E3 [DEBUG] (P.mean sempre 0.5)
+
+- **Valutazione (primo tentativo):** **8/10**.
+- **Fix:** `att=relu` su primo `layer_dense` — **corretto** (richiamo R2 / TODO 2.2).
+- **Diagnosi:** conclusione ok (logit ~0 → sigmoid ~0.5); spiegazione parziale (“gaussiana schiaccia a 0”) — meccanismo preciso: **senza ReLU** i due layer lineari **collassano**, `Z≈0` → `P≈0.5`.
+- **Autonomia:** rispettata (bug trovato senza hint a cascata).
+
+### [2026-05-21] — POST-FEEDBACK — E3 [DEBUG] (diagnosi aggiornata)
+
+- **Diagnosi:** aggiunto **collasso lineare** + valori centrati → `Z≈0` → sigmoid ~0.5.
+- **Valutazione qualità attuale:** **9/10**. Primo tentativo storico **8/10**.
+
+### [2026-05-21] — `02_reti_neurali.py` — E4 [RETRIEVAL] `neurone_batch` da memoria
+
+- **Valutazione (primo tentativo):** **6/10**.
+- **Punti di forti:** firma `NDArray`, check `X` 2D / `w` 1D / colonne, `X @ w + b` vettorizzato, test con `X(3,4)`, `w(4,)`.
+- **Errore principale:** `return X @ w + b` restituisce **logit** `(N,)`, non **probabilità** — manca **`sigmoid` dentro** la funzione (cap.01: `z` poi `sigmoid(z)`). Il `print(sigmoid(neurone_batch(...)))` maschera il bug.
+- **Fix:** `z = X @ w + b`; `return np.asarray(sigmoid(z), dtype=float)` (o `return sigmoid(X @ w + b)`).
+
+### [2026-05-21] — POST-FEEDBACK — E4 [RETRIEVAL] `neurone_batch` (fix sigmoid)
+
+- **Fix:** `return sigmoid(X @ w + b)`; test diretto `print(neurone_batch(...))` senza sigmoid esterna.
+- **Valutazione qualità attuale:** **9/10**. Primo tentativo storico **6/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti

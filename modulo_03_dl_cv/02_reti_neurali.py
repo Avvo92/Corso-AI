@@ -80,9 +80,11 @@ COME USARE QUESTO FILE (regola del corso)
    6. Hardware: tutto su CPU + NumPy + Matplotlib. PyTorch arriva al cap.04.
 """
 
+from multiprocessing import Value
 import os
 from typing import Callable
 import numpy as np
+from numpy.ma import isarray
 import pandas as pd
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
@@ -931,8 +933,7 @@ plt.close()
 #     informatica) cos'e' una rete neurale. VIETATO: matematica, codice,
 #     "intelligenza artificiale", "computer".
 # TUA RISPOSTA:
-# ...
-
+# Una rete neurale può essere paragonata a un una macchina sforna biscotti. da una parte la macchina prende gli ingredienti, e step dopo step questi ingredienti subiscono delle trasformazioni. Se ci sono delle uova marce o ingredienti che non vanno bene li scarta, e alla fine decide se sfornare biscotti alla vaniglia o al cioccolato. E' a tutti gli effetti un processo di trasformazione, dato un insieme di input,  la macchina decide quale dei due out possibili produrre.
 
 # ==========================================================================
 # ESERCIZI FINALI
@@ -949,7 +950,7 @@ plt.close()
 #     Massimo 12 righe in totale, niente codice (puoi descrivere
 #     le shape con "(N, d)" ecc.).
 # TUA RISPOSTA:
-# ...
+# Abbiamo una matriche di N_righe_pratiche per d_features. Processiamo questa matrice nel primo layer con una matrice costituita di d_pesi per h_neuroni (+ eventuale vettore h_bias). Avremo quindi una matrice di logits con shape N_righe per h_valori. Trasformiamo ora tutti gli h_valori tramite una funzione di attivazione (ad es., trovandoci nel primo layer, e avendo nel nostro caso solo due livelli, usiamo la funzione ReLU, che difatto, per ogni pratica, spegne i neuroni che hanno riportato valori negativi). I valori così trasformati ordinati sempre in shape (N, h) passano al livello successivo. Questo è il livello di out-put, e la prima operazione è simile alla prima del livello precedente. Creiamo un vettore di logits passando la matrice di out-put prodotta dal livello precedente questa volta per un vettore(e non una matrice) di pesi di shape (h, ) + eventuale bias.Otterremo cosi un vettore di di logit con shape (N, ), ossia per ogni pratica avremo un numero. Utilizziamo questa volta la funzione sigmoide su ognuno di questi valori, per trasformare ogni valore del vettore out-put di logit in una probabilità (valori tra 0 e 1).
 
 
 # E2) [REFACTORING] - 10 minuti
@@ -974,27 +975,45 @@ plt.close()
 #     Riscrivilo con type hint corretti, vettorizzato (1 sola "@") e
 #     ValueError se le shape non sono coerenti.
 # TUO CODICE QUI:
-
+def forward_bello(
+    X: NDArray[np.float64],
+    W: NDArray[np.float64],
+    b: NDArray[np.float64] | float
+) -> NDArray[np.float64]:
+    if not np.isscalar(b):
+        if b.shape[0] != W.shape[1]:
+            raise ValueError("b.shape[0] deve coincidere con W.shape[0]")
+    if X.ndim != 2:
+        raise ValueError("X deve essere una matrice 2D")
+    if W.ndim != 2:
+        raise ValueError("W deve essere una matrice 2D")
+    if X.shape[1] != W.shape[0]:
+        raise ValueError("X.shape[1] deve combaciare con W.shape[0]!")
+    return X @ W + b
+    
 
 # E3) [DEBUG] - autonomo, niente scala progressiva (regola corso)
 #     Questo codice gira ma la P.mean() viene SEMPRE 0.5 esatto. Eppure
 #     i pesi NON sono zero. Trova il bug.
 #
-#         rng = np.random.default_rng(0)
-#         X = rng.standard_normal((50, 7))
-#         W1, b1 = init_pesi_he(7, 16, seed=1)
-#         W2, b2 = init_pesi_he(16, 1, seed=2)
-#         # FORWARD
-#         H = layer_dense(X, W1, b1, att=None)   # <-- guarda qui
-#         Z = layer_dense(H, W2, b2, att=None)
-#         P = sigmoid(Z).ravel()
-#         print(P.mean())
-#
+print("\nEsercizio 3 - DEBUG\n")
+rng = np.random.default_rng(0)
+X = rng.standard_normal((50, 7))
+W1, b1 = init_pesi_he(7, 16, seed=1)
+W2, b2 = init_pesi_he(16, 1, seed=2)
+# FORWARD
+H = layer_dense(X, W1, b1, att=None)   # <-- guarda qui
+Z = layer_dense(H, W2, b2, att=None)
+P = sigmoid(Z).ravel()
+print(P.mean())
+
 #     Quando hai trovato il bug, scrivi qui sotto:
 #       - cosa hai diagnosticato (1 riga)
 #       - come l'hai sistemato (1 riga di codice corretto)
 # TUA RISPOSTA / FIX:
-# ...
+# Usando valori randomici centrati, nel momento in cui non mettiamo alcuna funzione di attivazione del processo, i valori alla fine di operazione ripetute tenderanno a schiacciarsi intorno allo 0 (collasso lineare). Questo fa produrre alla sigmoide posta alla fine un valore vicino a 0.5.
+
+# fix => H = layer_dense(X, W1, b1, att=relu)
 
 
 # E4) [RETRIEVAL] - regola 15: riscrivi da zero una funzione di un capitolo
@@ -1010,7 +1029,28 @@ plt.close()
 #     Verifica:
 #       neurone_batch(X(3,4), w(4,), 0.0) -> shape (3,) con tutti valori in (0, 1).
 # TUO CODICE QUI:
+print("\nEsercizio 4 - RETRIEVAL\n")
+def neurone_batch(
+    X: NDArray[np.float64],
+    w: NDArray[np.float64],
+    b: float
+) -> NDArray[np.float64]:
+    if X.ndim != 2:
+        raise ValueError("X deve essere una matrice 2D")
+    if w.ndim != 1:
+        raise ValueError("w deve essere un vettore 1D")
+    if X.shape[1] != w.shape[0]:
+        raise ValueError("X.shape[1] e w.shape[0] devono coincidere")
+    if not np.isscalar(b):
+        raise ValueError("b deve essere uno scalare di tipo float")
+    return sigmoid(X @ w + b)
 
+rng = np.random.default_rng(42)
+X = rng.standard_normal((3, 4))
+w = rng.standard_normal((4, ))
+b = 0.0
+
+print(neurone_batch(X, w, b))
 
 # E5) [INTERLEAVING] cap.01 M3 (sigmoid stabile) + cap.02 M3 (rete 2-layer)
 #     Hai una rete 2-layer con W1, W2 init He su 7 feature, h=16. Se
