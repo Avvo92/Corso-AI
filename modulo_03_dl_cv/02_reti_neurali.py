@@ -800,18 +800,85 @@ for h in h_values:
 # in realtà i valori sono del tutto randomici, e non sembrano avere nessuna correlazione con il valore di h.
 # molte volte si avvicinano allo 0.5, ma per ogni riga del csv equivale a lanciare una moneta.
 
-# TODO 3.2 (8 minuti):
-# Genera un grafico PNG che mostra la forma di ReLU(X @ W1 + b1) su un
-# input 1D. Cioe':
-#   - x_grid = np.linspace(-5, 5, 200).reshape(-1, 1)
-#   - W1 (1, 5), b1 (5,) random
-#   - H = ReLU(X_grid @ W1 + b1)
-#   - plotta le 5 colonne di H (5 attivazioni) sovrapposte
-# Vedrai 5 "rampe" che partono ognuna da un punto diverso: e' cosi' che
-# la rete "compone" funzioni complesse da pezzi semplici (intuizione UAT).
-# Salva in: modulo_03_dl_cv/figures/02_relu_attivazioni.png
+# TODO 3.2 (8 minuti) — Visualizzare ReLU su più neuroni nascosti
+#
+# Obiettivo:
+#   Capire a occhio cosa fa ReLU (Rectified Linear Unit: max(0, z)) quando
+#   applichi UN layer nascosto a molti valori di input sulla stessa feature.
+#   Non stai addestrando la rete: pesi e bias sono random, solo per vedere le forme.
+#
+# Cosa devi produrre:
+#   Un PNG con 5 curve sovrapposte → salvato in:
+#   modulo_03_dl_cv/figures/02_relu_attivazioni.png
+#
+# Traccia (shape esplicite — controllale con .shape prima del plot):
+#   1) rng = np.random.default_rng(42)   # seed fisso = grafico ripetibile
+#   2) Griglia input (una sola feature, molti punti):
+#        x_grid = np.linspace(-5, 5, 200).reshape(-1, 1)   # (200, 1)
+#   3) Layer nascosto con h=5 neuroni (pesi random, NON serve He init qui):
+#        W1 = rng.standard_normal((1, 5))    # (1, 5)
+#        b1 = rng.standard_normal(5)         # (5,)
+#   4) Logit poi attivazione (usa la funzione relu() già definita sopra):
+#        z = x_grid @ W1 + b1               # (200, 5) — broadcasting su b1
+#        H = relu(z)                         # (200, 5) — stessa shape di z
+#   5) Grafico:
+#        - asse x: i 200 valori di x_grid (es. x_grid.ravel() o [:, 0])
+#        - asse y: per ogni colonna j in {0..4}, plotta H[:, j]
+#        - legenda opzionale: "neurone 0" … "neurone 4"
+#        - titolo tipo: "ReLU su 5 neuroni nascosti (pesi random)"
+#   6) plt.savefig(...); plt.close()  — crea la cartella figures/ se manca
+#
+# Cosa dovresti vedere (1 riga in commento dopo il plot):
+#   5 "rampe" che restano a 0 fino a un certo x, poi salgono con pendenza diversa:
+#   ogni neurone taglia e inclina in modo diverso → pezzi semplici che la rete
+#   può combinare (intuizione del teorema di approssimazione universale — UAT:
+#   "con abbastanza neuroni puoi approssimare funzioni complicate").
+#
+# Errori da evitare:
+#   - Non limitare ReLU al solo vettore 1D: qui z e H sono (200, 5).
+#   - Non usare sigmoid nel layer nascosto: in questo TODO è solo ReLU.
+#
 # TUO CODICE QUI:
 
+print("TODO 3.2")
+x_grid = np.linspace(-5, 5, 200).reshape(-1, 1)
+rng = np.random.default_rng(42)
+W1 = np.sort(rng.standard_normal(size=(1, 5), dtype=float).ravel()).reshape(1, 5)
+b1 = rng.standard_normal(size=(5, ), dtype=float)
+
+z = x_grid @ W1 + b1
+H = relu(z)
+
+x_ax = x_grid.ravel()
+
+y_arr = [H[:, j] for j in range(0, H.shape[1])]
+
+fig_dir_path = os.path.join(os.path.dirname(__file__),"reti_neurali_plot")
+os.makedirs(fig_dir_path, exist_ok=True)
+
+plt.title("Grafico ReLU su 5 neuroni nascosti")
+plt.xlabel("Valori di X da -5 a +5")
+plt.ylabel("Valori dell'attivazione del Neurone per i valori di X")
+for i, y_ax in enumerate(y_arr):
+    plt.plot(x_ax, y_ax)    
+out = os.path.join(fig_dir_path, "02_relu_attivazioni.png")
+plt.savefig(out, dpi=300)
+plt.close()
+
+fig, axes = plt.subplots(1, 5, figsize=(8, 8), sharex=True, sharey=True)
+fig.suptitle("Grafici Singoli ReLU su 5 neuroni nascosti")
+fig.supxlabel("Valori delle 'Features'", fontsize=8)
+fig.supylabel("Valore ritornato da RELU", fontsize=8)
+fig.tight_layout(rect=[0, 0, 1, 0.92])
+for i, (w, ax) in enumerate(zip(W1.ravel(), axes)):
+    ax.plot(x_ax, H[:, i])
+    ax.set_title(f"Relu per w = {round(w, 3)}", fontsize=8) # Titolo
+    ax.grid(True, alpha=0.3) # Griglia (semi-trasparente)                                       # Mostra la legenda
+out = os.path.join(fig_dir_path, "03_relu_attivazioni_grafici_singoli.png")
+plt.savefig(out, dpi=300)
+plt.close()
+
+# si nota che in base al valore del dot del peso del singolo neurone, si produce o meno un attivazione
 
 # ==========================================================================
 # QUIZ DI VERIFICA (fai PRIMA di passare agli esercizi)
@@ -820,18 +887,22 @@ for h in h_values:
 # V1) X (N, d), W1 (d, h1), W2 (h1, h2), W3 (h2, k). Che shape ha
 #     l'output finale Z = (((X @ W1) @ W2) @ W3) ? Spiega.
 # TUA RISPOSTA:
-# ...
+# (N, k).
 
 # V2) Una rete 2-layer con ReLU nello strato nascosto. Se imposti tutti
 #     i pesi a zero, P.mean() vale circa: (a) 0  (b) 0.5  (c) 1  (d) random
 #     Perche'?
 # TUA RISPOSTA:
-# ...
+# La risposta corretta è (b). Questo perchè se i pesi sono impostati tutti 0 (e assumendo che anche i bias siano 0), per ogni riga il dot product, indipendentemente dal numero di pesi, produrrà 0 per ogni riga. All'attivazione tramite sigmoide nel ultimo layer, la funzione ricevendo per ogni riga valore 0, produrrà per ogni riga 0.5.
 
 # V3) Cosa dice (in parole umane) l'Universal Approximation Theorem?
 #     E qual e' il suo limite pratico?
 # TUA RISPOSTA:
-# ...
+# Se si hanno abbastanza neuroni in un hydden layer, in teoria sarebbe possibile approssimare il risultato di qualunque funzione continua. I limiti sono sostanzialmente 3: 
+# Il teorema dice che esiste la strada, ma non indica ne dove ne come raggiungerla (non è un gps).
+# Abbastanza neuroni può potenzialmente essere un numero enorme, che non è possibile avere.
+# L'approssimazione fatta sul training rimane sostanzialmente diversa dal mondo reale.
+
 
 # V4) [Trova l'errore]
 #       W1 = rng.standard_normal((4, 8)) * 100.0
@@ -840,7 +911,7 @@ for h in h_values:
 #     Cosa succede a H se i pesi sono "troppo grandi"? Perche' usare He
 #     init invece?
 # TUA RISPOSTA:
-# ...
+# avendo moltiplicato tutti i valori dei pesi * 100, questo può generare dei dot product molto grandi, rischiando di bloccare il calcolo della sigmoide per via di risultati troppo grandi o troppo piccoli (clipping, di solito si cerca di bloccare tutto nel range -500 +500). con He init, invece noi ancoriamo la scala al numero delle righe di W tramite la formula [W con shape(d, h) * np.sqrt(2 / d)]. in questo modo più è lungo W, minori saranno i risultati dei singoli prodotti di X * W, riuscendo così a gestire il valore finale del dot product e controllarlo in fase di test.
 
 # V5) Quale di queste reti e' EQUIVALENTE a una LogisticRegression?
 #     (a) 1 layer Dense con sigmoid
@@ -848,13 +919,13 @@ for h in h_values:
 #     (c) 2 layer Dense senza attivazione interna + sigmoid finale
 #     Spiega anche le altre (perche' non sono LR).
 # TUA RISPOSTA:
-# ...
+# La risposta corretta è (a). la seconda è una rete neurale, e non un LogisticRegressor. L'ultimo invece è equivalente al primo, perchè senza attivazioni intermedie il modello collassa in un unico layer.
 
 # V6) [Recap shape] In una rete X (N=100, d=7) -> hidden (h=32) -> output
 #     binario, quanti PARAMETRI ALLENABILI ha la rete in totale?
 #     (suggerimento: W1, b1, W2, b2)
 # TUA RISPOSTA:
-# ...
+# La risposta è ((7 * 32) + 32) + ((32 * 1) + 1) => 289. 7 pesi per 32 neuroni nel layer hidden più il bias di ogni neurone, più altri 32 pesi per 1 neurone più bias nel layer di output.
 
 # V7) [Feynman - vincoli stretti] Spiega in 4 righe a tua madre (zero
 #     informatica) cos'e' una rete neurale. VIETATO: matematica, codice,

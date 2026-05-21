@@ -122,6 +122,71 @@
 - **Fix applicato:** rimosso/commentato blocco LR non richiesto per (b)(c); stampa con **`h`** esplicito; commento aggiornato con **vicinanza a ~0.5** e analogia **moneta / caso**.
 - **Valutazione qualità attuale:** **~9.5–10/10**. Il **primo tentativo** storico resta **8/10**. Micro-opzionale: formattare **`acc_rete`** con **`:.4f`**; evitare `fit_transform`/`carica_pratiche` dentro la funzione a ogni `h` (spostare fuori dal loop una volta).
 
+### [2026-05-21] — `02_reti_neurali.py` — TODO 3.2 (grafico ReLU, 5 neuroni)
+
+- **Esercizio / blocco:** Sezione 3, TODO 3.2 (~righe 843–879).
+- **Valutazione (primo tentativo — "voto esame"):** **7/10** (nucleo matematico **~9/10**, aderenza consegna/portfolio **~5/10**).
+- **Punti di forza:** Pipeline corretta: `x_grid (200,1)`, `W1 (1,5)`, `b1 (5,)`, `z = x_grid @ W1 + b1` → `(200,5)`, `H = relu(z)`; `x_ax` con `ravel()`; grafico sovrapposto con 5 `plot`; **extra** subplot `1×5` con `fig.suptitle` / `supxlabel` / `supylabel` / `tight_layout(rect=...)` e titoli per peso `w` — dimostra padronanza Matplotlib oltre il minimo.
+- **Errori / lacune:** **Path:** `os.path.join(dirname(__file__), "modulo_03_dl_cv", "figures")` crea cartella annidata `modulo_03_dl_cv/modulo_03_dl_cv/figures/` invece di `modulo_03_dl_cv/figures/`. **Nome file:** consegna chiede `02_relu_attivazioni.png`, salvato `02_attivazioni_relu.png`. Manca **legenda** (opzionale ma utile sul grafico sovrapposto). Manca **commento obbligatorio** (1 riga su rampe + intuizione UAT). `W1` ordinato con `np.sort` non è nella traccia (ok visivamente, ma non è il setup “pesi random” letterale). Subplot: `plt.savefig` / `plt.close()` senza `fig` esplicito (funziona spesso, meglio `fig.savefig` + `plt.close(fig)`).
+- **Correzione / suggerimento:** `fig_dir = os.path.join(os.path.dirname(__file__), "figures")`; salvare overlay in `02_relu_attivazioni.png`; aggiungere `plt.legend()` nel primo grafico; una riga commento post-plot; opzionale tenere `03_...` come studio personale in path corretto.
+- **Pattern errore / ID contesto:** monitoraggio **Pattern #6** (path/nome deliverable vs testo consegna).
+
+### [2026-05-21] — POST-FEEDBACK — TODO 3.2 (`02_reti_neurali.py`, righe 843–881)
+
+- **Fix applicato:** path non più annidato `modulo_03_dl_cv/modulo_03_dl_cv/`; cartella `reti_neurali_plot/` sotto il file capitolo; nome overlay **`02_relu_attivazioni.png`** corretto; commento riga 881 aggiunto; subplot bonus mantenuto (`03_relu_attivazioni_grafici_singoli.png`).
+- **Valutazione qualità attuale:** **8/10**. Il **primo tentativo** storico resta **7/10**.
+- **Ancora da allineare (micro):** consegna chiede cartella **`figures/`** (non `reti_neurali_plot/`); legenda opzionale assente sul grafico sovrapposto; commento UAT presente ma incompleto (manca rampe a zero + combinazione neuroni / UAT in parole della traccia); `W1` ancora `np.sort` (ok didattico, non letterale); subplot: preferire `fig.savefig` + `plt.close(fig)`.
+
+### [2026-05-21] — `02_reti_neurali.py` — Quiz verifica V1 (shape catena matmul)
+
+- **Domanda:** shape di `Z = (((X @ W1) @ W2) @ W3)` con `X (N,d)`, pesi come in traccia.
+- **Risposta studente:** `(N, k)`.
+- **Valutazione (primo tentativo):** **8/10** — risultato **corretto**; manca la **spiegazione** richiesta (“Spiega”).
+- **Correzione:** aggiungere catena: `(N,d)@(d,h1)→(N,h1)` → `@(h1,h2)→(N,h2)` → `@(h2,k)→(N,k)`; N resta sulle righe (pratiche), k colonne in uscita.
+
+### [2026-05-21] — `02_reti_neurali.py` — Quiz verifica V2 (pesi zero → P.mean)
+
+- **Domanda:** rete 2-layer, ReLU hidden, tutti i pesi a 0 → `P.mean()` ≈ ? + perché.
+- **Risposta studente:** **(b) 0.5** — dot product 0 per riga → sigmoid finale → 0.5 per riga.
+- **Valutazione (primo tentativo):** **9/10** — scelta e filo logico **corretti** (allineato a `_demo_init_zero` con bias zero).
+- **Manca per 10/10:** passaggio esplicito **ReLU(0)=0** sullo hidden; chiarire che si assume anche **bias=0** (solo “pesi” nella domanda, nel capitolo la demo usa `b1=b2=0`); secondo layer `H@W2=0` → logit `z=0` → `sigmoid(0)=0.5`; opzionale richiamo **R5** (neuroni hidden identici).
+
+### [2026-05-21] — `02_reti_neurali.py` — Quiz verifica V3 (UAT + limite pratico)
+
+- **Risposta studente:** abbastanza neuroni → in teoria si approssima qualsiasi funzione complessa; limite = “capacità di elaborazione dei dati”.
+- **Valutazione (primo tentativo):** **6.5/10** — **prima metà ~8/10** (intuizione giusta); **limite pratico ~4/10** (vago, non allineato al capitolo).
+- **Correzione:** UAT = rete **2-layer**, neuroni hidden sufficienti, approssima funzioni **continue** (esistenza, non costruzione). Limiti pratici del file: (1) dice che **esiste** una rete, non **come trovarla** (serve training/backprop cap.03); (2) “abbastanza neuroni” può voler dire **molti** → compute/dati; (3) teoria ≠ generalizzazione su dati nuovi.
+
+### [2026-05-21] — POST-FEEDBACK — Quiz verifica V3 (UAT rivalutazione)
+
+- **Risposta aggiornata:** hidden con abbastanza neuroni → approssima funzioni **continue**; 3 limiti: esiste strada ma non GPS; neuroni possono essere tantissimi; training ≠ mondo reale.
+- **Valutazione qualità attuale:** **9/10**. Il **primo tentativo** storico resta **6.5/10**.
+- **Micro:** typo `hydden`; opzionale citare esplicitamente **2 layer** e **backprop** (cap.03) come “GPS”; terzo limite formulabile come **generalizzazione** oltre al training set.
+
+### [2026-05-21] — `02_reti_neurali.py` — Quiz verifica V4 (pesi ×100, sigmoid, He init)
+
+- **Risposta studente:** pesi grandi → logit/dot enormi → sigmoid a rischio overflow (clip ±500); He scala con `sqrt(2/d)` per tenere i prodotti sotto controllo.
+- **Valutazione (primo tentativo):** **8/10** — filo logico **corretto**; formula He ok.
+- **Manca per 9–10:** esplicitare che **`H` satura ~0 o ~1** (non solo “blocco calcolo”); conseguenza **R6**: gradiente sigmoid ≈ 0 → si impara poco (anticipa cap.03); `d` = **fan_in** (colonne input / prima dim di `W`), non “righe” in senso ambiguo; He serve soprattutto **all’inizio del training**, non solo “in fase di test”.
+
+### [2026-05-21] — `02_reti_neurali.py` — Quiz verifica V5 (equivalenza LogisticRegression)
+
+- **Risposta studente:** **(a)** corretta; **(b)** “è una rete neurale” (non LR); **(c)** collassa senza attivazioni interne → equivalente al primo.
+- **Valutazione (primo tentativo):** **8/10** — scelta **(a)** ok; intuizione **(c)** sul collasso lineare **corretta** (richiamo TODO 2.2).
+- **Manca:** perché **(a)** = LR (`z=X@w+b` + sigmoid = `predict_proba`); **(b)** perché **ReLU** rompe la linearità (vera rete 2-layer, non collassa); **(c)** precisare: equivalente “come funzione” con **`W_eff = W1 @ W2`** (stessa classe del modello, parametrizzazione diversa) — la risposta ufficiale privilegia **(a)** come forma canonica.
+
+### [2026-05-21] — `02_reti_neurali.py` — Quiz verifica V6 (conteggio parametri)
+
+- **Risposta studente:** `((7*32)+1)+((32*2)+1)=290`; testo: 7 pesi×32 neuroni + bias + 32×2 output + bias.
+- **Valutazione (primo tentativo):** **5.5/10** — schema **W1,b1,W2,b2** ok; **numero sbagliato** (corretto **289**).
+- **Errori:** **b1** = **32** bias (non 1); output **binario** → **W2 (32,1)** e **b2 (1,)** (non `32*2`); formula: `7*32 + 32 + 32*1 + 1 = 289`. **N=100** non entra nel conteggio (solo batch).
+
+### [2026-05-21] — POST-FEEDBACK — Quiz verifica V6 (parametri rivalutazione)
+
+- **Risposta aggiornata:** `((7*32)+32)+((32*1)+1)=289`; testo: bias per neurone hidden, 32 pesi verso **1** neurone output + bias.
+- **Valutazione qualità attuale:** **9.5/10**. Il **primo tentativo** storico resta **5.5/10**.
+- **Micro:** opzionale esplicitare shape `W1(7,32), b1(32), W2(32,1), b2(1)`.
+
 ---
 
 ## Lacune e dubbi ancora aperti
