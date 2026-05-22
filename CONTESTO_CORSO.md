@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 20/05/2026 (housekeeping: archivi **M2** + **Ponte Matematico**; canonizzazione prodotto; studio **M3 cap.02**)
+> **Ultimo aggiornamento**: 21/05/2026 (chiusura **M3 cap.02** `02_reti_neurali.py`; prossimo **03_backpropagation.py**)
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -40,12 +40,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_03_dl_cv/02_reti_neurali.py — Reti a più layer (stack di Dense + attivazioni), forward NumPy, confronto con baseline. |
-| **Ultimo completato** | modulo_03_dl_cv/01_neurone_artificiale.py (11/05/2026) — Neurone = Dense h=1 + sigmoid; `layer_dense`; recall Ponte (E7); mini-progetto `neurone_vs_logreg`; checkpoint C1–C4; **voto difficoltà** **8**/10 — confermato da Gianluca in chat. |
+| **Capitolo in corso** | modulo_03_dl_cv/03_backpropagation.py — Loss, gradienti, chain rule, training rete 2-layer (cap.02 M3 come base). |
+| **Ultimo completato** | modulo_03_dl_cv/02_reti_neurali.py (21/05/2026) — `layer_dense`, `rete_2_layer`, init He, R2 collasso lineare, forward CSV M2, mini-progetto `rete_2_layer_vs_logreg`; checkpoint C1–C4; **voto difficoltà** **8**/10. **E6 [REAL-WORLD]** rinviato (scelta studente). |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision |
-| **Difficoltà media** | ~6.8 (22 capitoli con voto; archivi M1/M2/Ponte — vedi `archivi/`) |
-| **Priorità attive** | 🟡 Pattern #6 consegne (monitoraggio), 🟡 Pattern #19 terminologia None vs null, 🟡 Pattern #21 tupla/round (monitoraggio), 🟡 Data leakage (monitoraggio). |
-| **Sessione corrente** | Sessione 20 |
+| **Difficoltà media** | ~6.85 (23 capitoli con voto; archivi M1/M2/Ponte — vedi `archivi/`) |
+| **Priorità attive** | 🟡 Pattern #6 consegne; 🟡 #19 None vs null; 🟡 #21 tupla/round; 🟡 Data leakage; 🟡 Lacuna #31 UAT (limite pratico, cap.03); 🟡 E6 system design (rinviato, ripianificare fine M3). |
+| **Sessione corrente** | Sessione 21 |
 
 ---
 
@@ -56,11 +56,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 20/05/2026 |
-| **Cosa è stato fatto** | **Housekeeping**: creati `archivi/ARCHIVIO_MODULO_02.md` e `archivi/ARCHIVIO_PONTE_MATEMATICO.md` (Passo 13 in ritardo); `CONTESTO` snellito con puntatori. **Canonizzazione prodotto** (sessione precedente): `docs/prodotto/`, `aplicativo/`, commit `88225f2`. |
-| **Errori emersi** | Nessuno didattico. |
-| **Cosa fare nella prossima sessione** | `modulo_03_dl_cv/02_reti_neurali.py` — PRONTUARIO R1–R6 → quiz ingresso → teoria; opzionale bridge `M03_R01_*`. |
-| **Stato motivazione** | Buono: repo più ordinata, pronto a concentrarsi sul DL. |
+| **Data** | 21/05/2026 |
+| **Cosa è stato fatto** | **Chiusura M3 cap.02** `02_reti_neurali.py`: teoria + quiz; esercizi E1–E5 (E1 fix `W2 (h,1)`); mini-progetto `rete_2_layer_vs_logreg` (AUC su probabilità, 9/10); checkpoint C1–C4 (auto-rating ~8.6). **E6** lasciato vuoto per scelta (visione system design da consolidare). |
+| **Errori emersi** | `roc_auc_score` su 0/1 invece che su `P` (corretto); shape output binario `(h,1)` in E1 (corretto); AUC vs accuracy random spiegati in chat. |
+| **Cosa fare nella prossima sessione** | `03_backpropagation.py` — andare **lento** (difficoltà attesa ~9/10); opzionale bridge `M03_R02_after_C02_before_C03` se non fatto; ripasso #31 UAT in teoria loss/training. |
+| **Stato motivazione** | Buono: cap.02 chiuso con consapevolezza su cosa manca (E6); pronto al training. |
 
 ---
 
@@ -127,12 +127,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_03_dl_cv/02_reti_neurali.py — Modulo 03 cap.02: **stack di layer** (`ReLU` nascosto + `sigmoid` output), perché serve non-linearità, forward 2-layer in NumPy, init He; mini-progetto `rete_2_layer_vs_logreg`. |
-| **Rinforzi da inserire (🔁)** | In **cap.02**: micro-richiami su **shape** `(N,d)→(N,h)→(N,k)` e su **`layer_dense`** come mattone (già dimostrato = neurone con h=1); opzionale richiamo **sigmoid vs ReLU** (da auto-rating C4: attivazioni ancora in consolidamento). |
-| **Concetti ⚠️ da ripassare** | Quando serve **ReLU vs sigmoid vs tanh**; **vanishing** intuitivo; **pesi tutti zero** (simmetria). |
-| **Pattern 🔴 da monitorare** | #6 consegne / lettura DoD; #21 tuple/`round`; **non editare il repo studente senza richiesta esplicita**. |
-| **Ponte mentale da riusare** | Pipeline Laravel ≈ **layer in serie**; “senza attivazione interna = una sola trasformazione lineare equivalente”. |
-| **Note** | Cap.01 M3 chiuso 11/05/2026; prossimo salto concettuale = **profondità >1** (vera rete). |
+| **Prossimo capitolo** | modulo_03_dl_cv/03_backpropagation.py — **loss** (BCE), **gradiente**, **chain rule**, **gradient descent**, `backward_2layer`, `train_rete_2_layer` su CSV M2; obiettivo: rete addestrata ≥ LR. |
+| **Rinforzi da inserire (🔁)** | In **cap.03**: richiamo **forward** `rete_2_layer` (salvare H,Z,P); **#31 UAT** (rete esiste vs come si trova con training); **AUC/probabilità** vs soglia 0/1; shape **`W2 (h,1)`**. |
+| **Concetti ⚠️ da ripassare** | Derivata come pendenza; learning rate troppo alto/basso; differenza **loss** vs **metrica** (accuracy/AUC). |
+| **Pattern 🔴 da monitorare** | #6 consegne; #21 tuple/`round`; confusione **metrica di valutazione** vs **loss di training**. |
+| **Ponte mentale da riusare** | Backprop ≈ **git bisect** della rete (docstring cap.03); GPS/UAT: esistenza vs percorso. |
+| **Note** | Cap.02 chiuso 21/05/2026 voto **8**/10; **E6** rinviato — ripianificare mock system design fine M3. File bridge C01→C02: `quiz_ripasso_tra_capitoli/M03_R01_*` (opzionale se non fatto). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -776,8 +776,9 @@ completezza del self-check e chiedere correzioni.
 | PM-01_vettori_da_zero | 9 | *(archivi/ARCHIVIO_PONTE_MATEMATICO)* |
 | PM-02_matrici_layer_dense | 9 | *(archivi/ARCHIVIO_PONTE_MATEMATICO)* |
 | **M3-01_neurone_artificiale** | **8** | Confermato studente **8**/10; capitolo denso (quiz + E1–E7 + mini-progetto + checkpoint C1–C4) |
+| **M3-02_reti_neurali** | **8** | Confermato studente **21/05/2026**; forward 2-layer + He + R2; mini-progetto 9/10; E6 rinviato; lacuna AUC→prob risolta in sessione |
 
-**Media attuale**: ~6.8 (22 capitoli con voto; dettaglio M1/M2/Ponte negli archivi).
+**Media attuale**: ~6.85 (23 capitoli con voto; dettaglio M1/M2/Ponte negli archivi).
 
 ---
 
@@ -919,11 +920,16 @@ completezza del self-check e chiedere correzioni.
 
 | Termine | Significato | Capitolo | Ripassi | Stato |
 |---------|-------------|----------|---------|-------|
-| Logit (`z`) | Punteggio lineare prima dell’attivazione: combinazione `X @ w + b` (batch: ogni riga una pratica). Valore reale non limitato | M3-01 | 0/3 | 🔄 |
-| Sigmoid | Funzione che comprime un reale in `(0, 1)` — nel binario interpretabile come probabilità stimata della classe positiva | M3-01 | 0/3 | 🔄 |
-| `layer_dense` | Layer fully-connected: calcola `X @ W + b` poi applica attivazione opzionale; con `h=1` e sigmoid coincide col neurone singolo | M3-01 | 0/3 | 🔄 |
-| Forward pass | Una passata “avanti” dalla input alle probabilità/output senza aggiornare i pesi | M3-01 | 0/3 | 🔄 |
+| Logit (`z`) | Punteggio lineare prima dell’attivazione: combinazione `X @ w + b` (batch: ogni riga una pratica). Valore reale non limitato | M3-01 | 1/3 | 🔄 |
+| Sigmoid | Funzione che comprime un reale in `(0, 1)` — nel binario interpretabile come probabilità stimata della classe positiva | M3-01 | 1/3 | 🔄 |
+| `layer_dense` | Layer fully-connected: calcola `X @ W + b` poi applica attivazione opzionale; con `h=1` e sigmoid coincide col neurone singolo | M3-01 | 1/3 | 🔄 |
+| Forward pass | Una passata “avanti” dalla input alle probabilità/output senza aggiornare i pesi | M3-01 | 1/3 | 🔄 |
 | `callable` | In Python, oggetto invocabile come funzione (`()`); si verifica con builtin `callable(x)`, non `isinstance(x, callable)` | M3-01 | 0/3 | 🔄 |
+| ReLU | Attivazione `max(0,z)`: spegne logit negativi; tra layer nascosti per non-linearità (R2) | M3-02 | 0/3 | 🔄 |
+| Init He | Inizializzazione pesi `Normal(0, sqrt(2/d))` per fan-in `d`; evita simmetria dei pesi zero (R5) | M3-02 | 0/3 | 🔄 |
+| `rete_2_layer` | Forward: `H=ReLU(X@W1+b1)`, `P=sigmoid(H@W2+b2)`; base per training cap.03 | M3-02 | 0/3 | 🔄 |
+| Collasso lineare (R2) | Due+ layer solo lineari = un layer equivalente; senza ReLU non aggiungi capacità | M3-02 | 0/3 | 🔄 |
+| `roc_auc_score` | Metrica ordinamento: usa **probabilità** continue, non 0/1 dopo soglia; ~0.5 = random | M3-02 | 0/3 | 🔄 |
 
 ---
 
@@ -943,6 +949,16 @@ completezza del self-check e chiedere correzioni.
 | 5 | “Accuracy” tra due modelli | Media di `(pred_a == pred_b)` su tutte le righe, non rapporto tra conteggi di positivi |
 | 6 | Parentesi nella formula sigmoid scritta a mano | `1 / (1 + exp(-z))` — il denominatore è tutto `1 + ...` |
 | 7 | Preferenza workflow codice | Non modificare file studente senza richiesta esplicita |
+
+### Cap.02 M3 — Reti neurali
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | `roc_auc_score` — cosa misura | Ordinamento con **probabilità**; ~0.5 = random; non usare 0/1 dopo soglia |
+| 2 | Accuracy rete random << 0.5 | Normale: regola fissa può essere “invertita”; AUC resta ~0.5 |
+| 3 | Layer Dense = dot product? | Ogni neurone = dot+bias; `X@W` = tutti i dot in batch (matmul) |
+| 4 | LR usa backpropagation? | Stessa famiglia (gradienti); LR = 1 layer, no catena layer nascosti |
+| 5 | E6 REAL-WORLD rinviato | Scelta studente: serve visione system design, non template; ripianificare fine M3 |
 
 ---
 
@@ -1058,6 +1074,17 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - Checkpoint **C1–C4**: logit vs probabilità; Feynman if vs neurone; calcolo manuale `z`/`sigmoid`; auto-rating aree (cap.02 M3 = focus ReLU/tanh stack).
 - Artefatti: `modulo_03_dl_cv/figures/01_attivazioni.png`, `01_forward_neurone.png`.
 - Tag esercizi: refactoring (`neuro_v2`), DEBUG (pesi zero), retrieval (`coseno`), interleaving (norme), recall (`layer_dense`), mini-progetto.
+
+### Cap.02 M3 — Reti neurali 2-layer (completato; voto difficoltà: **8**/10)
+
+- **Layer Dense multi-neurone**: `X @ W + b` con `W (d,h)`, `b (h,)`, attivazione opzionale (`att=None` lineare).
+- **`rete_2_layer`**: hidden `ReLU`, output `sigmoid`; shape `W2 (h,1)`, `P` `(N,)`.
+- **Init He** e confronto vs pesi zero (R5); **collasso lineare** senza attivazione interna (R2, demo 2 vs 3 layer).
+- **Forward su CSV M2** `pratiche_genuinita_mock.csv`: rete random ~acc/AUC 0.5 vs LR allenata >0.85.
+- Mini-progetto **`rete_2_layer_vs_logreg`**: dict metriche + `n_param_rete` (145 con h=16); `roc_auc_score` su **probabilità**.
+- Esercizi: REFACTORING `forward_bello`, DEBUG `att=relu`, RETRIEVAL `neurone_batch`, INTERLEAVING saturazione pesi×100.
+- Checkpoint C1–C4 completati; **E6 [REAL-WORLD]** rinviato (21/05/2026) — ripianificare system design.
+- Diario: `sessioni_capitoli/M03_C02_reti_neurali_sessione.md`.
 
 ---
 
@@ -1383,6 +1410,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M2 cap.05 — Overfitting/Validazione | ✅ Completato | CV su train (media±std), bias-varianza, distinzione tuning vs test; `modello_base.py`: `Pipeline(StandardScaler + LogisticRegression)` in `cross_val_score` per evitare leakage intra-fold |
 | M2-07_deploy_streamlit_cloud | 6 | -1 ↓ vs M2-06 (capitolo operativo: pulizia dipendenze, requirements, push GitHub, deploy cloud, smoke test; primo URL portfolio LIVE; voto studente 27/04/2026) |
 | M3 cap.01 — Neurone artificiale | ✅ Completato (11/05/2026) | Forward batch `neurone_batch`, `layer_dense`, confronto `Pipeline(StandardScaler+LR)` vs `sigmoid(X_scaled@w+b)`; `neurone_vs_logreg`; PNG `figures/01_*`; voto difficoltà **8**/10 |
+| M3 cap.02 — Reti neurali | ✅ Completato (21/05/2026) | `rete_2_layer`, init He, demo collasso R2, forward CSV M2, mini-progetto `rete_2_layer_vs_logreg` (acc/AUC rete random vs LR); checkpoint C1–C4; **E6 REAL-WORLD** rinviato; voto **8**/10 |
 | M3 — DL & CV (portfolio CNN cap.07) | 🟡 Pianificato | Deliverable cap.07 deciso (30/04/2026): classificatore "busta paga vs altro" su 200 buste paga reali anonimizzate + ~200 immagini "altro" da dataset pubblici. Vincoli privacy/GDPR documentati nella sezione "Computer Vision nel Prodotto". |
 | M4 — NLP | ⬜ Da fare | |
 | M5 — LLM | ⬜ Da fare | |
@@ -1906,6 +1934,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 21/05/2026 | **Chiusura M3 cap.02** (`02_reti_neurali.py`): Stato → `03_backpropagation.py`; Ultimo completato + Ultima Sessione; Prossimo Cap; diff media ~**6.85** (23 cap); Valutazioni **M3-02** **8**/10; Progresso progetto + riga cap.02 ✅; Competenze + Glossario (ReLU, He, rete_2_layer, R2, AUC); E6 rinviato; Sessione **21**. File capitolo **non modificato** (protocollo H). | Chiusura formale cap.02 M3 | Stato, sessioni, valutazioni, glossario, competenze, changelog |
 | 20/05/2026 | **Housekeeping archivi**: M2 + Ponte in `archivi/` (indice `archivi/README.md`); CONTESTO snellito. | Passo 13 + ordine repo | Archivi, Promemoria, Moduli, Changelog |
 | 20/05/2026 | **Canonizzazione prodotto due app**: doc in `docs/prodotto/`; stub `APPUNTI_APPLICATIVO.md`; schemi transfer/imputation; scaffold `aplicativo/`; gate AGENTS + `.cursorrules` + handshake chiusura; riferimenti APPUNTI uniformati; tabella M10 allineata; nota M2 non archiviato. | Organizzazione per sviluppo M10 | Header, Ultima Sessione, Strategia, Evoluzione progetto, Promemoria, Changelog |
 | 11/05/2026 | **Chiusura M3 cap.01** (`01_neurone_artificiale.py`): Stato → **02_reti_neurali.py**; Ultimo completato + Ultima Sessione; Prossimo Capitolo; diff media ~**6.8** (20 cap); Valutazioni + **M3-01** **8**/10; Progresso progetto + riga cap.01 ✅; Competenze + Domande + Glossario (logit/sigmoid/layer_dense/forward/callable); Sessione **20**. Jarvis handshake. File capitolo **non modificato** (H). | Chiusura formale modulo 03 capitolo 1 | Stato, sessioni, roadmap cap.02, tabelle, glossario, changelog |

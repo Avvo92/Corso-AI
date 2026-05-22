@@ -5,8 +5,8 @@
 | **Modulo** | M03 — Deep Learning & Computer Vision |
 | **File capitolo** | `02_reti_neurali.py` |
 | **File diario** | `M03_C02_reti_neurali_sessione.md` |
-| **Stato** | in corso |
-| **Voto difficoltà** | — / X/10 (atteso 7/10) |
+| **Stato** | ✅ completato (21/05/2026) |
+| **Voto difficoltà** | **8**/10 (confermato studente in chiusura) |
 
 ---
 
@@ -242,11 +242,76 @@
 - **Fix:** `return sigmoid(X @ w + b)`; test diretto `print(neurone_batch(...))` senza sigmoid esterna.
 - **Valutazione qualità attuale:** **9/10**. Primo tentativo storico **6/10**.
 
+### [2026-05-21] — `02_reti_neurali.py` — E5 [INTERLEAVING] (pesi ×100, saturazione sigmoid)
+
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Punti di forza:** `X_scaled` + CSV M2; forward `relu`→`Z`→`P`; confronto pesi normali vs `W*100`; (a) Z molto grandi (commento ±500); (c) sigmoid stabile non esplode, satura ~0/~1 — **R6** ok.
+- **Manca:** stampa esplicita **`P.min/max/mean`** per (b); tabella **prima/dopo** su Z **e** P insieme; etichette dicono “scalatura” ma è **pesi×100** (X già sempre scalato); opzionale `W.min/max` prima/dopo moltiplicazione.
+
+### [2026-05-21] — `02_reti_neurali.py` — Mini-progetto `rete_2_layer_vs_logreg` (~righe 1167–1213)
+
+- **Valutazione (primo tentativo):** **7/10**.
+- **Punti di forza:** `carica_pratiche` + `StandardScaler`; `LogisticRegression` + `predict_proba[:, 1]`; `rete_2_layer` + `init_pesi_he`; **accuracy** su soglia 0.5 corretta; `n_param_rete` formula ok; dict con chiavi richieste; `pprint` finale.
+- **Errore critico:** `roc_auc_score(y, y_clf)` e `roc_auc_score(y, y_rete)` — AUC va sulle **probabilità** (`P_clf`, `P_rete`), non su 0/1 già tagliati (concetto AUC appena visto in chat).
+- **Dettagli:** parametro `seed` in firma ma non passato a `init_pesi_he`; opzionale `seed`/`seed+1` distinti per W1/W2 come in Sez. 3.2.
+
+### [2026-05-21] — POST-FEEDBACK — Mini-progetto `rete_2_layer_vs_logreg` (fix AUC + seed)
+
+- **Fix:** `roc_auc_score(y, P_clf)` / `roc_auc_score(y, P_rete)`; `init_pesi_he(..., seed=seed)` su W1 e W2.
+- **Valutazione qualità attuale:** **9/10**. Primo tentativo storico **7/10**.
+- **Residuo opzionale:** `random_state` della LR fissa a `42` (non usa `seed` della firma); stesso `seed` su entrambi i layer — in Sez. 3.2 si usava `seed+1` sul secondo.
+
+### [2026-05-21] — `02_reti_neurali.py` — Checkpoint C1 (layer Dense, 1 frase)
+
+- **Valutazione (primo tentativo):** **7/10**.
+- **Ok:** strato della rete; collegamento a prodotto matriciale + idea attivazione.
+- **Da affinare:** operazione core = **`X @ W + b`** (non solo “dot product”); attivazione **opzionale** (`att=None` → layer lineare); “due matrici” poco preciso (batch `N` righe, `W` shape `(d,h)`).
+
+### [2026-05-21] — POST-FEEDBACK — Checkpoint C1 (layer Dense)
+
+- **Fix:** fully-connected; `(N,d)@(d,h)+bias`; `funzione_di_att(...)`; bias esplicito.
+- **Valutazione qualità attuale:** **8.5/10**. Primo tentativo storico **7/10**.
+- **Residuo:** sostituire “dot product” con **moltiplicazione matriciale**; una parola su attivazione **opzionale** se `att=None`.
+
+### [2026-05-21] — `02_reti_neurali.py` — Checkpoint C2 (shape output rete)
+
+- **Valutazione (primo tentativo):** **9/10**.
+- **Ok:** `(50, 3)` corretto; regola `(righe X, colonne ultimo W)` valida se la catena combacia (`5→8→3`).
+- **Plus opzionale:** una riga intermedia `(50, 5)@(5,8)→(50,8)` poi `(50,8)@(8,3)→(50,3)` per fissare il ragionamento layer per layer.
+
+### [2026-05-21] — `02_reti_neurali.py` — Checkpoint C3 (lineare vs ReLU, 2 righe)
+
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Ok:** **collasso** in un solo layer lineare (R2); ReLU introduce **non-linearità** e più capacità espressiva.
+- **Plus opzionale:** legare al dominio — senza ReLU resti vicino a un confine **lineare** (come LR); ReLU “piega” lo spazio delle feature.
+
+### [2026-05-21] — `02_reti_neurali.py` — Checkpoint C4 (auto-rating onesto)
+
+- **Autovalutazione studente:** Dense 9, R2 9, He/R5 9, forward CSV 9, UAT 7.
+- **Allineamento mentor:** coerente con valutazioni sessione (mini-progetto 9, C1–C3 8.5–9); **UAT 7** plausibile (intuizione senza formalizzazione).
+- **Nota chiusura capitolo:** E1 ancora con `W2 (h,)` e senza conteggio parametri/confronto LR; **E6** vuoto — non dichiarare capitolo chiuso finché non completati o esplicitamente rinviati.
+
 ---
 
 ## Lacune e dubbi ancora aperti
 
-- _(da popolare durante il capitolo)_
+- **E6 [REAL-WORLD]** rinviato volontariamente (21/05/2026): studente preferisce non “copiare” risposte senza visione d’insieme; ripianificare a fine M3 o in mock system design.
+- **E1 [COLLOQUIO]** post-fix: `W2 (h,1)` ok; ancora senza conteggio parametri esplicito (es. 145 con h=16) né confronto LR in testo; oltre 12 righe.
+
+---
+
+## Chiusura capitolo (21/05/2026)
+
+- **Voto difficoltà:** **8/10** (Gianluca).
+- **Completati:** teoria R1–R6, quiz, E2–E5, mini-progetto `rete_2_layer_vs_logreg` (9/10), checkpoint C1–C4, E1 fix shape output.
+- **Rinviato:** E6 (scelta consensuale).
+- **Prossimo:** `03_backpropagation.py` — loss, gradienti, training rete 2-layer.
+
+### [2026-05-21] — POST-FIX — E1 [COLLOQUIO] (`W2 (h,1)`)
+
+- **Fix:** output layer `W2` shape `(h, 1)` (non `(h,)`).
+- **Residuo:** mancano conteggio parametri (145 con h=16) e confronto LR esplicito; testo >12 righe.
+- **Valutazione post-fix:** **7.5/10** (chiusura accettata).
 
 ---
 

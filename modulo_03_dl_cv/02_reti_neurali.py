@@ -950,7 +950,7 @@ plt.close()
 #     Massimo 12 righe in totale, niente codice (puoi descrivere
 #     le shape con "(N, d)" ecc.).
 # TUA RISPOSTA:
-# Abbiamo una matriche di N_righe_pratiche per d_features. Processiamo questa matrice nel primo layer con una matrice costituita di d_pesi per h_neuroni (+ eventuale vettore h_bias). Avremo quindi una matrice di logits con shape N_righe per h_valori. Trasformiamo ora tutti gli h_valori tramite una funzione di attivazione (ad es., trovandoci nel primo layer, e avendo nel nostro caso solo due livelli, usiamo la funzione ReLU, che difatto, per ogni pratica, spegne i neuroni che hanno riportato valori negativi). I valori così trasformati ordinati sempre in shape (N, h) passano al livello successivo. Questo è il livello di out-put, e la prima operazione è simile alla prima del livello precedente. Creiamo un vettore di logits passando la matrice di out-put prodotta dal livello precedente questa volta per un vettore(e non una matrice) di pesi di shape (h, ) + eventuale bias.Otterremo cosi un vettore di di logit con shape (N, ), ossia per ogni pratica avremo un numero. Utilizziamo questa volta la funzione sigmoide su ognuno di questi valori, per trasformare ogni valore del vettore out-put di logit in una probabilità (valori tra 0 e 1).
+# Abbiamo una matriche di N_righe_pratiche per d_features. Processiamo questa matrice nel primo layer con una matrice costituita di d_pesi per h_neuroni (+ eventuale vettore h_bias). Avremo quindi una matrice di logits con shape N_righe per h_valori. Trasformiamo ora tutti gli h_valori tramite una funzione di attivazione (ad es., trovandoci nel primo layer, e avendo nel nostro caso solo due livelli, usiamo la funzione ReLU, che difatto, per ogni pratica, spegne i neuroni che hanno riportato valori negativi). I valori così trasformati ordinati sempre in shape (N, h) passano al livello successivo. Questo è il livello di out-put, e la prima operazione è simile alla prima del livello precedente. Creiamo un vettore di logits passando la matrice di out-put prodotta dal livello precedente questa volta per un vettore(e non una matrice) di pesi di shape (h, 1) + eventuale bias.Otterremo cosi un vettore di di logit con shape (N, ), ossia per ogni pratica avremo un numero. Utilizziamo questa volta la funzione sigmoide su ognuno di questi valori, per trasformare ogni valore del vettore out-put di logit in una probabilità (valori tra 0 e 1).
 
 
 # E2) [REFACTORING] - 10 minuti
@@ -1058,15 +1058,60 @@ print(neurone_batch(X, w, b))
 #     W2 *= 100):
 #       (a) cosa succede ai logit Z dell'ultimo layer? (suggerimento:
 #           prova in codice e stampa Z.min(), Z.max())
+        # Sono dei numeri molto grandi rispetto ai limiti che di solito utilizziamo con la 
+        # funzione np.clip() (di solito -500 e +500). 
+        
 #       (b) cosa succede alle probabilita' P? (suggerimento: sigmoid
 #           satura, R6)
+        # Questo causa la saturazione degli estremi della sigmoide, dandoci risultati
+        # inutilizzabili 
+        
 #       (c) la sigmoid stabile di cap.01 M3 (con clip ±500) ha
 #           comportamento "graceful" o esplode in NaN/Inf?
+        # ha comportamento graceful, che non la fa esplodere, ma in pratica restituisce solo 2 valori, uno molto vicino a 0 (risultato di sigmoide(-500))e l'altro molto vicino a 1 (risultato di sigmoide(500)).
 #
 #     Usa X dal CSV M2 scalato. Mostra le statistiche min/max/mean prima
 #     e dopo la scalatura dei pesi.
 # TUO CODICE QUI:
+print("\nEsercizio 5 - INTERLEAVING\n")
+from sklearn.preprocessing import StandardScaler
 
+CSV_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)),
+    "modulo_02_ml",
+    "dati",
+    "pratiche_genuinita_mock.csv"
+)
+
+pratiche = pd.read_csv(CSV_PATH)
+X = pratiche.drop(columns=['pratica_id', 'y_alterato']).to_numpy()
+y = pratiche['y_alterato'].to_numpy()
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+d = X.shape[1]
+h = 16
+
+W1, b1 = init_pesi_he(d, h)
+W2, b2 = init_pesi_he(h, 1)
+
+print("Prima della Scalatura di W1 e W2\n")
+H = layer_dense(X_scaled, W1, b1, att=relu)
+Z = layer_dense(H, W2, b2)
+P = sigmoid(Z).ravel()
+
+print("Z:", Z.min(), Z.max(), Z.mean())
+print("P:", P.min(), P.max(), P.mean())
+
+
+print("\nDopo la Scalatura * 100 di W1 e W2\n")
+H = layer_dense(X_scaled, W1*100, b1, att=relu)
+Z = layer_dense(H, W2*100, b2)
+P = sigmoid(Z).ravel()
+
+print("Z:", Z.min(), Z.max(), Z.mean())
+print("P:", P.min(), P.max(), P.mean())
 
 # E6) [REAL-WORLD] - REGOLA NEL CORSO DAL M5, MA UTILE GIA' QUI
 #     Scenario vago: "il tuo capo broker dice 'voglio una rete neurale
@@ -1119,7 +1164,53 @@ print(neurone_batch(X, w, b))
 #   - auc_logreg > 0.85   (la LR distingue molto)
 #   - n_param_rete = 7*16 + 16 + 16*1 + 1 = 145
 # TUO CODICE QUI:
+print("\nMini-progetto finale")
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, roc_auc_score
 
+def rete_2_layer_vs_logreg(h: int = 16, seed: int = 42) -> dict[str, float]:
+        
+    X, y = carica_pratiche()
+    d = X.shape[1]
+    
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
+    clf = LogisticRegression(max_iter=1_000, random_state=42)
+    clf.fit(X_scaled, y)
+    P_clf = clf.predict_proba(X_scaled)[:, 1] # previsioni del classificatore
+    y_clf = (P_clf > 0.5).astype(int) # y del classificatore
+    
+    W1, b1 = init_pesi_he(d, h, seed=seed)
+    W2, b2 = init_pesi_he(h, 1, seed=seed)
+    _, P_rete = rete_2_layer( # previsioni della rete
+        X_scaled,
+        W1,
+        b1,
+        W2,
+        b2
+    )    
+    y_rete = (P_rete > 0.5).astype(int) # y della rete
+    
+    clf_acc_score = accuracy_score(y, y_clf)
+    rete_acc_score = accuracy_score(y, y_rete)
+    clf_roc_auc = roc_auc_score(y, P_clf)
+    rete_roc_auc = roc_auc_score(y, P_rete)
+    n_par_rete = W1.size + b1.size + W2.size + b2.size
+    
+    return {
+        "acc_rete": rete_acc_score,
+        "acc_logreg": clf_acc_score,
+        "auc_rete": rete_roc_auc,
+        "auc_logreg": clf_roc_auc,
+        "n_param_rete": n_par_rete
+    }
+    
+from pprint import pprint
+
+risultati = rete_2_layer_vs_logreg()
+pprint(risultati, sort_dicts=True, width=60)
 
 # ==========================================================================
 # CHECKPOINT FINALE (auto-verifica)
@@ -1127,24 +1218,24 @@ print(neurone_batch(X, w, b))
 
 # C1) In 1 frase: cos'e' un LAYER DENSE e quale operazione esegue?
 # TUA RISPOSTA:
-# ...
+# Layer Dense => strato singolo fully-connected di una rete neurale. E' una moltiplicazione matriciale di batch (X @ W) + bias e attivazione => funzione_di_att((N, d) @ (d, h) + bias).
 
 # C2) Hai una rete con W1 (5, 8) e W2 (8, 3). Che shape ha l'output finale
 #     su X (50, 5)? (NO codice, ragionamento a mano)
 # TUA RISPOSTA:
-# ...
+# (50, 3) => la shape finale del out put di una rete è (righe_di_X, colonne_dell_ultimo_W)
 
 # C3) Perche' una rete con SOLO attivazioni lineari non e' "potente"
 #     come una rete con ReLU? Risposta in 2 righe, no formule.
 # TUA RISPOSTA:
-# ...
+# Perchè una rete costituita da livelli che forniscono out-put sempre lineari, alla fine "collassa" in un unico layer. Le attivazioni non lineari come relu aggiungono la non-linearita al processo, e  aumentano il grado di complessità che la rete riesce a gestire.
 
 # C4) Auto-rating onesto (compila in chiusura capitolo):
-#       - layer Dense = X @ W + b:           /10
-#       - importanza dell'attivazione (R2):   /10
-#       - inizializzazione He vs zero (R5):   /10
-#       - forward rete 2-layer su CSV M2:     /10
-#       - Universal Approximation (intuiz.):  /10
+#       - layer Dense = X @ W + b:           9/10
+#       - importanza dell'attivazione (R2):  9 /10
+#       - inizializzazione He vs zero (R5):   9/10
+#       - forward rete 2-layer su CSV M2:     9/10
+#       - Universal Approximation (intuiz.): 7/10
 # TUE RISPOSTE:
 # ...
 
