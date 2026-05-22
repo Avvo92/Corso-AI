@@ -100,6 +100,18 @@ COME USARE QUESTO FILE (regola del corso)
    6. Hardware: tutto su CPU + NumPy + Matplotlib. PyTorch arriva al cap.04.
    7. Se a meta' capitolo sei perso -> ferma, recap, NON proseguire. Meglio
       una sessione in piu' che incrociare le derivate.
+
+----------------------------------------------------------------------------
+PRIMA DI APRIRE QUESTO FILE - BRIDGE RIPASSO (~10 min)
+----------------------------------------------------------------------------
+Fai i 10 mini-esercizi di ripasso in:
+
+    modulo_03_dl_cv/quiz_ripasso_tra_capitoli/
+        M03_R02_after_C02_before_C03_reti_to_backprop.md
+
+Servono a fissare: tuple unpacking, broadcasting NumPy, shape dei pesi
+per layer impilati, recall metriche binarie. Se ti senti gia' sciolto
+fai solo i numeri 4, 5, 8, 9 (i piu' "concettuali").
 """
 
 import os
@@ -190,6 +202,39 @@ from numpy.typing import NDArray
 #     un "loop di training". Vietato: gradiente, derivata, loss, layer,
 #     pesi, neurone.
 # TUA RISPOSTA:
+# ...
+
+
+# ==========================================================================
+# 🔁 RINFORZO MIRATO - "UAT: esistenza VS come la trovi" (lacuna #31, cap.02)
+# ==========================================================================
+#
+# Nel cap.02 M3 (Sez. UAT) hai imparato che una rete a 2 layer con abbastanza
+# neuroni nascosti PUO' approssimare quasi qualsiasi funzione. ESISTE. Ok.
+#
+# Ma "esistere" e' diverso da "averla". Nel cap.02 hai visto che con pesi
+# RANDOM la rete fa accuracy ~ 0.5: la rete giusta esiste da qualche parte
+# nello "spazio dei pesi", ma noi siamo finiti su pesi a caso.
+#
+# Analogia: il teorema di UAT dice che "in questa montagna c'e' una cima
+# panoramica". Bene. Ma noi siamo in un bosco a caso, di notte, senza mappa.
+# Sapere che la cima esiste NON ci aiuta a raggiungerla.
+#
+# Il capitolo che stai per leggere e' la MAPPA + LA BUSSOLA:
+#   - LOSS               = "quanto sei distante dalla cima"
+#   - DERIVATA/GRADIENTE = "in che direzione devo camminare per salire/scendere"
+#   - GRADIENT DESCENT   = "fai un passetto in quella direzione, poi ripeti"
+#   - BACKPROPAGATION    = la chain rule applicata per propagare la
+#                          direzione di camminata su TUTTI i pesi della rete.
+#
+# Tienilo come bussola mentale: UAT dice "c'e' una soluzione".
+# Backprop dice "ecco come ci arrivi davvero".
+#
+# Micro-esercizio (1 minuto, mentale):
+# > Una rete random pesca sigmoid(0) ~ 0.5 in media: accuracy ~ 0.5 su un
+# > dataset bilanciato. Dopo training, accuracy 0.92. Cos'e' cambiato:
+# > (a) l'architettura della rete, (b) i pesi, (c) gli input, (d) la sigmoid?
+# RISPOSTA:
 # ...
 
 
@@ -348,6 +393,43 @@ def _grafico_bce(
 #       modulo_03_dl_cv/figures/03_01_bce_loss.png
 # Verifica che il file esista (os.path.exists).
 # TUO CODICE QUI:
+
+
+# ==========================================================================
+# 🔁 RINFORZO MIRATO - "LOSS (per addestrare) VS METRICA (per giudicare)"
+# ==========================================================================
+# (Pattern ⚠️ "confusione metrica vs loss" - emerso nel mini-progetto cap.02
+#  con AUC calcolato sui valori 0/1 invece che sulle probabilita').
+#
+# La LOSS e la METRICA sembrano "due numeri che valutano la rete" ma fanno
+# due lavori diversi e si guardano in due momenti diversi:
+#
+#   LOSS (BCE)                            METRICA (accuracy, AUC, F1, ...)
+#   ------------------------------------  ------------------------------------
+#   - serve in fase di TRAINING           - serve per VALUTARE / RIPORTARE
+#   - serve alla rete per ottimizzare     - serve a te per spiegare al cliente
+#   - deve essere DERIVABILE              - puo' essere discreta (acc), basata
+#     (altrimenti backprop non funziona)    su soglia (acc) o continua (AUC)
+#   - lavora sulle PROBABILITA' p in (0,1)- per AUC: lavora sulle PROBABILITA'
+#                                            per accuracy: lavora sui 0/1
+#   - una sola: BCE per classif. binaria  - puoi guardarne piu' di una
+#
+# Errore tipico (cap.02 mini-progetto):
+#       acc = accuracy_score(y, P >= 0.5)         # ok (input 0/1)
+#       auc = roc_auc_score(y, P >= 0.5)          # BUG: input 0/1, perdi info
+#       auc = roc_auc_score(y, P)                 # ok (input continuo)
+#
+# Mantra:
+#   - per ADDESTRARE: minimizzo la BCE (loss).
+#   - per VALUTARE soglia-libera (AUC): uso le PROBABILITA'.
+#   - per VALUTARE con soglia fissa (accuracy, recall, precision): uso 0/1.
+#
+# Micro-esercizio (2 minuti):
+# > Una rete da' P = [0.10, 0.45, 0.55, 0.95] su y = [0, 1, 0, 1].
+# > Quanto vale accuracy_score(y, P >= 0.5)? E vedendo P, ti aspetti
+# > AUC piu' alto o piu' basso dell'accuracy? Perche'?
+# RISPOSTA:
+# ...
 
 
 # ==========================================================================
@@ -861,6 +943,42 @@ def _grafico_gd_lr(
 # Adesso tutti i pezzi: chain rule (Sez.4) + gradient descent (Sez.5)
 # applicati alla rete 2-layer di cap.02 M3.
 
+# ==========================================================================
+# 🔁 RINFORZO MIRATO - "Shape W2 = (h, 1), NON (h,)" (lacuna E1 cap.02)
+# ==========================================================================
+#
+# Nel cap.02 (E1 colloquio) la shape di W2 e' uscita come "(h,)". Ambigua.
+# Da qui al cap.04 (PyTorch) la shape giusta del peso di OUTPUT per
+# classificazione binaria singolo neurone e':
+#
+#       W2 shape (h, 1)        b2 shape (1,)
+#
+# Perche'? Perche' un layer dense fa SEMPRE moltiplicazione matriciale:
+#
+#       Z2 = H @ W2 + b2
+#       (N, h) @ (h, 1) -> (N, 1)
+#
+# Se invece scrivi W2 di shape (h,):
+#       Z2 = H @ W2 + b2
+#       (N, h) @ (h,)  -> (N,)            <- collassa l'asse output
+# numericamente "torna" (NumPy fa dot), ma:
+#   - perdi la dimensione "output" come asse esplicito;
+#   - quando il prossimo capitolo passi a piu' neuroni in output
+#     (es. multi-classe -> (h, K)), il tuo codice si rompe;
+#   - in backprop dW2 deve avere ESATTAMENTE la stessa shape di W2:
+#     se W2 e' (h, 1) -> dW2 = H.T @ dZ2 / N e' (h, 1). Coerente.
+#
+# Regola pratica per il M3 e oltre:
+#   - layer hidden con h neuroni:    W shape (d_in, h),   b shape (h,)
+#   - layer output binario (1 prob): W shape (h,   1),    b shape (1,)
+#   - layer output multi-classe K:   W shape (h,   K),    b shape (K,)
+# Tutti gli output assumono mini-batch X di shape (N, d_in).
+#
+# Verifica veloce (gia' la fa anche `forward_2layer` qui sotto):
+#   - X (10, 5), W1 (5, 8), b1 (8,)      -> Z1 (10, 8)
+#   - W2 (8, 1), b2 (1,)                  -> Z2 (10, 1), P (10,)
+
+
 # ---------------------- TEORIA + CODICE -------------------------------------
 # 6.1 - FORWARD CON CACHE
 #
@@ -1289,6 +1407,29 @@ def _grafico_loss_training(
 #   - acc_logreg > 0.85     (paragonabile, dataset semplice)
 #   - auc_rete > 0.9
 #   - auc_logreg > 0.9
+#
+# 🔁 RINFORZO MIRATO - AUC va calcolato sulle PROBABILITA', non sui 0/1
+#    (lacuna mini-progetto cap.02 M3).
+#
+# Per CIASCUNA delle due reti (la tua e LogisticRegression) ti servono
+# due quantita' diverse:
+#
+#       P_continuo (in (0, 1))    -> per roc_auc_score(y, P_continuo)
+#       y_pred = (P_continuo >= 0.5).astype(int)
+#                                  -> per accuracy_score(y, y_pred)
+#
+# - Per la tua rete: P_rete e' gia' continuo, te lo restituisce
+#   `forward_2layer` (vedi `predict_proba_rete` Sez.6).
+# - Per LogisticRegression (sklearn): NON usare `clf.predict(X)` per AUC,
+#   usa la seconda colonna di `clf.predict_proba(X)`:
+#       P_lr = clf.predict_proba(X_scaled)[:, 1]      # shape (N,)
+#       y_lr = (P_lr >= 0.5).astype(int)
+#       acc_lr = accuracy_score(y, y_lr)
+#       auc_lr = roc_auc_score(y, P_lr)
+#
+# Se passi 0/1 a roc_auc_score il valore "torna" ma misura un'altra cosa
+# (l'AUC degrada all'accuracy bilanciata): il numero che riporti NON e'
+# piu' "quanto bene la rete ordina i positivi sopra i negativi".
 #
 # TUO CODICE QUI:
 

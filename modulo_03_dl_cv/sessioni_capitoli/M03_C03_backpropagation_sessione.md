@@ -31,6 +31,18 @@
 
 ---
 
+## Promemoria specifici dal cap.02 M3 (mentor)
+
+- **Bridge ripasso** `M03_R02_after_C02_before_C03_reti_to_backprop.md` deve essere fatto **prima** di aprire la teoria del cap.03 (~10 min, 10 esercizi facili).
+- **Lacuna #31 UAT** (🟡): inserito blocco `# 🔁 RINFORZO MIRATO` dopo i Quiz d'ingresso ("UAT: esistenza vs come la trovi"). Verificare in correzione se il concetto e' chiuso (→ 🟢).
+- **Pattern ⚠️ "loss vs metrica"** (cap.02 mini-progetto, AUC su 0/1): inserito blocco `# 🔁 RINFORZO MIRATO` a fine Sez.1 ("LOSS per addestrare, METRICA per giudicare"). Da richiamare anche in correzione mini-progetto.
+- **Shape `W2 (h, 1)`** (E1 cap.02): inserito blocco `# 🔁 RINFORZO MIRATO` a inizio Sez.6, prima di `forward_2layer`. Da pretendere precisa nelle prossime risposte (Q4 d'ingresso, V7 di verifica, C4 finale).
+- **AUC su probabilita'** (cap.02 mini-progetto): aggiunto rinforzo nel blocco "MINI-PROGETTO" prima del "TUO CODICE QUI" con esempio sklearn `predict_proba`.
+- **Pattern #6 (consegne)** e **#21 (tuple/round)**: niente blocco dedicato. Richiamarli in correzione se ricompaiono (specialmente nel mini-progetto e in E1).
+- **E6 cap.02 (REAL-WORLD)** rinviato dallo studente: programmarlo come **mock system design** a meta'/fine M3 (idealmente fra cap.06 transfer learning e cap.07 Gradio), NON in coda al cap.03.
+
+---
+
 ## Domande durante lo studio
 
 - _(da popolare durante il capitolo)_
