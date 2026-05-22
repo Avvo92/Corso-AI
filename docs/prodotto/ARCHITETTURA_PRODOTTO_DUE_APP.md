@@ -50,7 +50,7 @@ flowchart LR
 | Deploy M10 | URL / servizio 1 | URL / servizio 2 |
 | Codice | `aplicativo/validator/` | `aplicativo/replicator/` + `replicator/fix/` (§3b) |
 
-**Co-evoluzione antagonista:** Replicator massimizza somiglianza visiva; Validator massimizza rilevamento anomalie. Metriche condivise: `pratica_id`, `schema_canonico`, bundle `pdf + payload + imputation_report` (+ `fix_report` se modalità fix — §3b REPLICATOR).
+**Co-evoluzione antagonista (lab):** Replicator produce PDF **indistinguibili** da buste Y (`export_mode: stress_test` — canone [`CANONE_STRESS_TEST_LAB_VR.md`](CANONE_STRESS_TEST_LAB_VR.md)); Validator analizza **solo il PDF** (nessun bundle). Metriche condivise offline: `manifest_v01.csv`, `schema_canonico` per rule discovery. Bundle Replicator solo in cartella `internal/` (debug build).
 
 **North Star operatore (esempio):** da N buste software X + richiesta NL (“buste Zucchetti + CU anno precedente”) → fascicolo PDF coerente (BP + CU) nella stessa pratica — dettaglio sequenza in REPLICATOR §1.1.
 
@@ -112,37 +112,53 @@ Dettaglio vincoli e tier: **REPLICATOR §3b**.
 
 ## 5) Integrazione Validator ↔ Replicator
 
-**Bundle minimo verso Validator:**
+> **Canone stress test (vince su sezioni precedenti):** [`CANONE_STRESS_TEST_LAB_VR.md`](CANONE_STRESS_TEST_LAB_VR.md)
+
+### 5.1 Produzione e lab — Validator vede solo PDF
+
+| Ingresso Validator | Uso |
+|--------------------|-----|
+| PDF cliente | Produzione |
+| PDF da `Replicator` cartella **`stress_test/`** | Lab — **stesso ingest**, nessun trattamento speciale |
+
+**Vietato** in ingest / training / scoring Validator: `payload`, `imputation_report`, `dual_channel_qa_report`, `fix_report`, lineage, etichette nel PDF.
+
+### 5.2 Replicator — due export
+
+| `export_mode` | Contenuto | Destinazione |
+|---------------|-----------|--------------|
+| **`stress_test`** | Solo PDF (`metadata_mimic_y`, layout QA interno già passato) | Ingest Validator |
+| **`internal`** | PDF + bundle JSON + report QA + lineage | `dati/lab/.../internal/` — debug, **non** Validator |
+
+**Bundle interno (riferimento build, non ingest Validator):**
 
 ```json
 {
   "pratica_id": "...",
-  "doc_type_id": "busta_paga",
-  "pdf_path": "...",
+  "replicator_run_id": "...",
+  "export_mode": "internal",
   "payload": {},
-  "imputation_report": {
-    "fields": [
-      { "field_id": "...", "provenance": "imputed_conditional", "confidence": 0.82 }
-    ]
-  },
-  "dual_channel_qa_report": {
-    "template_version": "v1",
-    "vector_qa": { "placement_score": 0.99, "rules_ok": true },
-    "raster_qa": { "layout_match_score": 0.97, "roi_diff_max": 0.03, "passed": true },
-    "channels_agree": true,
-    "passed": true
-  },
-  "fix_report": [
-    { "run_id": "...", "strategy": "regenerate", "at": "2026-05-22T12:00:00Z" }
-  ]
+  "imputation_report": {},
+  "dual_channel_qa_report": { "passed": true, "channels_agree": true },
+  "fix_report": []
 }
 ```
 
-Se non è mai stato applicato un fix, `fix_report` assente o array vuoto. Dopo ogni fix: nuovo `dual_channel_qa_report` obbligatorio.
+Schema raster: [`schema_raster_reference_v01.json`](../../schema_raster_reference_v01.json).
 
-Schema: [`schema_raster_reference_v01.json`](../../schema_raster_reference_v01.json).
+### 5.3 Loop antagonista (lab) — protocollo 8 step
 
-Validator §6.7: analisi PDF generati (regole + imputazione + **disaccordo V/R** → semaforo anche se matematica OK).
+> [`PROTOCOLLO_LOOP_ANTAGONISTA_VR.md`](PROTOCOLLO_LOOP_ANTAGONISTA_VR.md) · esempi: [`examples/evasion_report.example.json`](examples/evasion_report.example.json), [`examples/rule_candidates.example.yaml`](examples/rule_candidates.example.yaml)
+
+| Step | Output chiave |
+|------|---------------|
+| 1 | `manifest_v01.csv` (etichette **solo** qui) |
+| 2 | Replicator → `stress_test/*.pdf` + `internal/` bundle |
+| 3–4 | Validator **solo PDF** → `evasion_report.json` |
+| 5–7 | `rule_candidates.yaml` → regole approvate |
+| 8 | Profili stress + `metadata_mimic_y` |
+
+**KPI lab:** `evasion_rate` ↓ · Validator più forte · PDF senza inghippo Replicator.
 
 ---
 
@@ -157,21 +173,24 @@ Checklist da completare **progressivamente nel corso** (non tutto in un colpo):
 | G3 | **Motore imputazione** | Apprendimento su corpus Y + provenance + confidence | M5–M7 |
 | G4 | **UI admin training** | Upload corpus, learn, attivazione versione template | M4 prototipo, M10 React |
 | G5 | **Transfer X→Y** | `field_map` + route per busta P0 | M4–M6 |
-| G6 | **Integrazione antagonista** | Export bundle + regole Validator su campi imputati | M7–M10 |
-| G7 | **Compliance campi stimati** | Disclaimer UI, audit export, metadati PDF onesti | M10 |
+| G6 | **Integrazione antagonista** | `export_mode` stress_test vs internal; Validator solo PDF; manifest lab | M5–M10 |
+| G7 | **Compliance campi stimati** | Disclaimer UI; audit in `internal/` + manifest; `metadata_mimic_y` solo lab | M10 |
 | G8 | **Scope realistico M10** | Solo P0+P1 Replicator; altri tipi in P2 post-corso | Decisione fissa |
 | G9 | **Dual-channel QA (V+R)** | `raster_reference` + gate post-render + bundle `dual_channel_qa_report` | M4–M7 train; M7–M10 runtime |
 | G10 | **Fixer controllato** | Modulo `controlled_fix`: lineage + bundle + `fix_report`; preferenza rigenerazione; allowlist patch P2 | M6–M10 |
+| G11 | **Loop antagonista V↔R** | Protocollo 8 step, `evasion_report`, `rule_candidates`, job discovery gen vs alt | M5–M7 lab; M10 UI review |
 
 ---
 
 ## 7) Cosa NON è obiettivo
 
-- Clone PDF **forense** byte-identico o metadati falsificati del software Y  
-  *(La **fedeltà visiva a schermo** tramite PDF vettoriale + QA raster **è** obiettivo — vedi REPLICATOR §4.3.)*
+- Clone PDF **forense** byte-identico per frode su **terzi** in produzione
+- Passare **bundle** Replicator al Validator per training/scoring (vedi canone stress test)
 - Copertura **tutti e 10** i tipi in M10
-- **Fixer “libero”** su PDF **terzi** senza lineage né audit (uso fraudolento / non tracciabile) — **vietato**
+- **Fixer “libero”** su PDF **terzi** senza lineage né audit — **vietato**
 - LLM per **calcoli** fiscali/contabili (solo estrazione/interpretazione testo)
+
+**È obiettivo lab** ([`CANONE_STRESS_TEST_LAB_VR.md`](CANONE_STRESS_TEST_LAB_VR.md)): PDF stress test con `metadata_mimic_y` e layout indistinguibile; fedeltà visiva + QA raster **interno** prima dell’export `stress_test`.
 
 **È invece obiettivo (Replicator §3b):** **Fixer controllato** — correzione solo su output con **provenienza Replicator** + bundle + report append-only + QA V+R ripetuto.
 
@@ -231,3 +250,5 @@ Checklist da completare **progressivamente nel corso** (non tutto in un colpo):
 | 2026-05-21 | Dual-channel QA (vettoriale + raster): fedeltà visiva prioritaria; schema `schema_raster_reference_v01.json`; gap G9. |
 | 2026-05-21 | UX **chat** Replicator + ciclo miglioramento (livelli A/B/C): `APPUNTI_APPLICATIVO_REPLICATOR.md` §7.3; DoD M10 opzionale. |
 | 2026-05-22 | **Fixer controllato** reintrodotto: modalità `controlled_fix` (§3b REPLICATOR), ramo arch §4b, gap **G10**; divieto fix “libero” su PDF terzi. |
+| 2026-05-22 | **Loop antagonista** documentato: `PROTOCOLLO_LOOP_ANTAGONISTA_VR.md` §5b arch; evasion + rule_candidates; gap **G11**; mining contrastivo genuine vs alterate. |
+| 2026-05-22 | **Canone stress test:** `CANONE_STRESS_TEST_LAB_VR.md` — Validator solo PDF; `export_mode` stress_test/internal; `metadata_mimic_y` lab; bundle vietato in Validator. |

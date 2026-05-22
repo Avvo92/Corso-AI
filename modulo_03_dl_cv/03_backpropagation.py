@@ -180,30 +180,33 @@ from numpy.typing import NDArray
 #     E cos'e' l'ACCURACY (1 riga)? Qual e' la differenza importante per
 #     la backpropagation?
 # TUA RISPOSTA:
-# ...
+# La loss misura la distanza tra previsione e realtà. Avendo noi la risposta (si o no) a un quesito, e la percentuale di sicurezza fornita da un modello rispetto la sua previsione (sigmoide, percentuale di sicurezza rispetto la classe alterato), possiamo capire sia quando il modello risponde correttamente, sia quando sbaglia, la "gravità", ossia la convinzione della sua risposta, proprio grazie alla percentuale che descrive la sua sicurezza nel fornirla.
+# l'accuracy descrive l'accuratezza in termini generali del modello (tp + tn / (tp + tn + fp + fn)).
+# Per noi è importante avere informazioni qualitative degli errori, così da poter definire in maniera coerente una correzione tramite la backpropagation.
 
 # Q2) Hai f(x) = x^2. La PENDENZA della curva in x = 3 e' positiva o
 #     negativa? E in x = -3? Spiega "geometricamente" senza derivate.
+#     Grafico didattico: py -3 modulo_03_dl_cv/plot_pendenza_parabola_q2.py
+#     -> figures/03_02_pendenza_parabola_q2.png
 # TUA RISPOSTA:
-# ...
+# in x = 3 ci troviamo in pendenza positiva, inteso che se ci spostiamo a destra (f(4))sull'asse delle x, la curva ha una andamente positivo (sale). Per x = -3 esattamente in contrario, ossia la curva tende a scendere spostandoci di valore verso destra (f(-2)).
 
 # Q3) Una rete sbaglia molto su una pratica: previsione p = 0.05, verita'
 #     y = 1. Qual e' l'errore "intuitivo" della rete? E in che direzione
 #     dovresti spostare i pesi? (su o giu', cioe' aumentarli o diminuirli?)
 # TUA RISPOSTA:
-# ...
+# La rete ha detto che la pratica era quasi sicuramente genuina. Evidentemente i suoi pesi sono troppo "leggeri", ossia vanno aumentati. Così, il prodotto matriciale produrra valori più grandi, e di conseguenza la sigmoide produrra alla fine del processo dei valori più vicini a 1.
 
 # Q4) [Recall cap.02 M3] Hai una rete con W1 (4, 8) e W2 (8, 1). Quanti
 #     PARAMETRI totali ha la rete? (W1, b1, W2, b2)
 # TUA RISPOSTA:
-# ...
+# (4 * 8) + 8 + (8 * 1) + 1 => 49 pesi
 
 # Q5) [Feynman - no jargon] Spiega in 4 righe a un collega web dev cos'e'
 #     un "loop di training". Vietato: gradiente, derivata, loss, layer,
 #     pesi, neurone.
 # TUA RISPOSTA:
-# ...
-
+#  Si parte dalla fase in cui i dati vengono processati attraverso vari livelli di parametri che, trasformando questi dati, alla fine produce una probabilita'. In un contesto in cui le risposte possono essere solo 2 (binario), confrontiamo quella probabilità con la risposta reale (0 o 1), e capiamo quanto il modello ha prodotto una risposta lontana dalla risposta corretta. A quel punto, questo margine di errore viene proiettato all'indietro, andando a riflettersi su tutti i parametri del modello, e sulla base di quanto il singolo parametro ha contribuito a produrre quel margine di errore, viene aggiustato in una direzione particolare. Poi si ricomincia e si ripete questo processo, fino a minimizzare il margine d'errore.
 
 # ==========================================================================
 # 🔁 RINFORZO MIRATO - "UAT: esistenza VS come la trovi" (lacuna #31, cap.02)
@@ -235,7 +238,7 @@ from numpy.typing import NDArray
 # > dataset bilanciato. Dopo training, accuracy 0.92. Cos'e' cambiato:
 # > (a) l'architettura della rete, (b) i pesi, (c) gli input, (d) la sigmoid?
 # RISPOSTA:
-# ...
+# (b)
 
 
 # ==========================================================================

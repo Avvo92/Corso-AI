@@ -1,0 +1,63 @@
+{
+  "report_type": "evasion_report",
+  "schema_version": "v01",
+  "run_id": "ant_run_2026_05_22_001",
+  "doc_type_id": "busta_paga",
+  "template_id": "zucchetti_v3_cluster_a",
+  "created_at": "2026-05-22T14:30:00Z",
+  "validator_rules_version": "rules_approved_v0.3.0",
+  "validator_ml_version": "lr_zucchetti_v2",
+  "thresholds": {
+    "score_altered_min": 0.65,
+    "semaforo_block": ["rosso", "giallo"]
+  },
+  "summary": {
+    "total_altered_in_run": 40,
+    "blocked": 34,
+    "evasion": 6,
+    "false_positive_genuine": 2,
+    "recall_altered": 0.85,
+    "evasion_rate": 0.15,
+    "fp_rate_genuine": 0.04
+  },
+  "evasions": [
+    {
+      "pratica_id": "lab_bp_2026_0012",
+      "replicator_run_id": "rep_run_9f3a",
+      "stress_profile_id": "coherent_compute",
+      "score": 0.41,
+      "semaforo": "verde",
+      "rules_fired": [],
+      "rules_not_fired_critical": [
+        "RULE_ZUC_012_coerenza_somme",
+        "RULE_ZUC_031_netto_lordo_range"
+      ],
+      "feature_snapshot": {
+        "lordo": 2850.0,
+        "netto": 1980.0,
+        "trattenute_totali": 870.0,
+        "delta_somme": 0.0,
+        "rapporto_netto_lordo": 0.695,
+        "template_id": "zucchetti_v3_cluster_a"
+      },
+      "notes": "Totali tornano; netto/lordo nel range globale ma fuori baseline cliente — nessuna regola condizionata su cliente_id.",
+      "priority": "high"
+    }
+  ],
+  "false_positives": [
+    {
+      "pratica_id": "client_bp_0044",
+      "source": "client",
+      "y_genuine": 0,
+      "score": 0.88,
+      "semaforo": "rosso",
+      "rules_fired": ["RULE_ZUC_031_netto_lordo_range"],
+      "notes": "Tredicesima — valutare regola condizionata su mese=13"
+    }
+  ],
+  "next_actions": [
+    "rule_discovery_job: include evasions + alterate storiche",
+    "review RULE_ZUC_031 per condizione mese != 13",
+    "replay run_id dopo rules_approved_v0.4.0"
+  ]
+}

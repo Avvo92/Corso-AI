@@ -1,0 +1,79 @@
+# Rule candidates — output Rule Discovery (NON deploy automatico)
+# Promuovere solo voci con status: approved dopo review umana + test hold-out.
+#
+# Schema_version: v01
+# Riferimento: docs/prodotto/PROTOCOLLO_LOOP_ANTAGONISTA_VR.md
+
+schema_version: v01
+generated_at: "2026-05-22T15:00:00Z"
+job_id: "rule_discovery_2026_05_22"
+doc_type_id: busta_paga
+template_filter: zucchetti_v3_cluster_a
+
+inputs:
+  genuine_count: 98
+  altered_count: 27
+  evasion_count: 6
+  rules_current_version: rules_approved_v0.3.0
+
+candidates:
+  - id: RULE_CAND_014
+    status: draft  # draft | approved | rejected | deferred
+    priority: high
+    description: "Coerenza aritmetica lordo - netto - trattenute"
+    condition_human: |
+      SE abs(lordo - netto - trattenute_totali) <= 2
+      ALLORA invariante_ok = true
+    support:
+      genuine_ok_rate: 0.96
+      altered_violation_rate: 0.89
+      evasion_violation_rate: 0.0
+    overlap_with_existing:
+      - RULE_ZUC_012_coerenza_somme
+    proposal:
+      action: strengthen_existing
+      target_rule_id: RULE_ZUC_012_coerenza_somme
+      weight_delta: +10
+      semaforo_if_fail: rosso
+    review_notes: null
+
+  - id: RULE_CAND_031
+    status: draft
+    priority: high
+    description: "Rapporto netto/lordo per template Zucchetti v3 (esclusa 13ª)"
+    condition_human: |
+      SE template_id = zucchetti_v3_cluster_a
+         E mese != 13
+         E rapporto_netto_lordo NOT IN [0.58, 0.78]
+      ALLORA flag = sospetto
+    support:
+      genuine_ok_rate: 0.91
+      altered_violation_rate: 0.67
+      evasion_violation_rate: 0.5
+    overlap_with_existing:
+      - RULE_ZUC_031_netto_lordo_range
+    proposal:
+      action: replace_or_split
+      new_rule_id: RULE_ZUC_031b_netto_lordo_no_13
+      weight: 25
+      semaforo_if_fail: giallo
+    review_notes: "Verificare su 4 clienti hold-out — riduce FP tredicesima"
+
+  - id: RULE_CAND_052
+    status: rejected
+    priority: low
+    description: "Disaccordo canali V/R — SOLO in bundle internal"
+    condition_human: |
+      SE channels_agree = false (campo solo in internal/, non nel PDF)
+    support:
+      genuine_ok_rate: 0.99
+      altered_violation_rate: 0.22
+      evasion_violation_rate: 0.17
+    overlap_with_existing: []
+    proposal:
+      action: reject_for_validator
+      reason: "Canone stress test — Validator solo PDF; regola non ammessa in scoring"
+    review_notes: "Usare solo per QA Replicator pre-export internal, non Validator"
+
+promoted: []
+# Dopo review, spostare voci approved in aplicativo/validator/rules/rules_approved_v*.yaml

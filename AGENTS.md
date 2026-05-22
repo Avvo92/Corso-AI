@@ -38,7 +38,8 @@ Dopo il gate corso, per task sul **prodotto Validator/Replicator**:
 2. Se serve storico: [`archivi/README.md`](archivi/README.md) (M1, M2, Ponte)
 3. [`APPUNTI_APPLICATIVO.md`](APPUNTI_APPLICATIVO.md) — stub indice prodotto
 4. [`docs/prodotto/README.md`](docs/prodotto/README.md) — indice completo prodotto
-3. [`docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md`](docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md) — piano, gap, DoD M10
+5. [`docs/prodotto/CANONE_STRESS_TEST_LAB_VR.md`](docs/prodotto/CANONE_STRESS_TEST_LAB_VR.md) — fonte di verita stress test (Validator solo PDF)
+6. [`docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md`](docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md) — piano, gap, DoD M10
 4. [`docs/prodotto/DOCUMENT_SPECTRUM.md`](docs/prodotto/DOCUMENT_SPECTRUM.md) — 10 tipi, P0/P1/P2
 5. Validator → `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` + `aplicativo/validator/`
 6. Replicator → `docs/prodotto/APPUNTI_APPLICATIVO_REPLICATOR.md` + `aplicativo/replicator/`

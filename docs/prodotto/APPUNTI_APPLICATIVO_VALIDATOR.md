@@ -122,28 +122,45 @@ Note:
 - revisione umana casi gialli/rossi
 - active learning: feedback umano usato per migliorare modello
 
-### 6.7 Analisi output Replicator (co-evoluzione antagonista)
+### 6.7 PDF da Replicator — stesso ingest del cliente
 
-> Generazione PDF: solo in [`APPUNTI_APPLICATIVO_REPLICATOR.md`](APPUNTI_APPLICATIVO_REPLICATOR.md).
+> **Canone:** [`CANONE_STRESS_TEST_LAB_VR.md`](CANONE_STRESS_TEST_LAB_VR.md) — Validator **solo PDF**, nessun bundle in scoring/training.
 
-Il Validator può analizzare un PDF prodotto dal Replicator come qualsiasi altro documento in pratica, più:
+Il PDF prodotto da Replicator (cartella lab `stress_test/`) entra in Validator **come qualsiasi busta**:
 
-- ingest di `imputation_report.json` (campi `extracted_from_x` vs `imputed_*`)
-- ingest di `dual_channel_qa_report.json` (Replicator §4.3):
-  - se `channels_agree === false` → **semaforo giallo/rosso** anche con `rules_ok` e totali coerenti (caso “matematica ok, visivo no”)
-  - se `raster_qa.passed === false` → motivo `layout_visivo_non_conforme` in `motivi_top3`
-  - se `vector_qa.geometry_unknown === true` → `layout_non_riconosciuto` (template drift / alterazione)
-- ingest di `fix_report.json` (Replicator §3b): ogni voce = correzione tracciata (`strategy`, `run_id`, timestamp); se strategia `patch_allowlist` → regole di rischio dedicato (M10)
-- regole dedicate: segnalare campi imputati a bassa `confidence` su documenti fiscali critici
-- regole **geometriche** (M4+): campo fuori bbox atteso per `template_version`
-- confronto cross-documento (busta generata vs CU in fascicolo)
-- metriche per migliorare entrambi i prodotti (dataset errori condiviso)
+- stesso OCR / estrazione / regole / ML;
+- **nessun** `payload`, `imputation_report`, `dual_channel_qa_report`, `fix_report` in pipeline;
+- etichette `genuina`/`alterata` solo in `manifest_v01.csv` (ops), mai nel PDF.
 
-**Ingest documenti reali (non solo Replicator):** stesso principio dual-channel opzionale — vettoriale (bbox/regole) + raster (fingerprint vs cluster noto) per buste native e scansioni.
+**Perché:** stress test **cieco** — se Validator ricevesse metadati Replicator, troverebbe l’inghippo subito e il test non valerebbe.
 
-**Bundle minimo Replicator → Validator:** `pdf` + `payload.json` + `imputation_report.json` + `dual_channel_qa_report.json` + stesso `pratica_id` (+ `fix_report` se presenti correzioni §3b Replicator).
+#### 6.7-nota Canale debug sviluppo (opzionale M10+, fuori score)
 
-Schema QA raster: [`schema_raster_reference_v01.json`](../../schema_raster_reference_v01.json).
+UI o tool **interno** può visualizzare bundle da `internal/` accanto al PDF per diagnosi. **Escluso** da semaforo, training e produzione. Non sostituisce il canone stress test.
+
+### 6.8 Loop antagonista (blue team) + rule discovery
+
+> [`PROTOCOLLO_LOOP_ANTAGONISTA_VR.md`](PROTOCOLLO_LOOP_ANTAGONISTA_VR.md) · [`CANONE_STRESS_TEST_LAB_VR.md`](CANONE_STRESS_TEST_LAB_VR.md)
+
+**Produzione:** PDF cliente → regole + ML (feature solo da PDF).
+
+**Lab:** PDF da Replicator `stress_test/` → stesso pipeline. Evasion → rule discovery:
+
+- pattern **quasi sempre veri** su genuine (~100 Zucchetti originali);
+- **violati** su alterate controllate (20–30) e su evasion del run;
+- IA propone voci in `rule_candidates.yaml` → **review umana** → `rules_approved_v*.yaml`.
+
+**Artefatti:**
+
+| File | Ruolo |
+|------|--------|
+| `evasion_report.json` | Elenchi evasion + FP + metriche run |
+| `rule_candidates.yaml` | Bozze regole (`status: draft`) |
+| `rules_approved_v*.yaml` | Solo regole promosse (runtime) |
+
+Esempi: [`examples/evasion_report.example.json`](examples/evasion_report.example.json), [`examples/rule_candidates.example.yaml`](examples/rule_candidates.example.yaml).
+
+**KPI:** `recall_altered` ↑ · `evasion_rate` ↓ · `fp_rate_genuine` sotto cap.
 
 ---
 

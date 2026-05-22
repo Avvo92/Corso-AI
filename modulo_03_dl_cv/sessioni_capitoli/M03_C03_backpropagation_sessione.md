@@ -56,14 +56,71 @@
 > - Riferimento puntuale al blocco/righe del file `03_backpropagation.py`.
 > - Collegare ogni lacuna emersa al suo ID in `CONTESTO_CORSO.md`.
 
-### [YYYY-MM-DD] — Riferimento (placeholder)
+### 2026-05-22 — Rinforzo UAT micro-esercizio (`03_backpropagation.py` ~236-241)
 
-- **Esercizio / blocco:** …
-- **Valutazione (primo tentativo — "voto esame"):** **X/10**.
-- **Punti di forza:** …
-- **Errori / lacune:** …
-- **Correzione / suggerimento:** …
-- **Pattern errore / ID contesto** (se applicabile): …
+- **Esercizio / blocco:** Micro-esercizio post-blocco UAT — cosa cambia dopo training (architettura / pesi / input / sigmoid).
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**.
+- **Punti di forza:** Risposta (b) corretta: training aggiorna i pesi; architettura, input e sigmoid restano gli stessi.
+- **Errori / lacune:** —
+- **Correzione / suggerimento:** Lacuna #31 UAT (esistenza vs training) — segno positivo; chiudere in contesto se ripetuto a fine Sez.6.
+- **Pattern errore / ID contesto:** Lacuna #31 UAT 🟡 — progresso.
+
+---
+
+### 2026-05-22 — Quiz d'ingresso Q5 Feynman (`03_backpropagation.py` ~205-209)
+
+- **Esercizio / blocco:** Q5 — loop di training senza jargon (4 righe max).
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**.
+- **Punti di forza:** Ciclo completo forward → confronto p vs y → errore → correzione «all'indietro» per parametro → ripeti; nessuna parola vietata; binario e probabilità chiari; tono da collega tecnico ma comprensibile.
+- **Errori / lacune:** Non rispetta «4 righe» (testo lungo, ~6 frasi); «livelli di parametri» un po' ambiguo per web dev; manca analogia semplice (manopole / tentativi su dataset) come nella soluzione tipo.
+- **Correzione / suggerimento:** Comprimere in 4 righe; es. «provi su N esempi → misuri errore → aggiusti le manopoline → ripeti finché sbagli meno».
+- **Pattern errore / ID contesto:** Feynman — ok concettualmente; formato vincoli da stringere.
+
+---
+
+### 2026-05-22 — Quiz d'ingresso Q4 (`03_backpropagation.py` ~200-203)
+
+- **Esercizio / blocco:** Q4 — conteggio parametri W1 (4,8), W2 (8,1) + bias.
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**.
+- **Punti di forza:** Scomposizione corretta (32+8+8+1); totale 49; include b1 e b2 nel conteggio.
+- **Errori / lacune:** Label «49 pesi» — in rigore sono **49 parametri** (pesi + bias); calcolo già corretto.
+- **Correzione / suggerimento:** Opzionale: «49 parametri (32+8+8+1)».
+- **Pattern errore / ID contesto:** Lacuna shape W2 (h,1) — rinforzo positivo.
+
+---
+
+### 2026-05-22 — Quiz d'ingresso Q3 (`03_backpropagation.py` ~194-198)
+
+- **Esercizio / blocco:** Q3 — p=0.05, y=1: errore intuitivo e direzione pesi.
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**.
+- **Punti di forza:** Direzione giusta: p troppo bassa rispetto a y=1 → serve spingere verso probabilità più alte; collegamento z/logit più alto → sigmoid più vicina a 1; ragionamento su prodotto matriciale + sigmoid coerente col forward.
+- **Errori / lacune:** Manca esplicitare l'errore intuitivo ("quasi sicuro NO/genuino quando era SÌ/alterato", loss BCE alta); formula generale "aumentare tutti i pesi" è semplificata — in realtà alcuni pesi salgono e altri scendono a seconda del segno delle feature (gradiente per peso).
+- **Correzione / suggerimento:** Aggiungere 1 riga sull'errore umano; per i pesi: «far salire p» / «muovere i pesi lungo il gradiente (non tutti allo stesso modo)».
+- **Pattern errore / ID contesto:** — (nessuno nuovo).
+
+**Fix applicato (stessa sessione):** aggiunta riga errore intuitivo («quasi sicuramente genuina»). **Rivalutazione post-fix: 9/10** — resta solo la sfumatura «non tutti i pesi su insieme» (ok per quiz ingresso).
+
+---
+
+### 2026-05-22 — Quiz d'ingresso Q2 (`03_backpropagation.py` ~187-192)
+
+- **Esercizio / blocco:** Q2 — pendenza di f(x)=x² in x=3 e x=-3 (spiegazione geometrica).
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**.
+- **Punti di forza:** Concetto corretto su entrambi i punti; usa passo verso destra con f(4) e f(-2); distingue salita vs discesa; risposta coerente col grafico `03_02_pendenza_parabola_q2.png`.
+- **Errori / lacune:** Refuso "andamente" → andamento; opzionale citare x=0 (pendenza zero al fondo della U) per chiudere il quadro.
+- **Correzione / suggerimento:** Formulazione modello: «x=3 pendenza + (salita verso destra); x=-3 pendenza − (discesa verso destra); in x=0 pendenza 0».
+- **Pattern errore / ID contesto:** — (nessuno nuovo).
+
+---
+
+### 2026-05-22 — Quiz d'ingresso Q1 (`03_backpropagation.py` ~179-185)
+
+- **Esercizio / blocco:** Q1 — LOSS vs ACCURACY e differenza per backpropagation.
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**.
+- **Punti di forza:** Intuizione corretta sulla loss come distanza previsione/verità; richiama probabilità (sigmoid) e idea di "gravità" dell'errore (sicurezza sbagliata); accuracy con formula TP/TN sensata.
+- **Errori / lacune:** Risposta troppo lunga (chiedeva ~1 riga per LOSS e 1 per ACCURACY); manca il punto chiave per backprop — **loss continua e derivabile** vs **accuracy discreta (non derivabile)**; "informazioni qualitative" è vago rispetto a "gradiente sui pesi".
+- **Correzione / suggerimento:** LOSS = errore continuo (es. BCE su p) che minimizzi in training. ACCURACY = % predizioni giuste (soglia 0,5). Backprop usa gradienti della **loss**, non dell'accuracy.
+- **Pattern errore / ID contesto:** Pattern ⚠️ "loss vs metrica" (rinforzo Sez.1 cap.03) — da chiudere quando ripete il concetto **derivabile**.
 
 ---
 

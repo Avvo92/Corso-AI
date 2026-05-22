@@ -14,10 +14,10 @@
 Prima di proporre codice o architettura sul Replicator:
 
 1. Leggere **questo file** per intero.
-2. Consultare [`DOCUMENT_SPECTRUM.md`](DOCUMENT_SPECTRUM.md) per il tipo documento.
-3. Consultare [`schema_canonico_v01.json`](../../schema_canonico_v01.json) per i campi valori.
-4. Se UI/UX conversazionale o “impara dalla chat”: leggere **§7.3** (livelli A/B/C e divieti).
-5. Se modalità **fix** o patch PDF: leggere **§3b** (lineage, bundle, divieti).
+2. Leggere **[`CANONE_STRESS_TEST_LAB_VR.md`](CANONE_STRESS_TEST_LAB_VR.md)** (Validator solo PDF; `export_mode`; `metadata_mimic_y`).
+3. Consultare [`DOCUMENT_SPECTRUM.md`](DOCUMENT_SPECTRUM.md) per il tipo documento.
+4. Consultare [`schema_canonico_v01.json`](../../schema_canonico_v01.json) per i campi valori.
+5. Se UI/UX conversazionale: **§7.3**. Se **fix**: **§3b**.
 
 ---
 
@@ -32,10 +32,21 @@ Prima di proporre codice o architettura sul Replicator:
 3. Il sistema produce un **PDF vettoriale** che, **a schermo**, assomiglia il più possibile agli esempi di training su Y (fedeltà visiva prioritaria — vedi §4.3).
 4. Vede un **report** di cosa è stato preso dai dati forniti e cosa è stato **autocompletato** (stima statistica).
 5. Può **correggere** i campi dubbi e rigenerare, poi **scaricare** il PDF.
-6. (Opzionale) Passa il PDF al **Validator** per un controllo qualità.  
-   **Alternativa UX:** stesso flusso tramite **interfaccia conversazionale (chat)** — intento in linguaggio naturale, chiarimenti, correzioni in thread e rigenerazioni senza wizard fisso (§7.3).
+6. Export **`stress_test`**: copia **solo il PDF** nella ingest Validator (stress test lab).  
+7. Export **`internal`**: bundle + lineage per debug — **mai** in Validator.
 
-**Relazione antagonista con Validator:** Replicator cerca la massima fedeltà visiva; Validator cerca errori e incoerenze. I due prodotti si migliorano a vicenda (§12).
+**Alternativa UX:** chat (§7.3).
+
+**Relazione antagonista:** Replicator produce PDF **indistinguibili** da Y; Validator li giudica **cieco** (solo file). Canone: [`CANONE_STRESS_TEST_LAB_VR.md`](CANONE_STRESS_TEST_LAB_VR.md) · loop §8b.
+
+### 1.2 Priorità lab — stress test completo per Validator
+
+| Priorità | Requisito |
+|----------|-----------|
+| 1 | `metadata_mimic_y` nel PDF export `stress_test` (no firma Replicator nel file) |
+| 2 | Layout / vettoriale / raster QA **interno** prima dell’export |
+| 3 | Profili `realistic_full` per alterate credibili |
+| 4 | Cartella ingest Validator: **solo `.pdf`**, zero JSON sidecar |
 
 ### 1.1 Scenario obiettivo (North Star)
 
@@ -214,8 +225,9 @@ Merge correzioni payload (e opz. patch allowlist P2)
 #### Obiettivo utente (chiarezza)
 
 - **Sì:** identico **a schermo** rispetto al cluster di training (es. buste Zucchetti stesso `template_version`).
-- **No:** clone forense byte-identico; metadati falsificati del software Y (restano fuori perimetro — `ARCHITETTURA` §7).
-- I metadati onesti (`Creator`/`Producer` = Replicator) restano obbligatori per audit; **non** influenzano il QA visivo.
+- **No:** clone forense byte-identico per frode su terzi in produzione.
+- **Export `stress_test`:** metadati PDF profilo **`metadata_mimic_y`** (come Y) — canone [`CANONE_STRESS_TEST_LAB_VR.md`](CANONE_STRESS_TEST_LAB_VR.md).
+- **Export `internal`:** metadati onesti Replicator ammessi solo in bundle/sidecar **non** inviati a Validator.
 
 #### Training offline — due flussi paralleli
 
@@ -379,18 +391,33 @@ Integrazione con **Validator**: esiti rossi/gialli possono generare lo stesso ti
 
 ## 8) Integrazione con Validator
 
-**Bundle export minimo:**
+> **Canone:** [`CANONE_STRESS_TEST_LAB_VR.md`](CANONE_STRESS_TEST_LAB_VR.md)
 
-- `pdf_generato`
-- `payload.json`
-- `imputation_report.json`
-- `dual_channel_qa_report.json` (§4.3)
-- `fix_report.json` se è stata usata la modalità **`controlled_fix`** (§3b)
-- `pratica_id` (stesso fascicolo)
+### 8.1 Export verso Validator (`export_mode: stress_test`)
 
-Il Validator analizza il PDF e i report; se `channels_agree === false` → semaforo giallo/rosso anche con regole matematiche OK (vedi Validator §6.7).
+- **Un solo file:** PDF in cartella ingest Validator.
+- **Nessun** bundle, report o lineage nella stessa path ingest.
+- PDF con `metadata_mimic_y` + layout indistinguibile da export Y reale.
 
-**Metriche antagonista (da tracciare):** % campi imputati; errori regole post-generazione; **`channels_agree` rate**; ROI fallite per `field_id`; miglioramento versione template.
+### 8.2 Export interno (`export_mode: internal`)
+
+- `payload.json`, `imputation_report.json`, `dual_channel_qa_report.json`, `fix_report.json`, lineage.
+- Path: `dati/lab/antagonist/runs/{run_id}/internal/`.
+- Uso: QA Replicator, debug, manifest ops — **vietato** a pipeline Validator.
+
+**Metriche build (interno):** placement vettoriale, raster QA, % imputati, ROI fallite.
+
+### 8b) Loop antagonista (red team lab)
+
+> [`PROTOCOLLO_LOOP_ANTAGONISTA_VR.md`](PROTOCOLLO_LOOP_ANTAGONISTA_VR.md)
+
+| Esito Validator (solo PDF) | Azione Replicator |
+|----------------------------|-------------------|
+| Alterata **bloccata** | OK — profilo realistico o aumentare difficoltà numerica |
+| **Evasion** | Input rule discovery — **non** abbassare soglie Validator |
+| QA interno fail | Fix template/render prima di nuovo `stress_test` export |
+
+**Divieto:** massimizzare pass rate Validator; pulire PDF cliente; lasciare inghippo “Replicator” nei metadati PDF.
 
 ---
 
@@ -551,3 +578,5 @@ Dettaglio esteso (checklist G1–G10, diagrammi, DoD): [`ARCHITETTURA_PRODOTTO_D
 | 2026-05-21 | **North Star §1.1:** richiesta NL multi-doc (es. 3 buste X → BP Zucchetti + CU anno precedente) nella stessa `pratica_id`. |
 | 2026-05-21 | **§7.3 REPLICATOR — Chat + ciclo miglioramento:** UI conversazionale sulla stessa pipeline; livelli A/B/C (sessione → feedback approvato → retrain offline); eventi strutturati; divieto apprendimento live non governato dalla chat. |
 | 2026-05-22 | **Fixer controllato §3b:** modalità `controlled_fix`; lineage + bundle; preferenza rigenerazione; patch allowlist P2; `fix_report`; divieto fix libero su PDF terzi. |
+| 2026-05-22 | **Loop antagonista §8b:** protocollo 8 step V↔R; `stress_profile_id`; evasion alimenta rule discovery; successo = Validator più forte. |
+| 2026-05-22 | **Canone stress test §1.2 / §8:** `CANONE_STRESS_TEST_LAB_VR.md`; export stress_test (solo PDF) vs internal; `metadata_mimic_y`; Validator cieco. |
