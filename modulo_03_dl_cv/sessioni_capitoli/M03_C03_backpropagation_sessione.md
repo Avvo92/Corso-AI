@@ -124,8 +124,44 @@
 
 ---
 
+### 2026-05-25 — TODO 1.1 BCE manuale (`03_backpropagation.py` ~372-390)
+
+- **Esercizio / blocco:** TODO 1.1 — calcolo BCE media + pratica peggiore (argmax loss singole).
+- **Valutazione (primo tentativo — "voto esame"):** **6/10**.
+- **Punti di forza:** Indice corretto (4); uso creativo di `np.abs()` per trovare il max; commento finale giusto ("si discosta di più").
+- **Errori / lacune:** (1) **Segno meno mancante** nella formula → loss negativa, non ha senso fisico; (2) non stampa `bce_mean` (il task lo chiedeva); (3) niente `eps`/clip (minore, non esplode qui).
+- **Correzione / suggerimento:** BCE = **-** y*log(p) - (1-y)*log(1-p). Il `-` iniziale rende tutto positivo. `abs()` maschera il bug — con la formula corretta non serve. Sempre stampare ciò che il task chiede.
+- **Pattern errore / ID contesto:** Pattern nuovo 🔴 "segno BCE" — confusione segno negativo nella formula loss. Da verificare in TODO successivi e nel backward.
+
+---
+
+### 2026-05-25 — TODO 1.2 BCE perfetta e clip (`03_backpropagation.py` ~392-409)
+
+- **Esercizio / blocco:** TODO 1.2 — verificare BCE=0 con p perfette + capire perché serve eps/clip.
+- **Valutazione (primo tentativo — "voto esame"):** **6/10**.
+- **Punti di forza:** Caso 1 eseguito correttamente (loss ≈ 0); commento corretto nel principio; ha usato clip spontaneamente.
+- **Errori / lacune:** (1) **Caso 2 non fatto** (p=y senza/con clip); (2) clip solo lato basso `(eps, 1)` → manca `1-eps` sopra; (3) non menziona `nan` (il vero output di `0 * log(0)` in NumPy, non solo -inf).
+- **Correzione / suggerimento:** Clip **bilaterale** `(eps, 1-eps)`. Con p=y senza clip: `0*(-inf) = nan` in NumPy, non 0 — nan contamina tutto. Fare sempre entrambi i test.
+- **Pattern errore / ID contesto:** Pattern ⚠️ "clip bilaterale" — tende a proteggere solo un lato.
+
+---
+
+### 2026-05-25 — Micro-esercizio AUC ROC (rinforzo mirato, `03_backpropagation.py` ~470-483)
+
+- **Esercizio / blocco:** Micro-esercizio AUC — accuracy vs AUC su P=[0.10,0.45,0.55,0.95], y=[0,1,0,1].
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**.
+- **Punti di forza:** Risultati numerici corretti (accuracy=0.5, AUC=0.75); intuizione "AUC più alto" corretta; capisce che AUC usa probabilità non soglia.
+- **Errori / lacune:** (1) Soglia sbagliata: `P > 0` anziché `P >= 0.5` — risultato uguale per coincidenza; (2) spiegazione AUC generica — non menziona il meccanismo di ranking (coppie pos/neg ordinate).
+- **Correzione / suggerimento:** AUC = "su tutte le coppie (un positivo, un negativo), in quante il positivo ha P più alta?" → 3/4 = 0.75. Soglia accuracy standard = 0.5.
+- **Pattern errore / ID contesto:** Pattern ⚠️ "soglia 0.5 dimenticata" — confonde `> 0` con `>= 0.5`.
+
+---
+
 ## Lacune e dubbi ancora aperti
 
+- 🔴 **Segno BCE:** (dal TODO 1.1) manca il `-` davanti → corretto dopo feedback.
+- ⚠️ **Clip bilaterale:** tende a proteggere solo il lato basso, dimenticando `1 - eps` sopra.
+- ⚠️ **Soglia 0.5:** confonde `P > 0` con `P >= 0.5` nel calcolo accuracy.
 - _(da popolare durante il capitolo — capitolo difficile, prevedere molte iterazioni)_
 
 ---

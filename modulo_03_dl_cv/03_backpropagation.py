@@ -370,7 +370,6 @@ def _grafico_bce(
         plt.show()
     plt.close(fig)
 
-
 # TODO 1.1 (5 minuti):
 # Crea y = np.array([1, 0, 1, 0, 1]) e p = np.array([0.9, 0.1, 0.8, 0.2, 0.05])
 # Calcola e stampa:
@@ -379,7 +378,17 @@ def _grafico_bce(
 #     calcola le 5 loss singole e trova l'argmax)
 # Spiega in 1 commento PERCHE' quella e' la pratica "peggiore".
 # TUO CODICE QUI:
+y = np.array([1, 0 , 1, 0, 1])
+p = np.array([0.9, 0.1, 0.8, 0.2, 0.05])
 
+# y * np.log(p_safe) - (1.0 - y) * np.log(1.0 - p_safe)
+bce = - y * np.log(p) - (1 - y) * np.log(1.0 - p)
+bce_mean = bce.mean()
+bce_max = np.argmax(bce)
+print(bce_mean)
+print(bce_max)
+
+# la pratica in indice 4 è la peggiore perchè è quella che si discosta di più per valore predetto rispetto al valore reale.
 
 # TODO 1.2 (5 minuti):
 # Verifica empiricamente che BCE perfetta = 0:
@@ -389,14 +398,46 @@ def _grafico_bce(
 # Cosa stampa bce_loss in entrambi i casi? Perche' NON puoi mettere p = y
 # senza il clip?
 # TUO CODICE QUI:
+y = np.array([1, 0, 1, 0])
+p = np.array([0.99999, 0.00001, 0.99999, 0.00001])
+eps = 1e-12
 
+p_safe = np.clip(p, eps, 1 - eps)
+
+bce_safe = - y * np.log(p_safe) - (1.0 - y) * np.log(1.0 - p_safe)
+print(bce_safe)
+
+p = y
+
+bce = - y * np.log(p) - (1.0 - y) * np.log(1.0 - p)
+
+print(bce)
+
+p_safe = np.clip(p, eps, 1 - eps)
+
+bce_safe = - y * np.log(p_safe) - (1.0 - y) * np.log(1.0 - p_safe)
+print(bce_safe)
+
+# Per tutti i casi, la bce_loss è un numero infinitesima. Se non usassimo il clip, nel caso in cui in input fornissimo array di 0 e 1, avremo nella formula dei log(0), i quali restituirebbero a loro volta una array di nan.
 
 # TODO 1.3 (3 minuti):
-# Genera il grafico della BCE (gia' fornita la funzione) e salvalo in
-#       modulo_03_dl_cv/figures/03_01_bce_loss.png
-# Verifica che il file esista (os.path.exists).
+# Sopra (righe ~348-371) c'e' gia' la funzione _grafico_bce().
+# Quello che devi fare:
+#   1. Chiamala passando out_path = "figures/03_01_bce_loss.png"
+#   2. Dopo la chiamata, usa os.path.exists() per controllare che il
+#      file sia stato effettivamente creato su disco.
+#   3. Stampa un messaggio tipo "File creato: True/False".
+#
+# Suggerimento: la funzione accetta anche show=True se vuoi vedere
+# il grafico a schermo (opzionale).
 # TUO CODICE QUI:
+print("\nTODO 1.3\n")
 
+_grafico_bce(out_path="figures/03_01_bce_loss.png")
+file_created = os.path.exists(os.path.join(os.path.dirname(__file__), "figures/03_01_bce_loss.png"))
+assert file_created, "Il file non è stato creato!!"
+if file_created:
+    print("File creato con successo!!")
 
 # ==========================================================================
 # 🔁 RINFORZO MIRATO - "LOSS (per addestrare) VS METRICA (per giudicare)"
@@ -432,9 +473,14 @@ def _grafico_bce(
 # > Quanto vale accuracy_score(y, P >= 0.5)? E vedendo P, ti aspetti
 # > AUC piu' alto o piu' basso dell'accuracy? Perche'?
 # RISPOSTA:
-# ...
+# Nel nostro caso Acc_score == 0.5. Mettendo a confronto le coppie formate da positivi e negativi, invece, i casi in cui i positivi hanno punteggi maggiori ai negativi, il rapporto è di 3 su 4, quindi 0.75
+print("\nRinforzo Mirato AUC ROC")
+from sklearn.metrics import accuracy_score, roc_auc_score
+P = np.array([0.10, 0.45, 0.55, 0.95])
+y = np.array([0, 1, 0, 1])
 
-
+print(accuracy_score(y, (P > 0.5).astype(int)))
+print(roc_auc_score(y, P))
 # ==========================================================================
 # SEZIONE 2 - DERIVATA COME PENDENZA
 # ==========================================================================
