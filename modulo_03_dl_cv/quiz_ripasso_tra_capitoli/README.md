@@ -8,21 +8,26 @@ Pattern consigliato:
 
 `M03_R##_after_C##_before_C##_breve_descrizione.md`
 
-- **R##**: numero progressivo del bridge nel modulo (01…06 per M3).
+- **R##**: numero progressivo del bridge nel modulo (01…09 per M3 dopo split 27/05/2026).
 - **C##**: numero capitolo di partenza / arrivo.
 
-## Elenco bridge Modulo 3
+## Elenco bridge Modulo 3 (aggiornato dopo split 27/05/2026)
 
 | Dopo capitolo | Prima capitolo | File |
 |---------------|----------------|------|
 | 01 neurone | 02 reti | `M03_R01_after_C01_before_C02_neurone_to_reti.md` |
-| 02 reti | 03 backprop | `M03_R02_after_C02_before_C03_reti_to_backprop.md` |
-| 03 backprop | 04 PyTorch | `M03_R03_after_C03_before_C04_backprop_to_pytorch.md` |
-| 04 PyTorch | 05 CNN | `M03_R04_after_C04_before_C05_pytorch_to_cnn.md` |
-| 05 CNN | 06 transfer | `M03_R05_after_C05_before_C06_cnn_to_transfer.md` |
-| 06 transfer | 07 Gradio | `M03_R06_after_C06_before_C07_transfer_to_gradio.md` |
+| 02 reti | 03 loss | `M03_R02_after_C02_before_C03_reti_to_loss.md` |
+| 03 loss | 04 derivate_gradiente | `M03_R03_after_C03_before_C04_loss_to_derivate.md` *(placeholder)* |
+| 04 derivate_gradiente | 05 chain_rule_gd | `M03_R04_after_C04_before_C05_derivate_to_chain.md` *(placeholder)* |
+| 05 chain_rule_gd | 06 backprop_training | `M03_R05_after_C05_before_C06_chain_to_backprop.md` *(placeholder)* |
+| 06 backprop_training | 07 PyTorch | `M03_R06_after_C06_before_C07_backprop_to_pytorch.md` |
+| 07 PyTorch | 08 CNN | `M03_R07_after_C07_before_C08_pytorch_to_cnn.md` |
+| 08 CNN | 09 transfer | `M03_R08_after_C08_before_C09_cnn_to_transfer.md` |
+| 09 transfer | 10 Gradio | `M03_R09_after_C09_before_C10_transfer_to_gradio.md` |
 
-Non esiste bridge **dopo** il cap.07: chiudi il modulo con la sezione confronto prima/dopo del capitolo finale.
+Non esiste bridge **dopo** il cap.10: chiudi il modulo con la sezione confronto prima/dopo del capitolo finale.
+
+> **Nota split**: i bridge R03/R04/R05 sono attualmente placeholder (da popolare alla chiusura del rispettivo cap.03 LOSS / cap.04 / cap.05). Gli altri bridge sono stati rinominati dalla numerazione pre-split (R02 da `_reti_to_backprop` → `_reti_to_loss`; R03..R06 → R06..R09).
 
 ## Come usarli
 

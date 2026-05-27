@@ -1,9 +1,9 @@
 """
 ============================================================================
-MODULO 3 — CAPITOLO 04 (SEGNAPOSTO): PyTorch — primo contatto + training su Colab
+MODULO 3 — CAPITOLO 07 (SEGNAPOSTO): PyTorch — primo contatto + training su Colab
 ============================================================================
 
-⚠️ FILE SEGNAPOSTO — DA CREARE alla chiusura del cap.03 M3.
+⚠️ FILE SEGNAPOSTO — DA CREARE alla chiusura del cap.06 M3.
 Qui sotto solo TODO MENTOR. Nessun codice operativo.
 
 ⚠️ PRIMO CAMBIO DI PIATTAFORMA: da qui in poi training su Google Colab (GPU).
@@ -12,7 +12,7 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 # ============================================================================
 # TODO MENTOR — quando si crea questo capitolo:
 # ----------------------------------------------------------------------------
-# 1) GATE: leggere CONTESTO + diario cap.03 M3.
+# 1) GATE: leggere CONTESTO + diario cap.06 M3 (backprop_training).
 #
 # 2) PRE-REQUISITI OPERATIVI (DA PREPARARE PRIMA DI INIZIARE IL CAPITOLO):
 #    - notebook Google Colab template con torch + torchvision pre-installati
@@ -28,11 +28,11 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 # 4) STRUTTURA del file:
 #    - Header + DoD
 #    - Mappa
-#    - Quiz d'ingresso (cerniera cap.03 M3: backprop fatta a mano)
+#    - Quiz d'ingresso (cerniera cap.06 M3: backprop_training a mano)
 #    - SEZIONE 1: tensori PyTorch vs ndarray NumPy (creazione, shape, dtype,
 #      device CPU/GPU)
 #    - SEZIONE 2: autograd — il "tape" che traccia le operazioni e calcola
-#      le derivate da solo (CONFRONTO: nel cap.03 le derivavi a mano)
+#      le derivate da solo (CONFRONTO: nel cap.04+05+06 le derivavi a mano)
 #    - SEZIONE 3: nn.Module, nn.Linear (= il layer Dense del Ponte cap.02!),
 #      attivazioni come moduli
 #    - SEZIONE 4: Dataset e DataLoader (perche' batch + shuffle)
@@ -44,7 +44,7 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 #    - Esercizi: COLLOQUIO, REFACTORING (riscrivere training loop manuale in
 #      forma PyTorch), DEBUG (device mismatch, NaN nella loss), RETRIEVAL,
 #      INTERLEAVING (caricare il CSV M2 in un Dataset PyTorch custom)
-#    - 🏗️ PROGETTO INCREMENTALE: addestrare la stessa rete del cap.03 M3 con
+#    - 🏗️ PROGETTO INCREMENTALE: addestrare la stessa rete del cap.06 M3 con
 #      PyTorch su Colab; confrontare tempi (CPU NumPy vs GPU PyTorch) e
 #      verificare metrica di test simile o migliore
 #    - Soluzioni quiz
@@ -55,5 +55,5 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 #    - "Salvo i pesi su Drive, scarico in locale"
 #    - "Riapro il modello in Cursor con torch.load() per inferenza CPU"
 #
-# 6) DIARIO: M03_C04_pytorch_intro_sessione.md
+# 6) DIARIO: M03_C07_pytorch_intro_sessione.md
 # ============================================================================

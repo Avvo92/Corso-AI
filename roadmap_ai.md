@@ -136,15 +136,20 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 **Obiettivo**: capire come funzionano le reti neurali. Prerequisito per capire Transformer e LLM.
 
+> **⚠️ Aggiornamento 27/05/2026**: il vecchio `03_backpropagation.py` (monolitico, atteso 9/10 di difficoltà, giudicato "troppo denso" dallo studente) è stato spezzato in **4 sotto-capitoli** (03 loss → 04 derivate → 05 chain rule + GD → 06 backprop + training). I successivi sono stati rinumerati (04→07, 05→08, 06→09, 07→10). Il modulo M3 passa da 7 a **10 capitoli**.
+
 | # | File | Argomento | Perché serve |
 |---|------|-----------|-------------|
 | 01 | `01_neurone_artificiale.py` | Il neurone come un `if` con pesi che si regolano | Base concettuale |
 | 02 | `02_reti_neurali.py` | Layer, attivazione, forward pass | Cosa succede "dentro" un modello |
-| 03 | `03_backpropagation.py` | Backpropagation (GPS che ricalcola dopo svolta sbagliata) | Colloquio: "spiega la backpropagation" |
-| 04 | `04_pytorch_intro.py` | Tensori PyTorch, dataset, DataLoader, training loop | Framework standard dell'industria |
-| 05 | `05_cnn_computer_vision.py` | CNN: filtri, pooling, feature maps — come un computer "vede" | Base per Computer Vision |
-| 06 | `06_transfer_learning.py` | Modelli pre-addestrati (ResNet, YOLO), fine-tuning base | Nella pratica non si traina da zero quasi mai |
-| 07 | `07_progetto_gradio.py` | Progetto: classificatore immagini + demo Gradio | Portfolio piece #2 |
+| 03 | `03_loss.py` | LOSS (BCE, MSE) come misura continua e derivabile dell'errore | Senza questo non puoi minimizzare nulla |
+| 04 | `04_derivate_gradiente.py` | Derivata = pendenza, gradiente = vettore di derivate parziali | Linguaggio della correzione (preparazione backprop) |
+| 05 | `05_chain_rule_gd.py` | Chain rule + gradient descent + learning rate | Come si applica la correzione su funzioni composte |
+| 06 | `06_backprop_training.py` | Backward 2-layer + training loop su CSV M2 | Backpropagation (GPS che ricalcola dopo svolta sbagliata) — colloquio classico |
+| 07 | `07_pytorch_intro.py` | Tensori PyTorch, dataset, DataLoader, training loop | Framework standard dell'industria |
+| 08 | `08_cnn_computer_vision.py` | CNN: filtri, pooling, feature maps — come un computer "vede" | Base per Computer Vision |
+| 09 | `09_transfer_learning.py` | Modelli pre-addestrati (ResNet, YOLO), fine-tuning base | Nella pratica non si traina da zero quasi mai |
+| 10 | `10_progetto_gradio.py` | Progetto: classificatore immagini + demo Gradio | Portfolio piece #2 |
 
 **Librerie**: torch, torchvision, gradio
 
@@ -154,7 +159,7 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 **Analogie ponte**: CNN filtri → CSS selettori (cercano pattern). Transfer learning → pacchetto npm pre-fatto.
 
-**Tempo**: 2-3 settimane
+**Tempo**: 3-4 settimane (post split: il blocco matematico 03-06 va piu' graduale, ma ogni sotto-capitolo e' piu' "digeribile").
 
 ---
 

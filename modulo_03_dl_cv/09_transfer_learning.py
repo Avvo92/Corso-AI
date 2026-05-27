@@ -1,9 +1,9 @@
 """
 ============================================================================
-MODULO 3 — CAPITOLO 06 (SEGNAPOSTO): Transfer learning + dataset reale buste paga
+MODULO 3 — CAPITOLO 09 (SEGNAPOSTO): Transfer learning + dataset reale buste paga
 ============================================================================
 
-⚠️ FILE SEGNAPOSTO — DA CREARE alla chiusura del cap.05 M3.
+⚠️ FILE SEGNAPOSTO — DA CREARE alla chiusura del cap.08 M3.
 Qui sotto solo TODO MENTOR. Nessun codice operativo.
 
 ⚠️ INGRESSO DEL DATASET REALE: questo e' il capitolo dove si introducono le
@@ -13,7 +13,7 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 # ============================================================================
 # TODO MENTOR — quando si crea questo capitolo:
 # ----------------------------------------------------------------------------
-# 1) GATE: leggere CONTESTO + diario cap.05 M3 + sezione "Computer Vision nel
+# 1) GATE: leggere CONTESTO + diario cap.08 M3 (cnn) + sezione "Computer Vision nel
 #    Prodotto" di CONTESTO_CORSO.md (decisione 30/04/2026 — vincoli privacy)
 #    + sezione 10 di APPUNTI_APPLICATIVO.md.
 #
@@ -30,7 +30,7 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 # 3) STRUTTURA del file:
 #    - Header + DoD
 #    - Mappa
-#    - Quiz d'ingresso (cerniera cap.05 M3: CNN, feature maps)
+#    - Quiz d'ingresso (cerniera cap.08 M3: CNN, feature maps)
 #    - SEZIONE PRIVACY (dedicata): perche' anonimizzazione PRIMA del training,
 #      cosa succede se la salti (incidente), cosa NON va anonimizzato (layout
 #      grafico, font generale = informazioni che SERVONO al modello)
@@ -60,7 +60,7 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 # 4) HARDWARE: training su Colab (obbligatorio - 200+200 immagini con ResNet18
 #    su CPU sarebbe lentissimo).
 #
-# 5) DIARIO: M03_C06_transfer_learning_sessione.md
+# 5) DIARIO: M03_C09_transfer_learning_sessione.md
 #
 # 6) NOTE PER MENTOR — RISCHI SPECIFICI:
 #    - overfitting: con 200 immagini per classe, e' quasi inevitabile senza

@@ -1,9 +1,9 @@
 """
 ============================================================================
-MODULO 3 — CAPITOLO 05 (SEGNAPOSTO): CNN e Computer Vision
+MODULO 3 — CAPITOLO 08 (SEGNAPOSTO): CNN e Computer Vision
 ============================================================================
 
-⚠️ FILE SEGNAPOSTO — DA CREARE alla chiusura del cap.04 M3.
+⚠️ FILE SEGNAPOSTO — DA CREARE alla chiusura del cap.07 M3.
 Qui sotto solo TODO MENTOR. Nessun codice operativo.
 
 ⚠️ ULTIMO CAPITOLO PRIMA DI PASSARE AL DATASET REALE BUSTE PAGA.
@@ -14,7 +14,7 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 # ============================================================================
 # TODO MENTOR — quando si crea questo capitolo:
 # ----------------------------------------------------------------------------
-# 1) GATE: leggere CONTESTO + diario cap.04 M3.
+# 1) GATE: leggere CONTESTO + diario cap.07 M3 (pytorch_intro).
 #
 # 2) AZIONE PROPEDEUTICA OBBLIGATORIA:
 #    - PRIMA DI INIZIARE: aggiungere a `.gitignore` la riga `data/buste_*/`
@@ -26,7 +26,7 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 # 3) STRUTTURA del file:
 #    - Header + DoD
 #    - Mappa
-#    - Quiz d'ingresso (cerniera cap.04 M3: tensori, DataLoader, training loop)
+#    - Quiz d'ingresso (cerniera cap.07 M3: tensori, DataLoader, training loop)
 #    - SEZIONE 1: immagini come tensori (H, W, C) e (N, C, H, W) - convenzione
 #      PyTorch vs convenzione "intuitiva". Visualizzare un'immagine col plot.
 #    - SEZIONE 2: convoluzione 2D - analogia "selettore CSS che cerca pattern"
@@ -45,11 +45,11 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 #      output di una conv2D — collega alla regola del Ponte cap.02!)
 #    - 🏗️ PROGETTO INCREMENTALE: il PRODOTTO non si tocca ancora — qui solo
 #      teoria CV su dataset pubblico. Documentare nel diario che la pipeline
-#      reale parte dal cap.06.
+#      reale parte dal cap.09 (transfer_learning).
 #    - Soluzioni quiz
 #
 # 4) HARDWARE: training SEMPRE su Colab (anche Fashion-MNIST e' fattibile in
 #    CPU ma vogliamo abituare al workflow GPU per i capitoli successivi).
 #
-# 5) DIARIO: M03_C05_cnn_computer_vision_sessione.md
+# 5) DIARIO: M03_C08_cnn_computer_vision_sessione.md
 # ============================================================================

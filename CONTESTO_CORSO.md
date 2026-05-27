@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 21/05/2026 (chiusura **M3 cap.02** `02_reti_neurali.py`; prossimo **03_backpropagation.py**)
+> **Ultimo aggiornamento**: 27/05/2026 (split **M3 cap.03** `03_backpropagation.py` → 4 sotto-capitoli: `03_loss.py`, `04_derivate_gradiente.py`, `05_chain_rule_gd.py`, `06_backprop_training.py`; modulo M3 passa da 7 a **10 capitoli**; pytorch_intro/cnn/transfer/gradio rinominati 07→10. **Stesso giorno (pomeriggio)**: tutti i 4 sotto-capitoli sono stati PIENI di esercizi su richiesta dello studente — 14-17 mini-inline + 16-19 TODO numerati per file + 1 pipeline integrata + 1 mini-progetto per ognuno; cap.06 chiude con CONFRONTO PRIMA/DOPO cap.01-06)
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -40,11 +40,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_03_dl_cv/03_backpropagation.py — Loss, gradienti, chain rule, training rete 2-layer (cap.02 M3 come base). |
+| **Capitolo in corso** | modulo_03_dl_cv/**03_loss.py** — LOSS (BCE, MSE), clip bilaterale, soglia 0.5; rinforzi cap.01-02 (sigmoid, forward, vettorizzazione); 3 esercizi mirati sui pattern emersi (segno BCE, clip, soglia). Parte 1/4 dello split del vecchio cap.03 backpropagation. **Tutti i 4 sotto-capitoli (03/04/05/06) sono ora PIENI di esercizi** (~14-17 mini-inline + 16-19 TODO numerati + pipeline + mini-progetto per ognuno; espansione del 27/05/2026 pomeriggio). |
 | **Ultimo completato** | modulo_03_dl_cv/02_reti_neurali.py (21/05/2026) — `layer_dense`, `rete_2_layer`, init He, R2 collasso lineare, forward CSV M2, mini-progetto `rete_2_layer_vs_logreg`; checkpoint C1–C4; **voto difficoltà** **8**/10. **E6 [REAL-WORLD]** rinviato (scelta studente). |
-| **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision |
+| **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026, era 7) |
 | **Difficoltà media** | ~6.85 (23 capitoli con voto; archivi M1/M2/Ponte — vedi `archivi/`) |
-| **Priorità attive** | 🟡 Pattern #6 consegne; 🟡 #19 None vs null; 🟡 #21 tupla/round; 🟡 Data leakage; 🟡 Lacuna #31 UAT (limite pratico, cap.03); 🟡 E6 system design (rinviato, ripianificare fine M3). |
+| **Priorità attive** | 🔴 Segno BCE (lacuna TODO 1.1, rinforzo TODO 1.7 cap.03); ⚠️ Clip bilaterale (lacuna TODO 1.2, rinforzo TODO 1.8); ⚠️ Soglia 0.5 (lacuna micro AUC, rinforzo TODO 1.9); 🟡 Pattern #6 consegne; 🟡 #19 None vs null; 🟡 #21 tupla/round; 🟡 Data leakage; 🟡 Lacuna #31 UAT; 🟡 E6 system design (rinviato fine M3). |
 | **Sessione corrente** | Sessione 21 |
 
 ---
@@ -56,11 +56,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 21/05/2026 |
-| **Cosa è stato fatto** | **Chiusura M3 cap.02** `02_reti_neurali.py`: teoria + quiz; esercizi E1–E5 (E1 fix `W2 (h,1)`); mini-progetto `rete_2_layer_vs_logreg` (AUC su probabilità, 9/10); checkpoint C1–C4 (auto-rating ~8.6). **E6** lasciato vuoto per scelta (visione system design da consolidare). |
-| **Errori emersi** | `roc_auc_score` su 0/1 invece che su `P` (corretto); shape output binario `(h,1)` in E1 (corretto); AUC vs accuracy random spiegati in chat. |
-| **Cosa fare nella prossima sessione** | `03_backpropagation.py` — andare **lento** (difficoltà attesa ~9/10); opzionale bridge `M03_R02_after_C02_before_C03` se non fatto; ripasso #31 UAT in teoria loss/training. |
-| **Stato motivazione** | Buono: cap.02 chiuso con consapevolezza su cosa manca (E6); pronto al training. |
+| **Data** | 27/05/2026 |
+| **Cosa è stato fatto** | (a) **22-25/05/2026**: aperto vecchio `03_backpropagation.py`; fatti Quiz d'ingresso Q1-Q5 (medie ~8.4/10); rinforzo UAT (10/10); Sez.1 LOSS con TODO 1.1 (6/10 segno BCE), 1.2 (6/10 clip non bilaterale), 1.3 (8/10 manca exists check); micro AUC ROC (7/10 soglia 0/0.5); Sez.2 derivata con TODO 2.1 (9/10 derivata sigmoid) e 2.3 (8/10 grafico). (b) **27/05/2026 - mattina**: spiegazioni chat su BCE (segno meno), derivata parziale, vettore = coordinate, backprop pipeline. (c) **27/05/2026 - SPLIT cap.03**: lo studente ha richiesto di spezzettare il capitolo monolitico in 4 sotto-capitoli. Eseguita rinominazione completa, creato `03_loss.py` minimo + scaffold `04/05/06`, ricreata catena bridge `M03_R02..R09`. (d) **27/05/2026 - pomeriggio - ESPANSIONE 4 sotto-capitoli su richiesta studente**: "tanti esercizi pratici, pipeline complete, richiami forti intra-M3, alla fine devo essere maestro della backprop". Tutti e 4 i file ora pieni: `03_loss.py` (~800 righe, 12 mini-inline + 17 TODO + pipeline `valuta_rete_random` + mini-progetto `valuta_modello_completo`), `04_derivate_gradiente.py` (~900 righe, 16 mini + 16 TODO + pipeline `derivate_check_completo` + mini-progetto `analizza_funzione_attivazione`), `05_chain_rule_gd.py` (~900 righe, 17 mini + 16 TODO + pipeline `addestramento_via_gradiente_numerico` + mini-progetto `confronto_lr_su_addestramento`), `06_backprop_training.py` (~1100 righe, 14 mini + 19 TODO + pipeline `train_rete_2_layer_completo` + mini-progetto **finale `train_rete_su_csv_m2`** + **CONFRONTO PRIMA/DOPO cap.01-06**). Smoke test: tutti girano (cap.06 sanity_check_grad max_diff < 1e-10, training converge a acc 0.97 in 200 epoche). |
+| **Errori emersi** | 🔴 Segno meno BCE dimenticato (TODO 1.1); ⚠️ Clip solo lato basso, non bilaterale (TODO 1.2); ⚠️ Soglia 0.5 confusa con `P > 0` (micro AUC). 3 pattern rinforzati nei nuovi TODO 1.7/1.8/1.9 del nuovo `03_loss.py`. |
+| **Cosa fare nella prossima sessione** | Riprendere **`03_loss.py`** (già parzialmente fatto: Q1-Q5 quiz d'ingresso, TODO 1.1-1.3). Procedere con: (1) mini-esercizi inline sez.1-3 (12 totali, 2-5 min ciascuno), (2) TODO 4.1-4.4 (recall cap.01-02 M3), (3) TODO 5.1-5.3 (3 pattern lacune), (4) pipeline PIPE.1 `valuta_rete_random`, (5) TODO 6-11 (tipologie colloquio/refactor/debug/retrieval/interleaving/real-world), (6) quiz verifica V1-V7, (7) mini-progetto `valuta_modello_completo`, (8) checkpoint. Difficoltà attesa ~6/10 (era 9/10 nel monolitico). |
+| **Stato motivazione** | Alto: meta-cognizione eccellente. Ha riconosciuto la densità del monolitico, chiesto lo split, e POI chiesto esplicitamente più esercizi pratici per "diventare maestro della backprop". I 4 capitoli pieni sono ora coerenti con questa richiesta. |
 
 ---
 
@@ -127,12 +127,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_03_dl_cv/03_backpropagation.py — **loss** (BCE), **gradiente**, **chain rule**, **gradient descent**, `backward_2layer`, `train_rete_2_layer` su CSV M2; obiettivo: rete addestrata ≥ LR. |
-| **Rinforzi da inserire (🔁)** | In **cap.03**: richiamo **forward** `rete_2_layer` (salvare H,Z,P); **#31 UAT** (rete esiste vs come si trova con training); **AUC/probabilità** vs soglia 0/1; shape **`W2 (h,1)`**. |
-| **Concetti ⚠️ da ripassare** | Derivata come pendenza; learning rate troppo alto/basso; differenza **loss** vs **metrica** (accuracy/AUC). |
-| **Pattern 🔴 da monitorare** | #6 consegne; #21 tuple/`round`; confusione **metrica di valutazione** vs **loss di training**. |
-| **Ponte mentale da riusare** | Backprop ≈ **git bisect** della rete (docstring cap.03); GPS/UAT: esistenza vs percorso. |
-| **Note** | Cap.02 chiuso 21/05/2026 voto **8**/10; **E6** rinviato — ripianificare mock system design fine M3. File bridge C01→C02: `quiz_ripasso_tra_capitoli/M03_R01_*` (opzionale se non fatto). |
+| **Prossimo capitolo** | modulo_03_dl_cv/**04_derivate_gradiente.py** (segnaposto, da scrivere alla chiusura del cap.03 LOSS) — derivata come pendenza, derivata sigmoid, gradiente come vettore di derivate parziali; rinforzi cap.01-02 (vettori, ReLU). |
+| **Rinforzi da inserire (🔁) nel cap.04** | Lacune residue dal cap.03 LOSS se ancora aperte (segno BCE, clip bilaterale, soglia 0.5); ricomparsa di consegne (#6); shape (preparazione cap.06 backprop). |
+| **Concetti ⚠️ da ripassare nel cap.04** | Derivata come pendenza (preparato in Q2 cap.03); learning rate troppo alto/basso (rinviato a cap.05); differenza **loss** vs **metrica** (consolidato cap.03). |
+| **Pattern 🔴 da monitorare** | 🔴 Segno BCE (lacuna primo TODO 1.1); ⚠️ Clip bilaterale; ⚠️ Soglia 0.5; #6 consegne; #21 tuple/`round`. |
+| **Ponte mentale da riusare** | Backprop ≈ **git bisect** della rete (docstring cap.06); GPS/UAT: esistenza vs percorso (cap.03 LOSS); chain rule ≈ trace ID pipeline microservizi (cap.05). |
+| **Note** | Cap.03 SPLIT 27/05/2026 (vecchio backpropagation.py monolitico era 1700 righe / 9/10 atteso; ora 4 mini-capitoli più graduali). Cap.07-10 sono SEGNAPOSTO (gia' presenti, da scrivere alla chiusura del cap.precedente). **E6 cap.02** rinviato — ripianificare mock system design fine M3. |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -1934,6 +1934,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 27/05/2026 | **Split M3 cap.03** (`03_backpropagation.py` 1700 righe → **4 sotto-capitoli**): `03_loss.py` (LOSS, BCE, MSE — contenuti migrati + 6 TODO di rinforzo: recall cap.02, retrieval sigmoid, interleaving forward+loss, 3 pattern emersi segno BCE/clip bilaterale/soglia 0.5), `04_derivate_gradiente.py` (scaffold), `05_chain_rule_gd.py` (scaffold), `06_backprop_training.py` (scaffold). Rinominati successivi: `04→07_pytorch`, `05→08_cnn`, `06→09_transfer`, `07→10_gradio`. Aggiornati 5 bridge esistenti + creati 3 nuovi placeholder (`M03_R03/R04/R05`). Diario `M03_C03_backpropagation_sessione.md` rinominato in `M03_C03_loss_sessione.md`, valutazioni TODO 2.x migrate in nuovo `M03_C04_derivate_gradiente_sessione.md`, scaffold diari `M03_C05/C06`. Modulo M3 passa da 7 a **10 capitoli**. | Richiesta studente: "il capitolo 3 è troppo complesso e denso, spezzettiamo almeno in 3 parti e mettiamo molti esercizi di rinforzo che riprendono cap.01-02 per costruire una pipeline mentale duratura" (Gianluca ha scelto 4 parti + rinumerazione completa). Conferma che il vecchio cap.03 era effettivamente sovraccarico (2 voti 6/10 sui primi TODO loss). | Stato Attuale, Ultima Sessione, Prossimo Capitolo, Priorità Attive, Changelog |
 | 21/05/2026 | **Chiusura M3 cap.02** (`02_reti_neurali.py`): Stato → `03_backpropagation.py`; Ultimo completato + Ultima Sessione; Prossimo Cap; diff media ~**6.85** (23 cap); Valutazioni **M3-02** **8**/10; Progresso progetto + riga cap.02 ✅; Competenze + Glossario (ReLU, He, rete_2_layer, R2, AUC); E6 rinviato; Sessione **21**. File capitolo **non modificato** (protocollo H). | Chiusura formale cap.02 M3 | Stato, sessioni, valutazioni, glossario, competenze, changelog |
 | 20/05/2026 | **Housekeeping archivi**: M2 + Ponte in `archivi/` (indice `archivi/README.md`); CONTESTO snellito. | Passo 13 + ordine repo | Archivi, Promemoria, Moduli, Changelog |
 | 20/05/2026 | **Canonizzazione prodotto due app**: doc in `docs/prodotto/`; stub `APPUNTI_APPLICATIVO.md`; schemi transfer/imputation; scaffold `aplicativo/`; gate AGENTS + `.cursorrules` + handshake chiusura; riferimenti APPUNTI uniformati; tabella M10 allineata; nota M2 non archiviato. | Organizzazione per sviluppo M10 | Header, Ultima Sessione, Strategia, Evoluzione progetto, Promemoria, Changelog |

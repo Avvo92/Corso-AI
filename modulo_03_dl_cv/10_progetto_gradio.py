@@ -1,9 +1,9 @@
 """
 ============================================================================
-MODULO 3 — CAPITOLO 07 (SEGNAPOSTO): Progetto Gradio + deploy HuggingFace Spaces
+MODULO 3 — CAPITOLO 10 (SEGNAPOSTO): Progetto Gradio + deploy HuggingFace Spaces
 ============================================================================
 
-⚠️ FILE SEGNAPOSTO — DA CREARE alla chiusura del cap.06 M3.
+⚠️ FILE SEGNAPOSTO — DA CREARE alla chiusura del cap.09 M3.
 Qui sotto solo TODO MENTOR. Nessun codice operativo.
 
 ⚠️ CAPITOLO FINALE DEL MODULO 3 — produce il SECONDO URL portfolio del corso
@@ -13,7 +13,7 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 # ============================================================================
 # TODO MENTOR — quando si crea questo capitolo:
 # ----------------------------------------------------------------------------
-# 1) GATE: leggere CONTESTO + diario cap.06 M3 + tabella "Portfolio — Demo
+# 1) GATE: leggere CONTESTO + diario cap.09 M3 (transfer_learning) + tabella "Portfolio — Demo
 #    deployate per modulo".
 #
 # 2) STRUTTURA SIMILE A M2 cap.06+07 ("Streamlit da zero" + "Deploy"):
@@ -21,14 +21,14 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 #    perche' Gradio e' piu' compatto di Streamlit.
 #
 # 3) AZIONI PROPEDEUTICHE:
-#    [ ] modello fine-tuned dal cap.06 M3 disponibile in locale (state_dict)
+#    [ ] modello fine-tuned dal cap.09 M3 disponibile in locale (state_dict)
 #    [ ] account HuggingFace creato (Spaces e' free)
 #    [ ] requirements.txt aggiornato con gradio, torch, torchvision, pillow
 #
 # 4) STRUTTURA del file:
 #    - Header + DoD (4 domande)
 #    - Mappa
-#    - Quiz d'ingresso (cerniera cap.06 M3: transfer learning, fine-tuning)
+#    - Quiz d'ingresso (cerniera cap.09 M3: transfer learning, fine-tuning)
 #    - SEZIONE 1: Gradio in 30 secondi (gr.Interface(fn, inputs, outputs))
 #    - SEZIONE 2: input gr.Image, output gr.Label (con probabilita' per classe)
 #      + esempi pre-caricati (gr.Examples)
@@ -66,5 +66,5 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 #      [ ] decidere se il dataset "alterato vs genuino" entra come capitolo
 #          bonus M3 o si rimanda a M8 (fine-tuning specializzato)
 #
-# 6) DIARIO: M03_C07_progetto_gradio_sessione.md
+# 6) DIARIO: M03_C10_progetto_gradio_sessione.md
 # ============================================================================

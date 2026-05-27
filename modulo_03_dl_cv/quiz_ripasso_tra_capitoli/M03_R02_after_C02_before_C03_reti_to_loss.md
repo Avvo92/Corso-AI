@@ -1,6 +1,6 @@
-# M3 — Bridge quiz ripasso — dopo Cap.02 (reti) → prima Cap.03 (backprop)
+# M3 — Bridge quiz ripasso — dopo Cap.02 (reti) → prima Cap.03 (loss)
 
-**Focus:** funzioni, tuple unpacking, NumPy (`reshape`, broadcasting leggero), organizzazione liste di array, recall loss binaria a parole.
+**Focus:** funzioni, tuple unpacking, NumPy (`reshape`, broadcasting leggero), organizzazione liste di array, recall loss binaria a parole. Cerniera verso la sezione LOSS (BCE, MSE) del nuovo cap.03 (split del precedente backprop in 4 capitoli: 03 loss → 04 derivate/gradiente → 05 chain rule/gd → 06 backprop/training).
 
 ---
 

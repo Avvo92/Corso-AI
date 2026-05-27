@@ -1,4 +1,4 @@
-# M3 — Bridge quiz ripasso — dopo Cap.05 (CNN) → prima Cap.06 (transfer learning)
+# M3 — Bridge quiz ripasso — dopo Cap.08 (CNN) → prima Cap.09 (transfer learning)
 
 **Focus:** dimensioni immagine come array, `matplotlib` base, directory walking idea, random seed riproducibilità, Pandas filtri.
 

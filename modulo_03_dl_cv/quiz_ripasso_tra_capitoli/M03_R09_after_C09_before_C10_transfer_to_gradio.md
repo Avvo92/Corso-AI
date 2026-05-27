@@ -1,4 +1,4 @@
-# M3 — Bridge quiz ripasso — dopo Cap.06 (transfer learning) → prima Cap.07 (Gradio)
+# M3 — Bridge quiz ripasso — dopo Cap.09 (transfer learning) → prima Cap.10 (Gradio)
 
 **Focus:** ambienti virtuali idea, `requirements`, API REST vs demo locale, dizionari config, immagini da disco, privacy reminder.
 

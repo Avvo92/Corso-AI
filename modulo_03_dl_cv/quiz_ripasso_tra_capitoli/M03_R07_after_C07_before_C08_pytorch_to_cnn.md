@@ -1,4 +1,4 @@
-# M3 — Bridge quiz ripasso — dopo Cap.04 (PyTorch intro) → prima Cap.05 (CNN)
+# M3 — Bridge quiz ripasso — dopo Cap.07 (PyTorch intro) → prima Cap.08 (CNN)
 
 **Focus:** file path su Windows, `torch` vs `numpy` mental model, batch, Pandas lettura CSV leggera, device (`cpu`/`cuda`) a parole.
 

@@ -1,6 +1,8 @@
-# M3 — Bridge quiz ripasso — dopo Cap.03 (backprop) → prima Cap.04 (PyTorch)
+# M3 — Bridge quiz ripasso — dopo Cap.06 (backprop_training) → prima Cap.07 (PyTorch)
 
 **Focus:** cicli, accumuli numerici stabili, liste vs array, **dtype**, introduzione leggera ai tensori (solo concetto), ambiente Colab.
+
+> Nota: questo bridge era originariamente "dopo backprop → PyTorch" quando il modulo aveva 7 capitoli. Dopo lo split del vecchio cap.03 in 4 (03 loss, 04 derivate, 05 chain rule + gd, 06 backprop + training), questo bridge si trova ora dopo il cap.06 e prima del nuovo cap.07.
 
 ---
 
