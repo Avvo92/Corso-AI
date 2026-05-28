@@ -274,6 +274,28 @@ Il diario precedente `M03_C03_backpropagation_sessione.md` e' stato rinominato i
 - **Correzione / suggerimento:** Per i test usa `y = rng.integers(0, 2, size=10)` (più leggibile) e tieni `p` strettamente in (0,1) o usa clip come hai fatto. Se vuoi essere ancora più robusto: testa anche batch più grande e casi estremi vicini a 0/1.
 - **Pattern errore / ID contesto:** Pattern #21 tupla/round evitato correttamente; nessun nuovo pattern.
 
+---
+
+### 2026-05-28 — TODO 8 [DEBUG] BCE NaN/inf (clipping) (`03_loss.py` ~TODO 8)
+
+- **Esercizio / blocco:** TODO 8 — diagnosticare perché `bce_buggata` può restituire NaN quando p è 0 o 1; fornire versione corretta e verificarla sul caso p=[0,0.5,1], y=[1,1,0].
+- **Valutazione (primo tentativo — \"voto esame\"):** **8.5/10**.
+- **Punti di forza:** Identificato correttamente il root cause: `log(0)` → `-inf` e in NumPy `0 * (-inf)` → `nan` (contaminazione); fix corretto con clip bilaterale `np.clip(p, eps, 1-eps)`; formula BCE e mean corrette; stampa del risultato sul caso di test.
+- **Errori / lacune:** (1) Firma della funzione un po’ “strana” per un debug: default argomenti come array dentro la firma (va bene per quick test ma in generale meglio passare p,y esplicitamente); (2) nel commento manca la frase chiave “0 * log(0) = NaN” (hai detto nan/inf in generale, ma non il motivo specifico del NaN).
+- **Correzione / suggerimento:** Tieni `def bce_riparata(p, y, eps=1e-12)` e chiama con i test; nel commento aggiungi: “NumPy fa NaN perché 0 * (-inf) non viene trattato come 0”.
+- **Pattern errore / ID contesto:** ⚠️ Clip bilaterale — qui applicato correttamente; segnale di consolidamento.
+
+---
+
+### 2026-05-28 — TODO 9 [RETRIEVAL] `rete_2_layer` forward completo (`03_loss.py` ~TODO 9)
+
+- **Esercizio / blocco:** TODO 9 — riscrivere da zero la funzione `rete_2_layer` (forward 2-layer) senza aprire `02_reti_neurali.py`; verificare che produca lo stesso P della pipeline PIPE.1.
+- **Valutazione (primo tentativo — \"voto esame\"):** **8/10**.
+- **Punti di forza:** Forward corretto e minimale: `Z1=X@W1+b1 → H=ReLU(Z1) → Z2=H@W2+b2 → P=sigmoid(Z2).ravel()`; ritorna P con shape (N,) (via `ravel()`); nessuna validazione superflua (coerente con retrieval).
+- **Errori / lacune:** (1) Non è mostrata la verifica richiesta (“stesso P della PIPE.1”) con `np.allclose`/assert; (2) clip su Z2 è ridondante perché `sigmoid` del capitolo è già stabile e fa clip internamente (se usi la sigmoid del file); (3) nome funzione diverso (`my_rete_2_layer` vs `rete_2_layer`) e type hint `b1/b2 | float` non richiesto (ok ma fuori spec).
+- **Correzione / suggerimento:** Aggiungi test: `P1 = my_rete_2_layer(...); P2 = rete calcolata in PIPE.1; assert np.allclose(P1, P2)`; rimuovi `np.clip` se `sigmoid` è già stabile; opzionale rinomina la funzione esattamente `rete_2_layer` per aderire alla consegna.
+- **Pattern errore / ID contesto:** Pattern #6 consegne (manca la parte di verifica esplicita richiesta).
+
 ## Lacune e dubbi ancora aperti (a inizio cap.03 LOSS dopo split)
 
 - 🔴 **Segno BCE:** corretto dopo feedback in TODO 1.1; rinforzo programmato in TODO 1.7. Chiudere a fine cap.03.

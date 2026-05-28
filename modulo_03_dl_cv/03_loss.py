@@ -1053,7 +1053,20 @@ print(bce_loss(P, y))
 #   p = np.array([0.0, 0.5, 1.0])
 #   y = np.array([1, 1, 0])
 # TUO CODICE QUI:
+print("\nTODO 8 DEBUG\n")
+def bce_riparata(
+    p: NDArray[np.float64] = np.array([0.0, 0.5, 1.0]),
+    y: NDArray[np.float64] = np.array([1, 1, 0])
+) -> float:     
+    eps = 1e-12
+    p_safe = np.clip(p, eps, 1 - eps)
+    loss = (- y * np.log(p_safe) - (1 - y) * np.log(1 - p_safe)).mean()
+    return float(loss)
 
+print(bce_riparata())
+
+# Il problema è che non prevedendo un clipping per i valori di p, automaticamente vengono prodotti
+# dei nan e inf. L'ho riparato inserendo un controllo sui valori di p.
 
 # TODO 9 (15 minuti) [🧠 RETRIEVAL cap.02 M3 — full]:
 # SENZA APRIRE 02_reti_neurali.py, riscrivi da zero la funzione
@@ -1067,6 +1080,18 @@ print(bce_loss(P, y))
 # Verifica che la tua versione produca lo stesso P della pipeline TODO PIPE.1.
 # TUO CODICE QUI:
 
+def my_rete_2_layer(
+    X: NDArray[np.float64],
+    W1: NDArray[np.float64],
+    b1: NDArray[np.float64] | float,
+    W2: NDArray[np.float64],
+    b2: NDArray[np.float64] | float
+)-> NDArray[np.float64]:
+    Z1 = X @ W1 + b1
+    H = relu(Z1)
+    Z2 = H @ W2 + b2
+    P = sigmoid(np.clip(Z2, -500, +500)).ravel()
+    return P
 
 # TODO 10 (20 minuti) [🔀 INTERLEAVING cap.01 + cap.02 + cap.03 M3]:
 # Mini pipeline a "due reti casuali" (test di varianza):
