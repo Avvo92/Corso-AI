@@ -113,6 +113,7 @@ from typing import Callable
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
+from pprint import pprint
 
 
 # ==========================================================================
@@ -737,6 +738,54 @@ print(f"ACCURACY_SCORE: {acc_score}")
 #   out_sigmoid = layer_dense(X, W, b, sigmoid)     # shape (5, 8), valori in (0,1)
 # Stampa le 3 shape.
 # TUO CODICE QUI:
+print("\nTODO 4.4\n")
+def layer_dense(
+    X: NDArray[np.float64],
+    W: NDArray[np.float64],
+    b: NDArray[np.float64] | float,
+    att: Callable[[NDArray[np.float64] | float], NDArray[np.float64] | float] | None = None
+) -> NDArray[np.float64]:
+    if X.ndim != 2:
+        raise ValueError("X deve essere una matrice 2D!")
+    if W.ndim > 2:
+        raise ValueError("W può essere un vettore o una matrice!")
+    if X.shape[1] != W.shape[0]:
+        raise ValueError("X.shape[1] e W.shape[0] devono coincidere")
+    Z = X @ W + b
+    if att is not None:
+        return att(Z)
+    return Z
+
+def my_relu(
+    z: NDArray[np.float64] | float
+) -> NDArray[np.float64] | float:
+    out = np.maximum(0.0, z)
+    if np.isscalar(z):
+        return float(out)
+    return out
+
+def my_sigmoid(
+    z: NDArray[np.float64] | float
+) -> NDArray[np.float64] | float:
+    z_safe = np.clip(z, -500, +500, dtype=float)
+    out = 1 / (1 + np.exp(-z_safe))
+    if np.isscalar(z):
+        return float(out)
+    return out
+
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal(size=(5, 4))
+W = rng.standard_normal(size=(4, 8)) * 0.1 # sostitutivo di scala np.sqrt(2 / 4)
+b = np.zeros(8)
+
+out_lineare = layer_dense(X, W, b, att=None)
+out_relu = layer_dense(X, W, b, att=my_relu)
+out_sigmoid = layer_dense(X, W, b, att=my_sigmoid)
+
+print(out_lineare.shape)
+print(out_relu.shape)
+print(out_sigmoid.shape)
 
 
 # ==========================================================================
@@ -752,11 +801,28 @@ print(f"ACCURACY_SCORE: {acc_score}")
 #
 # Candidate:
 #   (a) loss_a =   y * np.log(p) + (1-y) * np.log(1-p)
-#   (b) loss_b = - y * np.log(p) - (1-y) * np.log(1-p)        # corretta?
+#   (b) loss_b = - y * np.log(p) - (1-y) * np.log(1-p)
 #   (c) loss_c = - y * np.log(p) + (1-y) * np.log(1-p)
 #   (d) loss_d =   y * np.log(p) - (1-y) * np.log(1-p)
 # TUO CODICE QUI:
+print("\nTODO 5.1\n")
 
+# la risposta corretta è la (b)
+
+y = np.array([1, 0])
+p = np.array([0.9, 0.1])
+
+loss_a =   y * np.log(p) + (1-y) * np.log(1-p)
+loss_b = - y * np.log(p) - (1-y) * np.log(1-p)
+loss_c = - y * np.log(p) + (1-y) * np.log(1-p)
+loss_d =   y * np.log(p) - (1-y) * np.log(1-p)
+
+print(loss_b, f" -> risposta corretta!")
+print(loss_a)
+print(loss_c)
+print(loss_d)
+
+# a e d non traformano in negativa la y dando quindi un segno finale errato (-),e la d inoltre, come anche la c, non utilizzano correttamente lo switch matematico - (1 - y), e quindi da un valore sbagliato.
 
 # TODO 5.2 (5 minuti) [⚠️ PATTERN clip bilaterale]:
 # Testa 3 versioni di clip su:
@@ -773,6 +839,21 @@ print(f"ACCURACY_SCORE: {acc_score}")
 # Domanda finale (in commento): perche' v2 NON BASTA quando y=0 e p=1?
 # TUO CODICE QUI:
 
+print("\nTODO 5.2\n")
+
+y = np.array([1, 0])
+p = np.array([0.0, 1.0])
+eps = 1e-12
+p_semi_safe = np.clip(p, eps, 1)
+p_safe = np.clip(p , eps, 1 - eps)
+
+BCE_p = - y * np.log(p) - (1 - y) * np.log(1 - p)
+BCE_semi = - y * np.log(p_semi_safe) - (1 - y) * np.log(1 - p_semi_safe)
+BCE_safe = - y * np.log(p_safe) - (1 - y) * np.log(1 - p_safe)
+print("v1 (no clip):", BCE_p)
+print("v2 (solo basso):", BCE_semi)
+print("v3 (bilaterale):", BCE_safe)
+# non basta porre un taglio sicuro solo in basso (0), perchè comunque ci sarebbe il rischio di avere inf con un 1. 
 
 # TODO 5.3 (5 minuti) [⚠️ PATTERN soglia 0.5]:
 # P = np.array([0.10, 0.45, 0.55, 0.95])
@@ -782,7 +863,22 @@ print(f"ACCURACY_SCORE: {acc_score}")
 #   - soglia_giusta:    y_pred2 = (P >= 0.5).astype(int)
 # Per ognuna stampa y_pred e accuracy.
 # Domanda in commento: perche' "P > 0" e' SEMPRE True quando P viene da sigmoid?
+# perchè la funzione sigmoide trasforma tutti in numeri in una scala che ha limiti 0 e 1 (quindi il risultato non sarà mai inferiore a 0)
 # TUO CODICE QUI:
+
+print("\nTODO 5.3\n")
+
+P = np.array([0.10, 0.45, 0.55, 0.95])
+y = np.array([0, 1, 0, 1])
+
+y_pred1 = (P > 0).astype(int)
+y_pred2 = (P > 0.5).astype(int)
+
+acc_score_1 = accuracy_score(P, y, soglia=0.0)
+acc_score_2 = accuracy_score(P, y, soglia=0.5)
+
+print(y_pred1, f"-> Accuracy Score: {acc_score_1}")
+print(y_pred2, f"-> Accuracy Score: {acc_score_2}")
 
 
 # ==========================================================================
@@ -822,13 +918,65 @@ print(f"ACCURACY_SCORE: {acc_score}")
 #       seed: int = 0,
 #   ) -> dict[str, float]:
 #       """Ritorna {'loss': ..., 'accuracy': ..., 'n': ...}."""
-#       ...
-#
 # Verifica chiamandola con 3 seed diversi (0, 1, 42): la loss DEVE
 # essere intorno a 0.69, l'accuracy intorno a 0.5 (con qualche
 # variazione perche' il dataset e' piccolo).
 # TUO CODICE QUI:
 
+print("\nTODO PIPE .1\n")
+
+def my_He_init(
+    d: int,
+    h: int,
+    seed: int = 42
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+    rng = np.random.default_rng(seed)
+    scale = np.sqrt(2 / d)    
+    return rng.standard_normal(size=(d, h)) * scale, np.zeros(h)
+
+def valuta_rete_random(
+    N: int = 200,
+    d: int = 5,
+    h: int = 16,
+    seed: int = 0
+) -> dict[str, float]:
+    
+    # inizializzazione dei valori sintentici
+    
+    rng = np.random.default_rng(seed)
+    X = rng.standard_normal(size=(N, d))
+    W1, b1 = my_He_init(d, h, seed)
+    W2, b2 = my_He_init(h, 1, seed)
+    y = (X[:, 0] + X[:, 1] > 0).astype(int) # versione alternativa (X[:, d//2]).sum(axis=1).astype(int)
+    
+    # fase forward
+
+    Z1 = X @ W1 + b1
+    H = my_relu(Z1)
+    Z2 = H @ W2 + b2
+    Z2_safe = np.clip(Z2, -500, +500)
+    P = my_sigmoid(Z2_safe).ravel()
+    
+    # calcolo loss e BCE
+    
+    P_safe = np.clip(P, 1e-12, 1 - 1e-12)
+    BCE = (- y * np.log(P_safe) - (1 - y) * np.log(1 - P_safe)).mean()
+    BCE_tool = bce_loss(P, y)
+    
+    assert np.isclose(BCE, BCE_tool, atol=1e-12), "Problemi con la BCE, il calcolo manuale e tramite tool non combaciano!"
+    
+    acc_score = accuracy_score(P, y, soglia=0.5)
+    
+    return {
+        "loss": float(BCE),
+        "accuracy" : acc_score,
+        "n": N
+    }    
+    
+if __name__ == "__main__":
+    pprint(valuta_rete_random(seed=0))
+    pprint(valuta_rete_random(seed=1))
+    pprint(valuta_rete_random(seed=42))
 
 # ==========================================================================
 # TIPOLOGIE STANDARD (TODO 6 - 11)
@@ -845,7 +993,7 @@ print(f"ACCURACY_SCORE: {acc_score}")
 #   (4) 3 bug tipici (2-3 righe)
 #   (5) (bonus) perche' BCE invece di MSE per classificazione (1 riga)"
 # TUA RISPOSTA:
-# ...
+# la BCE è la loss utilizzata per addestrare una rete neurale, la quale deve produrre un output di tipo binario. Misura quando la rete è sicura delle sue risposte. la formula è per y == 1 -> -log(P) e per y == 0 -log(1 - p). Un bug tipico è quello di non prevedere un clipping per i valori in uscita dall'ultimo layer (sigmoide), che non devono coincidere con 0 e 1, così da evitare che vengano prodotti valori nan o inf. Rispetto all' MSE, la BCE punisce in modo maggiore (tendente a inf) per gli errori di sconstamento più grandi.
 
 
 # TODO 7 (15 minuti) [🔧 REFACTORING]:
@@ -872,6 +1020,23 @@ print(f"ACCURACY_SCORE: {acc_score}")
 # Confronta poi i risultati con la `bce_loss` definita in alto su
 # array random (devono coincidere a meno di 1e-12).
 # TUO CODICE QUI:
+
+print("\nTODO 7\n")
+
+def bce_loss_bella(
+    p: NDArray[np.float64],
+    y: NDArray[np.float64] | NDArray[np.int64],
+    eps: float = 1e-12) -> float:
+    p_safe = np.clip(p, eps, 1 - eps)
+    return float((- y * np.log(p_safe) - (1 - y) * np.log(1 - p_safe)).mean())
+rng = np.random.default_rng(0)
+P = rng.uniform(0, 1, size=(10))
+y = rng.uniform(0.5, 1.5, size=(10)).astype(int)
+
+assert np.isclose(bce_loss_bella(P, y), bce_loss(P, y), atol=1e-12), "Le BCE non coincidono!!"
+
+print(bce_loss_bella(P, y))
+print(bce_loss(P, y))
 
 
 # TODO 8 (15 minuti) [🔍 DEBUG]:

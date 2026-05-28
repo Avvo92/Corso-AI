@@ -187,6 +187,93 @@ Il diario precedente `M03_C03_backpropagation_sessione.md` e' stato rinominato i
 
 **Fix applicato (post-feedback, 2026-05-27):** aggiunti `BCE_tool = bce_loss(P, y)` + clip bilaterale (`P_safe = np.clip(...)`) + `BCE_manual` + assert di coerenza. **Post-fix: 8.5/10** (restano solo finezze: usare `accuracy_score(P, y)` invece di passare già binari; allineare `eps` con quello del tool o usare `np.isclose(..., atol=...)`; stampare anche l’accuracy).
 
+---
+
+### 2026-05-27 — TODO 4.4 Retrieval `layer_dense` (cap.02 M3, `03_loss.py` ~TODO 4.4)
+
+- **Esercizio / blocco:** TODO 4.4 — riscrivere da zero `layer_dense` + verificare out lineare / ReLU / sigmoid (shape).
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**.
+- **Punti di forza:** Logica core corretta (`Z = X @ W + b`, attivazione opzionale); check utili su `X` 2D e compatibilità `X.shape[1] == W.shape[0]`; `my_relu` e `my_sigmoid` vettorizzate e con gestione scalare; test con shape attese `(5, 8)` per tutti e tre gli output.
+- **Errori / lacune:** (1) Type hint di `att` errato: `Callable[[float], float]` invece di `Callable[[NDArray[np.float64]], NDArray[np.float64]]` (a runtime funziona, ma il tipo non descrive l’uso reale su matrici); (2) parametro rinominato `att` vs `activation` della consegna; (3) `b` tipizzato anche come `float` (non richiesto); (4) consegna chiedeva anche proprietà sui valori (ReLU ≥ 0, sigmoid in (0,1)) — stampate solo le shape.
+- **Correzione / suggerimento:** Allinea la firma alla consegna; aggiungi `assert np.all(out_relu >= 0)` e `assert np.all((out_sigmoid > 0) & (out_sigmoid < 1))` (o min/max). Per le attivazioni su array: `Callable[[NDArray[np.float64]], NDArray[np.float64]]`.
+- **Pattern errore / ID contesto:** Collegamento con dubbio recente su `Callable[[float], float]` vs attivazioni su `NDArray` — da consolidare prima del cap.04.
+
+---
+
+### 2026-05-27 — TODO 5.1 Pattern segno BCE (🔴, `03_loss.py` ~TODO 5.1)
+
+- **Esercizio / blocco:** TODO 5.1 — calcolare 4 formule candidate BCE su y=[1,0], p=[0.9,0.1]; indicare quale è corretta e perché le altre sono incoerenti.
+- **Valutazione (primo tentativo — "voto esame"):** **4/10**.
+- **Punti di forza:** Identificazione corretta della formula giusta: **(b)** `-y*log(p) - (1-y)*log(1-p)` (allineato al fix post-TODO 1.1).
+- **Errori / lacune:** (1) Nessun codice eseguito: non calcola/stampa i 4 risultati numerici come richiesto; (2) nessuna spiegazione del perché (a)(c)(d) danno loss negative o incoerenti; (3) l’esercizio serve proprio a *vedere* che senza il `-` iniziale la “loss” esce negativa — saltando il calcolo si perde il rinforzo.
+- **Correzione / suggerimento:** Implementare le 4 formule + `print`/`np.mean`; atteso circa: (a) e (d) ~ negativi o che si cancellano; (b) ~ +0.105 (loss positiva); (c) ~ 0 (segni misti). Commento: log(p)≤0 → serve `-` davanti per avere loss ≥ 0.
+- **Pattern errore / ID contesto:** 🔴 Segno BCE — riconoscimento concettuale ok, consolidamento operativo ancora da chiudere (TODO 1.7 non sostituito da solo commento).
+
+**Fix applicato (post-feedback, 2026-05-27):** calcolate e stampate le 4 formule su y=[1,0], p=[0.9,0.1]; (b) indicata corretta; commento su (a) segno errato e (c) segno misto sul termine (1-y). **Post-fix: 7.5/10** — lacuna operativa chiusa; migliorare spiegazione: (d) esplicita, evitare refuso “a e b” (è (a) senza `-` iniziale; (b) è quella giusta *con* i meno); opzionale `.mean()` per confrontare uno scalare.
+
+**Revisione commento (stessa sessione):** refuso corretto (“a e d”); (c)(d) collegate al segno sbagliato sul termine `(1-y)`. **Post-fix rivisto: 8/10** — pattern 🔴 segno BCE considerabile chiuso a livello esercizio; finezza: (a) manca il `-` globale, (d) ha segni misti sui due termini (non solo “manca meno su y”).
+
+---
+
+### 2026-05-27 — TODO 5.2 Pattern clip bilaterale (⚠️, `03_loss.py` ~TODO 5.2)
+
+- **Esercizio / blocco:** TODO 5.2 — confrontare BCE senza clip / clip solo basso `(eps,1)` / clip bilaterale `(eps,1-eps)` su p=[0,1], y=[1,0].
+- **Valutazione (primo tentativo — "voto esame"):** **6.5/10**.
+- **Punti di forza:** Implementate le 3 versioni (v1 `BCE_p`, v2 `BCE_semi`, v3 `BCE_safe`); formula BCE con segno corretto; `eps` e `np.clip` usati bene; commento finale centrato: con solo taglio a 0, se `p=1` e `y=0` resta `log(1-p)=log(0)` → inf.
+- **Errori / lacune:** (1) Stampa solo `BCE_safe` — la consegna chiedeva esito di **tutte e 3** (NaN/inf vs numero finito); (2) non etichetta esplicitamente v1/v2/v3 nei print; (3) commento non menziona v1 (tipicamente NaN/inf su entrambe le pratiche) né il caso y=1,p=0 per v2.
+- **Correzione / suggerimento:** `print("v1", BCE_p); print("v2", BCE_semi); print("v3", BCE_safe)` e nota: v1 → inf/nan; v2 → ancora inf su pratica y=0,p=1; v3 → valori finiti (~27.6 per elemento estremo).
+- **Pattern errore / ID contesto:** ⚠️ Clip bilaterale — comprensione ok, consolidare con output completo (stesso schema del TODO 1.2).
+
+**Fix applicato (post-feedback, 2026-05-27):** stampate tutte e 3 le versioni (`v1`, `v2`, `v3`). **Post-fix: 8.5/10** — pattern ⚠️ clip bilaterale chiuso a livello esercizio; opzionale: 1 riga in commento che etichetti v1→inf/nan, v2→inf sulla pratica y=0,p=1, v3→finito.
+
+---
+
+### 2026-05-28 — TODO 5.3 Pattern soglia 0.5 (⚠️, `03_loss.py` ~TODO 5.3)
+
+- **Esercizio / blocco:** TODO 5.3 — confrontare soglia sbagliata `P > 0` vs soglia giusta `P >= 0.5`; stampare y_pred e accuracy; spiegare perché `P > 0` è sempre vero con sigmoid.
+- **Valutazione (primo tentativo — "voto esame"):** **6/10**.
+- **Punti di forza:** Idea del pattern centrata; y_pred1 = (P>0) è tutto 1 (comportamento corretto); spiegazione corretta: sigmoid restituisce valori in (0,1) quindi mai <= 0.
+- **Errori / lacune:** (1) Soglia “giusta” implementata come `P > 0.5` invece di `P >= 0.5` (differenza piccola ma consegna non rispettata); (2) uso scorretto della `accuracy_score` del capitolo: stai passando già binari `y_pred` come primo argomento, ma la funzione `accuracy_score(p, y)` si aspetta probabilità `p` e applica lei la soglia; (3) non stampi esplicitamente le due accuracy nel modo richiesto dal capitolo (probabilità + soglia).
+- **Correzione / suggerimento:** Usa `accuracy_score(P, y, soglia=0.0)` per il caso sbagliato e `accuracy_score(P, y, soglia=0.5)` per il caso giusto (o, se vuoi farlo manuale, fai `np.mean(y_pred == y)`). E metti `>= 0.5` come da consegna.
+- **Pattern errore / ID contesto:** ⚠️ Soglia 0.5 — concetto capito, ma da consolidare l’uso corretto di metriche (probabilità vs predizioni binarie) e la consegna letterale.
+
+**Fix applicato (post-feedback, 2026-05-28):** calcolo accuracy corretto usando la funzione del capitolo con `accuracy_score(P, y, soglia=0.0)` e `accuracy_score(P, y, soglia=0.5)`; stampa y_pred e accuracy. **Post-fix: 8/10** — resta una finezza: per allinearti al testo usa `y_pred2 = (P >= 0.5).astype(int)` (non `> 0.5`), ma il concetto del pattern è acquisito.
+
+---
+
+### 2026-05-28 — PIPE.1 `valuta_rete_random` (integrazione cap.01-03, `03_loss.py` ~TODO PIPE.1)
+
+- **Esercizio / blocco:** TODO PIPE.1 — implementare pipeline completa: genera dataset sintetico, inizializza rete 2-layer (He), forward, BCE media + accuracy, ritorna dict con loss/accuracy/n.
+- **Valutazione (primo tentativo — \"voto esame\"):** **7/10**.
+- **Punti di forza:** Pipeline completa presente (dataset → init → forward → BCE media → accuracy → dict); He init + bias zero corretti; clipping su `P` prima dei log; accuracy calcolata con soglia 0.5 sulle probabilità; cast a `float` nella loss.
+- **Errori / lacune:** (1) Deviazione dalla consegna: label generator diverso da quello proposto (`(X[:,0]+X[:,1] > 0)` vs somma di metà feature) — non è sbagliato, ma rende il confronto con “aspettative” del testo meno diretto; (2) non usa le funzioni del capitolo (`bce_loss`, `sigmoid`, `relu`) ma versioni manuali (`my_sigmoid`, `my_relu`) — ok per ripasso, ma per solidità meglio anche confrontare con il tool; (3) `Z2_safe` calcolato ma non usato (variabile morta); (4) output dict non allineato alla firma richiesta (`{'loss','accuracy','n'}`): usi chiavi `BCE_loss`, `Accuracy_score`, `N_batch`; (5) `print(...)` e `pprint(...)` eseguiti a livello modulo (fuori da `if __name__ == '__main__'`), rischio side-effect se il file viene importato.
+- **Correzione / suggerimento:** Allinea chiavi dict a `loss/accuracy/n`; rimuovi `Z2_safe` o usalo; metti demo `pprint(valuta_rete_random())` dentro `if __name__ == '__main__':`; (bonus) calcola sia `BCE_manual` sia `bce_loss(P, y)` e fai `assert np.isclose(...)`.
+- **Pattern errore / ID contesto:** Pattern #6 consegne (aderenza a firma/chiavi richieste) — lieve; nessuna nuova lacuna concettuale su BCE/soglia/clip.
+
+**Fix applicato (post-feedback, 2026-05-28):** allineate le chiavi del dict a `{'loss','accuracy','n'}`; messo `pprint` sotto `if __name__ == '__main__'`; usato `y = (X[:,0] + X[:,1] > 0)` come da testo; usato `Z2_safe` realmente; aggiunto confronto **BCE manuale vs `bce_loss`** con `assert np.isclose`; clipping fatto sul calcolo manuale; output ora coerente con aspettative. **Post-fix: 9/10** — resta solo una finezza: per coerenza potresti usare `accuracy_score(P, y)` (senza P_safe) e lasciare il clip alla sola BCE.
+
+---
+
+### 2026-05-28 — TODO 6 [COLLOQUIO] BCE (risposta breve, `03_loss.py` ~TODO 6)
+
+- **Esercizio / blocco:** TODO 6 — spiegare BCE: cosa misura, formula a parole (no LaTeX), quando si usa, 3 bug tipici, perché BCE vs MSE.
+- **Valutazione (primo tentativo — \"voto esame\"):** **7/10**.
+- **Punti di forza:** Identifica correttamente BCE come loss per classificazione binaria con output sigmoid; descrive bene la “punizione” degli errori sicuri; cita il clipping per evitare NaN/inf; confronto BCE vs MSE sensato (BCE più punitiva sugli errori grandi).
+- **Errori / lacune:** (1) Non rispetta il formato “6–8 righe” (scritta come paragrafo unico); (2) “Misura quando la rete è sicura” è un po’ impreciso: BCE misura l’errore tra p e y, e diventa enorme quando la rete è *sicurissima ma sbagliata*; (3) mancano 2 bug tipici (hai citato solo clipping; ne servivano 3: segno meno, clip bilaterale, soglia accuracy/uso di p vs binari; oppure shape `(N,)` vs `(N,1)`); (4) “deve produrre un output binario” → in training produce una probabilità, il binario arriva con soglia (accuracy).
+- **Correzione / suggerimento:** Riscriverla in 6-8 righe seguendo esattamente i 5 punti richiesti; aggiungere 2 bug tipici (segno BCE, clip bilaterale, soglia 0.5/metriche) e chiarire “probabilità in (0,1) + soglia”.
+- **Pattern errore / ID contesto:** Pattern #6 consegne/format (risposta non strutturata come richiesto); rinforzo implicito su 3 pattern BCE (segno/clip/soglia).
+
+---
+
+### 2026-05-28 — TODO 7 [REFACTORING] BCE vettorizzata (`03_loss.py` ~TODO 7)
+
+- **Esercizio / blocco:** TODO 7 — riscrivere `bce_loss_brutta` in forma vettorizzata: clip bilaterale, formula in una riga, return float; confronto con `bce_loss` del capitolo (tolleranza 1e-12).
+- **Valutazione (primo tentativo — \"voto esame\"):** **9/10**.
+- **Punti di forza:** Implementazione pulita e vettorizzata (`np.clip` + formula BCE + `.mean()`); return `float` (no tupla, no `round`); type hint coerenti; test con `assert np.isclose(..., atol=1e-12)` contro la funzione “fonte di verità” del capitolo.
+- **Errori / lacune:** (1) Generazione di `y` un po’ strana: `rng.uniform(0.5, 1.5).astype(int)` produce 0 o 1 per troncamento, ma è meno chiaro di `rng.integers(0, 2, size=10)`; (2) micro-finezza: usare `1.0 - eps` per coerenza float (anche se `1 - eps` funziona).
+- **Correzione / suggerimento:** Per i test usa `y = rng.integers(0, 2, size=10)` (più leggibile) e tieni `p` strettamente in (0,1) o usa clip come hai fatto. Se vuoi essere ancora più robusto: testa anche batch più grande e casi estremi vicini a 0/1.
+- **Pattern errore / ID contesto:** Pattern #21 tupla/round evitato correttamente; nessun nuovo pattern.
+
 ## Lacune e dubbi ancora aperti (a inizio cap.03 LOSS dopo split)
 
 - 🔴 **Segno BCE:** corretto dopo feedback in TODO 1.1; rinforzo programmato in TODO 1.7. Chiudere a fine cap.03.
