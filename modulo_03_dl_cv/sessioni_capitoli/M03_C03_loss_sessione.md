@@ -287,6 +287,75 @@ Il diario precedente `M03_C03_backpropagation_sessione.md` e' stato rinominato i
 
 ---
 
+### 2026-05-29 — TODO 10 [INTERLEAVING] due reti casuali + tabella (`03_loss.py` ~1095–1131)
+
+- **Esercizio / blocco:** TODO 10 — stesso dataset per due reti (seed 0/1, h=16); forward + BCE + accuracy + conteggio `P > 0.5`; tabella 2×4; commento su varianza pesi iniziali.
+- **Valutazione (primo tentativo — "voto esame"):** **5.5/10**.
+- **Punti di forza:** Pipeline strutturata (loop su seed, stesso `X` per confronto equo); tabella con `pd.DataFrame` + `to_string(index=False)` leggibile; 4 colonne coerenti (`SEED`, `BCE`, `accuracy`, `N P > 0.5`); `accuracy_score(P, y)` corretto; conteggio soglia sensato.
+- **Errori / lacune:** (1) **Bug ricorrente bias:** `my_rete_2_layer(X, W1, b2, W2, b2)` — `b1` inizializzato ma non usato (stesso errore di PIPE.1 pre-fix); (2) **`bce_loss(y, P)` ordine invertito** — firma `bce_loss(p, y)`; la BCE in tabella non è la loss del capitolo; (3) **`y` non come PIPE.1:** usi `rng.integers` invece di `(X[:,0] + X[:,1] > 0).astype(int)`; (4) commento finale vago: non quantifica il delta loss/acc tra seed 0 e 1 né lega bene la conclusione ai **pesi iniziali** (cita anche `y` come variabile, ma `y` è uguale per entrambe le reti).
+- **Correzione / next step:** `P = my_rete_2_layer(X, W1, b1, W2, b2)`; `bce = bce_loss(P, y)`; allinea `y` a PIPE.1; nel commento: "stesso X,y, cambiano solo i pesi → loss/acc possono differire di X.XX / Y.YY; con rete random spesso ~0.69 e acc ~0.5".
+- **Pattern errore / ID contesto:** Pattern PIPE.1 (`b1`/`b2`); 🔴 ordine argomenti BCE (già visto in TODO 4.3).
+
+**Rivalutazione post-fix parziale (2026-05-29):** corretti `b1/b2` nel forward e `bce_loss(P, y)`. Resta **`y = (X[:,0]+X[:,1]).astype(int)` senza `> 0`** → etichette non binarie (es. 2, -1), non equivalente a PIPE.1; commento migliorato (0.5 / 0.69) ma senza delta numerico tra seed 0 e 1. **Post-fix: 7.5/10**.
+
+---
+
+### 2026-05-29 — Quiz verifica V1 (loss vs accuracy, `03_loss.py` ~1172–1175)
+
+- **Domanda:** Cos'è una LOSS in 1 riga? Perché minimizziamo lei e non l'accuracy?
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Punti di forza:** Idea giusta — loss = quanto sei lontano dalla risposta corretta **per ogni pratica**; accuracy come metrica **discreta** (soglia 0/1) meno utile per guidare l'apprendimento.
+- **Cosa manca (per 9/10):** (1) la loss è **continua** e (per BCE/MSE) **differenziabile** → il gradiente sa *in che direzione* correggere i pesi; (2) l'accuracy **non cambia** se sposti leggermente `P` sotto/sopra soglia → niente segnale fine per la discesa del gradiente; (3) ruoli: **loss = ottimizzazione**, **accuracy = valutazione/report** al broker.
+- **Next step:** Aggiungi 1 frase: "Minimizziamo la loss perché è liscia e dà gradiente; l'accuracy la usiamo per capire se il modello è buono, non per addestrarlo."
+
+**Rivalutazione post-integrazione (2026-05-29):** aggiunti gradiente, backprop e responsabilità dei pesi — collegamento training completo. **Post-fix: 9/10** (opzionale: 1 frase su accuracy come metrica di valutazione/report).
+
+---
+
+### 2026-05-29 — Quiz verifica V2 (BCE vs MSE, `03_loss.py` ~1176–1179)
+
+- **Domanda:** Perché BCE invece di MSE per classificazione binaria (2 motivi)?
+- **Valutazione (primo tentativo):** **6.5/10**.
+- **Punti di forza:** Motivo 1 chiaro — `log` nella BCE punisce molto gli errori gravi / “sicuro ma sbagliato” (scala che esplode verso +∞).
+- **Errori / lacune:** (1) **MSE descritta male**: non è “radice della somma dei quadrati” (quello è **RMSE**); MSE = **media** di `(p - y)²`, senza radice; (2) manca il confronto numerico del capitolo: con `p` in [0,1], MSE è **limitata** (max ~1), BCE può arrivare a 4.6, 10… → gradiente più debole con MSE sugli errori clamorosi; (3) la consegna chiede **2 motivi distinti** — ne hai uno solido e l’altro appoggiato a una formula sbagliata.
+- **Modello risposta (2 righe):** (A) BCE con `log` penalizza molto di più quando `p` è lontano da `y` (es. y=1, p=0.01). (B) MSE su probabilità è quadratica e **limitata**; in training dà gradienti più piccoli sugli errori grossi (bonus cap.04: BCE+sigmoid → derivata semplice `p-y`).
+- **Pattern:** confondere MSE vs RMSE — micro-lacuna da richiamare in sez. 2.1.
+
+**Rivalutazione post-fix (2026-05-29):** due motivi distinti e corretti (BCE/log esplosivo + MSE limitata/gradiente debole su errori grossi); rimossa confusione con RMSE. **Post-fix: 9/10** (opzionale: esempio numerico y=1,p=0.01 per il 10).
+
+---
+
+### 2026-05-29 — Quiz verifica V3 [Trova l'errore] `bce_buggata` (`03_loss.py` ~1181–1188)
+
+- **Domanda:** Individuare 2 bug (clip + formula) e correggerli.
+- **Valutazione (primo tentativo):** **10/10**.
+- **Punti di forza:** Entrambi i bug identificati correttamente — (1) clip non bilaterale `eps, 1` → `eps, 1-eps`; (2) segno meno mancante nella BCE; fix formula allineato a `bce_loss` del capitolo.
+- **Note:** Lacune 🔴 segno BCE e ⚠️ clip bilaterale — segnale di consolidamento su questo quiz.
+
+---
+
+### 2026-05-29 — Quiz verifica V4 (clip bilaterale BCE, `03_loss.py` ~1189–1193)
+
+- **Domanda:** Cosa fa il clip nella BCE e perché `(eps, 1-eps)` e non solo `(eps, 1)`?
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Punti di forza:** Capisce che `log(0)` / estremi 0 e 1 rompono la BCE; idea di tenere `p` strettamente dentro (0,1).
+- **Errori / lacune:** (1) Non spiega esplicitamente il **secondo pezzo** della domanda: con clip solo `(eps, 1)` puoi ancora avere `p_safe=1` → `log(1-p_safe)=log(0)` (inf), anche se il lato basso è “aggiustato”; (2) `P=1` → spesso **inf** su `log(1-p)`, il NaN è un effetto collaterale (es. `0*inf` in batch); (3) manca la frase “il clip **protegge entrambi** i logaritmi: `log(p)` e `log(1-p)`”.
+- **Modello 1 riga:** `clip` evita `log(0)`; serve **bilaterale** perché la BCE usa sia `p` sia `1-p`, quindi servono sia limite basso sia alto.
+- **Pattern:** ⚠️ clip bilaterale — concetto ok, formulazione da completare.
+
+---
+
+### 2026-05-29 — TODO 11 [REAL-WORLD] `bce_robusta` etichette UNKNOWN (`03_loss.py` ~1133–1167)
+
+- **Esercizio / blocco:** TODO 11 — BCE solo su `y ∈ {0,1}`; ignorare `-1` e altri valori; se nessuna pratica valida → `NaN`; stampare pratiche ignorate; test con 2 unknown su 5.
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**.
+- **Punti di forza:** Maschera booleana e slicing `p[mask]`, `y[mask]` corretti; riuso di `bce_loss`; caso vuoto → `np.nan`; test broker ok (3 valide, 2 ignorate); stampa BCE + conteggio ignorate.
+- **Errori / lacune:** (1) Maschera solo `y != -1` — la consegna chiede **y in {0,1}** (`np.isin(y, [0, 1])`): un `y=2` passerebbe oggi; (2) firma richiesta `-> float`, implementata `-> tuple` (BCE + ignorate va bene in `__main__`, ma la funzione dovrebbe ritornare solo `float` e calcolare ignorate fuori o con parametro opzionale); (3) se vuoto, secondo `nan` per “ignorate” è ambiguo — meglio `int(p.size)`; (4) conteggio ignorate come `float` (es. `2.0`) — preferibile `int`.
+- **Correzione / next step:** `mask = np.isin(y, [0, 1])`; `return float(np.nan)` se `mask.sum()==0`; `n_ignorate = int(p.size - mask.sum())` stampata fuori dalla funzione.
+- **Pattern errore / ID contesto:** Pattern #6 consegne (firma/ritorno); concetto maschera ✅.
+
+---
+
 ### 2026-05-28 — TODO 9 [RETRIEVAL] `rete_2_layer` forward completo (`03_loss.py` ~TODO 9)
 
 - **Esercizio / blocco:** TODO 9 — riscrivere da zero la funzione `rete_2_layer` (forward 2-layer) senza aprire `02_reti_neurali.py`; verificare che produca lo stesso P della pipeline PIPE.1.

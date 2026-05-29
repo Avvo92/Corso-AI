@@ -107,9 +107,10 @@ Fai i 10 mini-esercizi di ripasso in:
         M03_R02_after_C02_before_C03_reti_to_loss.md
 """
 
+from math import nan
 import os
 from typing import Callable
-
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
@@ -1103,6 +1104,32 @@ def my_rete_2_layer(
 #      random? Quale conclusione trai sull'importanza dei pesi iniziali?
 # TUO CODICE QUI:
 
+print("\nTODO 10\n")
+
+N, d, h, k = 200, 5, 16, 1
+seeds = [0, 1]
+X = rng.standard_normal(size=(N, d))
+y = ((X[:, 0] + X[:, 1]) > 0).astype(int)
+report = []
+for seed in seeds:
+    W1, b1 = my_He_init(d, h, seed=seed)
+    W2, b2 = my_He_init(h, k, seed=seed)
+
+    P = my_rete_2_layer(X, W1, b1, W2, b2)
+
+    bce = bce_loss(P, y)
+    acc = accuracy_score(P, y)
+    n_prev_sup_soglia = (P[P > 0.5]).size
+    result = {
+        "SEED": seed,
+        "BCE": bce,
+        "accuracy": acc,
+        "N P > 0.5": n_prev_sup_soglia,
+    }
+    report.append(result)
+print(pd.DataFrame(report).to_string(index=False))
+
+# possono variare molto, perchè tutto dipende dal prodotto di features e pesi , che possono produrre risultati molto diversi. In generale si osserva che in reti random l'accuracy oscilla intorno a 0.5 e bce intorno a 0.69.
 
 # TODO 11 (15 minuti) [🌊 REAL-WORLD]:
 # Il broker dice: "Ho un dataset di 1000 pratiche, ma alcune etichette
@@ -1124,6 +1151,20 @@ def my_rete_2_layer(
 # Stampa anche quante pratiche sono state ignorate.
 # TUO CODICE QUI:
 
+print("\nTODO 11\n")
+
+def bce_robusta(p, y) -> tuple[float, float]:
+    mask = np.isin(y, [0, 1])
+    y_ver = y[mask]
+    p_ver = p[mask]
+    if p_ver.size == 0:
+        return float(np.nan), float(np.nan)
+    return bce_loss(p_ver, y_ver), p.size - p_ver.size
+p = np.array([0.9, 0.1, 0.8, 0.7, 0.3])
+y = np.array([1,   0,  -1,   1,  -1])
+result = bce_robusta(p, y)
+print(f"BCE pratiche verificate: {result[0]}")
+print(f"Pratiche ignorate: {result[1]}")
 
 # ==========================================================================
 # QUIZ DI VERIFICA (fai PRIMA del mini-progetto finale)
@@ -1131,11 +1172,11 @@ def my_rete_2_layer(
 
 # V1) Cos'e' una LOSS in 1 riga? E perche' minimizziamo lei e non l'accuracy?
 # TUA RISPOSTA:
-# ...
+# La loss è risposta alla domanda "ad ogni pratica, quanto sono distante dalla previsione corretta?". Si cerca di minimizzare lei e non l'accuracy perchè questa, essendo una metrica "discreta" e non continua, si limita solo a dirci quanto la rete sbaglia in senso generale, mentre la loss a un gradiente che ci permette di retropopagare l'errore e spostare ogni peso in una direzione sulla base della sua responsabilità dell'errore.
 
 # V2) Perche' BCE invece dell'MSE per classificazione binaria (2 motivi)?
 # TUA RISPOSTA:
-# ...
+# Perchè tramite la formula della bce che sfrutta il logaritmo naturale, è possibile amplificare in modo "esplosivo" gli errori man mano che diventano più gravi, mettendoli su una scala che tende a infinito. L’MSE punisce poco gli errori clamorosi (quadratico e limitato), quindi in training il gradiente resta più debole quando la rete sbaglia di grosso.
 
 # V3) [Trova l'errore] Questo codice ha DUE bug. Trovali entrambi:
 #       def bce_buggata(p, y, eps=1e-12):
@@ -1143,12 +1184,14 @@ def my_rete_2_layer(
 #           return float(np.mean(y * np.log(p_safe) +
 #                                (1-y) * np.log(1-p_safe)))   # e qui
 # TUA RISPOSTA:
-# ...
+# clip sbagliato -> corretto = np.clip(p, eps, 1 -eps)
+# formula bce sbagliata -> corretta = float(np.mean(- y * np.log(p_safe) - (1 - y) * np.log(1 - p_safe)))
 
 # V4) Cosa fa il `clip` nella BCE e perche' DEVE essere su entrambi i lati
 #     (eps, 1-eps) e non solo (eps, 1)?
 # TUA RISPOSTA:
-# ...
+# Perchè per P = 0 la bce restituirebbe inf e per P = 1 restituirebbe NaN, quindi dobbiamo contenere P entro valori leggerermente più grandi di 0 o leggermente più piccoli di 1.
+
 
 # V5) Hai P = np.array([0.20, 0.49, 0.51, 0.80]) e y = np.array([0, 1, 0, 1]).
 #     Calcola accuracy con soglia 0.5. Spiega in 1 riga perche' usiamo
