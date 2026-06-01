@@ -115,6 +115,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 from pprint import pprint
+from sklearn.metrics import roc_auc_score
 
 
 # ==========================================================================
@@ -1265,11 +1266,63 @@ print(f"Pratiche ignorate: {result[1]}")
 #
 # Stampa la tabella dei 3 scenari (1 riga per scenario, 1 colonna per
 # metrica). Commenta in 3 righe:
-#   - quale metrica e' la piu' "punitiva" sugli errori clamorosi?
-#   - accuracy e' simmetrica per random e pessima?
-#   - AUC sa distinguere fra random e pessima?
+#   - quale metrica e' la piu' "punitiva" sugli errori clamorosi? => la BCE
+#   - accuracy e' simmetrica per random e pessima? => si è simmetrica perchè nn esplode per gli errori molto grandi, e il random si pone a metà strada.
+#   - AUC sa distinguere fra random e pessima? => Si, su una rete random auc è circa 0.5, mentre in pessima è 0.
 # TUO CODICE QUI:
 
+print("\nMINI-PROGETTO FINALE\n")
+
+def valuta_modello_completo(
+    P: NDArray[np.float64],
+    y: NDArray[np.int64],
+    soglia: float = 0.5
+) -> dict[str, float]:
+
+    if len(P) != len(y):
+        raise ValueError("P e y devono essere array di pari lunghezza")
+    if soglia > 1 or soglia < 0: 
+        raise ValueError("il valore della soglia deve essere un numero compreso tra 0 e 1")
+    bce = bce_loss(P, y)
+    mse = mse_loss(P, y)
+    acc = accuracy_score(P, y, soglia=soglia)
+    y_pred = (P >= soglia).astype(int)
+    mask_recall = (y_pred == 1) & (y == 1)
+    mask_precision = (y_pred == 1) & (y == 0)
+    recall = np.sum(y_pred[mask_recall]) / (np.sum(y == 1)) if  np.sum(y == 1) > 0 else 0.0
+    precision =  np.sum(y_pred[mask_recall]) / (np.sum(y_pred[mask_recall]) + np.sum(y_pred[mask_precision])) if (np.sum(y_pred[mask_recall]) + np.sum(y_pred[mask_precision])) > 0 else 0.0
+    f1_score = 2 * (recall * precision) / (recall + precision) if recall + precision > 0 else 0.0
+    roc_auc = roc_auc_score(y, P)
+    
+    return {
+        'bce'        : float(bce),
+        'mse'        : float(mse),
+        'accuracy'   : float(acc),
+        'recall'     : float(recall),
+        'precision'  : float(precision),
+        'f1'         : float(f1_score),
+        'auc_roc'    : float(roc_auc),
+        'n_pratiche' : int(P.size),
+        'soglia'     : float(soglia)
+    }
+
+
+rng = np.random.default_rng(0)
+y = rng.integers(0, 2, size=(200, ))
+p_random = rng.uniform(0, 1, size=(200, ))
+P_perfetta = y.astype(float) * 0.99 + 0.005
+P_pessima  = 1.0 - P_perfetta
+
+arr = [p_random, P_perfetta, P_pessima]
+labels = ["random", "perfetta", "pessima"]
+report= []
+for l, p in zip(labels, arr):
+    modello = valuta_modello_completo(p, y)
+    modello['label'] = l
+    report.append(modello)
+
+data_report = pd.DataFrame(report)
+print(data_report)   
 
 # ==========================================================================
 # CHECKPOINT FINALE (auto-verifica)
@@ -1277,7 +1330,8 @@ print(f"Pratiche ignorate: {result[1]}")
 
 # C1) In 1 frase: cos'e' la LOSS e perche' minimizziamo lei e non l'accuracy?
 # TUA RISPOSTA:
-# ...
+# ...clear
+
 
 # C2) Hai p=0.99 e y=1: BCE quanto vale circa? E con p=0.01 e y=1?
 #     (puoi rispondere a occhio guardando `figures/03_01_bce_loss.png`)

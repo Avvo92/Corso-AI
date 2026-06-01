@@ -365,6 +365,27 @@ Il diario precedente `M03_C03_backpropagation_sessione.md` e' stato rinominato i
 - **Correzione / suggerimento:** Aggiungi test: `P1 = my_rete_2_layer(...); P2 = rete calcolata in PIPE.1; assert np.allclose(P1, P2)`; rimuovi `np.clip` se `sigmoid` è già stabile; opzionale rinomina la funzione esattamente `rete_2_layer` per aderire alla consegna.
 - **Pattern errore / ID contesto:** Pattern #6 consegne (manca la parte di verifica esplicita richiesta).
 
+---
+
+### 2026-06-01 — MINI-PROGETTO FINALE `valuta_modello_completo` (`03_loss.py` ~1216–1322)
+
+- **Esercizio / blocco:** Mini-progetto finale — dict scorecard (bce, mse, accuracy, recall, precision, f1, auc_roc) + tabella 3 scenari + 3 commenti.
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**.
+- **Punti di forza:** Funzione completa con dict e chiavi corrette; riuso `bce_loss` e `accuracy_score`; recall/precision/F1 con maschere TP/FP corrette e `y_pred` allineato a `soglia`; `roc_auc_score(y, P)` su probabilità continue; validazione lunghezza P/y; tabella pandas su 3 scenari con numeri coerenti (random acc/auc ~0.5, perfetta ~1, pessima acc/auc 0 e BCE > 5); commenti BCE punitiva e AUC ok.
+- **Errori / lacune:** (1) `mse` a mano invece di `mse_loss` (richiesto); (2) recall/precision senza guard `n_pos==0` / `n_pred_pos==0` → rischio NaN (consegna: 0.0); (3) validazione soglia accetta 0 e 1, consegna `(0, 1)` aperto; (4) test con `rng(1)` invece di `rng(0)`; (5) tabella senza etichette scenario; (6) commento simmetria accuracy mescola “non esplode” (tipico BCE) con simmetria intorno a 0.5 — chiarire: random ~0.5, pessima ~0.0, perfetta ~1.0.
+- **Next step:** `mse = mse_loss(P, y)`; edge case espliciti; `if not (0 < soglia < 1)`; opz. colonne `scenario` in DataFrame; poi checkpoint C1–C5 se non fatti.
+- **Pattern errore / ID contesto:** Pattern #6 consegne (dettaglio mse_loss + edge case).
+
+---
+
+### 2026-06-01 — MINI-PROGETTO FINALE `valuta_modello_completo` — **rivalutazione post-fix** (`03_loss.py` ~1216–1325)
+
+- **Esercizio / blocco:** Stessa consegna; fix: `mse_loss`, guard recall/precision/f1, `rng(0)`, colonna `label` in tabella.
+- **Valutazione (post-fix, su richiesta esplicita):** **9.5/10**.
+- **Punti di forza:** Tutti i vincoli operativi rispettati; dict completo; metriche coerenti sui 3 scenari (random ~0.5 acc/auc, perfetta ~1, pessima BCE>5 e acc/auc 0); guard TP+FN e TP+FP corrette; F1 con `if recall + precision > 0`; tabella leggibile con label scenario.
+- **Residui minori (opzionali):** (1) validazione soglia ancora ammette 0 e 1 — consegna `(0, 1)` aperto → `if not (0 < soglia < 1)`; (2) commento simmetria accuracy: preferire “random ~0.5, pessima ~0, perfetta ~1” (simmetria intorno a 0.5), non “non esplode” (è BCE); (3) refactor leggibilità: `tp = mask_recall.sum()`, `n_pred_pos = (y_pred == 1).sum()`.
+- **Next step:** Checkpoint C1–C5 + quiz V5–V7 se aperti; poi chiusura cap.03.
+
 ## Lacune e dubbi ancora aperti (a inizio cap.03 LOSS dopo split)
 
 - 🔴 **Segno BCE:** corretto dopo feedback in TODO 1.1; rinforzo programmato in TODO 1.7. Chiudere a fine cap.03.
