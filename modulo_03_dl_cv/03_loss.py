@@ -1330,35 +1330,36 @@ print(data_report)
 
 # C1) In 1 frase: cos'e' la LOSS e perche' minimizziamo lei e non l'accuracy?
 # TUA RISPOSTA:
-# ...clear
+# la LOSS è una valore continuo, che ci aiuta a capire quanto una previsione è lontana dal valore corretto.
+# l'accuracy invece è una metrica discreta, che ci da solo idea di quanto il modello sbaglia in generale, ma non ci permette di distribuire quell'errore retro propagandolo a tutti i pesi del modello
 
 
 # C2) Hai p=0.99 e y=1: BCE quanto vale circa? E con p=0.01 e y=1?
 #     (puoi rispondere a occhio guardando `figures/03_01_bce_loss.png`)
 # TUA RISPOSTA:
-# ...
+# per p=0.99 e y=1 BCE circa 0 e invece per p=0.01 e y=1 si ha BCE circa 5.
 
 # C3) [Recall cap.02 M3] In 1 riga: cos'e' la sigmoid? E perche' la usiamo
 #     SOLO nell'ultimo layer (e non in tutti i layer)?
 # TUA RISPOSTA:
-# ...
+# la sigmoide è quella funziona che shiacccia il risultato in output di una reta in un valore tra 0 e 1, sfruttando i numero di Eulero e la formula valore = 1 / (1 + e^-valore). In pratica trasforma qualunque numero da - inf a + inf in una probabilità. La usiamo solo in uscita perchè le reti neurali sono modelli previsionali, e ci occorre che ci diano delle probabilità in uscita per poter formulare delle risposte statisticamente corrette, e anche per poter capire quando sbagliano, quanto erano sicuri della loro risposta. Non la usiamo nei layer nascosti perchè non ci occorre trasformare i valori all'interno della reta, ma solo in uscita. Negli hidden layer usiamo  delle funzioni non lineari come relu, così da aggiungere complessità al modello e poter rappresentare al suo interno anche funzioni che non siano solo lineari.
 
 # C4) [Prevedi output] Dato un dataset con 100 pratiche, di cui 30 positive
 #     (y=1) e 70 negative (y=0), e una rete che predice SEMPRE P = 0.3
 #     (cioe' prevede sempre "30% probabilita' alterato"):
-#     - accuracy con soglia 0.5 = ?
-#     - bce_loss ~ ?
+#     - accuracy con soglia 0.5 = (tp + tn) / (tp + tn + fp + fn) = (0 + 70) / (0 + 70 + 0 + 30) = 0.7
+#     - bce_loss ~ = ((-ln(0.3) * 30) + (-ln(1 - 0.3) * 70)) / 100 = 0.61
 #     Spiega entrambi in 2 righe.
 # TUA RISPOSTA:
-# ...
+# accuracy ci da solo un idea quanto la rete prevede correttamente in generale la risposta giusta, e un 70 % potrebbe non sembrare neanche male, ma non ci dice nulla del fatto che in pratica si sta limitanda a dare sempre un giudizio di genuinità, e che l'accuratezza di fatto coincice con la percentuale di genuini nel dataset. La bce loss invece punisce molto quando sbaglia, e dunque è piuttosto alta nonostante un accuracy discretamente alta.
 
 # C5) Auto-rating onesto (compila in chiusura capitolo):
-#       - LOSS vs ACCURACY (derivabile vs discreta):     /10
-#       - BCE formula + interpretazione:                  /10
-#       - BCE vs MSE - 2 ragioni:                         /10
-#       - clip bilaterale (perche' eps e 1-eps):          /10
-#       - soglia 0.5 (perche' non > 0):                   /10
-#       - pipeline integrata (forward + loss + metriche): /10
+#       - LOSS vs ACCURACY (derivabile vs discreta):    8 /10
+#       - BCE formula + interpretazione:                 8 /10
+#       - BCE vs MSE - 2 ragioni:                        8 /10
+#       - clip bilaterale (perche' eps e 1-eps):         9 /10
+#       - soglia 0.5 (perche' non > 0):                  8 /10
+#       - pipeline integrata (forward + loss + metriche): 8 /10
 # TUE RISPOSTE:
 # ...
 

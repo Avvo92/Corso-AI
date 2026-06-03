@@ -5,8 +5,8 @@
 | **Modulo** | M03 — Deep Learning & Computer Vision |
 | **File capitolo** | `03_loss.py` |
 | **File diario** | `M03_C03_loss_sessione.md` |
-| **Stato** | in corso |
-| **Voto difficoltà** | — / X/10 (atteso 6-7/10, focalizzato sulla sola loss) |
+| **Stato** | ✅ chiuso (01/06/2026) |
+| **Voto difficoltà** | **8**/10 (confermato studente — chiusura Jarvis) |
 
 ---
 
@@ -345,6 +345,53 @@ Il diario precedente `M03_C03_backpropagation_sessione.md` e' stato rinominato i
 
 ---
 
+### 2026-05-29 — Checkpoint C1 (loss vs accuracy, `03_loss.py` ~1330–1334)
+
+- **Domanda:** In 1 frase: cos'è la LOSS e perché minimizziamo lei e non l'accuracy?
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** Loss continua vs accuracy discreta; errore per previsione; collegamento training con backprop sui pesi — richiamo solido di V1.
+- **Errori / lacune:** (1) Consegna chiede **1 frase**, risposta in **2** (Pattern #6 lieve); (2) micro-grammatica: "un valore", "la loss"; (3) opzionale: nominare **gradiente** / loss **derivabile** esplicitamente (come in soluzione ufficiale C1 in fondo file).
+- **Pattern:** nessuna nuova lacuna — consolidamento concetto loss vs accuracy.
+
+---
+
+### 2026-05-29 — Checkpoint C2 (BCE a occhio, `03_loss.py` ~1336–1340)
+
+- **Domanda:** `p=0.99, y=1` e `p=0.01, y=1` — BCE circa? (figura 03_01)
+- **Valutazione (primo tentativo):** **5/10**.
+- **Punti di forza:** Primo caso corretto: `p=0.99, y=1` → BCE ≈ 0 (preciso ~0.01).
+- **Errori / lacune:** (1) Secondo caso chiesto è **`p=0.01, y=1`**, non `y=0`; (2) con `y=0, p=0.01` la BCE sarebbe ~0.01 (predizione buona), non ~5; (3) risposta giusta al secondo punto: `y=1, p=0.01` → BCE ≈ **4.6** (accettabile "circa 5" se si intende y=1).
+- **Correzione:** `-log(0.99)≈0.01`; `-log(0.01)≈4.6` — errore "sicurissimo sbagliato".
+- **Pattern:** Pattern #6 — etichetta/caso sbagliato nel secondo esempio (confusione y=0 vs y=1).
+
+**Rivalutazione post-fix (2026-05-29):** secondo caso corretto `p=0.01, y=1` → BCE ≈ 4.6 ("circa 5" ok). **Post-fix: 9/10** (opzionale: citare ~0.01 e ~4.6 invece di 0 e 5).
+
+---
+
+### 2026-05-29 — Checkpoint C3 (sigmoid, recall cap.02, `03_loss.py` ~1341–1345)
+
+- **Domanda:** In 1 riga: cos'è la sigmoid? Perché solo nell'ultimo layer?
+- **Valutazione (primo tentativo):** **7/10**.
+- **Punti di forza:** Definizione corretta — schiaccia in (0,1), formula `1/(1+e^-z)`, interpretazione come probabilità; motivo output: serve probabilità per BCE/valutazione e capire quanto era sicura la rete.
+- **Errori / lacune:** (1) Manca il **secondo motivo** richiesto dal capitolo: sigmoid nei layer **intermedi** → **vanishing gradient** (derivata ≤ 0.25, gradiente si attenua); nei hidden si usa **ReLU**; (2) consegna chiede **1 riga**, risposta lunga (Pattern #6 lieve); (3) micro: "funzione", "schiaccia", `e` (numero di Nepero/Eulero).
+- **Modello:** Sigmoid = `1/(1+e^-z)` → probabilità in (0,1). Solo in uscita: (a) output probabilistico per classificazione binaria; (b) in mezzo alla rete spegnerebbe il gradiente — cap.04.
+- **Pattern:** recall cap.02 ok sulla definizione; lacuna sul *perché non ovunque*.
+
+**Rivalutazione post-integrazione (2026-05-29):** aggiunti hidden layer, ReLU, non-linearità. Resta assente **vanishing gradient**; frase "non serve trasformare dentro la rete" è imprecisa (ReLU trasforma comunque). **Post-fix: 7.5/10** → aggiungere vanishing gradient per 9/10.
+
+---
+
+### 2026-05-29 — Checkpoint C4 (accuracy vs BCE dataset sbilanciato, `03_loss.py` ~1347–1354)
+
+- **Esercizio:** 100 pratiche (30 pos, 70 neg), rete sempre P=0.3 — calcoli + spiegazione 2 righe.
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Calcoli:** accuracy **0.7** ✅; BCE **~0.61** ✅ (formula e confusion matrix corretti).
+- **Spiegazione — punti di forza:** Lezione chiave del capitolo — 70% accuracy **ingannevole** su dataset sbilanciato; rete costante (sempre stessa P); accuracy ≈ % classe maggioritaria (70 neg); BCE penalizza i 30 positivi sbagliati (`-ln(0.3)`).
+- **Errori / lacune:** (1) "giudizio di genuinità" — nel testo y=1 = positivo/"alterato"; la rete dice sempre P=0.3 (bassa prob. alterato) → predice sempre **classe 0**; (2) BCE 0.61 non è "altissima" vs random ~0.69 — meglio dire che **non** riflette un buon modello nonostante 70% acc; (3) typos: "un'idea", "limitando", "coincide".
+- **Pattern:** consolidamento loss vs accuracy su dataset sbilanciato — concetto acquisito.
+
+---
+
 ### 2026-05-29 — TODO 11 [REAL-WORLD] `bce_robusta` etichette UNKNOWN (`03_loss.py` ~1133–1167)
 
 - **Esercizio / blocco:** TODO 11 — BCE solo su `y ∈ {0,1}`; ignorare `-1` e altri valori; se nessuna pratica valida → `NaN`; stampare pratiche ignorate; test con 2 unknown su 5.
@@ -386,18 +433,22 @@ Il diario precedente `M03_C03_backpropagation_sessione.md` e' stato rinominato i
 - **Residui minori (opzionali):** (1) validazione soglia ancora ammette 0 e 1 — consegna `(0, 1)` aperto → `if not (0 < soglia < 1)`; (2) commento simmetria accuracy: preferire “random ~0.5, pessima ~0, perfetta ~1” (simmetria intorno a 0.5), non “non esplode” (è BCE); (3) refactor leggibilità: `tp = mask_recall.sum()`, `n_pred_pos = (y_pred == 1).sum()`.
 - **Next step:** Checkpoint C1–C5 + quiz V5–V7 se aperti; poi chiusura cap.03.
 
-## Lacune e dubbi ancora aperti (a inizio cap.03 LOSS dopo split)
+## Lacune e dubbi ancora aperti (a chiusura cap.03 LOSS — 01/06/2026)
 
-- 🔴 **Segno BCE:** corretto dopo feedback in TODO 1.1; rinforzo programmato in TODO 1.7. Chiudere a fine cap.03.
-- ⚠️ **Clip bilaterale:** tende a proteggere solo il lato basso; rinforzo programmato in TODO 1.8. Chiudere a fine cap.03.
-- ⚠️ **Soglia 0.5:** confonde `P > 0` con `P >= 0.5` nel calcolo accuracy; rinforzo programmato in TODO 1.9. Chiudere a fine cap.03.
-- ⚠️ **Pattern "exists check"**: dimenticato in TODO 2.3 del vecchio file (vedi diario M03_C04_derivate_gradiente_sessione.md). Inserire 1 micro-promemoria in correzione TODO 1.3.
+- 🟢 **Segno BCE:** chiuso (TODO 5.1 post-fix 8/10, V3 10/10, refactor 9/10).
+- 🟡 **Clip bilaterale:** operativo in codice; formulazione V4 ancora parziale (log(1-p) con p=1) — rinforzo in cap.04 Q2.
+- 🟡 **Soglia 0.5:** consolidato (TODO 5.3 post-fix 8/10); monitorare Pattern #6 su etichette casi (C2 y=0 vs y=1).
+- 🟡 **Vanishing gradient / sigmoid solo output:** lacuna C3 (7.5/10) — rinforzo in cap.04 sez.2.
+- ⚠️ **Aperti volontariamente:** quiz verifica V5–V7 non completati; opzionale ripassarli prima del cap.04 o nel bridge R03.
 
 ---
 
-## Note per il capitolo successivo (mentor)
+## Chiusura capitolo (01/06/2026 — Jarvis)
 
-- I 3 pattern (segno BCE, clip bilaterale, soglia 0.5) devono essere chiusi PRIMA di passare al cap.04. Se a fine cap.03 sono ancora ⚠️, ripeterli nel bridge `M03_R03_after_C03_before_C04_loss_to_derivate.md` come mini-esercizi obbligatori.
-- Il cap.03 LOSS dovrebbe risultare "facile" rispetto al vecchio cap.03 monolitico (atteso 6-7/10). Se voto > 7, segnale che la difficolta' del cap.04 puo' essere mantenuta come pianificato. Se voto < 5, segnale che lo split e' stato troppo conservativo e si puo' accelerare nel cap.04.
-- Il bridge `M03_R02_after_C02_before_C03_reti_to_loss.md` resta valido (gia' fatto da Gianluca? verificare in chat).
-- Dopo la chiusura del cap.03 LOSS, popolare il bridge `M03_R03_after_C03_before_C04_loss_to_derivate.md` (attualmente placeholder).
+- **Voto difficoltà:** **8**/10 (studente — allineato ad atteso post-split 6–7, leggermente sopra per volume esercizi).
+- **Deliverable principali:** `bce_loss`, `mse_loss`, `accuracy_score`; PIPE.1 `valuta_rete_random`; mini-progetto `valuta_modello_completo` (9.5/10 post-fix); checkpoint C1–C4 + C5 auto-rating; quiz V1–V4 valutati.
+- **Punti di forza:** pipeline forward+loss+metriche; pattern BCE (segno/clip) chiusi in codice; lezione accuracy vs BCE su dataset sbilanciato (C4 8.5/10).
+- **Residui:** V5–V7; V4 spiegazione incompleta; C3 vanishing gradient; TODO 10 post-fix parziale (y senza `> 0`); Pattern #6 consegne (etichette/formato).
+- **Prossimo:** bridge `M03_R03` (~10 min) → **`04_derivate_gradiente.py`**.
+
+## Lacune e dubbi ancora aperti (a inizio cap.03 LOSS dopo split) — ARCHIVIO

@@ -373,6 +373,19 @@ def _grafico_funzione_e_tangenti(
 # SEZIONE 2 - Derivata della SIGMOID
 # ==========================================================================
 #
+# 🔁 RINFORZO MIRATO — Vanishing gradient (lacuna checkpoint C3 cap.03 LOSS)
+# Al checkpoint C3 hai spiegato bene l'output probabilistico, ma mancava il
+# motivo "tecnico" per NON usare sigmoid nei layer nascosti:
+#   s'(z) = s(z) * (1 - s(z))  →  MASSIMO 0.25 in z=0
+# Con 4 layer sigmoid impilati, il gradiente può essere moltiplicato per
+# ~0.25^4 ≈ 0.004 → training lentissimo. Per questo nel cap.02 usi ReLU
+# al centro e sigmoid solo in uscita.
+#
+# Prova subito (commento, 2 righe):
+# 1) Se s'(z) max = 0.25, quanto vale dopo 3 layer sigmoid (stima 0.25^3)?
+# 2) Perché ReLU in hidden non ha questo tetto 0.25?
+# TUO COMMENTO QUI:
+#
 # La sigmoid e' la funzione di output del cap.02 M3:
 #       s(z) = 1 / (1 + e^-z)         z in R, output in (0, 1)
 #
@@ -572,6 +585,19 @@ def _grafico_campo_gradiente(
 # ==========================================================================
 # SEZIONE 5 - DERIVATA DELLA BCE (preparazione cap.05+06)
 # ==========================================================================
+#
+# 🔁 RINFORZO MIRATO — Clip bilaterale + ordine bce_loss(p, y) (cap.03 LOSS)
+# Pattern emersi nel cap.03: (1) clip `(eps, 1-eps)` prima dei log; (2) firma
+# `bce_loss(p, y)` — prima probabilità, poi etichette.
+#
+# Prova subito (~3 min):
+#   p = np.array([0.0, 1.0])
+#   y = np.array([1, 0])
+#   eps = 1e-12
+#   1) Calcola BCE con clip solo (eps, 1) — cosa ottieni?
+#   2) Calcola BCE con clip (eps, 1-eps) — valore finito?
+#   3) Verifica che bce_loss(p, y) == bce_loss(y, p) → False (ordine conta!)
+# TUO CODICE QUI:
 #
 # La BCE su una singola pratica:
 #       L(p, y) = - y * log(p) - (1 - y) * log(1 - p)
