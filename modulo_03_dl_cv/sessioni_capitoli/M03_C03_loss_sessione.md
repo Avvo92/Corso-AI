@@ -451,4 +451,113 @@ Il diario precedente `M03_C03_backpropagation_sessione.md` e' stato rinominato i
 - **Residui:** V5–V7; V4 spiegazione incompleta; C3 vanishing gradient; TODO 10 post-fix parziale (y senza `> 0`); Pattern #6 consegne (etichette/formato).
 - **Prossimo:** bridge `M03_R03` (~10 min) → **`04_derivate_gradiente.py`**.
 
+---
+
+### 2026-06-01 — Bridge R03 es. 1–2 (`M03_R03_after_C03_before_C04_loss_to_derivate.md`)
+
+- **Esercizio / blocco:** Bridge pre-cap.04 — (1) formula BCE corretta; (2) perché clip `(eps, 1-eps)`.
+- **Valutazione (primo tentativo):** **7.5/10** (media 9/10 + 6/10).
+- **Es.1 — Segno BCE:** **9/10** — risposta **(b)** corretta.
+- **Es.2 — Clip bilaterale:** **6/10** — idea giusta (NaN/inf con p estremi) ma **non risponde alla domanda**: con `(eps, 1)` il lato basso è ok, ma puoi ancora avere `p_safe=1` → `log(1-p)=log(0)` quando `y=0`. Serve `1-eps` per proteggere **entrambi** i logaritmi.
+- **Modello 1 riga es.2:** Con solo `(eps, 1)` resta `p=1` → il termine `(1-y)*log(1-p)` esplode; `(eps, 1-eps)` tiene p strettamente in (0,1).
+- **Pattern:** lacuna #34 clip formulazione — stesso tema V4 cap.03; da chiudere in cap.04 Q2.
+
+**Rivalutazione post-fix es.2 (2026-06-01):** aggiunto “proteggere entrambi gli estremi”. **Es.2 post-fix: 8/10** — concetto bilaterale ok; micro-precisazione: con `(eps,1)` il guaio tipico è `p=1` → `log(1-p)` (non “p=1 → nan” in ogni caso); con `(eps,1)` il basso è già protetto (`p≥eps`), non serve dire “inf per p=0” come effetto del clip sbagliato.
+
+---
+
+### 2026-06-01 — Bridge R03 es. 3 (`M03_R03` — ordine `bce_loss(p, y)`)
+
+- **Domanda:** Cosa misuri di sbagliato con `bce_loss(y, p)`?
+- **Valutazione (primo tentativo):** **6/10**.
+- **Punti di forza:** Capisce che si “inverte” il ruolo di p e y nella formula; collegamento al bug visto in TODO 4.3/10.
+- **Errori / lacune:** Formula scritta **non coincide** con ciò che fa il codice: con `bce_loss(y_true, P)` la funzione calcola `-P*log(y) - (1-P)*log(1-y)` (etichette dentro `log`, probabilità nei coefficienti) — non `-p*log(y)-(1-p)*log(1-y)` con p=etichette. Manca: `y` deve essere 0/1, `p` in (0,1); scambiando, `log(0)` su etichette e loss senza significato di errore rete.
+- **Modello 1 riga:** Passi le etichette dove la funzione si aspetta probabilità → `log(y)` con y=0 rompe; la loss non misura più distanza tra previsione e verità.
+
+---
+
+### 2026-06-01 — Bridge R03 es. 4 (`M03_R03` — soglia accuracy)
+
+- **Domanda:** `P=[0.2,0.49,0.51,0.8]`, `y=[0,1,0,1]`, soglia 0.5 → accuracy?
+- **Valutazione (primo tentativo):** **10/10**.
+- **Punti di forza:** Risposta **0.5** corretta; `y_pred=[0,0,1,1]` → 2/4 (errori su pratiche 1 e 2: y=1 ma P<0.5, y=0 ma P>0.5).
+- **Nota mentor:** soluzione in fondo al bridge corretta (era errata 1.0 in prima stesura).
+
+---
+
+### 2026-06-01 — Bridge R03 es. 6 (`M03_R03` — loss vs accuracy training)
+
+- **Domanda:** Perché minimizziamo la loss e non l'accuracy?
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** Continuo vs discreto; derivate/gradiente/retropropagazione — messaggio da colloquio ok, allineato a V1/C1 cap.03.
+- **Lacune:** "massimo dell'accuratezza" impreciso (accuracy = % corrette, non upper bound); opzionale: accuracy non cambia se sposti P di poco sotto/sopra soglia.
+
+---
+
+### 2026-06-01 — Bridge R03 es. 7 (`M03_R03` — maschera UNKNOWN)
+
+- **Domanda:** Una riga BCE solo su `y in {0,1}` con `y` che include `-1`.
+- **Valutazione (primo tentativo):** **3.5/10**.
+- **Punti di forza:** Intento di escludere `-1` (confronto con 0 e 1).
+- **Errori:** (1) `(y==0) or (y==1)` — su array NumPy serve `|` (OR element-wise), non `or` Python; (2) filtri solo `p`, non `y` con la **stessa** maschera; (3) sintassi `p[(...)]` con `or` non produce maschera booleana valida.
+- **Correzione:** `mask = np.isin(y, [0, 1]); bce_loss(p[mask], y[mask])` oppure `bce_loss(p[y != -1], y[y != -1])`.
+- **Pattern:** regressione vs TODO 11 dove `p[y!=-1]` era ok — ripassare maschere booleane.
+
+**Rivalutazione post-fix (2026-06-01):** `(y==0)|(y==1)` corretto. Resta: `y` non filtrato → lunghezze 3 vs 4. **Post-fix: 5.5/10** → aggiungi `y[(y==0)|(y==1)]` o `mask = ...; bce_loss(p[mask], y[mask])` per **9/10**.
+
+**Rivalutazione post-fix #2 (2026-06-01):** `bce_loss(p[mask], y[mask])` con stessa maschera. **Post-fix: 9/10** (opzionale: `np.isin(y,[0,1])` più leggibile se compaiono altri valori invalidi).
+
+---
+
+### 2026-06-01 — Bridge R03 es. 8 (`M03_R03` — forward 2-layer)
+
+- **Domanda:** Sequenza forward `rete_2_layer` (4 righe, shape ok).
+- **Valutazione (primo tentativo):** **5.5/10**.
+- **Punti di forza:** Primo layer corretto (`X@W1+b1`, ReLU, shape `(N,h)`); sigmoid in uscita; ricorda bias e dimensioni batch.
+- **Errori:** **`H2 = H1 * W2`** — deve essere **`H1 @ W2 + b2`** (o `Z2 = H @ W2 + b2`); `*` è moltiplicazione elemento-per-elemento (broadcast), non prodotto matrice layer→output. Naming `H2` fuorviante (meglio `Z2` poi `P`).
+- **Correzione:** `Z1=X@W1+b1 → H=relu(Z1) → Z2=H@W2+b2 → P=sigmoid(Z2).ravel()` shape `(N,)`.
+
+**Rivalutazione post-fix (2026-06-01):** aggiunto `ravel()` se `k==1` — ok. **`H1 * W2` resta errato** (serve `@`). **Post-fix: 6/10** — cambia solo `*` → `@` (e opz. rinomina `H2`→`Z2`) per **9/10**.
+
+**Rivalutazione #2 (2026-06-01):** naming `Z1/H/Z2/P` ok. **`Z2 = H * W2` ancora `*`** → serve `H @ W2`. **Voto invariato: 6/10**.
+
+**Rivalutazione #3 (2026-06-01):** `Z2 = H @ W2 + b2` corretto. Sequenza forward completa + `ravel`. **Post-fix: 9/10**.
+
+---
+
+### 2026-06-01 — Bridge R03 es. 9 (`M03_R03` — sigmoid solo output)
+
+- **Domanda:** 2 motivi brevi perché sigmoid solo ultimo layer.
+- **Valutazione (primo tentativo):** **6/10**.
+- **Punti di forza:** Motivo (b) ok — output = probabilità per classificazione binaria / BCE.
+- **Errori:** (1) "funzioni lineari come relu" — **ReLU non è lineare**; nei hidden c'è `@` (lineare) + **ReLU** (non lineare); (2) manca motivo (a) tecnico del capitolo: sigmoid in mezzo → **vanishing gradient** (derivata ≤ 0.25).
+- **Modello 2 righe:** (1) Uscita: probabilità in (0,1) per BCE. (2) Hidden: sigmoid spegne il gradiente; ReLU in mezzo.
+
+**Rivalutazione post-fix (2026-06-01):** citato **vanishing gradient** + ReLU non-lineare; probabilità in uscita. **Post-fix: 8.5/10** (lacuna C3 cap.03 in miglioramento).
+
+---
+
+### 2026-06-01 — Bridge R03 es. 10 (`M03_R03` — Feynman pendenza)
+
+- **Domanda:** 2 righe, senza "derivata"/"gradiente".
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** Analogia salita chiara; rapporto **altezza / spostamento orizzontale** (Δy per Δx) — è il nucleo della pendenza; vincolo lessicale rispettato.
+- **Affinamento opzionale:** legare esplicitamente al **grafico** (asse x = avanti, y = altezza); "indietro" è meno centrale di "a destra sul grafico".
+
+---
+
+### 2026-05-29 — Bridge R03 es. 5 (`M03_R03` — BCE a occhio)
+
+- **Domanda:** `y=1`, `p=0.01` → BCE più vicina a 0.01, 0.69 o 4.6?
+- **Valutazione (primo tentativo):** **10/10** — **4.6** corretto (`-log(0.01) ≈ 4.605`).
+
+---
+
+### 2026-05-29 — Bridge R03 **CHIUSO** (`M03_R03_after_C03_before_C04_loss_to_derivate.md`)
+
+- **Stato:** 10/10 esercizi completati e valutati (primo tentativo dove applicabile).
+- **Media stimata:** ~**8.4/10** (picchi 9–10 su BCE/accuracy/forward/maschera; da rinforzare es.3 ordine `bce_loss` 6/10).
+- **Prossimo:** aprire **`04_derivate_gradiente.py`** — quiz ingresso Q1–Q6, sez.1 derivata numerica.
+
+
 ## Lacune e dubbi ancora aperti (a inizio cap.03 LOSS dopo split) — ARCHIVIO

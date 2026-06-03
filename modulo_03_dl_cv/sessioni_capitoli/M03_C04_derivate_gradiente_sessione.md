@@ -5,7 +5,7 @@
 | **Modulo** | M03 — Deep Learning & Computer Vision |
 | **File capitolo** | `04_derivate_gradiente.py` (segnaposto al 27/05/2026) |
 | **File diario** | `M03_C04_derivate_gradiente_sessione.md` |
-| **Stato** | da aprire dopo chiusura cap.03 LOSS |
+| **Stato** | **in corso** — bridge `M03_R03` completato 29/05/2026; prossimo quiz ingresso Q1–Q6 |
 | **Voto difficoltà** | — / X/10 (atteso 6-7/10 dopo split) |
 
 ---
@@ -42,6 +42,45 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 ## Valutazioni esercizi / quiz / mini-esercizi
 
 > Voto = "primo tentativo".
+
+### 2026-05-29 — Quiz ingresso Q1 (`04_derivate_gradiente.py` — BCE + loss vs accuracy)
+
+- **Domanda:** Cos'è la BCE in 1 riga? Perché minimizziamo la loss e non l'accuracy?
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Punti di forza:** BCE = loss per **classificazione binaria**; intuizione **log/esponenziale** — errori gravi (p lontano da y) costano molto più di errori lievi; contrasto utile con accuracy “solo conta sbagliato/sì”.
+- **Cosa manca (2ª metà domanda):** il motivo **operativo per il training** — l'accuracy è **discreta** (soglia 0.5: piccoli spostamenti di p non cambiano nulla) e **non differenziabile** → niente gradiente/retropropagazione; la loss è **continua** e guida i pesi.
+- **Modello 1 riga aggiuntiva:** “Addestriamo sulla loss perché è continua e differenziabile; l'accuracy è solo una metrica di valutazione.”
+
+### 2026-05-29 — Quiz ingresso Q2 (`04_derivate_gradiente.py` — clip bilaterale BCE)
+
+- **Domanda:** Perché `(eps, 1-eps)`? Cosa succede senza il lato destro?
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** Risposta mirata alla domanda: senza `1-eps` può restare **`p=1`** → **`log(1-p)`** → NaN/inf; idea “proteggere gli estremi” ok.
+- **Affinamento opzionale:** precisare termine `(1-y)*log(1-p)`; con solo `(eps, 1)` il lato **basso** è già ok, il guaio tipico è l’**alto** (`p→1`).
+
+### 2026-05-29 — Quiz ingresso Q3 (`04_derivate_gradiente.py` — dense + forward 2-layer)
+
+- **Domanda:** Cos'è un layer dense? Forward rete 2-layer in NumPy (1 riga ciascuno).
+- **Valutazione (primo tentativo):** **6/10**.
+- **Punti di forza:** Hidden + ReLU, output + sigmoid/probabilità — architettura concettuale ok (allineato bridge es.8).
+- **Errori / lacune:** (1) **Dense** = trasformazione lineare **`Z = X @ W + b`** con **tutti** gli input collegati a **tutti** gli output (fully connected), non “un peso per elemento”; (2) forward senza operazioni NumPy richieste (`@`, bias, sequenza `Z1→H→Z2→P`); (3) “ogni elemento connesso a un peso specifico” è impreciso.
+- **Modello compatto:** Dense: `X @ W + b`. Forward: `Z1=X@W1+b1; H=relu(Z1); Z2=H@W2+b2; P=sigmoid(Z2).ravel()`.
+
+**Rivalutazione post-fix (2026-05-29):** dense = fully connected (tutti input → tutti neuroni); forward con `@`, bias, ReLU, sigmoid; riga operativa `Z1→H→Z2→P` corretta. **Post-fix: 9/10** (opzionale: `.ravel()` se output scalare per batch).
+
+### 2026-05-29 — Quiz ingresso Q4 (`04_derivate_gradiente.py` — pendenza x² in x=2)
+
+- **Domanda:** `f(x)=x²`, da x=2 a x=2.001: sale/scende? Di quanto circa?
+- **Valutazione (primo tentativo):** **10/10**.
+- **Punti di forza:** **Sale** (pendenza positiva a x=2); Δf ≈ **0.004** (`2.001² - 4 = 0.004001`); coincide con stima `f'(2)=4` × Δx=0.001 → 0.004 (anticipa sez.1 derivata).
+
+### 2026-05-29 — Quiz ingresso Q5 (`04_derivate_gradiente.py` — Feynman pendenza)
+
+- **Domanda:** 3 righe, senza derivata/limiti; analogia web dev suggerita.
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Punti di forza:** Nucleo corretto (Δaltezza / piccolo spostamento orizzontale); vincolo lessicale rispettato; coerente con bridge es.10.
+- **Lacune:** (1) **1 riga** invece di 3; (2) nessuna analogia **web** (CPU, load time, metriche nel tempo); (3) “valore di partenza” ambiguo → meglio “asse x / tempo / passo a destra sul grafico”.
+- **Modello:** “Sul grafico load time vs utenti: ogni +1 utente fa salire il tempo di X ms — quella X è la pendenza in quel punto.”
 
 ### 2026-05-25 — TODO 2.1 derivata sigmoid numerica vs analitica (`04_derivate_gradiente.py` ~TODO sigmoid)
 

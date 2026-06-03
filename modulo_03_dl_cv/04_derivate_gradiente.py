@@ -230,30 +230,33 @@ def gradiente_numerico(
 # Q1) [Recall cap.03] Cos'e' la BCE in 1 riga? E perche' minimizziamo
 #     la loss invece dell'accuracy?
 # TUA RISPOSTA:
-# ...
+# la BCE è un tipo di loss che viene utilizzato in classificazione binaria, e la sua formula tende a far esplodere gli errori di grande entità. Rispetto all'accuracy che ci indica solo quanto sbaglia la rete in termini generali, ci dice anche quanto gravemente sbaglia, perchè punisce in maniera esponenziale gli errori man mano che diventano più gravi.
 
 # Q2) [Recall cap.03] Perche' la BCE usa un CLIP BILATERALE (eps, 1-eps)?
 #     Cosa succederebbe senza il lato destro?
 # TUA RISPOSTA:
-# ...
+# Usa la clip laterale per proteggere gli estremi. Senza il lato destro, potremmo passare p = 1 e ricevere come risultato nan.
 
 # Q3) [Recall cap.02 M3] In 1 riga: cos'e' un "layer dense"? E come
 #     calcolerai il forward di una rete 2-layer in NumPy?
 # TUA RISPOSTA:
-# ...
+# layer dense significa "densamente connessa", ossia ogni neaurone legge tutti gli input del layer precedente. il forward di una rete a due livelli prevede un livello con operazione matriciale + bias tra feature e pesi, poi funzione di attivazione (relu), e un secondo livello di output con prodotto matriciale del output del relu con altri pesi e bias, e infine funzione sigmoide per avere delle probabilità.
+
+# Z1 = X @ W1 + b1 -> H = relu(Z1) -> Z2 = H @ W2 + b2 -> P = sigmoid(Z2)
+
 
 # Q4) [Intuizione - prossima sezione] Hai f(x) = x^2 e ti sposti da x=2
 #     a x=2.001 (un passo piccolissimo a destra). f(x) sale o scende?
 #     Di QUANTO circa? Stima ad occhio.
-# TUA RISPOSTA:
-# ...
+# TUA RISPOSTA: Sale, di circa 0,004
+# 
 
 # Q5) [💬 Feynman] Spiega in 3 righe cos'e' una "pendenza" a un collega
 #     web dev. Senza usare derivate / limiti / matematica simbolica.
 #     Suggerimento: analogie con grafici di sviluppo (CPU usage che sale,
 #     load time che scende, ecc.).
 # TUA RISPOSTA:
-# ...
+# La pendenza è il guadagno o la perdita di altezza rispetto a un piccolo spostamento del valore di partenza. 
 
 # Q6) [Prevedi output] Cosa stampa questo codice?
 #       def f(x):

@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 01/06/2026 — **Chiusura M3 cap.03** `03_loss.py` (voto difficoltà **8**/10); prossimo **`04_derivate_gradiente.py`**; bridge `M03_R03` popolato; rinforzi 🔁 in cap.04 (vanishing gradient + clip BCE).
+> **Ultimo aggiornamento**: 29/05/2026 — Bridge **`M03_R03`** completato (~8.4/10); **cap.04** `04_derivate_gradiente.py` da iniziare (quiz ingresso); cap.03 LOSS chiuso **8**/10 (01/06/2026).
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -45,7 +45,7 @@
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
 | **Difficoltà media** | ~**6.90** (24 capitoli con voto; archivi M1/M2/Ponte — vedi `archivi/`) |
 | **Priorità attive** | 🟡 Vanishing gradient / sigmoid solo output (lacuna C3 cap.03 → rinforzo cap.04 sez.2); 🟡 Clip bilaterale formulazione (V4 parziale); 🟡 Pattern #6 consegne (etichette/formato); 🟡 #19 None vs null; 🟡 #21 tupla/round; 🟡 Lacuna #31 UAT; 🟡 E6 system design (rinviato fine M3). |
-| **Sessione corrente** | Sessione 22 |
+| **Sessione corrente** | Sessione 23 |
 
 ---
 
@@ -56,11 +56,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 01/06/2026 |
-| **Cosa è stato fatto** | **Chiusura M3 cap.03 `03_loss.py`** (Jarvis). Completati: quiz ingresso Q1–Q5; TODO 1.x–11 (pattern BCE segno/clip/soglia, PIPE.1, tipologie colloquio→real-world); mini-progetto `valuta_modello_completo` (9.5/10 post-fix); quiz verifica V1–V4 + checkpoint C1–C5 (auto-rating 8–9/10 su aree). Split cap.03 confermato efficace: voto **8**/10 vs 9/10 atteso monolitico. |
-| **Errori emersi** | Residui 🟡: vanishing gradient (C3 7.5/10); clip spiegazione V4 parziale; Pattern #6 (C2 y sbagliato, formati consegna); V5–V7 quiz verifica non fatti (opzionale). 🟢 chiusi in codice: segno BCE, clip operativo, soglia 0.5. |
-| **Cosa fare nella prossima sessione** | (1) Bridge **`M03_R03_after_C03_before_C04_loss_to_derivate.md`** (~10 min); (2) aprire **`04_derivate_gradiente.py`** — quiz ingresso Q1–Q6, sez.1 derivata numerica; (3) blocchi 🔁 già inseriti in cap.04 (vanishing + clip BCE). Difficoltà attesa cap.04: **6–7/10**. |
-| **Stato motivazione** | Alto — ha chiuso un capitolo denso con autovalutazione onesta (C5); pronto per il “linguaggio della correzione” (derivate/gradiente). |
+| **Data** | 29/05/2026 |
+| **Cosa è stato fatto** | **Bridge `M03_R03`** (10 esercizi) completato prima del cap.04 — media ~**8.4/10**; consolidati forward 2-layer, maschera UNKNOWN, vanishing gradient (es.9 post-fix 8.5/10), Feynman pendenza (8.5/10). |
+| **Errori emersi** | Residui bridge: **es.3** ordine `bce_loss` (6/10 — formula invertita da formulare meglio); clip es.2 ok post-fix (8/10). Carry-over cap.03: lacune #33–35 🟡; V5–V7 opzionali in `03_loss.py`. |
+| **Cosa fare nella prossima sessione** | Aprire **`04_derivate_gradiente.py`**: (1) quiz ingresso Q1–Q6; (2) sez.1 derivata numerica (pendenza); (3) sez.2 🔁 vanishing gradient. Difficoltà attesa: **6–7/10**. |
+| **Stato motivazione** | Alto — handoff loss→derivate fatto; pronto per codice su pendenza/gradiente. |
 
 ---
 
@@ -128,7 +128,7 @@
 | Campo | Valore |
 |-------|--------|
 | **Prossimo capitolo** | modulo_03_dl_cv/**04_derivate_gradiente.py** — derivata (pendenza), derivata sigmoid/ReLU, gradiente, derivata BCE e semplificazione `(p-y)`; pipeline `derivate_check_completo`. |
-| **Bridge obbligatorio prima** | `quiz_ripasso_tra_capitoli/M03_R03_after_C03_before_C04_loss_to_derivate.md` (~10 min, 10 esercizi — popolato 01/06/2026). |
+| **Bridge obbligatorio prima** | ✅ **`M03_R03_after_C03_before_C04_loss_to_derivate.md`** completato 29/05/2026 (~8.4/10). |
 | **Rinforzi da inserire (🔁) nel cap.04** | ✅ Inseriti: vanishing gradient (sez.2), clip BCE + ordine `bce_loss(p,y)` (sez.5). Monitorare: Pattern #6 consegne; recall forward cap.02. |
 | **Concetti ⚠️ da ripassare nel cap.04** | Vanishing gradient (C3 cap.03); pendenza/derivata numerica (Q2 ingresso cap.03); loss derivabile vs accuracy (consolidato). |
 | **Pattern 🔴 da monitorare** | 🟡 Pattern #6 consegne; 🟡 vanishing gradient; 🟡 #21 tuple/`round`. |
@@ -1967,6 +1967,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 29/05/2026 | **Bridge M03_R03 completato** (~8.4/10): Ultima Sessione; Prossimo Cap (bridge ✅); diario cap.03 + stato cap.04; Sessione **23**. | Handoff loss → derivate prima di `04_derivate_gradiente.py` | Stato header, Ultima Sessione, Prossimo Cap, diari |
 | 01/06/2026 | **Chiusura M3 cap.03** (`03_loss.py`): Stato → `04_derivate_gradiente.py`; Ultimo completato + Ultima Sessione; Prossimo Cap; diff media ~**6.90** (24 cap); Valutazioni **M3-03** **8**/10; Glossario (BCE, clip, loss vs accuracy, scorecard); Competenze cap.03; Lacune #33–35; bridge **M03_R03** popolato; rinforzi 🔁 in `04_derivate_gradiente.py` (sez.2 vanishing, sez.5 clip BCE); Sessione **22**. File capitolo **non modificato** (protocollo H). | Chiusura formale cap.03 M3 LOSS | Stato, sessioni, valutazioni, glossario, competenze, lacune, bridge, cap.04, changelog |
 | 27/05/2026 | **Split M3 cap.03** (`03_backpropagation.py` 1700 righe → **4 sotto-capitoli**): `03_loss.py` (LOSS, BCE, MSE — contenuti migrati + 6 TODO di rinforzo: recall cap.02, retrieval sigmoid, interleaving forward+loss, 3 pattern emersi segno BCE/clip bilaterale/soglia 0.5), `04_derivate_gradiente.py` (scaffold), `05_chain_rule_gd.py` (scaffold), `06_backprop_training.py` (scaffold). Rinominati successivi: `04→07_pytorch`, `05→08_cnn`, `06→09_transfer`, `07→10_gradio`. Aggiornati 5 bridge esistenti + creati 3 nuovi placeholder (`M03_R03/R04/R05`). Diario `M03_C03_backpropagation_sessione.md` rinominato in `M03_C03_loss_sessione.md`, valutazioni TODO 2.x migrate in nuovo `M03_C04_derivate_gradiente_sessione.md`, scaffold diari `M03_C05/C06`. Modulo M3 passa da 7 a **10 capitoli**. | Richiesta studente: "il capitolo 3 è troppo complesso e denso, spezzettiamo almeno in 3 parti e mettiamo molti esercizi di rinforzo che riprendono cap.01-02 per costruire una pipeline mentale duratura" (Gianluca ha scelto 4 parti + rinumerazione completa). Conferma che il vecchio cap.03 era effettivamente sovraccarico (2 voti 6/10 sui primi TODO loss). | Stato Attuale, Ultima Sessione, Prossimo Capitolo, Priorità Attive, Changelog |
 | 21/05/2026 | **Chiusura M3 cap.02** (`02_reti_neurali.py`): Stato → `03_backpropagation.py`; Ultimo completato + Ultima Sessione; Prossimo Cap; diff media ~**6.85** (23 cap); Valutazioni **M3-02** **8**/10; Progresso progetto + riga cap.02 ✅; Competenze + Glossario (ReLU, He, rete_2_layer, R2, AUC); E6 rinviato; Sessione **21**. File capitolo **non modificato** (protocollo H). | Chiusura formale cap.02 M3 | Stato, sessioni, valutazioni, glossario, competenze, changelog |
