@@ -256,7 +256,7 @@ def gradiente_numerico(
 #     Suggerimento: analogie con grafici di sviluppo (CPU usage che sale,
 #     load time che scende, ecc.).
 # TUA RISPOSTA:
-# La pendenza è il guadagno o la perdita di altezza rispetto a un piccolo spostamento del valore di partenza. 
+# La pendenza è il guadagno o la perdita di altezza sulla asse y rispetto a un piccolo spostamento del valore di partenza sull'asse x. In pratica, se mi sposto un po più avanti o indietro lungo questa traiettoria, quanto mi muovo verso l'alto o verso il basso?
 
 # Q6) [Prevedi output] Cosa stampa questo codice?
 #       def f(x):
@@ -266,6 +266,8 @@ def gradiente_numerico(
 #       print(round(deriv_approx, 1))
 # TUA RISPOSTA:
 # (Suggerimento: la derivata di x^3 e' 3*x^2; in x=2 vale 3*4 = 12.)
+
+# restituisce round((8,012006001 - 7,98800599) / 0,002, 1) = 12.0
 
 
 # ==========================================================================
@@ -296,12 +298,42 @@ def gradiente_numerico(
 #   - x = 0   (atteso ~0.0)
 # TUO CODICE QUI:
 
+print("\nMini-esercizio in-line 1.1.A")
+def f(x):
+    return x ** 2
+
+x = 3
+print(f"f'(x) di x = 3  -> {derivata_numerica(f, x)}")
+x = -3
+print(f"f'(x) di x = -3 -> {derivata_numerica(f, x)}")
+x = 0
+print(f"f'(x) di x = 0  -> {derivata_numerica(f, x)}")
 
 # 🔵 MINI-ESERCIZIO INLINE 1.1.B (~3 minuti) — pendenza di una retta
 # Una retta y = 3x + 1 ha pendenza costante = 3.
 # Verifica con derivata_numerica in 3 punti diversi (x=0, x=5, x=-10).
 # Tutti devono dare 3.0.
 # TUO CODICE QUI:
+
+print("\nMini-esercizio in-line 1.1.B\n")
+
+def f_y(x):
+    return 3 * x + 1
+
+x = 0
+der_1 = derivata_numerica(f_y, x)
+print(f"{round(derivata_numerica(f_y, x), 1)}")
+x = 5
+der_2 = derivata_numerica(f_y, x)
+print(f"{round(derivata_numerica(f_y, x), 1)}")
+x = -10
+der_3 = derivata_numerica(f_y, x)
+print(f"{round(derivata_numerica(f_y, x), 1)}")
+
+arr = np.array([der_1, der_2, der_3])
+target = 3.0
+
+assert np.all(np.isclose(arr, target)), "Ops qualcosa è andato storto!"
 
 
 # 1.2 - DERIVATA NUMERICA vs DERIVATA ANALITICA
@@ -319,6 +351,38 @@ def gradiente_numerico(
 # Usa np.isclose(num, ana, atol=1e-4) per confermare ogni confronto.
 # TUO CODICE QUI:
 
+print("\nMini-esercizio in-line 1.2.A\n")
+
+def f_cubo(x) -> tuple[float, float]:
+    der_num = derivata_numerica(lambda x: x ** 3, x)
+    der_ana = 3 * (x ** 2)
+    if not np.isclose(der_num, der_ana, atol=1e-4):
+        raise ValueError("Derivata numerica e analitica non combaciano")
+    return (float(der_num), float(der_ana))
+    
+
+def f_seno(x):
+    der_num = derivata_numerica(lambda x: np.sin(x), x)
+    der_ana = np.cos(x)
+    if not np.isclose(der_num, der_ana, atol=1e-4):
+        raise ValueError("Derivata numerica e analitica non combaciano")
+    return (float(der_num), float(der_ana))
+
+def f_exp(x):
+    der_num = derivata_numerica(lambda x: np.exp(x), x)
+    der_ana = np.exp(x)
+    if not np.isclose(der_num, der_ana, atol=1e-4):
+        raise ValueError("Derivata numerica e analitica non combaciano")
+    return (float(der_num), float(der_ana))
+
+arr = np.array([-3, 0, 3])
+
+for a in arr:
+    print(f"\nDerivate per x = {a}")
+    print(f_cubo(a))
+    print(f_seno(a))
+    print(f"{f_exp(a)}\n")
+    
 
 # 1.3 - VISUALIZZAZIONE: funzione + tangente
 
@@ -358,19 +422,56 @@ def _grafico_funzione_e_tangenti(
     plt.close(fig)
 
 
+
 # 🔵 MINI-ESERCIZIO INLINE 1.3.A (~3 minuti) — genera grafico tangenti
 # Chiama _grafico_funzione_e_tangenti(out_path="figures/04_01_tangenti.png")
 # e verifica che il file esista (assert os.path.exists).
 # TUO CODICE QUI:
 
+# _grafico_funzione_e_tangenti(out_path="figures/04_01_tangenti.png")
+# assert os.path.exists(os.path.join(os.path.dirname(__file__), "figures/04_01_tangenti.png")), "Ops, il grafico non è stato creato!"
 
 # 🔵 MINI-ESERCIZIO INLINE 1.3.B (~2 minuti) — interpreta dal grafico
 # Guardando il grafico generato, rispondi (commento):
-#   1) In quale punto la pendenza e' nulla (= "fondo della valle")?
-#   2) Da quel punto, in che direzione devi muoverti per FAR SCENDERE
+#   1) In quale punto la pendenza e' nulla (= "fondo della valle")? -> 
+#   2) Da quel punto, in che direzione devi muoverti per FAR SCENDERE -> 
 #      f(x)? (suggerimento: una trick question - sei gia' al minimo)
 # TUO COMMENTO QUI:
+# La pendenza è nulla in x = 0 e non è possibile far scendere ulteriormente il valore di f(x), perchè se anche ci spostassimo verso sinistra entrando nei valori negativi, la funzione di x ricomincerebbe a salire.
 
+def _grafico_funzione_e_tangenti(
+    out_path: str | None = None,
+    show: bool = False,
+) -> None:
+    """f(x) = x^2 con tangenti (derivata) in 5 punti. Mostra che la derivata
+    e' la PENDENZA della tangente."""
+    x = np.linspace(-3, 3, 200)
+    y = x ** 2
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.plot(x, y, label="f(x) = x²", color="#1f77b4")
+    # 5 punti con tangenti
+    punti = [-2, -1, 0, 1, 2]
+    for x0 in punti:
+        y0 = x0 ** 2
+        m = 2 * x0  # derivata analitica
+        # retta tangente: y = m * (x - x0) + y0
+        x_tan = np.linspace(x0 - 1, x0 + 1, 30)
+        y_tan = m * (x_tan - x0) + y0
+        ax.plot(x_tan, y_tan, "--", alpha=0.7,
+                label=f"tang. in x={x0}, pend.={m}")
+        ax.plot(x0, y0, "o", markersize=8)
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_title("f(x) = x² e tangenti (derivata = pendenza della tangente)")
+    ax.legend(loc="upper center", fontsize=8)
+    ax.grid(True, alpha=0.3)
+    ax.set_ylim(-1, 12)
+    if out_path:
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        fig.savefig(out_path, dpi=120, bbox_inches="tight")
+    if show:
+        plt.show()
+    plt.close(fig)
 
 # ==========================================================================
 # SEZIONE 2 - Derivata della SIGMOID
@@ -388,6 +489,7 @@ def _grafico_funzione_e_tangenti(
 # 1) Se s'(z) max = 0.25, quanto vale dopo 3 layer sigmoid (stima 0.25^3)?
 # 2) Perché ReLU in hidden non ha questo tetto 0.25?
 # TUO COMMENTO QUI:
+#ReLU non ha questo effetto perchè non trasforma i valori, ma spegne solo i neuroni che riportano valori inferiori di 0. Le informazioni (valori) maggiori di 0 non vengono alterati e passano direttamente al layer successivo. Se utilizzassimo sigmoid nei layer, perderemmo per ogni layer molte info per via della saturazione agli estremi.
 #
 # La sigmoid e' la funzione di output del cap.02 M3:
 #       s(z) = 1 / (1 + e^-z)         z in R, output in (0, 1)
@@ -414,6 +516,21 @@ def _grafico_funzione_e_tangenti(
 #   4) stampa z, num, ana
 # Quale z dà la derivata MASSIMA? (Suggerimento: z=0)
 # TUO CODICE QUI:
+
+print("Mini-esercizio in-line 2.1.A\n")
+
+logits = np.array([-3, -1, 0, 1, 3])
+report = {}
+for z in logits:
+    num = derivata_numerica(sigmoid, z, h=1e-6)
+    ana = derivata_sigmoid(z)
+    assert np.isclose(num, ana, atol=1e-6), "Derivata analitiva e numerica non coincidono!"
+    report.update({str(z): ana})
+    print(f"\nDerivata Sigmoide per z = {z}\n")
+    print(f"Numerica: {round(num, 6)}")
+    print(f"Analitica: {round(ana, 6)}")
+print("\nValore massimo della derivata:")  
+print(max(report.items(), key=lambda item: item[1]))
 
 
 # 🔵 MINI-ESERCIZIO INLINE 2.1.B (~3 minuti) — massimo di s'(z)

@@ -82,6 +82,59 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 - **Lacune:** (1) **1 riga** invece di 3; (2) nessuna analogia **web** (CPU, load time, metriche nel tempo); (3) “valore di partenza” ambiguo → meglio “asse x / tempo / passo a destra sul grafico”.
 - **Modello:** “Sul grafico load time vs utenti: ogni +1 utente fa salire il tempo di X ms — quella X è la pendenza in quel punto.”
 
+**Rivalutazione post-fix (2026-05-29):** esplicitati **asse y** (altezza) e **asse x** (spostamento); seconda frase chiarisce “quanto sali/scendi” per piccolo passo. **Post-fix: 8.5/10** (opzionale: analogia web dev CPU/load time per 9.5; typo “sull’asse y”).
+
+### 2026-05-29 — Quiz ingresso Q6 (`04_derivate_gradiente.py` — prevedi output derivata numerica)
+
+- **Domanda:** Output di `(f(2+h)-f(2-h))/(2h)` con `f(x)=x³`, `h=1e-6`, `round(..., 1)`.
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** Risposta finale **`12.0`** corretta; formula **differenza centrale** ok; collegamento analitico `3x²` in x=2 → 12.
+- **Errore numerico nel calcolo mostrato:** valori `8.012…` / `7.988…` e denominatore `0.002` corrispondono a **`h=0.001`**, non a `h=1e-6` (con `1e-6` il numeratore è ~`2.4e-5`, non `0.024`). Il risultato resta 12 per coincidenza con la derivata esatta.
+- **Modello:** `print(round(deriv_approx, 1))` → **`12.0`**.
+
+### 2026-05-29 — Mini-esercizio 1.1.A (`04_derivate_gradiente.py` — derivata_numerica su x²)
+
+- **Esercizio:** `derivata_numerica(f, x)` con `f(x)=x²` in x=3, -3, 0 (attesi ~6, ~-6, ~0).
+- **Valutazione (primo tentativo):** **9.5/10**.
+- **Punti di forza:** `f` corretta; tre punti richiesti; usa `derivata_numerica` come da consegna; output numerico ~6, ~-6, 0 (verificato); notazione `f'(x)` nei print ok.
+- **Affinamento opzionale:** `round(..., 1)` o confronto con analitica `2*x` per sanity check esplicito.
+
+### 2026-05-29 — Mini-esercizio 1.1.B (`04_derivate_gradiente.py` — pendenza retta y=3x+1)
+
+- **Esercizio:** `derivata_numerica` in x=0, 5, -10; tutti attesi 3.0.
+- **Valutazione (primo tentativo):** **9/10**.
+- **Punti di forza:** `f_y = 3x+1` ok; tre punti richiesti; `assert np.all(np.isclose(arr, 3.0))` — verifica esplicita “tutti uguali al target” (pattern appena visto); concetto pendenza costante chiaro.
+- **Affinamento opzionale:** evita doppia chiamata `derivata_numerica` (salvi in `der_*` ma nel `print` ricalcoli); loop su `[0,5,-10]` più DRY; label nel print (`x=…`).
+
+### 2026-05-29 — Mini-esercizio 1.2.A (`04_derivate_gradiente.py` — numerica vs analitica ×3 funzioni)
+
+- **Esercizio:** x³→3x², sin→cos, exp→exp in 3 punti; `np.isclose(..., atol=1e-4)`.
+- **Valutazione (primo tentativo):** **9/10**.
+- **Punti di forza:** Tre funzioni con formule analitiche corrette; `np.sin(x)` in **radianti** (no deg2rad); `np.isclose` + `ValueError` se fallisce; loop su `[-3,0,3]` → 9 confronti; esecuzione verificata (tutti passano).
+- **Affinamento opzionale:** etichette print (`cubo/seno/exp`); a x=0 su x³ numerico ~1e-12 vs 0 (ok con atol); stile print uniforme (`print(f_cubo(a))` come gli altri).
+
+### 2026-05-29 — Mini-esercizio 1.3.A (`04_derivate_gradiente.py` — grafico tangenti + exists)
+
+- **Esercizio:** `_grafico_funzione_e_tangenti(out_path="figures/04_01_tangenti.png")` + verifica file creato.
+- **Valutazione (primo tentativo):** **9.5/10**.
+- **Punti di forza:** Chiamata con `out_path` corretto; `assert os.path.exists(...)` con path ancorato a `__file__` (più robusto del solo path relativo); messaggio errore chiaro; PNG presente in `modulo_03_dl_cv/figures/`.
+- **Affinamento opzionale:** se esegui lo script dalla root repo, allinea `out_path` allo stesso base di `__file__` (es. `Path(__file__).parent / "figures" / ...`) per evitare salvataggi in cartelle diverse.
+
+### 2026-05-29 — Mini-esercizio 1.3.B (`04_derivate_gradiente.py` — interpreta grafico tangenti)
+
+- **Domanda:** (1) pendenza nulla? (2) trick: da lì come far **scendere** f?
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** (1) **x=0** corretto (fondo, m=0, tangente orizzontale); (2) capisce il trick — **non si può** abbassare ulteriormente f (x² ≥ 0); spostarsi da 0 fa **risalire** f.
+- **Affinamento:** la trick è simmetrica: sia **sinistra** sia **destra** di 0 f **sale** (non solo “valori negativi di x”); nessuna direzione sul grafico abbassa f — sei al **minimo globale**.
+
+### 2026-05-29 — Rinforzo sez.2 (`04_derivate_gradiente.py` — vanishing gradient, commento)
+
+- **Domande:** (1) stima `0.25³` dopo 3 layer sigmoid; (2) perché ReLU non ha tetto 0.25.
+- **Valutazione (primo tentativo):** **6.5/10** (solo Q2 risposta; Q1 assente).
+- **Q1:** manca — atteso **0.25³ ≈ 0.0156** (~1.6% del segnale di gradiente vs layer ideale).
+- **Q2 (7.5/10 sul pezzo):** ReLU non satura come sigmoid; valori >0 passano; sigmoid agli estremi “schiaccia” attivazioni — intuizione ok.
+- **Cosa aggiungere:** ReLU in z>0 ha derivata **1** (non max 0.25); il gradiente non viene moltiplicato ripetutamente per ≤0.25 a ogni layer; saturazione sigmoid → derivata piccola → **vanishing gradient**.
+
 ### 2026-05-25 — TODO 2.1 derivata sigmoid numerica vs analitica (`04_derivate_gradiente.py` ~TODO sigmoid)
 
 > ⚠️ MIGRATA dal vecchio `03_backpropagation.py` (Sez.2 monolitico).
