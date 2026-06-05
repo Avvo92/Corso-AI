@@ -529,8 +529,9 @@ for z in logits:
     print(f"\nDerivata Sigmoide per z = {z}\n")
     print(f"Numerica: {round(num, 6)}")
     print(f"Analitica: {round(ana, 6)}")
-print("\nValore massimo della derivata:")  
-print(max(report.items(), key=lambda item: item[1]))
+print("\nValore massimo della derivata:")
+max_z, max_value = max(report.items(), key=lambda item: item[1])
+print(f"z: {max_z} -> derivata: {max_value}")
 
 
 # 🔵 MINI-ESERCIZIO INLINE 2.1.B (~3 minuti) — massimo di s'(z)
@@ -540,6 +541,25 @@ print(max(report.items(), key=lambda item: item[1]))
 #   2) Calcola der = derivata_sigmoid(zz)
 #   3) Stampa der.max() (~ 0.25) e zz[np.argmax(der)] (~ 0)
 # TUO CODICE QUI:
+
+print("\nMini-esercizio 2.1.B\n")
+
+zz = np.linspace(-5, +5, 1000)
+der = derivata_sigmoid(zz)
+sig = sigmoid(zz)
+print(der[495: 505])
+
+fig, ax = plt.subplots(figsize=(10, 8))
+plt.title("Derivata Massima di Sigmoide")
+ax.plot(zz, der,  color='green', linewidth=2)
+ax.plot(zz, sig, color='red', linewidth=2)
+ax.set_xlabel("logits")
+ax.set_ylabel("derivata sigmoide")
+plt.tight_layout()
+# plt.show()
+plt.close()
+
+print(f"Derivata Sigmoide Massima: {np.max(der)} per z = {zz[np.argmax(der)]}")
 
 
 # 2.2 - Implicazione del massimo 0.25 (vanishing gradient teaser)
@@ -552,6 +572,15 @@ print(max(report.items(), key=lambda item: item[1]))
 #   gradiente_massimo = 0.25 ** 5
 # Stampa il valore. Cosa noti? Per questo si usa ReLU nei layer interni.
 # TUO CODICE QUI:
+
+print("\nMini-esercizio in-line 2.2.A\n")
+
+max_grad_5_layer = 0.25 ** 5
+
+print (f"Gradiente massimo dopo 5 layer Sigmoid: {max_grad_5_layer}")
+
+# si nota che la s'(z) massima, dopo 5 layer di sigmoidi, restituisce un valore > 1e-4.
+# Questa è la dimostrazione visiva del vaniscing gradient.
 
 
 # ==========================================================================
@@ -582,6 +611,12 @@ print(max(report.items(), key=lambda item: item[1]))
 #   3) stampa z, num, ana. Commenta dove num e ana coincidono e dove no.
 # TUO CODICE QUI:
 
+print("\nMini-esercizio in-line 3.1.A\n")
+
+z = np.array([-2, -1, 0, 1, 2])
+num = derivata_numerica(relu, z)
+
+print(num)
 
 # 3.2 - DYING ReLU teaser
 
@@ -597,6 +632,19 @@ print(max(report.items(), key=lambda item: item[1]))
 # Calcola anche derivata_relu(Z). Quanti sono 1.0?
 # TUO CODICE QUI:
 
+print("\nMini-esercizio in-line 3.2.A\n")
+
+X = np.array([[1.0, 2.0], [3.0, 4.0]])
+W = np.array([[0.1], [0.2]])
+b = - np.max(np.array(X @ W)) - 1
+
+Z = X @ W + b
+H = relu(Z)
+der_relu = derivata_relu(Z)
+
+print(der_relu)
+
+# I valori di Z > 0 sono 0, cosi come i valori di derivata_relu.
 
 # ==========================================================================
 # SEZIONE 4 - GRADIENTE (multivariato)
@@ -641,6 +689,27 @@ def _esempio_gradiente_2d() -> None:
 #   3) f(x, y, z) = x^2 + 2*y^2 + 3*z^2  in (1, 1, 1)  -> atteso [2, 4, 6]
 # Stampa numerico e analitico per ognuno.
 # TUO CODICE QUI:
+
+print("\nMini-esercizio in-line 4.1.A\n")
+
+def f_1(v):
+    return float(v[0]**2 + v[1]**2)
+arr_1 = np.array([1, -2], dtype=float)
+grad_1 = gradiente_numerico(f_1, arr_1)
+print(grad_1)
+
+def f_2(v):
+    return float(v[0]* v[1])
+arr_2 = np.array([3, 5], dtype=float)
+grad_2 = gradiente_numerico(f_2, arr_2)
+print(grad_2)
+
+def f_3(v):
+    return float(v[0]**2 + 2*v[1]**2 + 3*v[2]**2)
+arr_3 = np.array([1, 1, 1], dtype=float)
+grad_3 = gradiente_numerico(f_3, arr_3)
+print(grad_3)
+
 
 
 # 4.2 - GRADIENTE punta in salita (visualizzazione)

@@ -135,6 +135,34 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 - **Q2 (7.5/10 sul pezzo):** ReLU non satura come sigmoid; valori >0 passano; sigmoid agli estremi “schiaccia” attivazioni — intuizione ok.
 - **Cosa aggiungere:** ReLU in z>0 ha derivata **1** (non max 0.25); il gradiente non viene moltiplicato ripetutamente per ≤0.25 a ogni layer; saturazione sigmoid → derivata piccola → **vanishing gradient**.
 
+### 2026-05-29 — Mini-esercizio 2.1.A (`04_derivate_gradiente.py` — sigmoid vs derivata)
+
+- **Esercizio:** numerica vs analitica su z∈{-3,-1,0,1,3}; quale z dà derivata max?
+- **Valutazione (primo tentativo):** **9.5/10**.
+- **Punti di forza:** Loop su 5 z; `derivata_numerica(sigmoid, z, h=1e-6)` + `derivata_sigmoid(z)`; `assert isclose` atol=1e-6; stampa num/ana; max corretto **z=0 → 0.25** via `max(report.items(), key=...)`.
+- **Affinamento opzionale:** `max_z` è stringa (`"0"`) — ok per print; alternativa `max(logits, key=derivata_sigmoid)` senza dict intermedio.
+
+### 2026-05-29 — Mini-esercizio 2.1.B (`04_derivate_gradiente.py` — max s'(z) con argmax)
+
+- **Esercizio:** `linspace`, `der.max()` ~0.25, `zz[argmax(der)]` ~0; grafico opzionale.
+- **Valutazione (primo tentativo):** **9/10**.
+- **Punti di forza:** `zz` 1000 punti; `derivata_sigmoid(zz)`; stampa max + z con `np.argmax` (verificato ~0.25 @ ~0); bonus grafico der+sig.
+- **Affinamento:** su stesso assi y, sigmoid (0–1) e derivata (0–0.25) scale diverse — etichetta seconda curva o `twinx`; `der.max()`/`der.argmax()` equivalenti a `np.max/np.argmax`; `plt.close()` senza save opzionale se non serve file.
+
+### 2026-05-29 — Mini-esercizio 2.2.A (`04_derivate_gradiente.py` — 0.25⁵ vanishing)
+
+- **Esercizio:** stima `0.25 ** 5`; cosa noti; perché ReLU interno.
+- **Valutazione (primo tentativo):** **8/10**.
+- **Punti di forza:** Calcolo **`0.25**5` corretto (~**0.00098**, 1/1024); stampa chiara.
+- **Commento debole:** “> 1e-4” è vero ma non è il messaggio — il gradiente è **~1000× più piccolo** (~0.1% del segnale); training lentissimo → ReLU in hidden; typo *vaniscing* → *vanishing*.
+
+### 2026-05-29 — Mini-esercizio 3.2.A (`04_derivate_gradiente.py` — dying ReLU)
+
+- **Esercizio:** Z con b molto negativo; quanti Z>0? quanti derivata_relu==1?
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** X,W ok; `b=-np.max(X@W)-1` garantisce tutti Z<0 (Z=[-1.6,-1]); H=0; `derivata_relu` tutti 0; commento conclusione corretto.
+- **Affinamento:** rispondere esplicitamente con `(Z>0).sum()` e `(der_relu==1).sum()`; stampare H; `np.array` su `X@W` ridondante.
+
 ### 2026-05-25 — TODO 2.1 derivata sigmoid numerica vs analitica (`04_derivate_gradiente.py` ~TODO sigmoid)
 
 > ⚠️ MIGRATA dal vecchio `03_backpropagation.py` (Sez.2 monolitico).
