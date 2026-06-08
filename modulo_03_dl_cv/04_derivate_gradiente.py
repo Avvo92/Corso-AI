@@ -695,20 +695,27 @@ print("\nMini-esercizio in-line 4.1.A\n")
 def f_1(v):
     return float(v[0]**2 + v[1]**2)
 arr_1 = np.array([1, -2], dtype=float)
-grad_1 = gradiente_numerico(f_1, arr_1)
-print(grad_1)
+grad_1_num = gradiente_numerico(f_1, arr_1)
+grad_1_ana = np.array([2*arr_1[0], 2*arr_1[1]])
+
+print(grad_1_num)
+print(grad_1_ana)
 
 def f_2(v):
     return float(v[0]* v[1])
 arr_2 = np.array([3, 5], dtype=float)
-grad_2 = gradiente_numerico(f_2, arr_2)
-print(grad_2)
+grad_2_num = gradiente_numerico(f_2, arr_2)
+grad_2_ana = np.array([arr_2[1], arr_2[0]])
+print(grad_2_num)
+print(grad_2_ana)
 
 def f_3(v):
     return float(v[0]**2 + 2*v[1]**2 + 3*v[2]**2)
 arr_3 = np.array([1, 1, 1], dtype=float)
-grad_3 = gradiente_numerico(f_3, arr_3)
-print(grad_3)
+grad_3_num = gradiente_numerico(f_3, arr_3)
+grad_3_ana = np.array([2*arr_3[0], 4*arr_3[1], 6*arr_3[2]])
+print(grad_3_num)
+print(grad_3_ana)
 
 
 
@@ -745,13 +752,14 @@ def _grafico_campo_gradiente(
     if show:
         plt.show()
     plt.close(fig)
-
+# _grafico_campo_gradiente(show=True)
 
 # 🔵 MINI-ESERCIZIO INLINE 4.2.A (~3 minuti) — genera campo gradienti
 # Chiama _grafico_campo_gradiente(out_path="figures/04_02_gradiente_2d.png")
 # e verifica esistenza file.
 # TUO CODICE QUI:
-
+_grafico_campo_gradiente(out_path="figures/04_02_gradiente_2d.png")
+assert os.path.exists(os.path.join(os.path.dirname(__file__), "figures/04_02_gradiente_2d.png")), "Il file non è stato creato"
 
 # 4.3 - DERIVATA PARZIALE = "muovi una variabile alla volta"
 
@@ -762,13 +770,32 @@ def _grafico_campo_gradiente(
 # Calcola "a mano" in commento. Poi verifica numericamente con
 # gradiente_numerico in (x=1, y=2). Atteso: [2*1*2, 1^2 + 3] = [4, 4].
 # TUO COMMENTO + CODICE QUI:
+# 
+# eps = 1e-4
+# df/dx = (((x + eps)^2 * y + 3 * y + 2) - ((x - eps)^2 * y + 3 * y + 2)) / (2 * eps) = 
+#         (((1 + 0,0001)^2 * 2 + 3 * 2 + 2) - ((1 - 0,0001)^2 * 2 + 3 * 2 + 2)) / (2 * 0,0001) = 
+#         (2,00040002 + 6 + 2) - (1,99960002 + 6 + 2) / 0,0002 =
+#         (10,00040002 - 9,99960002) / 0,0002 = 4
+#
+# df/dy = ((x^2 * (y + eps) + 3 * (y + eps) + 2) - (x^2 * (y - eps) + 3 * (y - eps) + 2)) / (2 * eps) = 
+#         ((1^2 * 2,0001 + 3 * 2,0001 + 2) - (1^2 * 1,9999 + 3 * 1,9999 + 2)) / (2 * 0,0001) =
+#         (10,0004 - 9,9996) / 0,0002 = 4
 
+print("\nMini-esercizio in-line 4.3.A\n")
+v = np.array([1, 2], dtype=float)
+def f(v) ->float:
+    return float((v[0]**2) * v[1] + 3 * v[1] + 2)
+
+result = gradiente_numerico(f, v)
+assert np.allclose(np.array([4.0, 4.0]), result, atol=1e-8), "Qualcosa non torna, i risultati non coincidono"
+print(result)
 
 # 🔵 MINI-ESERCIZIO INLINE 4.3.B (~3 minuti) — gradiente come "lista coordinate"
 # Spiega in 2 righe (commento) perche' il gradiente di una funzione di
 # 3 variabili "vive" in R^3 (cioe' e' un vettore di 3 numeri).
 # Suggerimento: una derivata parziale per ogni variabile.
 # TUO COMMENTO QUI:
+# In pratica, il gradiente di una funzione a 3 variabile è un vettore di derivate parziali, una per ogni parametro della funzione, di cui ogni elemento è il risultato della funzione derivata ottenuta spostando solo un elemento e tenendo gli altri fissi. Come risultato abbiamo dunque per ogni elemento, quanto quell'elemento determina la pendenza della funzione.
 
 
 # ==========================================================================
@@ -787,7 +814,28 @@ def _grafico_campo_gradiente(
 #   2) Calcola BCE con clip (eps, 1-eps) — valore finito?
 #   3) Verifica che bce_loss(p, y) == bce_loss(y, p) → False (ordine conta!)
 # TUO CODICE QUI:
-#
+
+print("\nMini-esercizio Introduzione Sezione 5\n")
+
+p = np.array([0.0, 1.0], dtype=float)
+y = np.array([1.0, 0.0], dtype=float)
+eps = 1e-12
+
+p_no_safe = np.clip(p, eps, 1)
+p_safe = np.clip(p, eps, 1 - eps)
+
+bce_no_safe = - y * np.log(p_no_safe) - (1 - y) * np.log(1 - p_no_safe)
+bce_safe = - y * np.log(p_safe) - (1 - y) * np.log(1 - p_safe)
+
+print(bce_no_safe)
+print(bce_safe)
+
+control = bce_loss(y, p_safe) == bce_loss(p_safe, y)
+
+assert control == False, "Il controllo deve restituire False"
+
+# dato che in bce_no_safe non abbiamo protetto il limite che tende a 1 , per un valore che coincide proprio con 1 avremo come risultato inf.
+
 # La BCE su una singola pratica:
 #       L(p, y) = - y * log(p) - (1 - y) * log(1 - p)
 #
@@ -807,6 +855,20 @@ def _grafico_campo_gradiente(
 #   2) ana: (p - y) / (p * (1 - p)) con p=0.8, y=1
 #   3) confronta con np.isclose, atol=1e-4
 # TUO CODICE QUI:
+
+print("\nMini-esercizio in-line 5.1.A")
+
+p = 0.8
+y = 1.0
+eps = 1e-4
+
+der_num = (bce_loss(p + eps, y) - bce_loss(p - eps, y)) / (2 * eps)
+der_ana = (p - y) / (p * (1 - p))
+
+assert np.isclose(der_num, der_ana, atol=eps), "I valori non coincidono"
+
+print(der_num)
+print(der_ana)
 
 
 # 5.2 - SEMPLIFICAZIONE MIRACOLOSA: BCE + sigmoid -> derivata e' (p - y)
@@ -848,6 +910,32 @@ def _grafico_campo_gradiente(
 # Stampa una tabella z | p | num | ana | diff.
 # Bonus: ripeti con y=0.
 # TUO CODICE QUI:
+
+import pandas as pd
+
+print("\nMini-esercizio 5.2.A\n")
+
+z_vals = np.array([-3.0, -1.0, 0.0, 1.0, 3.0], dtype=float)
+y = 1.0
+results = []
+for z in z_vals:
+    ana = sigmoid(z) - y
+    num = derivata_numerica(
+        lambda z_var: bce_loss(
+            np.array([sigmoid(z_var)]),
+            np.array([y])
+            ),
+        z
+        ) 
+    assert np.isclose(ana, num, atol=1e-8)
+    results.append({
+        "z": z,
+        "ana": ana,
+        "num": num
+    })
+
+print(pd.DataFrame(results))
+
 
 
 # 5.3 - QUANDO la semplificazione NON vale

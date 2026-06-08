@@ -163,6 +163,47 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 - **Punti di forza:** X,W ok; `b=-np.max(X@W)-1` garantisce tutti Z<0 (Z=[-1.6,-1]); H=0; `derivata_relu` tutti 0; commento conclusione corretto.
 - **Affinamento:** rispondere esplicitamente con `(Z>0).sum()` e `(der_relu==1).sum()`; stampare H; `np.array` su `X@W` ridondante.
 
+### 2026-06-05 — Mini-esercizio 4.1.A (`04_derivate_gradiente.py` — gradiente numerico vs analitico)
+
+- **Esercizio:** 3 funzioni, gradiente numerico + analitico, stampa confronto.
+- **Valutazione (primo tentativo):** **9/10**.
+- **Punti di forza:** `f_1/f_2/f_3` corrette; `dtype=float` (fix int→float); analitici `[2x,2y]`, `[y,x]`, `[2x,4y,6z]`; punti e attesi ok; esecuzione verificata (allclose num/ana e attesi).
+- **Affinamento:** aggiungere `assert np.allclose(..., atol=1e-4)` per ogni coppia; etichette print (`num`/`ana`); opz. messaggio OK per funzione.
+
+### 2026-06-05 — Mini-esercizio 4.2.A (`04_derivate_gradiente.py` — campo gradienti PNG)
+
+- **Esercizio:** `_grafico_campo_gradiente(out_path=...)` + verifica file.
+- **Valutazione (primo tentativo):** **9.5/10**.
+- **Punti di forza:** Chiamata con path corretto; `assert exists` ancorato a `__file__` (robusto); messaggio errore chiaro; pattern allineato a 1.3.A.
+
+### 2026-06-05 — Mini-esercizio 4.3.A (`04_derivate_gradiente.py` — parziali a mano + gradiente)
+
+- **Esercizio:** `f=x²y+3y+2`; df/dx, df/dy a mano; verifica in (1,2) atteso [4,4].
+- **Valutazione (primo tentativo):** **9/10**.
+- **Punti di forza:** Calcolo manuale differenza centrata → 4 e 4; `f(v)` corretta; `dtype=float`; `gradiente_numerico` + `allclose` con [4,4]; esecuzione verificata.
+- **Affinamento:** aggiungere in commento formule simboliche `df/dx=2xy`, `df/dy=x²+3`; confrontare con `grad_ana` calcolato da `v` invece di letterale fisso; evitare nome generico `f` se possibile.
+
+### 2026-06-05 — Mini-esercizio 4.3.B (`04_derivate_gradiente.py` — gradiente in R³)
+
+- **Domanda:** 2 righe — perché gradiente di f(x,y,z) è vettore di 3 numeri (vive in R³).
+- **Valutazione (primo tentativo):** **8/10**.
+- **Punti di forza:** Gradiente = lista di **derivate parziali** (una per variabile); ogni componente = effetto di muovere **solo** quella coordinata; idea pendenza/incidenza ok.
+- **Affinamento:** esplicitare **3 variabili → 3 componenti → R³**; più conciso (2 righe); typo *variabili*; “parametro” → *variabile/input*.
+
+### 2026-06-05 — Rinforzo sez.5 intro (`04_derivate_gradiente.py` — clip BCE + ordine)
+
+- **Esercizio:** (1) clip `(eps,1)` → inf? (2) clip bilaterale finito? (3) `bce_loss(p,y)==bce_loss(y,p)` → False.
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** `p=[0,1]`, `y=[1,0]`; confronto `p_no_safe` vs `p_safe`; `bce_no_safe` con **inf** su p=1,y=0; `bce_safe` finito; commento limite destro ok; assert False sull’ordine.
+- **Affinamento:** Q1–Q2 rispondere esplicitamente (inf vs finito); test ordine come da consegna `bce_loss(p,y) vs bce_loss(y,p)` (non `p_safe`); `bce_loss` ritorna **media** — confronto per-elemento vs funzione capitolo; lacuna #35 ancora da consolidare in parole.
+
+### 2026-06-05 — Mini-esercizio 5.1.A (`04_derivate_gradiente.py` — derivata BCE rispetto a p)
+
+- **Esercizio:** (p=0.8, y=1); num con `derivata_numerica` su log-BCE; ana `(p-y)/(p(1-p))`; `isclose` atol=1e-4.
+- **Valutazione (primo tentativo):** **8/10**.
+- **Punti di forza:** `der_ana = (p-y)/(p*(1-p))` corretta → **-1.25**; confronto num/ana ok (verificato); assert `isclose` passa.
+- **Affinamento:** consegna chiede **`derivata_numerica(lambda p_var: -y*log(p_var)-...)`** — hai usato differenza manuale su **`bce_loss`** (funziona qui grazie al clip interno, ma non è il metodo richiesto); `eps=1e-4` come passo **e** come `atol` in `isclose` — ok ma confonde con `h` tipico `1e-6`.
+
 ### 2026-05-25 — TODO 2.1 derivata sigmoid numerica vs analitica (`04_derivate_gradiente.py` ~TODO sigmoid)
 
 > ⚠️ MIGRATA dal vecchio `03_backpropagation.py` (Sez.2 monolitico).
