@@ -204,6 +204,31 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 - **Punti di forza:** `der_ana = (p-y)/(p*(1-p))` corretta → **-1.25**; confronto num/ana ok (verificato); assert `isclose` passa.
 - **Affinamento:** consegna chiede **`derivata_numerica(lambda p_var: -y*log(p_var)-...)`** — hai usato differenza manuale su **`bce_loss`** (funziona qui grazie al clip interno, ma non è il metodo richiesto); `eps=1e-4` come passo **e** come `atol` in `isclose` — ok ma confonde con `h` tipico `1e-6`.
 
+### 2026-06-05 — TODO 1 (`04_derivate_gradiente.py` — derivata num vs ana ×4 funzioni)
+
+- **Esercizio:** 4 funzioni, 3 punti, tabella, isclose 1e-4.
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Punti di forza:** 4 coppie f/f'_ana; loop 3 punti; `derivata_numerica`; DataFrame report; f1, f2, f4 ok su [-2,1,2].
+- **Errori / lacune:** `np.isclose` chiamato ma **risultato ignorato** (no assert/colonna ok); variabile **`dict`** shadow builtin; **f3=log(x)** a x=-2: `return 0` fuori dominio → confronto **falso positivo** (ana=0, num≈0); f3 serve **x>0** (es. [0.5,1,2]); colonna `z` ok ma label `x` più chiara.
+
+**Rivalutazione post-fix (2026-06-05):** `arr=[0.5,1,2]` (dominio log ok); **`assert isclose`** su tutte e 4 le funzioni; `row` al posto di `dict`. Esecuzione verificata 12/12 check. **Post-fix: 9/10** (opz.: `f_3` senza ramo `return 0`; punti diversi per f2 se x=0; colonna `x` invece di `z`).
+
+### 2026-06-05 — TODO 2 (`04_derivate_gradiente.py` — grafico sigmoid + derivata)
+
+- **Esercizio:** funzione `_grafico_sigmoid_e_derivata`; plot sigmoid + `derivata_sigmoid`; salva `04_03_sigmoid_derivata.png`; assert exists.
+- **Valutazione (primo tentativo):** **7/10**.
+- **Punti di forza:** `linspace(-6,6)`; sigmoid plottata; seconda curva rossa; griglia; path con `__file__`; `assert exists`; PNG creato.
+- **Errori / lacune:** **manca funzione** `_grafico_sigmoid_e_derivata` (codice inline); usa **`derivata_numerica(sigmoid, arr)`** invece di **`derivata_sigmoid(arr)`** (consegna); `ax.legend()` **senza label** sulle curve; `print(shape)` debug; ylabel solo "Sigmoidi".
+
+**Rivalutazione post-fix (2026-06-05):** funzione `_grafico_sigmoid_derivata` con `derivata_sigmoid(arr)` ✓; griglia/titolo/save/assert interni. **Manca chiamata** alla funzione con path (consegna: "Chiamala"); legend senza `label=`; nome leggermente diverso da `_grafico_sigmoid_e_derivata`. **Post-fix: 8/10**.
+
+### 2026-06-05 — TODO 4 (`04_derivate_gradiente.py` — gradiente su W1_flat rete random)
+
+- **Esercizio:** `f(W1_flat)` reshape+forward+BCE; `gradiente_numerico`; stampa shape e primi 4.
+- **Valutazione (primo tentativo):** **8/10**.
+- **Punti di forza:** Setup rng/X/y/W2/b ok; `f` con reshape (3,4), forward 2-layer, `bce_loss`; `my_grad_num` corretta (+=/-=); `result.shape==(12,)`, primi 4 stampati; coincide con `gradiente_numerico` del file.
+- **Affinamento:** rinomina `W1_flat` → `f` (confonde funzione/vettore); usa `gradiente_numerico` già definita (non reinventare); `W1` come `(3,4)` poi `.ravel()`; `P=sigmoid(Z2).ravel()`; `W1.astype(float)` per sicurezza.
+
 ### 2026-05-25 — TODO 2.1 derivata sigmoid numerica vs analitica (`04_derivate_gradiente.py` ~TODO sigmoid)
 
 > ⚠️ MIGRATA dal vecchio `03_backpropagation.py` (Sez.2 monolitico).

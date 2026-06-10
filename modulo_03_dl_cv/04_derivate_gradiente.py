@@ -963,6 +963,64 @@ print(pd.DataFrame(results))
 # Stampa una tabella con i risultati.
 # TUO CODICE QUI:
 
+print("\nTODO 1\n")
+
+def f_1(x):
+    return x**4
+def f_1_der_ana(x):
+    return 4*(x**3)
+
+def f_2(x):
+    return 2/x
+def f_2_der_ana(x):
+    return -2/x**2
+
+def f_3(x):
+    if x > 0:
+        return np.log(x)
+    return 0.0    
+def f_3_der_ana(x):
+    if x >0:
+        return 1 / x
+    return 0.0
+
+def f_4(x):
+    return sigmoid(x)
+def f_4_der_ana(x):
+    return sigmoid(x) * (1 - sigmoid(x))
+
+arr = np.array([0.5, 1, 2], dtype=float)
+r = []
+for a in arr:
+    f1_ana = f_1_der_ana(a)
+    f1_num = derivata_numerica(f_1, a)
+    assert np.isclose(f1_ana, f1_num, atol=1e-4), "Derivate ana e num di f_1 non coincidono"
+    f2_ana = f_2_der_ana(a)
+    f2_num = derivata_numerica(f_2, a)
+    assert np.isclose(f2_ana, f2_num, atol=1e-4), "Derivate ana e num di f_2 non coincidono"
+    f3_ana = f_3_der_ana(a)
+    f3_num = derivata_numerica(f_3, a)
+    assert np.isclose(f3_ana, f3_num, atol=1e-4), "Derivate ana e num di f_3 non coincidono"
+    f4_ana = f_4_der_ana(a)
+    f4_num = derivata_numerica(f_4, a)
+    assert np.isclose(f4_ana, f4_num, atol=1e-4), "Derivate ana e num di f_4 non coincidono"
+    
+    row = {
+            "z": a,
+            "f1_ana": f1_ana,
+            "f1_num": f1_num,
+            "f2_ana": f2_ana,
+            "f2_num": f2_num,
+            "f3_ana": f3_ana,
+            "f3_num": f3_num,
+            "f4_ana": f4_ana,
+            "f4_num": f4_num,
+    }
+    r.append(row)
+    
+report = pd.DataFrame(r)
+print(report)
+
 
 # TODO 2 (10 minuti) — grafico sigmoid + sua derivata sovrapposti
 # Crea una funzione _grafico_sigmoid_e_derivata che:
@@ -973,6 +1031,23 @@ print(pd.DataFrame(results))
 # Chiamala. Verifica esistenza file.
 # TUO CODICE QUI:
 
+print("\nTODO 2\n")
+def _grafico_sigmoid_derivata(out_path: str | None = None):
+    arr = np.linspace(-6, 6, 100)
+    sig_arr = sigmoid(arr)
+    der_sig_arr = derivata_sigmoid(arr)
+    fig, ax = plt.subplots(figsize=(8, 10))
+    ax.set_title("Sigmoide e Derivata")
+    ax.plot(arr, sig_arr, color="green", linewidth=2)
+    ax.plot(arr, der_sig_arr, color="red", linewidth=2)
+    ax.set_xlabel("Logits")
+    ax.set_ylabel("Sigmoidi")
+    ax.grid(alpha=0.4)
+    ax.legend()
+    if out_path:
+        plt.savefig(out_path)
+        assert os.path.exists(out_path), "Il file sembra non essere stato creato"
+    plt.close()
 
 # TODO 3 (8 minuti) — grafico ReLU + sua derivata sovrapposti
 # Stesso schema di TODO 2 ma per:
@@ -1001,6 +1076,41 @@ print(pd.DataFrame(results))
 # Poi calcola il gradiente_numerico di f rispetto a W1_flat.
 # Stampa la shape del gradiente e i primi 4 valori.
 # TUO CODICE QUI:
+
+print("\nTODO 4\n")
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal((5, 3))
+y = rng.integers(0, 2, size=5)
+W1 = rng.standard_normal((12)) * 0.1
+b1 = np.zeros(4)
+W2 = rng.standard_normal((4, 1)) * 0.1
+b2 = np.zeros(1)
+
+def W1_flat(W1_flat):
+    W1_mat = W1_flat.reshape(3, 4)
+    Z1 = X @ W1_mat + b1
+    H = relu(Z1)
+    Z2 = H @ W2 + b2
+    P = sigmoid(Z2)
+    return bce_loss(P, y)
+
+def my_grad_num(
+    f: Callable[[NDArray[np.float64]], float],
+    x: NDArray[np.float64],
+    h = 1e-6
+) -> NDArray[np.float64]:
+    grad = np.zeros_like(x, dtype=float)
+    for i in range(x.size):
+        xp = x.copy(); xp.flat[i] += h
+        xm = x.copy(); xm.flat[i] -= h
+        grad.flat[i] = (f(xp) - f(xm)) / (2.0 * h)
+    return grad
+
+result = my_grad_num(W1_flat, W1)
+
+print(result.shape)
+print(result[:4])
 
 
 # TODO 5 (5 minuti) — derivata della BCE su batch
