@@ -1121,6 +1121,26 @@ print(result[:4])
 # Stampa entrambi i vettori.
 # TUO CODICE QUI:
 
+print("\nTODO 5\n")
+
+p = np.array([0.9, 0.1, 0.7], dtype=float)
+y = np.array([1, 0, 1], dtype=float)
+
+dl_dp_mean = ((p - y) / (p * (1 - p))) / len(p)
+
+def f(p_vec):
+    return bce_loss(p_vec, y)
+
+grad = gradiente_numerico(
+    f,
+    p
+)
+
+assert np.allclose(dl_dp_mean, grad, atol=1e-8), "Qualcosa è andato storto, i due vettori non coincidono!"
+
+print(dl_dp_mean)
+print(grad)
+
 
 # TODO 6 (5 minuti) — derivata della BCE rispetto al logit (semplificazione)
 # Per z = np.array([-2.0, 0.0, 2.0]) e y = np.array([1, 0, 1]):
@@ -1129,6 +1149,26 @@ print(result[:4])
 #   - verifica numericamente con gradiente_numerico applicato a z
 # Stampa entrambi i vettori. Coincidono?
 # TUO CODICE QUI:
+
+print("\nTODO 6\n")
+
+z = np.array([-2.0, 0.0, 2.0])
+y = np.array([1, 0, 1], dtype=float)
+
+p = sigmoid(z)
+
+dl_dz = (p - y) / len(p)
+
+def f(z_vec):
+    return bce_loss(sigmoid(z_vec), y)
+
+grad = gradiente_numerico(
+    f,
+    z        
+)    
+
+print(grad)
+print(dl_dz)
 
 
 # ==========================================================================
@@ -1180,7 +1220,62 @@ print(result[:4])
 # Verifica chiamando con n_punti=20.
 # TUO CODICE QUI:
 
+print("\nPIPELINE INTEGRATA\n")
 
+def derivate_check_completo(
+    n_punti: int = 10,
+    seed: int = 0,
+) -> dict[str, float]:
+    rng = np.random.default_rng(seed)
+    z = rng.uniform(-3, 3, size=n_punti)
+    result = []
+    for z_val in z:
+        der_num_sig = derivata_numerica(
+            sigmoid,
+            z_val
+        )
+        der_ana_sig = derivata_sigmoid(z_val)
+        err_sig = np.abs(der_ana_sig - der_num_sig)
+        
+        der_num_relu = derivata_numerica(
+            relu,
+            z_val
+        )
+        der_ana_relu = derivata_relu(z_val)
+        err_relu = np.abs(der_ana_relu - der_num_relu)
+        
+        # Caso y=1
+        bce_num_1 = derivata_numerica(
+        lambda zv: bce_loss(np.array([sigmoid(zv)]), np.array([1.0])),
+        z_val,
+        )
+        bce_ana_1 = sigmoid(z_val) - 1.0
+        err_bce_1 = np.abs(bce_num_1 - bce_ana_1)
+
+        # Caso y=0
+        bce_num_0 = derivata_numerica(
+        lambda zv: bce_loss(np.array([sigmoid(zv)]), np.array([0.0])),
+        z_val,
+        )
+        bce_ana_0 = sigmoid(z_val) - 0.0
+        err_bce_0 = np.abs(bce_num_0-  bce_ana_0)
+        
+        result.append([err_sig, err_relu, err_bce_1, err_bce_0])
+        
+    max_err_relu = np.max(np.array(result)[:, 1])        
+    max_err_sig = np.max(np.array(result)[:, 0])
+    max_err_bce_1 = np.max(np.array(result)[:, 2])
+    max_err_bce_0 = np.max(np.array(result)[:, 3])
+    
+    return {
+            "sigmoid_max_err": float(max_err_sig),
+            "relu_max_err":    float(max_err_relu),
+            "bce_y1_max_err":  float(max_err_bce_1),
+            "bce_y0_max_err":  float(max_err_bce_0),
+        }
+    
+print(derivate_check_completo())
+        
 # ==========================================================================
 # RINFORZI CAP.01-03 M3 (TODO 7 - 10)
 # ==========================================================================

@@ -229,6 +229,20 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 - **Punti di forza:** Setup rng/X/y/W2/b ok; `f` con reshape (3,4), forward 2-layer, `bce_loss`; `my_grad_num` corretta (+=/-=); `result.shape==(12,)`, primi 4 stampati; coincide con `gradiente_numerico` del file.
 - **Affinamento:** rinomina `W1_flat` → `f` (confonde funzione/vettore); usa `gradiente_numerico` già definita (non reinventare); `W1` come `(3,4)` poi `.ravel()`; `P=sigmoid(Z2).ravel()`; `W1.astype(float)` per sicurezza.
 
+### 2026-06-05 — TODO 5 (`04_derivate_gradiente.py` — derivata BCE su batch)
+
+- **Esercizio:** `dl_dp` analitico + verifica con `gradiente_numerico` su `p`; stampa entrambi i vettori.
+- **Valutazione (post-fix):** **9.5/10**.
+- **Punti di forza:** Formula `(p-y)/(p(1-p))` corretta; fattore `1/n` per allineamento a `bce_loss` (mean); `f(p_vec)` senza shadowing; `gradiente_numerico(f, p)`; `assert np.allclose(..., atol=1e-8)` con messaggio chiaro; vettori `[-0.37, 0.37, -0.48]` coincidono.
+- **Affinamento minore:** opzionale stampare `dl_dp` grezzo (senza `/n`) per confronto didattico per-campione vs media.
+
+### 2026-06-05 — TODO 6 (`04_derivate_gradiente.py` — derivata BCE rispetto a z)
+
+- **Esercizio:** `p=sigmoid(z)`; `dL/dz = p-y` (+ `/n`); verifica con `gradiente_numerico` su `z`.
+- **Valutazione:** **9/10**.
+- **Punti di forza:** Formula miracolosa `(p-y)/len(p)` corretta (errore TODO 5 formula superato); `f(z_vec)` con `bce_loss(sigmoid(z_vec), y)`; `gradiente_numerico(f, z)`; vettori coincidono `[-0.294, 0.167, -0.040]`.
+- **Affinamento:** `z.astype(float)` esplicito; `assert np.allclose(dl_dz, grad)` come TODO 5; stampare `p` opzionale per leggere i gradienti.
+
 ### 2026-05-25 — TODO 2.1 derivata sigmoid numerica vs analitica (`04_derivate_gradiente.py` ~TODO sigmoid)
 
 > ⚠️ MIGRATA dal vecchio `03_backpropagation.py` (Sez.2 monolitico).
