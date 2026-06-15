@@ -243,6 +243,55 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 - **Punti di forza:** Formula miracolosa `(p-y)/len(p)` corretta (errore TODO 5 formula superato); `f(z_vec)` con `bce_loss(sigmoid(z_vec), y)`; `gradiente_numerico(f, z)`; vettori coincidono `[-0.294, 0.167, -0.040]`.
 - **Affinamento:** `z.astype(float)` esplicito; `assert np.allclose(dl_dz, grad)` come TODO 5; stampare `p` opzionale per leggere i gradienti.
 
+### 2026-06-05 — TODO PIPE.1 (`04_derivate_gradiente.py` — derivate_check_completo)
+
+- **Esercizio:** sanity check analitico vs numerico su sigmoid, ReLU, BCE (y=1/y=0); dict max errori; tabella + soglie.
+- **Valutazione:** **8.5/10**.
+- **Punti di forza:** Loop su `z_val`; max err sigmoid/ReLU/BCE y1/y0; BCE con `derivata_numerica` per campione e y fissi; `np.abs(num - ana)` corretto; dict con 4 chiavi e `float()`; errori ~1e-10, soglie rispettate.
+- **Affinamento:** chiamata `derivate_check_completo(n_punti=20)`; step 4 tabella leggibile; step 5 assert soglie (`<1e-3` sigmoid/BCE, `<0.5` ReLU); rinominare `z` → `z_punti`; indentazione lambda.
+
+### 2026-06-05 — TODO 7 (`04_derivate_gradiente.py` — dp/dw chain rule)
+
+- **Esercizio:** `gradiente_numerico` su `w` per `sigmoid(w·x+b)`; ana `derivata_sigmoid(z)*x`; assert.
+- **Valutazione:** **9/10**.
+- **Punti di forza:** Lambda corretta; `np.array(w, dtype=float)` (0-d, evita array-in-array); formula analitica ok; `assert np.isclose`; valori ~0.375 per z=1.1.
+- **Affinamento:** `z = w*x+b` esplicito in ana; `float(grad_num)` in stampa; rimosso codice eps duplicato (se presente).
+
+### 2026-06-05 — TODO 8 (`04_derivate_gradiente.py` — sigmoid/ReLU vettorizzate + derivate)
+
+- **Esercizio:** riscrivere `my_sigmoid`/`my_relu`; applicare a Z; stampare forward e derivate.
+- **Valutazione:** **9/10**.
+- **Punti di forza:** Sigmoid con clip; ReLU `np.maximum`; forward corretti su Z; derivata sigmoid `p*(1-p)`; derivata ReLU; output allineati al riferimento.
+- **Affinamento:** ReLU derivata idiomatica `(Z > 0)` invece di `(h > 0)` (equivalente ma più chiaro); opzionale funzioni `my_derivata_*` dedicate.
+
+### 2026-06-05 — TODO 9 (`04_derivate_gradiente.py` — my_bce_loss da zero)
+
+- **Esercizio:** riscrivere BCE vettorizzata; confronto con `bce_loss` del file.
+- **Valutazione:** **9.5/10**.
+- **Punti di forza:** Formula `-y*log(p)-(1-y)*log(1-p)`; clip `eps`/`1-eps`; `mean()`; ordine `(p, y)` corretto; `dtype=float`; `assert np.allclose`; coincide con riferimento.
+- **Affinamento:** nome `my_bce` come in consegna (cosmetico); `np.asarray(p/y, dtype=float)` dentro la funzione per robustezza.
+
+### 2026-06-05 — TODO 10 (`04_derivate_gradiente.py` — gradiente loss rispetto a b2)
+
+- **Esercizio:** forward 2-layer; `gradiente_numerico` su `b2`; bonus linearità `Δloss ≈ grad×eps`.
+- **Valutazione:** **9/10**.
+- **Punti di forza:** Setup TODO 4; forward+`bce_loss` in wrapper; `grad_b2≈0.100`; bonus corretto (`delta≈0.00101` vs `grad×0.01≈0.00100`); `float(grad[0])`; `np.array(b2)` per evitare bug shape.
+- **Affinamento:** `assert np.isclose(delta, prova_del_nove, atol=1e-4)`; rinominare `W1_flat`→`loss_rispetto_b2`; stampare `bce_loss_1` come loss step 3.
+
+### 2026-06-05 — TODO 11 (`04_derivate_gradiente.py` — colloquio)
+
+- **Esercizio:** 5 risposte brevi su derivata, gradiente, sigmoid', vanishing, p-y.
+- **Valutazione:** **7/10**.
+- **Per punto:** (1) ~5 — confonde derivata con "cambio della pendenza" (serve f(x), non pendenza della pendenza); (2) ~8.5 — gradiente/manopole ok; (3) ~9 — 0.25 e massimo corretti; (4) ~6 — idea saturazione ok, manca mitigazione (ReLU, init, ecc.); (5) ~5 — solo nome "semplificazione", serve chain rule in una riga.
+- **Pattern:** rafforzare definizione derivata (pendenza / Δf per Δx); V7 meccanismo cancellazione p(1-p).
+
+### 2026-06-05 — TODO 12 (`04_derivate_gradiente.py` — refactor derivata_numerica)
+
+- **Esercizio:** `derivata_bella` (centrata, hint, h default); confronto con `derivata_brutta` su x³ in x=2.
+- **Valutazione:** **7/10**.
+- **Punti di forza:** `derivata_bella` corretta (centrata, `float`, hint, h=1e-6); formula `(f(x+h)-f(x-h))/(2h)`.
+- **Errori:** `print(..., a)` → `NameError` (variabile `a` non definita, serve `x`); `derivata_brutta` con `h=1e-16` instabile; confronto non commentato; brutta restituisce tuple per virgola+round (ok come demo ma stampare `brutta[0]`).
+
 ### 2026-05-25 — TODO 2.1 derivata sigmoid numerica vs analitica (`04_derivate_gradiente.py` ~TODO sigmoid)
 
 > ⚠️ MIGRATA dal vecchio `03_backpropagation.py` (Sez.2 monolitico).

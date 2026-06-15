@@ -1293,6 +1293,24 @@ print(derivate_check_completo())
 # Devono coincidere.
 # TUO CODICE QUI:
 
+print("\nTODO 7\n")
+
+x = 2.0
+w = 0.5
+b = 0.1
+
+grad_num = gradiente_numerico(
+    lambda w_var: sigmoid(x * w_var + b),
+    np.array(w, dtype=float)
+)
+grad_ana = derivata_sigmoid(x * w + b) * x
+
+assert np.isclose(grad_num, grad_ana, atol=1e-8), "I gradienti non coincidono!"
+
+print(grad_num)
+print(grad_ana)
+
+
 
 # TODO 8 (10 minuti) [🔄 RECALL cap.02 M3 — sigmoid e relu su batch]:
 # Riscrivi (senza guardare il cap.02) le funzioni sigmoid e relu in modo
@@ -1301,6 +1319,38 @@ print(derivate_check_completo())
 # Stampa sigmoid(Z) e relu(Z). Calcola anche le rispettive derivate.
 # TUO CODICE QUI:
 
+print("\nTODO 8\n")
+
+Z = np.array([-2.0, -1.0, 0.0, 1.0, 2.0])
+
+def my_sigmoid(
+    x: NDArray[np.float64] | float
+) -> NDArray[np.float64] | float:
+    x_safe = np.clip(x, -500, +500)
+    out =  1 / (1 + np.exp(-x_safe))
+    if np.isscalar(x):
+        return float(out)
+    return out
+
+def my_relu(
+    x: NDArray[np.float64] | float
+) -> NDArray[np.float64] | float:
+    out = np.maximum(x, 0.0)
+    if np.isscalar(x):
+        return float(out)
+    return out
+
+p = my_sigmoid(Z)
+h = my_relu(Z)
+
+print(p)
+print(h)
+
+arr_der_sig = p * (1 - p)
+arr_der_relu = (h > 0.0).astype(float)
+
+print(arr_der_sig)
+print(arr_der_relu)
 
 # TODO 9 (10 minuti) [🔄 RECALL cap.03 LOSS — bce_loss vettorizzata da zero]:
 # Riscrivi bce_loss da zero (senza guardare la versione in alto):
@@ -1310,6 +1360,28 @@ print(derivate_check_completo())
 #   y = np.array([1, 0, 1, 0])
 # Confronta my_bce(p, y) con bce_loss(p, y) - devono coincidere.
 # TUO CODICE QUI:
+
+print("\nTODO 9\n")
+
+def my_bce_loss(
+    p: NDArray[np.float64],
+    y: NDArray[np.float64],
+    eps: float = 1e-12
+) -> float:
+    p_safe = np.clip(p, eps, 1-eps)
+    loss = - y * np.log(p_safe) - (1 - y) * np.log(1 - p_safe)
+    return float(loss.mean())
+
+p = np.array([0.9, 0.1, 0.8, 0.2], dtype=float)
+y = np.array([1, 0, 1, 0], dtype=float)
+
+bce = bce_loss(p, y)
+my_bce = my_bce_loss(p, y)
+
+assert np.allclose(bce, my_bce), "I valori delle bce non coincidono!"
+
+print(bce)
+print(my_bce)
 
 
 # TODO 10 (15 minuti) [🔀 INTERLEAVING cap.02 + cap.03 + cap.04 — derivata sul forward]:
@@ -1326,6 +1398,42 @@ print(derivate_check_completo())
 # TUO CODICE QUI:
 
 
+print("\nTODO 10\n")
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal((5, 3))
+y = rng.integers(0, 2, size=5)
+W1 = rng.standard_normal(12) * 0.1
+b1 = np.zeros(4)
+W2 = rng.standard_normal((4, 1)) * 0.1
+b2 = np.zeros(1)
+
+def W1_flat(W1, b2):
+    W1_flat = W1.reshape((3, 4))
+    Z1 = X @ W1_flat + b1
+    H = relu(Z1)
+    Z2 = H @ W2 + b2
+    P = sigmoid(Z2).ravel()
+    return bce_loss(P, y)
+
+grad_b2 = float(gradiente_numerico(
+    lambda b_var: W1_flat(W1, b_var),
+    np.array(b2, dtype=float)
+)[0])
+
+print(grad_b2)
+
+eps = 0.01
+
+bce_loss_1 = W1_flat(W1, b2)
+bce_loss_2 = W1_flat(W1, b2 + eps)
+
+delta = bce_loss_2 - bce_loss_1
+prova_del_nove = grad_b2 * eps
+
+print(delta)
+print(prova_del_nove)
+
 # ==========================================================================
 # TIPOLOGIE STANDARD (TODO 11 - 16)
 # ==========================================================================
@@ -1338,7 +1446,11 @@ print(derivate_check_completo())
 #   (4) Cos'e' il vanishing gradient e come si mitiga?
 #   (5) Perche' la coppia 'sigmoid + BCE' produce dL/dz = p - y? In una riga."
 # TUA RISPOSTA:
-# ...
+# (1) La derivata di una funzione è la risposta alla domanda "se muovo leggermente x, quanto cambia la pendenza?
+# (2) Il gradiente è un vettore di derivate parziali. Nella sostanza, all'interno di una rete neurale composta da tanti neuroni/manopole, ci dice quanto cambia il risultato finale (loss) se spostiamo leggermente solo una manopola alla volta.
+# (3) La derivata di sigmoid in 0 vale esattamente 0.25. E' importante perchè è il valore massimo che può assumere la derivata di questa funzione.
+# (4) Il vaniscing gradient si verifica quando, per via di valori di output della rete (sigmoidi di probabilità) troppo grandi o piccoli, il valore della loro derivata diventa troppo piccolo, e quindi il gradiente prodotto diventa quasi ininfluente matematicamente.
+# (5) Per via della così detta semplificazione miracolosa.
 
 
 # TODO 12 (15 minuti) [🔧 REFACTORING]:
@@ -1355,6 +1467,24 @@ print(derivate_check_completo())
 #   - aggiungi type hint
 # Confronta poi le due versioni su f(x) = x^3 in x=2.
 # TUO CODICE QUI:
+
+print("\nTODO 12 - Refactoring\n")
+
+def derivata_bella(
+    f: Callable[[float], float],
+    x: float,
+    h: float = 1e-6
+) -> float:
+    return float((f(x + h) - f(x - h)) / (2 * h))
+
+def derivata_brutta(f, x, h):
+    result = (f(x+h) - f(x)) / h
+    return round(result, 5),
+
+x = 2.0
+
+print(derivata_bella(lambda x_var: x_var ** 3, x))
+print(derivata_brutta(lambda x_var: x_var ** 3, x, 1e-16))
 
 
 # TODO 13 (15 minuti) [🔍 DEBUG]:
