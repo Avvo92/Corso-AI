@@ -128,6 +128,7 @@
 | Campo | Valore |
 |-------|--------|
 | **Prossimo capitolo** | modulo_03_dl_cv/**04_derivate_gradiente.py** — derivata (pendenza), derivata sigmoid/ReLU, gradiente, derivata BCE e semplificazione `(p-y)`; pipeline `derivate_check_completo`. |
+| **Capitolo dopo (05) — rinforzi pronti** | ✅ In **`05_chain_rule_gd.py`**: blocco **🔁 RINFORZO MIRATO cap.04** (R1–R6: chain rule `dL/dz = dL/dp × dp/dz`, cancellazione `p(1-p)`, verifica numerica, neurone→w, trappola ReLU); guida quiz ingresso Q2; **TODO 7** retrieval chiusura `p-y`. |
 | **Bridge obbligatorio prima** | ✅ **`M03_R03_after_C03_before_C04_loss_to_derivate.md`** completato 29/05/2026 (~8.4/10). |
 | **Rinforzi da inserire (🔁) nel cap.04** | ✅ Inseriti: vanishing gradient (sez.2), clip BCE + ordine `bce_loss(p,y)` (sez.5). Monitorare: Pattern #6 consegne; recall forward cap.02. |
 | **Concetti ⚠️ da ripassare nel cap.04** | Vanishing gradient (C3 cap.03); pendenza/derivata numerica (Q2 ingresso cap.03); loss derivabile vs accuracy (consolidato). |
@@ -1259,6 +1260,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 33 | **Vanishing gradient — sigmoid solo in output** | Checkpoint C3 M3 cap.03 (01/06/2026) | Spiega output probabilistico ma non derivata sigmoid ≤0.25 nei hidden; confonde "non trasformare dentro" con ReLU che trasforma. | M3 cap.04 sez.2 🔁 | 🟡 |
 | 34 | **Clip bilaterale — log(1-p) con p=1** | Quiz V4 M3 cap.03 (01/06/2026) | Cita estremi 0/1 ma non spiega `(eps,1)` lascia p=1 → log(0). | M3 cap.04 Q2 | 🟡 |
 | 35 | **Ordine `bce_loss(p, y)`** | TODO 4.3 / 10 M3 cap.03 | Ricorrente `bce_loss(y, P)` sotto stress; fix dopo feedback. | M3 bridge R03 + cap.04 sez.5 🔁 | 🟡 |
+| 36 | **Chain rule backward BCE+sigmoid → `dL/dz = p - y`** | Sessione cap.04 / TODO 6–7 / Quiz V7 (06/2026) | Difficoltà alta sulla semplificazione: confonde `dL/dp` con `dL/dz`; chain rule non automatica sotto stress. | M3 cap.05 sez.1.3 🔁 R1–R6 + TODO 7 | 🟡 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 

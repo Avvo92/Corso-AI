@@ -97,6 +97,7 @@ Identico a tutti i capitoli M3:
 """
 
 import os
+from turtle import xcor
 from typing import Callable
 
 import numpy as np
@@ -1502,7 +1503,31 @@ print(derivata_brutta(lambda x_var: x_var ** 3, x, 1e-16))
 #
 # Confronta con la funzione `derivata_sigmoid` corretta.
 # TUA SPIEGAZIONE + FIX:
-# ...
+
+# L'errore è nella formula della derivata di sigmoide: la versione corretta è s * (1 - s)
+
+print("\nTODO 13 - Trova il Bug\n")
+
+z = np.linspace(-3, 3, 5)
+
+def derivata_sigmoid_buggata(z):
+    s = sigmoid(z)
+    return s * (1 + s) # s * (1 - s)
+
+report = []
+for zi in z:
+    num = derivata_numerica(sigmoid, zi)
+    ana_bug = derivata_sigmoid_buggata(zi)
+    ana_cor = derivata_sigmoid(zi)
+    delta = np.abs(ana_cor - ana_bug)
+    report.append({
+        "zi": zi,
+        "num": num,
+        "ana_bug": ana_bug,
+        "ana_cor": ana_cor,
+        "delta": delta})
+    
+print(pd.DataFrame(report))
 
 
 # TODO 14 (15 minuti) [🧠 RETRIEVAL cap.02 M3]:
@@ -1520,6 +1545,37 @@ print(derivata_brutta(lambda x_var: x_var ** 3, x, 1e-16))
 # -> P shape (5,).
 # TUO CODICE QUI:
 
+print("\nTODO 14 - Retrieval\n")
+
+rng = np.random.default_rng(1)
+X = rng.standard_normal(size=(5, 3))
+W1 = rng.standard_normal(size=(3, 4)) * np.sqrt(2 / X.shape[1])
+b1 = np.zeros(W1.shape[1])
+W2 = rng.standard_normal(size=(W1.shape[1], 1)) * np.sqrt(2 / W1.shape[1])
+b2 = np.zeros(1)
+
+def new_rete_2_layer(
+    X: NDArray[np.float64],
+    W1: NDArray[np.float64], b1: NDArray[np.float64],
+    W2: NDArray[np.float64], b2: NDArray[np.float64] | float
+) -> NDArray[np.float64]:
+    Z1 = X @ W1 + b1
+    H = relu(Z1)
+    Z2 = H @ W2 + b2
+    P = sigmoid(Z2).ravel()
+    return P
+
+P = new_rete_2_layer(
+    X, 
+    W1,
+    b1,
+    W2,
+    b2
+)
+
+assert P.shape == (X.shape[0], ), "Ops, qualcosa è andato storto!"
+print(P.shape)
+
 
 # TODO 15 (15 minuti) [🔀 INTERLEAVING cap.01 + cap.04 — gradiente del neurone]:
 # Riscrivi un neurone manuale (cap.01 M3):
@@ -1531,8 +1587,48 @@ print(derivata_brutta(lambda x_var: x_var ** 3, x, 1e-16))
 #     funzioni "wrapper" diverse (una per ognuna delle 3 variabili)
 #   - stampa i 3 gradienti
 # Cosa noti? Il gradiente di y rispetto a w "dipende" da x; il gradiente
-# rispetto a b non dipende da x. (Pensa al perche'.)
+# rispetto a b non dipende da x. (Pensa al perche'.) -> perchè b si somma così come è, non inficia sui rapporti.
 # TUO CODICE QUI:
+
+print("\nTODO 15 - Interliving\n")
+
+x = 2.0
+w = 0.5
+b = 0.0
+
+def neurone(
+    x: float,
+    w: float,
+    b: float
+) -> float:    
+    return float(sigmoid(x * w + b))
+
+y_pred = neurone(x, w, b)
+
+der_ana_x = y_pred * (1 - y_pred) * w
+der_ana_w = y_pred * (1 - y_pred) * x
+der_ana_b = y_pred * (1 - y_pred)
+
+der_num_x = float(gradiente_numerico(
+    lambda x_arr: neurone(x_arr, w, b), np.array(x, dtype=float)
+))
+der_num_w = float(gradiente_numerico(
+    lambda w_arr: neurone(x, w_arr, b), np.array(w, dtype=float)
+))
+
+der_num_b = float(gradiente_numerico(
+    lambda b_arr: neurone(x, w, b_arr), np.array(b, dtype=float)
+))
+
+
+print(der_ana_x)
+print(der_num_x)
+
+print(der_ana_w)
+print(der_num_w)
+
+print(der_ana_b)
+print(der_num_b)
 
 
 # TODO 16 (15 minuti) [🌊 REAL-WORLD]:
@@ -1554,21 +1650,40 @@ print(derivata_brutta(lambda x_var: x_var ** 3, x, 1e-16))
 
 # V1) Cos'e' una derivata in 1 riga (NIENTE limiti, NIENTE formule)?
 # TUA RISPOSTA:
-# ...
+# la derivata di una funzione è la pendenza della curva descritta dalla funzione in un punto x.
 
 # V2) Cos'e' un gradiente in 1 riga?
 # TUA RISPOSTA:
-# ...
+# il gradiente è un vettore di derivate parziali, che ci dice quanto cambia il risultato di una  funzione andando a spostare ad esempio un solo peso di una rete tenendo gli altri fermi.
 
 # V3) La derivata di f(x) = x^2 in x = -5 vale:
 #     (a) 25  (b) -10  (c) +10  (d) 0
 # TUA RISPOSTA:
-# ...
+# (b) -> formula analitica di f(x) = x^2 -> 2x -> 2*(-5) -> -10
+# di seguito la dimostrazione sfruttando la derivata numerica:
+x = -5
+result = derivata_numerica(
+    lambda x_var: x_var **2, 
+    x
+)
+print(result)
 
 # V4) Il gradiente di f(x, y) = x^2 + y^2 in (1, -2) vale:
 #     (a) [2, -4]   (b) [-2, 4]   (c) [2, 4]   (d) [1, 2]
 # TUA RISPOSTA:
-# ...
+#(a)
+# di seguito la dimostrazione usando la funzione gradiente numerico:
+
+arr = np.array([1, -2], dtype=float)
+
+def f_1(arr: NDArray[np.float64]):
+    return arr[0]**2 + arr[1]**2
+
+grad = gradiente_numerico(
+    f_1, arr
+)
+
+print(grad)
 
 # V5) [Trova l'errore] Questo codice ha 1 bug:
 #       def derivata_sigmoid_buggata(z):
@@ -1576,64 +1691,135 @@ print(derivata_brutta(lambda x_var: x_var ** 3, x, 1e-16))
 #           return s + (1 - s)
 #     Quale? E qual e' la formula corretta?
 # TUA RISPOSTA:
-# ...
+# L'errore è nella formula scritta dopo il return. La formula corretta è -> s * (1 - s)
 
 # V6) [Prevedi output] Cosa stampa?
 #       z = np.array([-10.0, 0.0, 10.0])
 #       print(derivata_sigmoid(z))
 # (Suggerimento: ai bordi sigmoid satura, derivata ~ 0; in 0 max ~ 0.25.)
 # TUA RISPOSTA:
-# ...
+# [~ 0 0.25 ~ 0]
 
 # V7) Perche' nella coppia "BCE + sigmoid" la derivata rispetto al logit
 #     z si semplifica in (p - y)?
 # TUA RISPOSTA:
-# ...
+
+# Per chain rule: dL/dz = (dL/dp) * (dp/dz)
+#
+# Con p = sigmoid(z):
+#   dp/dz = p * (1 - p)                    (derivata sigmoid)
+#
+# Con BCE (per un campione):
+#   dL/dp = (p - y) / (p * (1 - p))        (derivata BCE rispetto a p)
+#
+# Moltiplicando:
+#   dL/dz = (p - y) / (p(1-p)) * p(1-p) = p - y
+#
+# I due p(1-p) si cancellano: ecco la "semplificazione miracolosa".
+# Vale SOLO con sigmoid + BCE; cambia attivazione -> non vale piu'.
+
 
 # V8) [💬 Feynman] Spiega in 4 righe il "vanishing gradient" a un collega
 #     web dev. Senza usare derivata, gradiente, layer, vanishing, chain.
 # TUA RISPOSTA:
-# ...
-
+# Immagina 5 manopole in fila tra il microfono e l’altoparlante.
+# Ogni manopola, se è vicina al minimo o al massimo, inoltra solo una frazione piccolissima del cambiamento alla successiva.
+# Quando l’errore arriva indietro dalla fine, alla prima manopola il segnale è così debole che girarla non cambia quasi nulla.
+# Per questo nelle reti profonde si evitano troppe trasformazioni “schiaccianti” in mezzo e si usano controlli che non saturano.
 
 # ==========================================================================
 # MINI-PROGETTO FINALE — `analizza_funzione_attivazione`
 # ==========================================================================
 #
-# OBIETTIVO: una funzione che, data una funzione di attivazione f e la
-# sua derivata f', restituisce uno scorecard "analitico" che ti dice
-# quanto e' adatta per il deep learning.
-
+# IDEA IN UNA FRASE:
+#   Costruisci una "pagella automatica" per le funzioni di attivazione.
+#   Le dai una funzione f (es. sigmoid) e la sua derivata f', e lei ti dice
+#   con dei NUMERI quanto quella funzione e' adatta al deep learning, cioe'
+#   quanto "lascia passare il gradiente" o quanto invece lo schiaccia
+#   (vanishing gradient — il tema della sezione 2).
+#
+# PERCHE' SERVE:
+#   Finora hai guardato sigmoid, ReLU e tanh una alla volta, a occhio.
+#   Qui le metti sotto lo stesso "esame" e confronti i voti in una tabella.
+#   E' lo stesso ragionamento che faresti scegliendo quale attivazione
+#   usare nei layer nascosti di una rete vera.
+#
+# --------------------------------------------------------------------------
 # TODO MINI-PROGETTO (25 minuti):
 #
-# Firma:
+# PASSO 1 — Scrivi la funzione con questa firma:
+#
 #   def analizza_funzione_attivazione(
-#       f: Callable[[float], float],
-#       f_prime: Callable[[float], float],
-#       nome: str,
-#       z_range: tuple[float, float] = (-6.0, 6.0),
+#       f: Callable[[float], float],        # l'attivazione (es. sigmoid)
+#       f_prime: Callable[[float], float],  # la sua derivata (es. derivata_sigmoid)
+#       nome: str,                          # etichetta per la stampa (es. "sigmoid")
+#       z_range: tuple[float, float] = (-6.0, 6.0),  # intervallo di z da analizzare
 #   ) -> dict[str, float]:
-#       """Ritorna un dict con:
-#         'nome'              : nome della funzione
-#         'f_in_z=0'          : f(0)
-#         'f_prime_max'       : massimo di f' nel range
-#         'f_prime_max_z'     : argmax (z dove la derivata e' max)
-#         'f_prime_mean'      : media di f' nel range (= "passa quanto gradiente")
-#         'satura_a_sinistra' : True se f'(-5) < 0.01
-#         'satura_a_destra'   : True se f'(+5) < 0.01
-#         'sanity_check_ok'   : True se derivata_numerica(f, z) ~ f_prime(z)
-#                                in 5 punti random (atol 1e-3)
-#       """
 #
-# Implementala. Poi chiamala 3 volte:
-#   1) sigmoid + derivata_sigmoid
-#   2) relu + derivata_relu
-#   3) tanh: f = lambda z: np.tanh(z), f' = lambda z: 1 - np.tanh(z)**2
+# PASSO 2 — Dentro la funzione, crea una griglia di z su cui misurare:
+#   zz = np.linspace(z_range[0], z_range[1], 200)   # 200 punti tra -6 e +6
+#   der = f_prime(zz)                               # la derivata su tutti i punti
 #
-# Stampa la tabella dei 3 scorecard (1 riga per attivazione). Commenta:
-#   - quale ha derivata massima piu' alta? (-> meno vanishing)
-#   - quale satura ai bordi? (-> piu' vanishing)
-#   - quale e' "migliore" per DL classico? Perche'?
+# PASSO 3 — Compila e ritorna un dizionario (scorecard) con queste chiavi.
+#   Per ognuna ti spiego COSA significa e COME calcolarla:
+#
+#     'nome'              -> il parametro `nome` cosi' com'e' (per la stampa).
+#
+#     'f_in_z=0'          -> quanto vale l'attivazione in 0: f(0).
+#                            (curiosita': sigmoid(0)=0.5, relu(0)=0, tanh(0)=0)
+#
+#     'f_prime_max'       -> il valore MASSIMO della derivata nel range.
+#                            "Quanto gradiente lascia passare nel suo punto
+#                            migliore?" Usa der.max().
+#
+#     'f_prime_max_z'     -> il VALORE di z in cui la derivata e' massima
+#                            (NON l'indice). Trova l'indice con np.argmax(der)
+#                            e poi prendi zz[indice].
+#
+#     'f_prime_mean'      -> la MEDIA della derivata sul range: der.mean().
+#                            Intuizione: "in media, quanto segnale passa?".
+#                            Piu' e' alta, meno la funzione soffre di vanishing.
+#
+#     'satura_a_sinistra' -> True/False: la derivata e' quasi zero a sinistra?
+#                            Calcola f_prime(-5.0) e controlla se < 0.01.
+#                            (saturare = appiattirsi -> il gradiente "muore")
+#
+#     'satura_a_destra'   -> stesso concetto a destra: f_prime(5.0) < 0.01 ?
+#
+#     'sanity_check_ok'   -> True/False: la f' che ti ho dato e' davvero la
+#                            derivata di f? Verifica numericamente: prendi 5
+#                            valori di z (anche fissi tipo [-2,-1,0,1,2]),
+#                            confronta derivata_numerica(f, z) con f_prime(z)
+#                            e ritorna True se sono tutti vicini (atol=1e-3).
+#                            (E' lo stesso "sanity check" usato nei TODO sopra:
+#                            np.isclose / np.allclose.)
+#
+#   NOTA tipi: 'nome' e' una stringa e i due 'satura_*'/'sanity_check_ok' sono
+#   booleani, quindi il dict in pratica e' dict[str, float | str | bool].
+#   Va benissimo: l'annotazione -> dict[str, float] e' solo indicativa.
+#
+# PASSO 4 — Chiama la funzione 3 volte e raccogli i 3 scorecard:
+#   1) sigmoid + derivata_sigmoid           -> nome "sigmoid"
+#   2) relu    + derivata_relu              -> nome "relu"
+#   3) tanh:  f = lambda z: np.tanh(z)
+#             f' = lambda z: 1 - np.tanh(z) ** 2   -> nome "tanh"
+#
+# PASSO 5 — Stampa una tabella con 1 riga per attivazione (una colonna per
+#   ogni chiave dello scorecard). Esempio di come potrebbe venire:
+#
+#     nome     f(0)   f'_max  f'_max_z  f'_mean  sat_sx  sat_dx  ok
+#     sigmoid  0.50   0.25    0.00      0.07     True    True    True
+#     relu     0.00   1.00    ...       ...      ...     ...     True
+#     tanh     0.00   1.00    0.00      ...      ...     ...     True
+#
+#   (i tuoi numeri possono variare un po' a seconda della griglia)
+#
+# PASSO 6 — Sotto la tabella, scrivi 3 righe di commento rispondendo a:
+#   - quale attivazione ha la derivata massima piu' alta? (-> lascia passare
+#     piu' gradiente -> meno vanishing)
+#   - quale satura ai bordi (sat_sx / sat_dx = True)? (-> piu' vanishing)
+#   - quale sceglieresti per i layer nascosti di una rete profonda? Perche'?
+#
 # TUO CODICE QUI:
 
 

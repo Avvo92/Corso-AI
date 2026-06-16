@@ -59,6 +59,7 @@ MAPPA DEL CAPITOLO
    *  QUIZ D'INGRESSO                           Q1 - Q7
    *  SEZIONE 1  Chain rule intuitiva (2 livelli)  1.1 - 1.3
                   con 4 mini-esercizi inline
+   *  🔁 RINFORZO MIRATO cap.04 (p-y)             R1 - R6  retrieval backward
    *  SEZIONE 2  Chain rule multilivello          2.1 - 2.2
                   con 3 mini-esercizi inline
    *  SEZIONE 3  Chain rule QUALITATIVA su rete   3.1 - 3.2
@@ -70,16 +71,16 @@ MAPPA DEL CAPITOLO
    *  SEZIONE 6  Gradient descent (multivariato)  6.1 - 6.2
                   + visualizzazione "piano dei pesi"
    *  TODO MIRATI BASE                           TODO 1 - 6
-   *  RINFORZI CAP.01-04 M3                      TODO 7 - 10
+   *  RINFORZI CAP.01-04 M3                      TODO 7 - 11
    *  PIPELINE INTEGRATA                         addestramento_via_gradiente_numerico()
                   1 neurone addestrato con GD + grad. numerico su BCE
-   *  TIPOLOGIE STANDARD                         TODO 11 - 16
+   *  TIPOLOGIE STANDARD                         TODO 12 - 17
    *  QUIZ DI VERIFICA                           V1 - V8
    *  MINI-PROGETTO FINALE                       confronto_lr_su_addestramento()
    *  CHECKPOINT FINALE                          C1 - C5
    *  SOLUZIONI                                  in fondo
 
-Conta esercizi: ~17 mini-inline + 16 TODO + 1 pipeline + 1 mini-progetto.
+Conta esercizi: ~23 mini-inline (incl. RINFORZO MIRATO R1-R6) + 17 TODO + 1 pipeline + 1 mini-progetto.
 """
 
 import os
@@ -219,6 +220,11 @@ def gradient_descent_nd(
 
 # Q2) [Recall cap.04] Hai p = sigmoid(z), L(p, y) = BCE. La derivata di
 #     L rispetto a z e' (p - y). Da dove arriva questa semplificazione?
+# GUIDA (se bloccato — completa i 4 passi, NON copiare la loss intera):
+#   Passo 1: chain rule -> dL/dz = (dL/dp) * (dp/dz)
+#   Passo 2: dL/dp = (p - y) / (p * (1 - p))
+#   Passo 3: dp/dz = p * (1 - p)
+#   Passo 4: moltiplica -> i p(1-p) si cancellano -> p - y
 # TUA RISPOSTA:
 # ...
 
@@ -353,6 +359,89 @@ def _esempio_chain_rule() -> None:
 #   h'(x) = sigmoid(g(x)) * (1 - sigmoid(g(x))) * 2
 # Verifica in x = 0, 1, -1 con derivata_numerica.
 # TUO CODICE QUI:
+
+
+# ==========================================================================
+# 🔁 RINFORZO MIRATO cap.04 — BCE + sigmoid → dL/dz = p - y
+# ==========================================================================
+#
+# Al cap.04 hai visto la "semplificazione miracolosa". Qui la ripassiamo con
+# RETRIEVAL progressivo, collegandola alla chain rule (questo capitolo) e al
+# backward del cap.06.
+#
+# CATENA (un campione, prima della loss media sul batch):
+#
+#   z  ----sigmoid---->  p  ----BCE---->  L
+#   ^                    ^               ^
+#  logit            probabilita'        loss
+#
+# BACKWARD (idea): parti da L e torni INDIETRO verso z moltiplicando le
+# derivate locali. La formula "magica" e' il primo anello dopo la loss:
+#
+#   dL/dz = (dL/dp) * (dp/dz)
+#         = (p-y)/(p(1-p)) * p(1-p)
+#         = p - y
+#
+# Nel codice del cap.06 vedrai:  dZ2 = P - y   (un solo passaggio sul batch)
+
+
+# 🔵 RINFORZO R1 (~3 minuti) — schema a parole (senza formule lunghe)
+# Completa in 4 righe (commento):
+#   1) Cosa e' z? Cosa e' p? Come sono legati?
+#   2) Cosa chiede dL/dz (rispetto a quale variabile)?
+#   3) Perche' non calcoli dL/dz "diretto" ma passi da dL/dp e dp/dz?
+#   4) Perche' nel backward userai spesso P - y invece di ricalcolare tutto?
+# TUO COMMENTO QUI:
+
+
+# 🔵 RINFORZO R2 (~5 minuti) — retrieval formule (senza guardare cap.04)
+# Per UN campione (y fissato 0 o 1):
+#   Scrivi a mano (commento) le due derivate locali:
+#     dL/dp = ?
+#     dp/dz = ?     (con p = sigmoid(z))
+# Poi moltiplica e mostra la cancellazione di p(1-p).
+# TUO COMMENTO QUI:
+
+
+# 🔵 RINFORZO R3 (~8 minuti) — numerico vs analitico su z
+# Per z = np.array([-2.0, 0.0, 2.0]) e y = np.array([1, 0, 1]):
+#   p = sigmoid(z)
+#   ana = (p - y) / len(z)          # media BCE sul batch (come cap.04 TODO 6)
+#   num = gradiente_numerico(
+#       lambda z_vec: bce_loss(sigmoid(z_vec), y),
+#       z.astype(float),
+#   )
+#   assert np.allclose(ana, num)
+#   stampa ana e num
+# TUO CODICE QUI:
+
+
+# 🔵 RINFORZO R4 (~8 minuti) — retrieval dL/dp (cap.04 TODO 5)
+# Per p = np.array([0.9, 0.1, 0.7]), y = np.array([1, 0, 1]):
+#   ana = ((p - y) / (p * (1 - p))) / len(p)
+#   num = gradiente_numerico(lambda p_vec: bce_loss(p_vec, y), p.astype(float))
+#   assert np.allclose(ana, num)
+# Perche' qui NON basta p - y? (Risposta: stai derivando rispetto a p, non a z.)
+# TUO CODICE + 1 RIGA COMMENTO:
+
+
+# 🔵 RINFORZO R5 (~10 minuti) — chain rule su 1 neurone (collegamento cap.04 TODO 7)
+# Neurone: y = sigmoid(w*x + b). Loss: L = BCE(y_pred, y_vera) con y_vera=1.
+# Per x=2, w=0.5, b=0.1:
+#   1) Calcola dL/dz con la semplificazione (z = w*x+b, p = sigmoid(z)):
+#        dL/dz = p - y_vera
+#   2) Chain rule fino a w: dL/dw = (dL/dz) * (dz/dw) = (p - y) * x
+#   3) Verifica dL/dw con gradiente_numerico su w
+#   4) Stampa ana e num
+# TUO CODICE QUI:
+
+
+# 🔵 RINFORZO R6 (~5 minuti) — trappola + Feynman
+# A) Perche' dL/dz = p - y vale SOLO con sigmoid + BCE?
+#    (1 riga: cosa si cancella e perche' con ReLU non succede.)
+# B) In 3 righe spiega il backward a un collega:
+#    "Parto dalla loss, torno indietro fino al logit, e li trovo P - y."
+# TUO COMMENTO QUI:
 
 
 # ==========================================================================
@@ -792,10 +881,24 @@ def _grafico_gd_2d_traiettoria(
 
 
 # ==========================================================================
-# RINFORZI CAP.01-04 M3 (TODO 7 - 10)
+# RINFORZI CAP.01-04 M3 (TODO 7 - 11)
 # ==========================================================================
+#
+# Nota: i retrieval mirati su dL/dz = p - y sono nella sezione
+# 🔁 RINFORZO MIRATO cap.04 (R1-R6) sopra — falli PRIMA di questi TODO
+# se il cap.04 ti e' costato fatica.
 
-# TODO 7 (8 minuti) [🔄 RECALL cap.03 LOSS]:
+# TODO 7 (12 minuti) [🧠 RETRIEVAL cap.04 — chiusura p-y]:
+# Senza aprire 04_derivate_gradiente.py, in un commento scrivi l'intera
+# catena del backward sul logit (4 righe max):
+#   z -> p -> L ; dL/dz = dL/dp * dp/dz ; formule ; risultato p - y.
+# Poi in codice: verifica su z=[0.0], y=[1] che
+#   derivata_numerica(lambda zv: bce_loss(sigmoid(zv), np.array([1.0])), 0.0)
+# coincide con sigmoid(0)-1.
+# TUO COMMENTO + CODICE QUI:
+
+
+# TODO 8 (8 minuti) [🔄 RECALL cap.03 LOSS]:
 # Riscrivi bce_loss da zero (senza guardare la versione in alto).
 # Firma:
 #   def my_bce(p, y, eps=1e-12) -> float:
@@ -804,7 +907,7 @@ def _grafico_gd_2d_traiettoria(
 # TUO CODICE QUI:
 
 
-# TODO 8 (8 minuti) [🔄 RECALL cap.04 — derivata sigmoid e ReLU]:
+# TODO 9 (8 minuti) [🔄 RECALL cap.04 — derivata sigmoid e ReLU]:
 # Riscrivi le 2 funzioni:
 #   def my_derivata_sigmoid(z): ...
 #   def my_derivata_relu(z): ...
@@ -812,13 +915,13 @@ def _grafico_gd_2d_traiettoria(
 # TUO CODICE QUI:
 
 
-# TODO 9 (8 minuti) [🔄 RECALL cap.04 — gradiente_numerico]:
+# TODO 10 (8 minuti) [🔄 RECALL cap.04 — gradiente_numerico]:
 # Riscrivi gradiente_numerico da zero (senza copiare la versione in alto).
 # Verifica con f(v) = v[0]^2 + v[1]^2 in (1, -2): atteso [2, -4].
 # TUO CODICE QUI:
 
 
-# TODO 10 (15 minuti) [🔀 INTERLEAVING cap.02 + cap.03 + cap.05]:
+# TODO 11 (15 minuti) [🔀 INTERLEAVING cap.02 + cap.03 + cap.05]:
 # Mini-pipeline "training di 1 step" su una rete 2-layer:
 #   1) Setup: X (5, 3), y (5,), W1 (3, 4), W2 (4, 1) random come al solito
 #   2) Forward: P = sigmoid(relu(X@W1+b1)@W2+b2).ravel()
@@ -891,10 +994,10 @@ def _grafico_gd_2d_traiettoria(
 
 
 # ==========================================================================
-# TIPOLOGIE STANDARD (TODO 11 - 16)
+# TIPOLOGIE STANDARD (TODO 12 - 17)
 # ==========================================================================
 
-# TODO 11 (15 minuti) [🎯 COLLOQUIO]:
+# TODO 12 (15 minuti) [🎯 COLLOQUIO]:
 # "Sei in un colloquio. L'intervistatore chiede:
 #   (1) Cos'e' la chain rule? 1 frase.
 #   (2) Cos'e' il gradient descent? 1 frase.
@@ -907,7 +1010,7 @@ def _grafico_gd_2d_traiettoria(
 # ...
 
 
-# TODO 12 (15 minuti) [🔧 REFACTORING]:
+# TODO 13 (15 minuti) [🔧 REFACTORING]:
 # Questo GD funziona ma e' brutto. Riscrivilo.
 #
 #   def gd_brutto(f, x, lr, n):
@@ -929,7 +1032,7 @@ def _grafico_gd_2d_traiettoria(
 # TUO CODICE QUI:
 
 
-# TODO 13 (15 minuti) [🔍 DEBUG]:
+# TODO 14 (15 minuti) [🔍 DEBUG]:
 # Questo codice "addestra" un mini-modello, ma la loss SALE invece di scendere.
 # Trova il bug.
 #
@@ -951,7 +1054,7 @@ def _grafico_gd_2d_traiettoria(
 # ...
 
 
-# TODO 14 (15 minuti) [🧠 RETRIEVAL cap.04]:
+# TODO 15 (15 minuti) [🧠 RETRIEVAL cap.04]:
 # Senza guardare il cap.04, riscrivi da zero:
 #   - derivata_sigmoid(z)        (formula: s(z) * (1 - s(z)))
 #   - derivata_relu(z)           (formula: 1 se z > 0, 0 altrimenti)
@@ -960,7 +1063,7 @@ def _grafico_gd_2d_traiettoria(
 # TUO CODICE QUI:
 
 
-# TODO 15 (20 minuti) [🔀 INTERLEAVING cap.02 + cap.04 + cap.05]:
+# TODO 16 (20 minuti) [🔀 INTERLEAVING cap.02 + cap.04 + cap.05]:
 # Vuoi addestrare la RETE 2-LAYER su un mini-dataset usando GD + grad numerico:
 #   1) Setup random come al solito (N=20, d=3, h=4)
 #   2) Etichette: y = (X[:, 0] + X[:, 1] > 0).astype(int)
@@ -978,7 +1081,7 @@ def _grafico_gd_2d_traiettoria(
 # TUO CODICE QUI:
 
 
-# TODO 16 (15 minuti) [🌊 REAL-WORLD]:
+# TODO 17 (15 minuti) [🌊 REAL-WORLD]:
 # "Un collega ti dice: 'ho addestrato la rete, l'lr e' 0.001, dopo 1000
 # epoche la loss e' ancora 0.69. Cosa faccio?'"
 # Suggerisci 3-4 cose da provare (e perche'). Esempi (in commento):

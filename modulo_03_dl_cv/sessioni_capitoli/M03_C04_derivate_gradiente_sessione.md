@@ -288,9 +288,30 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 ### 2026-06-05 — TODO 12 (`04_derivate_gradiente.py` — refactor derivata_numerica)
 
 - **Esercizio:** `derivata_bella` (centrata, hint, h default); confronto con `derivata_brutta` su x³ in x=2.
-- **Valutazione:** **7/10**.
-- **Punti di forza:** `derivata_bella` corretta (centrata, `float`, hint, h=1e-6); formula `(f(x+h)-f(x-h))/(2h)`.
-- **Errori:** `print(..., a)` → `NameError` (variabile `a` non definita, serve `x`); `derivata_brutta` con `h=1e-16` instabile; confronto non commentato; brutta restituisce tuple per virgola+round (ok come demo ma stampare `brutta[0]`).
+- **Valutazione (post-fix `x`):** **7.5/10**.
+- **Punti di forza:** `derivata_bella` corretta; `x=2` fixato; run ok; bella ≈12 vs analitica 12.
+- **Errori residui:** `derivata_brutta(..., h=1e-16)` → `(0.0,)` (instabilità); confronto non esplicito (manca analitica/assert); brutta stampata come tuple; usare `h=1e-6` per confronto fair.
+
+### 2026-06-05 — TODO 13 (`04_derivate_gradiente.py` — debug derivata sigmoid)
+
+- **Esercizio:** trovare bug `s*(1+s)`; spiegazione; confronto num vs buggata vs corretta.
+- **Valutazione (post-fix delta):** **8.5/10**.
+- **Punti di forza:** Bug `1+s`→`1-s` identificato; loop+tabella; `delta=|ana_cor-ana_bug|`; run ok; num≈ana_cor; z=0 mostra errore 0.5 (0.75 vs 0.25).
+- **Affinamento:** fix esplicito nel corpo funzione (non solo commento); colonna `|ana_cor-num|`; nota su z=0.
+
+### 2026-06-05 — TODO 14 (`04_derivate_gradiente.py` — retrieval rete_2_layer)
+
+- **Esercizio:** riscrivere forward 2-layer; verify `P.shape == (5,)`.
+- **Valutazione:** **9/10**.
+- **Punti di forza:** Forward Z1→ReLU→Z2→sigmoid→ravel corretto; setup shape ok; He init coerente; `b1`/`b2` ok; `assert P.shape == (X.shape[0],)`; esecuzione ok.
+- **Affinamento:** nome `rete_2_layer` come consegna; type hint `b2: NDArray` non `float`; docstring; He opzionale (consegna bastava `*0.1`).
+
+### 2026-06-05 — TODO 15 (`04_derivate_gradiente.py` — gradiente neurone w,x,b)
+
+- **Esercizio:** neurone scalare; `gradiente_numerico` su dy/dw, dy/db, dy/dx; osservazioni chain rule.
+- **Valutazione:** **8.5/10**.
+- **Punti di forza:** Formule analitiche s'*w, s'*x, s' corrette; 3 wrapper gradiente_numerico; stampa ana/num; commento su b; valori coincidono.
+- **Affinamento:** `b=0.1` consegna; ordine `(w,x,b)`; `assert np.isclose`; commento esplicito dy/dw dipende da x (formula ×x), dy/db no; `float(x_arr)` nelle lambda.
 
 ### 2026-05-25 — TODO 2.1 derivata sigmoid numerica vs analitica (`04_derivate_gradiente.py` ~TODO sigmoid)
 
@@ -315,6 +336,17 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 - **Errori / lacune:** non implementa la parte richiesta di "verifica esistenza file" (`os.path.exists` + print/flag); inoltre salva con `plt.savefig` invece di `fig.savefig` (minore, ma più pulito).
 - **Correzione / suggerimento:** dopo `savefig`, fai `exists = os.path.exists(out_path)` e stampa/`assert exists`.
 - **Pattern errore / ID contesto:** ⚠️ "consegna salva ma manca exists check". Rinforzato in TODO 1.3 del nuovo `03_loss.py` (ora corretto con `assert file_created`).
+
+---
+
+### 2026-06-05 — Quiz verifica V8 (`04_derivate_gradiente.py` — Feynman vanishing gradient)
+
+- **Esercizio:** 4 righe a un web dev; vietati: derivata, gradiente, layer, vanishing, chain.
+- **Valutazione (primo tentativo):** **5.5/10**.
+- **Punti di forza:** Analogia amplificatore + molte manopole = buona direzione (tanti stadi in serie); capisce che gli aggiustamenti diventano “irrilevanti”.
+- **Errori / lacune:** (1) **Vincolo violato** — scrive “vaniscing gradient” (parole proibite + typo già segnalato in 2.2.A); (2) **2 righe**, non 4; (3) manca il **perché** (ogni stadio passa solo una frazione piccola del segnale, tipo manopola al minimo/massimo); (4) manca la **conseguenza** (le prime manopole quasi non si muovono → la rete impara lentissimo); (5) niente accenno alla **mitigazione** (manopole che non saturano, es. ReLU in mezzo).
+- **Pattern:** lacuna #27 Feynman — vincoli lessicali; ripetizione typo *vaniscing*.
+- **Per 8/10:** riscrivi 4 righe senza parole vietate; aggiungi “in fila” + “frazione piccola a ogni stadio” + “prima manopola non risponde”.
 
 ---
 
