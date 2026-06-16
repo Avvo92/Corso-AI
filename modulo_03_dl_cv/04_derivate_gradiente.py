@@ -1822,6 +1822,48 @@ print(grad)
 #
 # TUO CODICE QUI:
 
+print("\nMini-progetto finale del capitolo\n")
+
+def analizza_funzione_attivazione(
+    nome: str,
+    f: Callable[[float], float],
+    f_prime: Callable[[float], float],
+    z_range: tuple[float, float],
+) -> dict[str, float]:
+    zz = np.linspace(z_range[0], z_range[1], 200)
+    der = f_prime(zz)
+    der_num = derivata_numerica(
+        f,
+        zz[100:105]
+    )    
+    sanity_check = np.allclose(der[100:105], der_num)
+    
+    return {
+        "nome": nome,
+        "f(0)": f(0),
+        "f'_max": der.max(),
+        "f'_max_z": zz[np.argmax(der)],
+        "f'_mean": der.mean(),
+        "sat_sx": (f_prime(-5) < 0.01),
+        "sat_dx": (f_prime(5) < 0.01),
+        "sanity_check": sanity_check     
+        
+    }
+    
+sigmoid_score_card = analizza_funzione_attivazione("Sigmoid", sigmoid, derivata_sigmoid, (-6, +6))
+relu_score_card = analizza_funzione_attivazione("Relu", relu, derivata_relu, (-6, +6))
+tanh_score_card = analizza_funzione_attivazione("Tanh", lambda z: np.tanh(z), lambda z: 1 - np.tanh(z) ** 2, (-6, +6))
+
+report =[sigmoid_score_card, relu_score_card, tanh_score_card]
+
+print(pd.DataFrame(report))
+
+# la derivata più alta la ha relu, ossia lascia passare più gradiente di tutti.
+# Sia tanh che sigmoid saturano vicino agli estremi.
+# Nei layer nascosti userei relu, perchè non soffre di vaniscing gradient.
+
+
+
 
 # ==========================================================================
 # CHECKPOINT FINALE (auto-verifica)
@@ -1829,19 +1871,21 @@ print(grad)
 
 # C1) In 1 frase: cos'e' una derivata in 1D? E un gradiente in nD?
 # TUA RISPOSTA:
-# ...
+# la derivata, presa una funzione f(x), è la pendenza della funzione nel punto x. Il gradiente è un vettore di derivate parziali, ognuna delle quali è la pendenza della funzione ottenuta spostando leggermente un parametro e tenendo fermi gli altri.
 
 # C2) La derivata di sigmoid in z=0 vale 0.25. Spiega in 2 righe perche'
 #     questo causa problemi se hai TANTI layer di sigmoid impilati.
 # TUA RISPOSTA:
-# ...
+# La derivata di sigmoide ha come formula sigmoid(z) * (1 - sigmoid(z)); Quindi per z = 0, 0.5 * 0.5 -> 0.25; Il problema di avere tanti layer sigmoidi e che ad ogni layer, il gradiente viene moltiplicato per un valore < 0.25. dL/dp^n_layer.
 
 # C3) [Prevedi] Hai p = sigmoid(z) e L(p, y) = BCE. Per (z=0, y=1):
-#     - dL/dz = ?
-#     - dL/dp = ?
+#     - dL/dz =
+#     - dL/dp =
 # Suggerimento: per dL/dz usa la semplificazione miracolosa.
 # TUA RISPOSTA:
-# ...
+# dL/dz = 0.5 - 1 = -0.5
+# dL/dp = -0.5 / 0.25 => -2
+# dL/dp * dp/dz = (p - y) / p(1 - p) * p(1 - p) =>  -0.5 / 0.25 * 0.25 => -0.5
 
 # C4) [Recap calcolo] Per f(x, y, z) = x^2 * y + sin(z), in (x=1, y=2, z=0):
 #     - df/dx = ?

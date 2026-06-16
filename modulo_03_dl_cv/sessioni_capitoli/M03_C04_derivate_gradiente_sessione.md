@@ -350,6 +350,46 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 
 ---
 
+### 2026-06-16 — Mini-progetto `analizza_funzione_attivazione` (`04_derivate_gradiente.py`)
+
+- **Esercizio:** scorecard sigmoid/relu/tanh + tabella + 3 righe commento.
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Punti di forza:** `linspace`+`der`; `f'_max`/`f'_max_z` con `argmax` corretto; `f'_mean`; `sat_sx`/`sat_dx`; 3 chiamate + lambda tanh; `pd.DataFrame(report)` ok; run exit 0; commenti finali sensati (ReLU migliore, sigmoid/tanh saturano, ReLU in hidden).
+- **Errori / lacune:** (1) manca chiave **`sanity_check_ok`** nel dict (PASSO 3); (2) sanity fatto con `derivata_numerica(f, zz[100:105])` — API è per **uno** `z` float, non slice (funziona per broadcasting ma non è il pattern richiesto); (3) `assert` interno al posto di loop su 5 z fissi `[-2,-1,0,1,2]`; (4) nomi chiavi rinominate (`f(0)` vs `f_in_z=0`) — ok per tabella ma non allineate alla consegna; (5) `f'_max_z` ≈ ±0.03 non 0 — griglia 200 punti non passa esattamente da z=0 (non errore concettuale); (6) typo *vaniscing* nel commento.
+- **Per 9/10:** aggiungi `sanity_check_ok` con loop scalare; opzionale colonna `ok` in tabella; `z_range` default `(-6,6)` in firma.
+
+### 2026-06-16 — Mini-progetto `analizza_funzione_attivazione` — post-fix sanity_check
+
+- **Fix:** aggiunta chiave `sanity_check` nel dict + colonna in tabella; tutte True su sigmoid/relu/tanh; run exit 0.
+- **Valutazione post-feedback:** **8/10** (voto esame resta **7.5/10** primo tentativo).
+- **Migliorato:** scorecard completo con verifica esposta in output.
+- **Residui:** ancora `derivata_numerica(f, zz[100:105])` invece di loop su 5 z scalari `[-2,-1,0,1,2]`; chiave `sanity_check` vs `sanity_check_ok`; typo *vaniscing* nel commento PASSO 6.
+
+### 2026-06-16 — Checkpoint C1 (`04_derivate_gradiente.py` — derivata vs gradiente)
+
+- **Esercizio:** 1 frase su derivata 1D e gradiente nD.
+- **Valutazione (primo tentativo):** **9/10**.
+- **Punti di forza:** Derivata = pendenza in x corretta; gradiente = vettore di derivate parziali; intuizione “sposti un parametro, gli altri fermi” operativa e chiara. Miglioramento netto vs TODO 11 colloquio (dove confondeva derivata con “pendenza della pendenza”).
+- **Affinamento opzionale:** aggiungere che il gradiente indica la direzione di salita più ripida della loss (bussola sulla collina).
+
+### 2026-06-16 — Checkpoint C2 (`04_derivate_gradiente.py` — sigmoid 0.25 e layer impilati)
+
+- **Esercizio:** 2 righe — perché 0.25 in z=0 è problema con tanti layer sigmoid.
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Punti di forza:** Formula sigmoid' citata; calcolo 0.5×0.5=0.25 corretto; intuizione vanishing (gradiente diventa insignificante); collegamento “schiaccia tra 0 e 1”.
+- **Errori / lacune:** (1) formula senza parentesi `s*(1-s)` scritta come `s*1-s` (priorità operatori sbagliata); (2) manca il meccanismo chiave del capitolo: **a ogni layer** il segnale viene moltiplicato per ≤0.25 → dopo n layer ~0.25^n (es. 5 layer ≈ 0.001); (3) typo *inifluente*; (4) “schiaccia valori” è vero ma secondario rispetto alla moltiplicazione ripetuta delle derivate.
+- **Per 9/10:** una riga con 0.25^n + ReLU in hidden come mitigazione.
+
+### 2026-06-16 — Checkpoint C3 (`04_derivate_gradiente.py` — BCE+sigmoid z=0, y=1)
+
+- **Esercizio:** prevedi `dL/dz` e `dL/dp` per (z=0, y=1).
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Punti di forza:** `dL/dz = p - y = -0.5` corretto; chain rule scritta con cancellazione `p(1-p)`; calcolo numerico `-0.5/0.25 * 0.25 = -0.5` coerente.
+- **Errori / lacune:** (1) **`dL/dp` non chiuso** — `-0.5/0.25 = -2` (manca il valore finale esplicito); (2) risposta mescola le due derivate in un unico calcolo invece di due righe separate come chiede C3; (3) risposta parzialmente nella riga consegna (1882–1883) oltre che in TUA RISPOSTA.
+- **Per 9/10:** `dL/dz = -0.5` (semplificazione) e `dL/dp = -2` (formula su p) in due righe distinte.
+
+---
+
 ## Lacune e dubbi ancora aperti
 
 - _(da popolare quando il capitolo verra' aperto)_
