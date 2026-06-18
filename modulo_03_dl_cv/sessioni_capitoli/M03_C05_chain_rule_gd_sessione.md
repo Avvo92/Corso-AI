@@ -211,6 +211,55 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **Punti di forza:** moltiplicatore `0.8` usato correttamente: `10→8→6.4→5.12`.
 - **Affinamento:** in Python `round(...,4)` stampa `8.0`, `6.4`, `5.12` (stesso valore; solo formato float).
 
+### 2026-06-18 — Cap.05 Mini 1.1.A (`05_chain_rule_gd.py` — chain rule 3 composizioni)
+
+- **Esercizio:** `h'(x)` a mano + chain rule su 3 funzioni; verifica in `x=1`.
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** tutti e 3 i punti con decomposizione, `g_prime`/`f_prime`, `h_prime` e `h_prime_chain` corretti; fix punto 3 (`* 2`, `2*x`).
+- **Manca:** `derivata_numerica(h, 1)` esplicita (consegna); `h = f(g)` solo nel punto 1 — aggiungere in 2 e 3.
+- **Valori attesi x=1:** 24 | ~1.08 | ~40.17.
+
+### 2026-06-18 — Cap.05 Mini 1.1.A — post-fix verifica numerica
+
+- **Fix:** `h = f(g)` in tutti e 3 i punti; `derivata_numerica(h, x)` aggiunta.
+- **Valutazione post-feedback:** **9.5/10** (primo tentativo resta **8.5/10**).
+- **Residuo cosmetico:** `h_prime_num` wrapper opzionale — `derivata_numerica(h, 1)` diretto basta.
+
+### 2026-06-18 — Cap.05 Mini 1.3.A (`05_chain_rule_gd.py` — sigmoid composta)
+
+- **Esercizio:** `h(x)=sigmoid(2x+1)`; chain rule; verifica in `x∈{0,1,-1}`.
+- **Valutazione (primo tentativo):** **9.5/10**.
+- **Punti di forza:** `g`/`g_prime`/`derivata_sigmoide`/`h` corretti; loop + `assert np.allclose` su 3 punti.
+- **Affinamento:** stampa `x` nel loop per leggibilità; opzionale `f=sigmoid` per pattern uniforme con 1.1.A.
+
+### 2026-06-18 — Cap.05 RINFORZO R1 (`05_chain_rule_gd.py` — schema p-y a parole)
+
+- **Esercizio:** 4 righe su z, p, dL/dz, chain rule, semplificazione miracolosa.
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** z=logit, p dopo sigmoid; dL/dz su z; chain rule dL/dp·dp/dz; cancellazione → p-y.
+- **Affinamento:** esplicitare `p=sigmoid(z)`; L dipende da **p** non da z direttamente (motivo del passaggio intermedio).
+
+### 2026-06-18 — Cap.05 RINFORZO R2 (`05_chain_rule_gd.py` — retrieval dL/dp, dp/dz)
+
+- **Esercizio:** formule locali + moltiplicazione → `p-y` (senza aprire cap.04).
+- **Valutazione (primo tentativo):** **9.5/10**.
+- **Punti di forza:** `dL/dp=(p-y)/(p(1-p))`, `dp/dz=p(1-p)`; cancellazione e `p-y` corretti; lacune #36/#38.
+- **Affinamento:** notazione `p*(1-p)` al denominatore per chiarezza.
+
+### 2026-06-18 — Cap.05 RINFORZO R3 (`05_chain_rule_gd.py` — numerico vs analitico su z)
+
+- **Esercizio:** `ana=(p-y)/len(z)` vs `gradiente_numerico` su BCE media; `z=[-2,0,2]`, `y=[1,0,1]`.
+- **Valutazione (primo tentativo):** **9.5/10**.
+- **Punti di forza:** formula analitica corretta; lambda su `bce_loss(sigmoid(...))`; `assert np.allclose`; `/len(z)` compreso (media batch).
+- **Affinamento:** `y` come `dtype=float` per coerenza; lacuna #36 consolidata se assert ok.
+
+### 2026-06-18 — Cap.05 RINFORZO R4 (`05_chain_rule_gd.py` — dL/dp vs dL/dz)
+
+- **Esercizio:** `ana=((p-y)/(p(1-p)))/len(p)` vs `gradiente_numerico` su `p`; commento perché non `p-y`.
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** codice e assert corretti; `/len(p)` ok; distingue semplificazione su `z` vs formula su `p`.
+- **Affinamento:** nel commento usare `(p-y)/(p*(1-p))` — la prosa `(p-y)/p*(1-p)` è ambigua; chiudere con «p-y è dL/dz, non dL/dp» (lacuna #38).
+
 ---
 
 ## Lacune e dubbi ancora aperti

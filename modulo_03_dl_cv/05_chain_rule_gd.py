@@ -351,9 +351,41 @@ f = lambda x: x**3
 h = lambda x: f(g(x))
 g_prime = lambda x: 2*x
 f_prime = lambda x: 3*x**2
-
 h_prime = lambda x: 3*(x**2+1)**2 * 2*x
-h_prima_chain = lambda x: f_prime(g(x)) * g_prime(x)
+h_prime_chain = lambda x: f_prime(g(x)) * g_prime(x)
+h_prime_num = lambda x:  derivata_numerica(h, x)
+
+print(h_prime(1))
+print(h_prime_chain(1))
+print(h_prime_num(1))
+
+# 2) h(x) = sin(x^2)
+g = lambda x: x**2
+f = lambda x: np.sin(x)
+h = lambda x: f(g(x))
+g_prime = lambda x: 2 * x
+f_prime = lambda x: np.cos(x)
+h_prime = lambda x: np.cos(x**2) * 2*x
+h_prime_chain = lambda x: f_prime(g(x)) * g_prime(x)
+h_prime_num = lambda x:  derivata_numerica(h, x)
+
+print(h_prime(1))
+print(h_prime_chain(1))
+print(h_prime_num(1))
+
+# 3) h(x) = e^(2x + 1)
+g = lambda x: 2*x + 1
+f = lambda x: np.exp(x)
+h = lambda x: f(g(x))
+g_prime = lambda x: 2
+f_prime = lambda x: np.exp(x)
+h_prime = lambda x: np.exp(2 * x + 1) * 2
+h_prime_chain = lambda x: f_prime(g(x)) * g_prime(x)
+h_prime_num = lambda x:  derivata_numerica(h, x)
+
+print(h_prime(1))
+print(h_prime_chain(1))
+print(h_prime_num(1))
 
 # 1.2 - CHAIN RULE come "moltiplicazione di sensibilita'"
 
@@ -376,6 +408,22 @@ h_prima_chain = lambda x: f_prime(g(x)) * g_prime(x)
 #   h'(x) = sigmoid(g(x)) * (1 - sigmoid(g(x))) * 2
 # Verifica in x = 0, 1, -1 con derivata_numerica.
 # TUO CODICE QUI:
+
+print("\nMini-esercizio 1.3.A\n")
+
+g = lambda x: 2 * x + 1
+g_prime = lambda x: 2
+derivata_sigmoide = lambda x: sigmoid(x) * (1 - sigmoid(x))
+h = lambda x: sigmoid(g(x))
+h_prime_chain = lambda x: derivata_sigmoide(g(x)) * g_prime(x)
+
+arr = np.array([0, 1, -1], dtype=float)
+for a in arr:
+    chain = h_prime_chain(a)
+    num = derivata_numerica(h, a)
+    assert np.allclose(chain, num), "Ops, qualcosa è andato storto!"
+    print(chain)
+    print(f"{num}\n")
 
 
 # ==========================================================================
@@ -409,6 +457,10 @@ h_prima_chain = lambda x: f_prime(g(x)) * g_prime(x)
 #   3) Perche' non calcoli dL/dz "diretto" ma passi da dL/dp e dp/dz?
 #   4) Perche' nel backward userai spesso P - y invece di ricalcolare tutto?
 # TUO COMMENTO QUI:
+# z è il logit (dato grezzo, prima di passare per la funzione di attivazione). p è il dato dopo essere stato processato dalla funzione sigmoide.
+# Chiede "come cambia il risultato (L, loss) in base alle variazione del logit (dato grezzo, z)?"
+# Per via della chain rule, che prevede il passaggio dL/dp * dp/dz. 
+# Per via della semplificazione miracolosa di BCE + sigmoid, che da (p -y)/p(1-p) * p(1-p) -> p - y
 
 
 # 🔵 RINFORZO R2 (~5 minuti) — retrieval formule (senza guardare cap.04)
@@ -419,6 +471,9 @@ h_prima_chain = lambda x: f_prime(g(x)) * g_prime(x)
 # Poi moltiplica e mostra la cancellazione di p(1-p).
 # TUO COMMENTO QUI:
 
+# dL/dp = (p - y)/p(1 - p) -> derivata della funzione BCE loss
+# dp/dz = p(1 - p) -> derivata della funzione sigmoide
+# dL/dp * dp/dz -> (p - y)/p(1 - p) * p(1 - p) -> p - y semplificazione miracolosa della chain rule BCE + sigmoid.
 
 # 🔵 RINFORZO R3 (~8 minuti) — numerico vs analitico su z
 # Per z = np.array([-2.0, 0.0, 2.0]) e y = np.array([1, 0, 1]):
@@ -432,14 +487,80 @@ h_prima_chain = lambda x: f_prime(g(x)) * g_prime(x)
 #   stampa ana e num
 # TUO CODICE QUI:
 
+print("\nRinforzo R3\n")
+
+z = np.array([-2.0, 0.0, 2.0], dtype=float)
+y = np.array([1, 0, 1], dtype=float)
+
+p = sigmoid(z)
+
+ana = (p - y) / len(z) 
+num = gradiente_numerico(
+    lambda z_vec: bce_loss(
+        sigmoid(z_vec), y
+    ),
+    z
+)
+
+assert np.allclose(ana, num), "Ops qualcosa è andato storto, i gradienti non coincidono"
+
+print(ana)
+print(num)
 
 # 🔵 RINFORZO R4 (~8 minuti) — retrieval dL/dp (cap.04 TODO 5)
-# Per p = np.array([0.9, 0.1, 0.7]), y = np.array([1, 0, 1]):
-#   ana = ((p - y) / (p * (1 - p))) / len(p)
-#   num = gradiente_numerico(lambda p_vec: bce_loss(p_vec, y), p.astype(float))
-#   assert np.allclose(ana, num)
-# Perche' qui NON basta p - y? (Risposta: stai derivando rispetto a p, non a z.)
+#
+# OBIETTIVO: fissare la differenza tra derivare rispetto a **p** (probabilità)
+# e derivare rispetto a **z** (logit). In R3 hai usato `p - y` su z; qui NO.
+#
+# DATI FISSI:
+#   p = np.array([0.9, 0.1, 0.7])
+#   y = np.array([1, 0, 1])
+#
+# PASSI (in ordine):
+#   1) Scrivi in un commento la formula di dL/dp per UN campione (BCE):
+#        dL/dp = (p - y) / (p * (1 - p))
+#      (NON confonderla con dL/dz = p - y: quella vale solo dopo sigmoid + chain rule.)
+#
+#   2) Calcola il gradiente analitico sul BATCH (bce_loss usa np.mean):
+#        ana = ((p - y) / (p * (1 - p))) / len(p)
+#      Ogni elemento i: contributo del campione i alla derivata della LOSS MEDIA.
+#      Stesso ragionamento del `/ len(z)` in R3, ma qui derivi rispetto a **p**.
+#
+#   3) Calcola il gradiente numerico perturbando **p** (non z):
+#        num = gradiente_numerico(
+#            lambda p_vec: bce_loss(p_vec, y),
+#            p.astype(float),
+#        )
+#
+#   4) Verifica e stampa:
+#        assert np.allclose(ana, num)
+#        print("ana:", ana)
+#        print("num:", num)
+#
+#   5) In 1 riga di commento rispondi:
+#        "Perche' qui NON basta p - y?"
+#      Suggerimento: stai derivando rispetto a **p**, non a **z**;
+#      manca il fattore sigmoid'(z)=p(1-p) che in R3 cancellava il denominatore.
+#
 # TUO CODICE + 1 RIGA COMMENTO:
+
+# Per poter applicare la semplificazione miracolosa, bisogna derivare la loss (dL) rispetto al logit (dz). Per derivare la loss solo rispetto la probabilità (sigmoid), la formula è (p - y) / (p * (1 - p)). Dopo di che, data che la BCE è un dato ricavato dalla media rispetto al batch, dobbiamo dividere il risultato per il numero di elementi (len(p)).
+
+print("\nRinforzo R4\n")
+
+p = np.array([0.9, 0.1, 0.7])
+y = np.array([1, 0, 1], dtype=float)
+
+ana_loss_risp_p = ((p - y)/(p *(1 - p)))/len(p)
+num_loss_risp_p = gradiente_numerico(
+    lambda p_vec: bce_loss(p_vec, y),
+    p
+)
+
+assert np.allclose(ana_loss_risp_p, num_loss_risp_p), "Ops, i gradienti non coincidono!"
+
+print(ana_loss_risp_p)
+print(num_loss_risp_p)
 
 
 # 🔵 RINFORZO R5 (~10 minuti) — chain rule su 1 neurone (collegamento cap.04 TODO 7)
