@@ -3,10 +3,10 @@
 | Campo | Valore |
 |-------|--------|
 | **Modulo** | M03 — Deep Learning & Computer Vision |
-| **File capitolo** | `04_derivate_gradiente.py` (segnaposto al 27/05/2026) |
+| **File capitolo** | `04_derivate_gradiente.py` |
 | **File diario** | `M03_C04_derivate_gradiente_sessione.md` |
-| **Stato** | **in corso** — bridge `M03_R03` completato 29/05/2026; prossimo quiz ingresso Q1–Q6 |
-| **Voto difficoltà** | — / X/10 (atteso 6-7/10 dopo split) |
+| **Stato** | **✅ Chiuso** 16/06/2026 |
+| **Voto difficoltà** | **8**/10 (C5 auto-rating) |
 
 ---
 
@@ -388,14 +388,38 @@ Le valutazioni di alcuni esercizi qui sotto sono state migrate dal vecchio diari
 - **Errori / lacune:** (1) **`dL/dp` non chiuso** — `-0.5/0.25 = -2` (manca il valore finale esplicito); (2) risposta mescola le due derivate in un unico calcolo invece di due righe separate come chiede C3; (3) risposta parzialmente nella riga consegna (1882–1883) oltre che in TUA RISPOSTA.
 - **Per 9/10:** `dL/dz = -0.5` (semplificazione) e `dL/dp = -2` (formula su p) in due righe distinte.
 
+### 2026-06-16 — Checkpoint C4 (`04_derivate_gradiente.py` — gradiente f=x²y+sin(z))
+
+- **Esercizio:** df/dx, df/dy, df/dz e gradiente in (1,2,0); verifica numerica.
+- **Valutazione (primo tentativo):** **8/10**.
+- **Punti di forza:** Modello mentale corretto (un parametro alla volta sulla f intera); tre formule numeriche con parentesi giuste; `sin(z)` si cancella su x/y; `f_per_grad` con `x**2 * z[1]` corretto; confronto con `gradiente_numerico` — ottimo schema.
+- **Errori / lacune:** (1) **`eps = 1e-24` troppo piccolo** — sotto precisione float (~1e-16) → rischio risultati spazzatura (stesso tema TODO 12 `h=1e-16`); usare `1e-6` come nel capitolo; (2) mancano risposte **analitiche** esplicite in commento (`2xy=4`, `x²=1`, `cos(z)=1`, gradiente `[4,1,1]`); (3) risposta solo in codice, non sotto TUA RISPOSTA in forma chiusa.
+- **Per 9/10:** `eps=1e-6` + 4 righe analitiche + `assert np.allclose(grad_man, grad)`.
+
+### 2026-06-16 — Checkpoint C4 — post-fix
+
+- **Fix:** `eps=1e-6`; `assert np.allclose(grad_man, grad)`; gradiente `[4,1,1]` in consegna; run ok — entrambi `[4. 1. 1.]`.
+- **Valutazione post-feedback:** **9/10** (primo tentativo resta **8/10**).
+- **Residuo minore:** sotto `TUA RISPOSTA` mancano ancora le 3 righe analitiche esplicite (`df/dx=4`, `df/dy=1`, `df/dz=1`) — il gradiente c’è ma le parziali non sono scritte una per una.
+
+### 2026-06-16 — Chiusura formale capitolo 4 (handshake Jarvis)
+
+- **Voto difficoltà registrato:** **8/10** (C5 auto-rating; media aree ~8).
+- **Residui non bloccanti:** TODO 16 REAL-WORLD; typo *vaniscing*; TODO 11 colloquio 7/10.
+- **Prossimo:** bridge M03_R04 → cap.05 con R1–R6.
+
 ---
 
 ## Lacune e dubbi ancora aperti
 
-- _(da popolare quando il capitolo verra' aperto)_
+- **TODO 16** REAL-WORLD (10 layer sigmoid) — opzionale, non bloccante.
+- Typo ricorrente *vaniscing* → *vanishing* (monitorare in scrittura).
 
 ---
 
 ## Note per il capitolo successivo (cap.05 chain rule + gd)
 
-- _(da popolare a chiusura del cap.04)_
+- **Prima del cap.05:** bridge `M03_R04` (~10 min).
+- **Obbligo sessione 1 cap.05:** blocco **🔁 RINFORZO MIRATO R1–R6** (p-y) prima della sez.2.
+- Monitorare: `h=1e-6`; retrieval `p-y` senza aprire cap.04 (TODO 7).
+- C4 ha richiesto dialogo su parziali (`sin(z)`): consolidato con assert — ripassare in GD multivariato.

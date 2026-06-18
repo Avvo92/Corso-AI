@@ -216,7 +216,8 @@ def gradient_descent_nd(
 # Q1) [Recall cap.04] La derivata di sigmoid(z) e' s(z)*(1-s(z)). Quanto
 #     vale in z = 0? E in z = 10? Cosa significa per il vanishing gradient?
 # TUA RISPOSTA:
-# ...
+# in 0 vale 0.25. in 10 vale circa 4.539574272044433e-05. E' molto facile, soprattutto per diversi layer di sigmoidi uno dopo l'altro, avere un gradiente che diventa troppo piccolo (circa 0.25^n_layer_sigmoidi). 
+
 
 # Q2) [Recall cap.04] Hai p = sigmoid(z), L(p, y) = BCE. La derivata di
 #     L rispetto a z e' (p - y). Da dove arriva questa semplificazione?
@@ -226,12 +227,12 @@ def gradient_descent_nd(
 #   Passo 3: dp/dz = p * (1 - p)
 #   Passo 4: moltiplica -> i p(1-p) si cancellano -> p - y
 # TUA RISPOSTA:
-# ...
+# Questa è la semplificazione miracolosa, che si applica però solo per BCE + sigmoid. Dato che il rapporto tra derivata della BCE e derivata del logit di partenza (dL / dz) è sostanzialmente dL/dp * dp/dz si ha -> (p-y)/p(1-p)*p(1-p) = p - y.
 
 # Q3) [Recall cap.03 LOSS] Spiega in 1 riga perche' la BCE va calcolata
 #     su PROBABILITA' continue e non su predizioni binarie (P>=0.5).
 # TUA RISPOSTA:
-# ...
+# Perchè la BCE loss in pratica giudica la sicurezza del modello, e per farlo ha bisogno di avere una percentuale, ossia un valore continuo. E' la differenza tra BCE e accuracy_score.
 
 # Q4) [Recall cap.02 M3] In una rete 2-layer hai input X shape (N, d),
 #     W1 shape (d, h), W2 shape (h, 1). Quante operazioni elementari
@@ -239,17 +240,23 @@ def gradient_descent_nd(
 #     Suggerimento: pensa a un dot product W1 -> Z1, attivazione,
 #     dot product W2 -> Z2, attivazione.
 # TUA RISPOSTA:
-# ...
+# *d*h + *h*1
 
 # Q5) [Intuizione] Hai f(x) = (x - 3)^2. Sei in x = 0. In che direzione
 #     devi muoverti per FAR SCENDERE f? (+x o -x?) Spiega in 1 riga.
 # TUA RISPOSTA:
-# ...
+# +x. Devo movermi nella direzione che porta il risultato delle operazioni svolte nella parentesi verso 0, che è il valore di x per cui la funzione produce valore minimo.
 
 # Q6) [💬 Feynman] Spiega in 4 righe il GRADIENT DESCENT a un collega
 #     web dev. VIETATO: gradiente, derivata, funzione, pesi.
 # TUA RISPOSTA:
-# ...
+
+# Immagina di voler abbassare un numero che misura quanto sbagli -> alto = male  -> basso = bene.
+# Parti da un punto qualsiasi.
+# Provi una piccola modifica e guardi se il punteggio scende o sale.
+# Se è sceso → fai un altro passetto nella stessa direzione (magari più piccolo).
+# Se è salito → vai dall’altra parte.
+# Ripeti finché il punteggio non smette di migliorare.
 
 # Q7) [Prevedi output] Cosa stampa?
 #       x = 10.0
@@ -258,8 +265,9 @@ def gradient_descent_nd(
 #           print(round(x, 4))
 # Suggerimento: ogni step moltiplica x per (1 - 0.2) = 0.8.
 # TUA RISPOSTA:
-# ...
-
+# 8
+# 6.4
+# 5.12
 
 # ==========================================================================
 # SEZIONE 1 - CHAIN RULE intuitiva (2 livelli)
@@ -337,6 +345,15 @@ def _esempio_chain_rule() -> None:
 # Verifica in x = 1 per ognuna.
 # TUO CODICE QUI:
 
+# 1)  h(x) = (x^2 + 1)^3
+g = lambda x: x**2 + 1
+f = lambda x: x**3
+h = lambda x: f(g(x))
+g_prime = lambda x: 2*x
+f_prime = lambda x: 3*x**2
+
+h_prime = lambda x: 3*(x**2+1)**2 * 2*x
+h_prima_chain = lambda x: f_prime(g(x)) * g_prime(x)
 
 # 1.2 - CHAIN RULE come "moltiplicazione di sensibilita'"
 

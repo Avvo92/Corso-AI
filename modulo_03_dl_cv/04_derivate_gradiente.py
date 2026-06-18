@@ -1891,19 +1891,44 @@ print(pd.DataFrame(report))
 #     - df/dx = ?
 #     - df/dy = ?
 #     - df/dz = ?
-#     Gradiente complessivo = ?
+#     Gradiente complessivo = [4, 1, 1]
 # TUA RISPOSTA:
-# ...
+
+print("\nEsercizio C4\n")
+
+x = 1
+y = 2
+z = 0
+eps = 1e-6
+arr = np.array([x, y, z], dtype=float)
+
+der_risp_x = ((((x + eps)**2)*y + np.sin(z)) - (((x - eps)**2)*y + np.sin(z))) / (2*eps) # df/dx
+der_risp_y = ((x**2 * (y + eps) + np.sin(z)) - (x**2 * (y - eps) + np.sin(z))) / (2*eps) # df/dy
+der_risp_z = ((x**2 * y + (np.sin(z + eps))) - (x**2 * y + (np.sin(z - eps)))) / (2*eps) # df/dz
+
+grad_man = np.array([der_risp_x, der_risp_y, der_risp_z], dtype=float)
+
+def f_per_grad(z: NDArray[np.float64]):
+    return z[0]**2 * z[1] + np.sin(z[2])
+
+grad = gradiente_numerico(
+    f_per_grad,
+    arr
+)
+
+assert np.allclose(grad_man, grad, atol=1e-4), "Ops!"
+
+print(grad)
+print(grad_man)
 
 # C5) Auto-rating onesto:
-#       - Derivata come pendenza:                       /10
-#       - Derivata sigmoid (max 0.25 + implicazione):    /10
-#       - Derivata ReLU (step, dying ReLU):              /10
-#       - Gradiente come vettore di derivate parziali:   /10
-#       - Semplificazione miracolosa BCE+sigmoid:        /10
-#       - Pipeline integrata derivate_check:             /10
-# TUE RISPOSTE:
-# ...
+#       - Derivata come pendenza:                       8/10
+#       - Derivata sigmoid (max 0.25 + implicazione):   8 /10 -> Si intende vaniscing gradient?
+#       - Derivata ReLU (step, dying ReLU):              6/10
+#       - Gradiente come vettore di derivate parziali:  8 /10
+#       - Semplificazione miracolosa BCE+sigmoid:       8 /10
+#       - Pipeline integrata derivate_check:            7 /10
+
 
 
 # ==========================================================================
