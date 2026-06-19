@@ -260,6 +260,27 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **Punti di forza:** codice e assert corretti; `/len(p)` ok; distingue semplificazione su `z` vs formula su `p`.
 - **Affinamento:** nel commento usare `(p-y)/(p*(1-p))` — la prosa `(p-y)/p*(1-p)` è ambigua; chiudere con «p-y è dL/dz, non dL/dp» (lacuna #38).
 
+### 2026-06-18 — Cap.05 Mini 2.1.A (`05_chain_rule_gd.py` — chain rule 3 livelli)
+
+- **Esercizio:** `y=sin((2x+1)²)`; h/g/f + verifica `x∈{0,1}`.
+- **Valutazione (primo tentativo):** **9.5/10** (dopo fix `g_prime`).
+- **Punti di forza:** `f_y` composizione ok; `f'·g'·h'` corretta; assert su 2 punti.
+- **Valori attesi:** x=0 ~2.16; x=1 ~-10.9.
+
+### 2026-06-18 — Cap.05 Mini 2.1.B (`05_chain_rule_gd.py` — chain rule 4 livelli)
+
+- **Esercizio:** `y=exp(sin(cos(x²)))`; prodotto 4 derivate; verifica `x=0.5`.
+- **Valutazione (primo tentativo):** **5.5/10** (h2' senza `-`, h3=-sin errato).
+- **Valutazione post-fix:** **9.5/10**.
+- **Punti di forza:** h2'=-sin, h3=sin, composizione e assert ok.
+
+### 2026-06-18 — Cap.05 TODO 3 (`05_chain_rule_gd.py` — 5 derivate locali dL/dW1)
+
+- **Esercizio:** mappatura mentale delle 5 derivate locali sulla catena verso W1.
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Punti di forza:** catena L→P→Z2→H→Z1→W1 corretta; semplificazione p-y citata; ramo parallelo dL/dW2 (fork da dL/dZ2) — ottimo insight.
+- **Affinamento:** (1) esercizio chiede derivate *locali* (dL/dP, dP/dZ2, dZ2/dH, dH/dZ1, dZ1/dW1) — non solo il prodotto accumulato; (2) «rispetto a P» non «rispetto sigmoide»; (3) notazione dZ2/dW2 non dZ2/W2.
+
 ---
 
 ## Lacune e dubbi ancora aperti

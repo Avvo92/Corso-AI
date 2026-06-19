@@ -573,6 +573,38 @@ print(num_loss_risp_p)
 #   4) Stampa ana e num
 # TUO CODICE QUI:
 
+x = 2.0
+w = 0.2
+b = 0.1
+y = 1.0
+
+def neurone_semplice(
+    x: float,
+    w: float,
+    b: float) -> float:
+        return x * w + b
+
+p = sigmoid(neurone_semplice(x, w, b))
+bce = bce_loss(np.array([p], dtype=float), np.array([y], dtype=float))
+
+ana = (p - y) * x
+
+
+num =  (p - y)  * derivata_numerica(
+    lambda w_var: neurone_semplice(x, w_var, b),
+    w
+    )
+
+grad = gradiente_numerico(
+    lambda w_var: bce_loss(
+        np.array(sigmoid(neurone_semplice(x, w_var[0], b)), dtype=float),
+        np.array([y], dtype=float)
+    ),
+    np.array([w], dtype=float)
+)[0]
+
+print(ana, num, grad)
+
 
 # 🔵 RINFORZO R6 (~5 minuti) — trappola + Feynman
 # A) Perche' dL/dz = p - y vale SOLO con sigmoid + BCE?
@@ -581,6 +613,7 @@ print(num_loss_risp_p)
 #    "Parto dalla loss, torno indietro fino al logit, e li trovo P - y."
 # TUO COMMENTO QUI:
 
+#A) Per via di come si articola il calcolo con le derivate di BCE e sigmod: (p - y) / (p * (1 - p)) * (p * (1 - p)) -> p - y. Relu, essendo solo un interruttore, la cui derivata f_relu'(z) = (z >= 0).astype(float) non permette questa semplificazione.
 
 # ==========================================================================
 # SEZIONE 2 - CHAIN RULE multilivello
@@ -606,6 +639,30 @@ print(num_loss_risp_p)
 # Verifica in x = 0 e x = 1 con derivata_numerica.
 # TUO CODICE QUI:
 
+print("\nEsercizio 2.1\n")
+
+# y(x) = sin((2x + 1)^2)
+
+arr = np.array([0, 1], dtype=float)
+
+h_liv1 = lambda x: 2*x + 1
+h_prime = lambda x: 2
+g_liv2 = lambda x: x**2
+g_prime = lambda x: 2*x
+f_liv3 = lambda x: np.sin(x)
+f_prime = lambda x: np.cos(x)
+f_y = lambda x : f_liv3(g_liv2(h_liv1(x)))
+
+results = []
+
+for x in arr:
+    chain_rule = derivata_numerica(f_y, x)
+    chain_rule_man = f_prime(g_liv2(h_liv1(x))) * g_prime(h_liv1(x)) * h_prime(x)
+    assert np.isclose(chain_rule, chain_rule_man, atol=1e-4), "Ops, i valori non coincidono!"
+    results.append([chain_rule, chain_rule_man])    
+
+print(results)
+
 
 # 🔵 MINI-ESERCIZIO INLINE 2.1.B (~5 minuti) — chain rule a 4 livelli
 # Sia y(x) = exp(sin(cos(x^2))). Conta i 4 livelli:
@@ -616,6 +673,31 @@ print(num_loss_risp_p)
 # Scrivi y'(x) come prodotto di 4 derivate locali. NON serve calcolare,
 # basta SCRIVERE la formula. Poi verifica numericamente in x = 0.5.
 # TUO COMMENTO + CODICE:
+
+print("\nMini-esercizio 2.1.B\n")
+
+# y(x) = exp(sin(cos(x^2))) -> y'(x) = h4'(h3(h2(h1(x)))) * h3'(h2(h1(x))) * h2'(h1(x)) * h1'(x)
+
+h1 = lambda x: x**2
+h1_prime = lambda x: 2 * x
+h2 = lambda x: np.cos(x)
+h2_prime = lambda x: -np.sin(x)
+h3 = lambda x: np.sin(x)
+h3_prime = lambda x: np.cos(x)
+h4 = lambda x: np.exp(x)
+h4_prime = lambda x: np.exp(x)
+
+y = lambda x: h4(h3(h2(h1(x))))
+y_prime = lambda x:  h4_prime(h3(h2(h1(x)))) * h3_prime(h2(h1(x))) * h2_prime(h1(x)) * h1_prime(x)
+
+x = 0.5
+
+chain_rule_man = y_prime(x)
+chain_rule = derivata_numerica(y, x)
+
+assert np.isclose(chain_rule_man, chain_rule), "Ops, i valori non coincidono!"
+
+print(chain_rule, chain_rule_man)
 
 
 # 2.2 - INTUIZIONE per le reti neurali
@@ -631,6 +713,7 @@ print(num_loss_risp_p)
 # Per derivare L rispetto a W1, dovrai applicare la chain rule
 # attraverso QUANTI livelli? Conta.
 # TUA RISPOSTA (in commento):
+# 5
 
 
 # ==========================================================================
@@ -651,7 +734,7 @@ print(num_loss_risp_p)
 #
 # 3.1 - GRADIENTE DI L RISPETTO A W2 (3 livelli)
 #
-#     dL/dW2 = dL/dZ2 * dZ2/dW2
+#     dL/dW2 = -> dL/dp * dp/dZ2 * dZ2/dW2 -> dL/dZ2 * dZ2/dW2
 #
 # La parte dL/dZ2 viene dalla semplificazione miracolosa cap.04:
 #     dL/dZ2 = P - y          (broadcasting: shape (N,) -> (N, 1))
@@ -664,15 +747,48 @@ print(num_loss_risp_p)
 #
 # 3.2 - GRADIENTE DI L RISPETTO A W1 (5 livelli!)
 #
+# Catena completa (forward, da sinistra a destra):
+#   W1 -> Z1 -> H -> Z2 -> P -> L
+#
+# Scomposizione algebrica (cosa vuoi ottenere — lettura "dall'esterno"):
 #     dL/dW1 = dL/dZ1 * dZ1/dW1
 #     dL/dZ1 = dL/dH * dH/dZ1
 #     dL/dH  = dL/dZ2 * dZ2/dH
 #
-# Tradotto:
-#     dL/dZ2 = (P - y) / N                      shape (N, 1)
-#     dL/dH  = dL/dZ2 @ W2^T                    shape (N, h)
-#     dL/dZ1 = dL/dH * derivata_relu(Z1)        shape (N, h), * elementwise
-#     dL/dW1 = X^T @ dL/dZ1                     shape (d, h)
+# ORDINE DI CALCOLO nel backward (risali dalla loss — leggi dall'alto in basso):
+#
+#   PASSO 1 — Spinta sul logit (gia' nota da cap.04, BCE + sigmoid)
+#     Cosa chiedo: "In che direzione la loss vuole muovere Z2?"
+#     Formula:  dL/dZ2 = (P - y) / N
+#     Shape:    (N, 1)
+#     Nota:      /N perche' L e' media sul batch (np.mean nella BCE)
+#
+#   PASSO 2 — Propaga indietro attraverso il layer lineare Z2 = H @ W2 + b2
+#     Cosa chiedo: "Quanto di quella spinta arriva su ogni H?"
+#     Chain:     dL/dH = dL/dZ2 * dZ2/dH
+#     Regola altro fattore:  dZ2/dH = W2
+#     Formula:   dL/dH = dL/dZ2 @ W2^T
+#     Shape:     (N, h)
+#
+#   PASSO 3 — Attraversa ReLU: H = ReLU(Z1)
+#     Cosa chiedo: "Quanto della spinta su H passa davvero a Z1?"
+#     Chain:     dL/dZ1 = dL/dH * dH/dZ1
+#     ReLU':     1 se Z1 > 0, 0 se Z1 <= 0  (neurone spento = gradiente bloccato)
+#     Formula:   dL/dZ1 = dL/dH * derivata_relu(Z1)    (* elemento per elemento)
+#     Shape:     (N, h)
+#
+#   PASSO 4 — Arriva ai pesi W1 del primo layer: Z1 = X @ W1 + b1
+#     Cosa chiedo: "Di quanto aggiorno ogni peso W1?"
+#     Chain:     dL/dW1 = dL/dZ1 * dZ1/dW1
+#     Regola altro fattore:  dZ1/dW1 = X
+#     Formula:   dL/dW1 = X^T @ dL/dZ1
+#     Shape:     (d, h)   — stessa shape di W1
+#
+# Schema compatto (ordine di esecuzione):
+#     dL/dZ2  = (P - y) / N                 (N, 1)   <- INIZI QUI
+#     dL/dH   = dL/dZ2 @ W2^T               (N, h)
+#     dL/dZ1  = dL/dH * derivata_relu(Z1)   (N, h)
+#     dL/dW1  = X^T @ dL/dZ1                (d, h)   <- FINISCI QUI
 #
 # Lo IMPLEMENTI nel cap.06 (e' il backward).
 #
@@ -681,6 +797,104 @@ print(num_loss_risp_p)
 # nome "logico" (es. "derivata della BCE rispetto a P", ecc.). NON
 # scrivere codice. E' un esercizio di mappatura mentale.
 # TUO COMMENTO QUI:
+
+# 1 - Derivata della BCE rispetto sigmoide -> dL/dp;
+
+# 2 - Derivata della sigmoide rispetto al logit Z2 -> dL/dp dp/dZ2 -> dL/dZ2;
+# (qui interviene la semplificazione miracolosa)
+
+# 3 Derivata del logit rispetto a H -> dL/dZ2 * dZ2/dH
+# (e parrallelamente dL/dZ2 * dZ2/W2 -> dL/dW2 per cambiare i pesi W2 del secondo layer)
+
+# 4 Derivata di H rispetto al logit Z1 -> dL/dZ2 * dZ2/dH * dH/dZ1 -> dL/dZ1;
+
+# 5 Derivata di del logit Z1 rispetto a W1 -> dL/dZ2 * dZ2/dH * dH/dZ1 * dZ1/dW1 -> dL/dW1;
+
+# --------------------------------------------------------------------------
+# 3.3 - ESERCIZI PROGRESSIVI sulla mappa backward (facile -> difficile)
+# --------------------------------------------------------------------------
+# Obiettivo: fissare catena, regola dell'"altro fattore", shape e /N.
+# Rispondi in commento sotto ogni esercizio. Soluzioni in fondo a 3.3.
+#
+#
+# 🟢 ESERCIZIO 3.A (~8 minuti) — Mappa a parole (livello 1)
+# Senza numeri e senza codice, completa:
+#
+#   (a) Scrivi la catena completa L -> ... -> W2 (nomina ogni variabile).
+#   (b) Per ognuno dei 3 anelli, scrivi: "se muovo ___, quanto cambia ___?"
+#       usando le parole logit, probabilita', loss, peso.
+#   (c) Per Z2 = H @ W2 + b2, applica la regola dell'"altro fattore":
+#       - derivando Z2 rispetto a W2 ottieni ___
+#       - derivando Z2 rispetto a H ottieni ___
+#   (d) Perche' dL/dW2 NON e' (P - y) * W2 elemento per elemento?
+#       (1-2 frasi: shape + catena)
+#
+# TUO COMMENTO 3.A QUI:
+#
+#
+# 🟡 ESERCIZIO 3.B (~12 minuti) — Calcolo a mano di dL/dW2 (livello 2)
+# Mini-batch con N = 2 esempi, h = 2 neuroni nascosti.
+# Ti diamo gia' la spinta sul logit (dopo BCE+sigmoid, gia' divisa per N):
+#
+#   H = np.array([[1., 2.],
+#                 [3., 4.]])          # shape (2, 2)
+#
+#   delta = (P - y) / N = np.array([0.25, -0.15])   # shape (2,)
+#
+#   (a) Scrivi la formula matriciale di dL/dW2 e le shape di ogni fattore.
+#   (b) Calcola dL/dW2 a mano (o con 3 righe NumPy sotto, senza PyTorch).
+#   (c) Interpreta il segno di dL/dW2[0]: la loss vuole aumentare o
+#       diminuire quel peso? (ricorda: update = W - lr * gradiente)
+#
+# TUO COMMENTO / CODICE 3.B QUI:
+#
+#
+# 🔴 ESERCIZIO 3.C (~18 minuti) — Mezzo backward verso W1 (livello 3)
+# Stesso batch N = 2, h = 2. Parti da dL/dZ2 gia' mediato:
+#
+#   dL_dZ2 = np.array([[0.25],
+#                      [-0.15]])       # shape (2, 1)  == (P - y) / N
+#
+#   W2 = np.array([[0.5],
+#                  [1.0]])            # shape (2, 1)
+#
+#   Z1 = np.array([[ 2., -1.],
+#                  [ 0.,  3.]])       # shape (2, 2)  (prima di ReLU)
+#
+#   X = np.array([[1., 0.],
+#                 [0., 1.]])          # shape (2, 2)  (identita' per semplicita')
+#
+#   (a) Calcola dL/dH = dL/dZ2 @ W2^T. Scrivi la matrice (2, 2).
+#   (b) Applica la maschera ReLU: dL/dZ1 = dL/dH * (Z1 > 0).
+#       Quale elemento di dL/dH viene "azzerato" e perche'?
+#   (c) Calcola dL/dW1 = X^T @ dL/dZ1. Shape attesa?
+#   (d) Feynman (2-3 frasi): perche' un neurone con Z1 <= 0 non aggiorna
+#       i pesi che lo alimentano?
+#
+# TUO COMMENTO / CODICE 3.C QUI:
+#
+#
+# --- SOLUZIONI ESERCIZI 3.A–3.C (guarda solo dopo il tentativo) ---
+#
+# 3.A (bozza):
+#   (a) L -> P -> Z2 -> W2  (catena corta per W2; P dipende da Z2 via sigmoid)
+#   (b) Esempio: muovo W2 -> cambia Z2; muovo Z2 -> cambia P; muovo P -> cambia L
+#   (c) dZ2/dW2 = H ; dZ2/dH = W2
+#   (d) (P-y) e' dL/dZ2 (spinta sul logit), non dL/dW2; serve ancora
+#       moltiplicare per dZ2/dW2 e sommare sul batch (-> H^T @)
+#
+# 3.B:
+#   (a) dL/dW2 = H.T @ delta.reshape(-1, 1)  ;  H.T (2,2), delta (2,1), out (2,1)
+#   (b) riga 0: 1*0.25 + 3*(-0.15) = -0.20 ; riga 1: 2*0.25 + 4*(-0.15) = -0.10
+#   (c) gradiente negativo -> con W - lr*grad il peso AUMENTA (scendi sulla loss)
+#
+# 3.C:
+#   (a) dL/dH = [[0.125,  0.25 ],
+#                [-0.075, -0.15 ]]
+#   (b) maschera [[1,0],[1,1]] -> azzerato dL/dH[0,1] perche' Z1[0,1]=-1 (ReLU spenta)
+#       dL/dZ1 = [[0.125, 0.0], [-0.075, -0.15]]
+#   (c) dL/dW1 = X.T @ dL/dZ1 = dL/dZ1 , shape (2, 2)
+#   (d) ReLU spenta -> H=0 costante -> nessuna sensibilita' locale a Z1
 
 
 # ==========================================================================
