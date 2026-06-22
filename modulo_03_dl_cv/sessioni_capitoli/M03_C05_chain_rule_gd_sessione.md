@@ -318,6 +318,18 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **Spiegazione:** ok (step troppo ampi amplificano errore); manca overshoot oltre il minimo x=3.
 - **Valutazione (primo tentativo):** **8.5/10**.
 
+### 2026-06-18 — Cap.05 Mini 4.2.A (`05_chain_rule_gd.py` — grafico GD + verifica file)
+
+- **Codice:** `_grafico_gd_1d_traiettoria(out_path=...)` + `os.path.exists` con if/else — corretto.
+- **Valutazione (primo tentativo):** **9.5/10**.
+- **Opzionale:** `getsize > 0` o `Path(__file__).parent / "figures" / ...` per path robusto se si esegue da root progetto.
+
+### 2026-06-18 — Cap.05 Mini 4.3.A (`05_chain_rule_gd.py` — GD early stop)
+
+- **Funzione:** `gradient_descent_1d_early_stop` con `|grad|<tol` o passo `<tol`, `break`, append finale, ritorno `(traiettoria, int)`.
+- **Test:** `(x-3)^2`, x0=10, lr=0.2 → ~30 iter (stop su passo piccolo prima di `|grad|<1e-6` stretto — accettabile).
+- **Valutazione (primo tentativo):** **9.5/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti

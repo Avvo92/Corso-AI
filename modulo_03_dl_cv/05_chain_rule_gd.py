@@ -1056,14 +1056,22 @@ def _grafico_gd_1d_traiettoria(
         plt.show()
     plt.close(fig)
 
-_grafico_gd_1d_traiettoria(show=True)
-
 
 # 🔵 MINI-ESERCIZIO INLINE 4.2.A (~3 minuti) — genera grafico GD
 # Chiama _grafico_gd_1d_traiettoria(out_path="figures/05_01_gd_1d.png")
 # e verifica esistenza file.
 # TUO CODICE QUI:
 
+print("\nMini-esercizio in-line 4.2.A\n")
+
+out_path = "figures/05_01_gd_1d.png"
+
+_grafico_gd_1d_traiettoria(out_path=out_path)
+
+if os.path.exists(out_path):
+    print("Il grafico è stato creato correttamente")
+else:
+    print("Ops, qualcosa è andato storto!")
 
 # 4.3 - CONDIZIONE DI USCITA (convergenza)
 
@@ -1077,6 +1085,33 @@ _grafico_gd_1d_traiettoria(show=True)
 # arrivare a |grad| < 1e-6? (Suggerimento: ~50-100.)
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 4.3.A\n")
+
+def gradient_descent_1d_early_stop(
+    f: Callable[[float], float],
+    x0: float,
+    lr: float,
+    n_steps: int,
+    tol: float = 1e-6
+) -> tuple[list[float], int]:
+    traiettoria = [x0]
+    x = x0
+    for s in range(n_steps):
+        grad = derivata_numerica(f, x)
+        x_nuovo = x - (lr * grad)
+        if np.abs(grad) >= tol and np.abs(x_nuovo - x) >= tol:
+            x = x_nuovo
+            traiettoria.append(x_nuovo)
+        else:
+            traiettoria.append(x_nuovo)
+            break
+    return(traiettoria, len(traiettoria) - 1)
+
+f_prova1 = lambda x: (x - 3)**2
+
+result_prova1 = gradient_descent_1d_early_stop(f_prova1, 10, 0.2, 50)
+print(f"Traiettoria:\n{result_prova1[0]}\n")
+print(f"Numero iterazioni: \n{result_prova1[1]}\n\n")
 
 # ==========================================================================
 # SEZIONE 5 - LEARNING RATE: l'ingrediente piu' importante
