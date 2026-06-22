@@ -330,6 +330,26 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **Test:** `(x-3)^2`, x0=10, lr=0.2 → ~30 iter (stop su passo piccolo prima di `|grad|<1e-6` stretto — accettabile).
 - **Valutazione (primo tentativo):** **9.5/10**.
 
+### 2026-06-18 — Cap.05 Mini 5.1.A (`05_chain_rule_gd.py` — replica `_demo_lr`)
+
+- **Codice:** `my_demo_lr` con loop su lr, `gradient_descent_1d`, stampa x finale e distanza — corretto e buon allenamento.
+- **Differenze da `_demo_lr`:** n_steps=50 (ok), manca riga header tabella; non chiamata `_demo_lr()` (scelta volontaria per pratica).
+- **Commenti:** lr=0.01 ok concetto; formula con `+` invece di `W - lr*grad`; riga «divergenza» etichettata `lr=0.9` invece di `1.5`; manca commento esplicito su oscillazione 0.9.
+- **Valutazione (primo tentativo):** **8/10** (codice 9+, commenti 6.5).
+
+### 2026-06-18 — Cap.05 Mini 5.1.B (`05_chain_rule_gd.py` — grafico lr confronto)
+
+- **Codice:** `_grafico_lr_a_confronto` + `assert os.path.exists` — corretto.
+- **Risposta divergenza lr=1.5:** scritto «plateau» — **errato**: loss **esplode** (crescita rapida, oscillante); plateau = curva piatta (opposto).
+- **Valutazione (primo tentativo):** **7/10**.
+
+### 2026-06-18 — Cap.05 Mini 5.2.A (`05_chain_rule_gd.py` — lr ottimo)
+
+- **Struttura:** loop lr, lista→DataFrame, sort — buona.
+- **Bug metrica:** `4 - abs(x_finale)` invece di `abs(x_finale - 4)`; sort `ascending=False` (meglio True su distanza).
+- **lr ottimo atteso:** ~0.3–0.5 (distanza ≈ 0 in 30 step); 1.0 e 1.5 pessimi.
+- **Valutazione (primo tentativo):** **6.5/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti

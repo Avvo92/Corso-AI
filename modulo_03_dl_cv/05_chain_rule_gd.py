@@ -89,6 +89,7 @@ from typing import Callable
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
+import pandas as pd
 
 
 # ==========================================================================
@@ -1170,6 +1171,24 @@ def _grafico_lr_a_confronto(
 #   - lr=1.5:  diverge (ogni passo ti porta piu' lontano)
 # TUO COMMENTO QUI:
 
+print("\nMini-esercizio in-line 5.1.A\n")
+
+def my_demo_lr(lr:list[float]) -> None:
+    
+    f = lambda x: (x - 3)**2
+    
+    for l in lr:
+        traiettoria = gradient_descent_1d(f, 10.0, l, 50)
+        x_finale = traiettoria[-1]
+        print(f"{l:>6.2f} {x_finale:>18.4f} {abs(x_finale - 3):>22.4f}")
+
+lr_list = [0.01, 0.2, 0.9, 1.5]
+my_demo_lr(lr_list)
+
+# lr = 0.01 -> stabile ma lento, perchè se new_w = old_w - (0.01 * spinta), ovviamente si avrà un aggiornamento molto piccolo
+# lr = 0.9  -> Siamo vicini alla soglia, perchè la spinta viene utilizzata quasi integralmente per aggiornare il peso, con rischio di instabilità.
+# lr = 0.9 -> Divergenza oscillante sempre crescente, l'errore invece di diminuire aumenta
+
 
 # 🔵 MINI-ESERCIZIO INLINE 5.1.B (~3 minuti) — genera grafico lr
 # Chiama _grafico_lr_a_confronto(out_path="figures/05_02_lr_confronto.png")
@@ -1177,6 +1196,11 @@ def _grafico_lr_a_confronto(
 # in modo plateau o esponenziale?
 # TUO CODICE QUI:
 
+out_path = "figures/05_02_lr_confronto.png"
+_grafico_lr_a_confronto(out_path=out_path)
+assert os.path.exists(out_path), "Ops, qualcosa è andato storto, il percoso del file non esiste"
+
+# In modo esponenziale.
 
 # 5.2 - "LEARNING RATE SWEEP" (mini-hyperparameter tuning)
 
@@ -1188,6 +1212,22 @@ def _grafico_lr_a_confronto(
 #   - Qual e' l'lr "ottimo" per questo problema?
 # TUO CODICE QUI:
 
+print("\nMini-esercizio in-lien 5.2.A\n")
+
+f = lambda x: (x - 4)**2
+lr_list = [0.001, 0.01, 0.1, 0.3, 0.5, 0.9, 1.0, 1.5]
+report = []
+for l in lr_list:
+    traiettoria = gradient_descent_1d(f, 0.0, l, 30)
+    final_distance = np.abs(traiettoria[-1] - 4)
+    report.append({
+        "lr": l,
+        "final_distance": final_distance,
+        })
+    
+report_df = pd.DataFrame(report).sort_values(by="final_distance", ascending=True)
+print(report_df)
+print(f"L' lr ideale è {report_df[:1].to_numpy()[0, 0]}")
 
 # ==========================================================================
 # SEZIONE 6 - GRADIENT DESCENT multivariato + piano dei pesi
@@ -1199,9 +1239,7 @@ def _grafico_lr_a_confronto(
 #
 # Vedi `gradient_descent_nd` in alto.
 
-
 # 6.1 - GD su un paraboloide 2D
-
 
 def _demo_gd_2d() -> None:
     """GD su f(x, y) = (x - 3)^2 + (y + 2)^2. Minimo in (3, -2)."""
@@ -1211,7 +1249,6 @@ def _demo_gd_2d() -> None:
     print(f"x0 = {x0}")
     print(f"Step  5 -> {traiettoria[5]}")
     print(f"Step 20 -> {traiettoria[20]}  (atteso ~ [3, -2])")
-
 
 def _grafico_gd_2d_traiettoria(
     out_path: str | None = None,
