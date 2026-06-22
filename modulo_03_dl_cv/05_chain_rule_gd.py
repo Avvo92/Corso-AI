@@ -830,6 +830,15 @@ print(chain_rule, chain_rule_man)
 #       (1-2 frasi: shape + catena)
 #
 # TUO COMMENTO 3.A QUI:
+
+# (a) L -> p -> Z2 -> W2
+# (b) Primo anello: Se muovo p (Probabilità in uscita da Sigmoid), quanto cambia la loss (BCE Loss);
+#     Secondo anello: Se muovo Z2 (logit in output dal secondo layer della rete), quanto cambia p.
+#     Terzo anello: Se muovo W2 (pesi del secondo layer della rete), quanto cambia Z2?
+# (c) derivando Z2 rispetto a W2 ottieni H;
+#     derivando Z2 rispetto a H ottieni W2;
+# (d) dL/dp * dp/Z2 * dZ2/dW2 -> H^T @ P - y. La derivata dZ2/dW2 è il fattore H (non W2 stesso), che deve essere trasposto nella shape corretta (N, 1) e non (N, ).
+
 #
 #
 # 🟡 ESERCIZIO 3.B (~12 minuti) — Calcolo a mano di dL/dW2 (livello 2)
@@ -847,6 +856,19 @@ print(chain_rule, chain_rule_man)
 #       diminuire quel peso? (ricorda: update = W - lr * gradiente)
 #
 # TUO COMMENTO / CODICE 3.B QUI:
+# (a)
+# la formula matricale di dL/dW2 è: H^T@dL/dZ2, con H trasposto in shape (h, N)
+
+print("\nEsercizio 3\n")
+
+delta = np.array([0.25, -0.15])
+H = np.array([[1., 2.],
+            [3., 4.]])    
+
+dL_dW2 = H.T @ delta
+
+print(dL_dW2)
+# Lo vuole alzare (-0.2)
 #
 #
 # 🔴 ESERCIZIO 3.C (~18 minuti) — Mezzo backward verso W1 (livello 3)
@@ -872,7 +894,22 @@ print(chain_rule, chain_rule_man)
 #       i pesi che lo alimentano?
 #
 # TUO COMMENTO / CODICE 3.C QUI:
-#
+
+dL_dZ2 = np.array([[0.25],
+                    [-0.15]])  
+W2 = np.array([[0.5],
+                [1.0]])
+Z1 = np.array([[ 2., -1.],
+                [ 0.,  3.]]) 
+X = np.array([[1., 0.],
+            [0., 1.]])
+
+dL_dH = dL_dZ2 @ W2.T
+dL_dZ1 = dL_dH * (Z1 > 0)
+dL_W1 = X.T @ dL_dZ1
+# (c) shape attesta (d, N) dove d = W1.shape[0] e N == X.shape[0] e W.shape[1] -> (2, 2);
+# (d) Per via della maschera relu, che avendo azzerato i neuroni che hanno prodotto Z1 <= 0, li ha di fatto resi ininfluenti nel calcolo della loss. 
+
 #
 # --- SOLUZIONI ESERCIZI 3.A–3.C (guarda solo dopo il tentativo) ---
 #
@@ -934,6 +971,39 @@ def _demo_gd_1d() -> None:
 # Stampa l'ultimo x della traiettoria per ognuno.
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 4.1.A\n")
+
+f_1 = lambda x: (x - 5)**2
+
+traj_f1 = gradient_descent_1d(
+    f_1,
+    10,
+    0.2,
+    50    
+)
+
+f_2 = lambda x: x**2 + 4*x + 4
+
+traj_f2 = gradient_descent_1d(
+    f_2,
+    10,
+    0.1,
+    50    
+)
+
+f_3 = lambda x: (x - 1)**4 
+
+traj_f3 = gradient_descent_1d(
+    f_3,
+    10,
+    0.05,
+    50    
+)
+
+print(f"Minimo Funzione 1: {round(traj_f1[-1], 1)}")
+print(f"Minimo Funzione 2: {round(traj_f2[-1], 1)}")
+print(f"Minimo Funzione 3: {round(traj_f3[-1], 1)}")
+
 
 # 🔵 MINI-ESERCIZIO INLINE 4.1.B (~5 minuti) — quando GD fallisce
 # Prova GD con lr troppo grande:
@@ -943,6 +1013,18 @@ def _demo_gd_1d() -> None:
 # Spiega in 2 righe perche'.
 # TUO CODICE QUI:
 
+print("\nMini-esercizio in-line 4.1.B\n")
+
+f = lambda x: (x - 3)**2
+traj = gradient_descent_1d(
+    f,
+    10.0,
+    1.5,
+    20
+)
+print(traj)
+
+# Diverge: osilla intorno al minimo con gap sempre maggiori. perchè gli step sono troppo ampi e invece di ridurre la loss la amplificano
 
 # 4.2 - VISUALIZZARE LA TRAIETTORIA
 
@@ -973,6 +1055,8 @@ def _grafico_gd_1d_traiettoria(
     if show:
         plt.show()
     plt.close(fig)
+
+_grafico_gd_1d_traiettoria(show=True)
 
 
 # 🔵 MINI-ESERCIZIO INLINE 4.2.A (~3 minuti) — genera grafico GD

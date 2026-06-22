@@ -281,6 +281,43 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **Punti di forza:** catena L→P→Z2→H→Z1→W1 corretta; semplificazione p-y citata; ramo parallelo dL/dW2 (fork da dL/dZ2) — ottimo insight.
 - **Affinamento:** (1) esercizio chiede derivate *locali* (dL/dP, dP/dZ2, dZ2/dH, dH/dZ1, dZ1/dW1) — non solo il prodotto accumulato; (2) «rispetto a P» non «rispetto sigmoide»; (3) notazione dZ2/dW2 non dZ2/W2.
 
+### 2026-06-18 — Cap.05 ESERCIZIO 3.A (`05_chain_rule_gd.py` — punti a, b, c)
+
+- **(a) Catena L→W2:** corretta dopo fix (`L→P→Z2→W2`). **10/10**.
+- **(b) Tre anelli:** corretta dopo fix direzione (P→L, Z2→P, W2→Z2). **9.5/10** (usa P maiuscolo).
+- **(c) Altro fattore:** `dZ2/dW2=H`, `dZ2/dH=W2`. **10/10**.
+
+### 2026-06-18 — Cap.05 ESERCIZIO 3.B (`05_chain_rule_gd.py` — dL/dW2 a mano)
+
+- **(a) Formula/shape:** scritto `dL/dZ2 @ H^T` (ordine invertito); W2 citato `(2,2)` invece di `(h,1)=(2,1)`.
+- **(b) Calcolo:** `H.T @ delta` → **[-0.20, -0.10]** numericamente corretto. Manca `.reshape(-1,1)` per shape `(2,1)`.
+- **(c) Segno:** scritto «vuole abbassare» — **errato**: grad negativo → update `W - lr*grad` **aumenta** il peso (la loss scende).
+- **Valutazione (primo tentativo):** **7/10**.
+
+### 2026-06-18 — Cap.05 ESERCIZIO 3.C (`05_chain_rule_gd.py` — mezzo backward verso W1)
+
+- **Codice:** `dL_dH = dL_dZ2 @ W2.T`, maschera ReLU, `X.T @ dL_dZ1` — formule corrette.
+- **Numeri attesi:** dL/dH `[[0.125, 0.25], [-0.075, -0.15]]`; dopo ReLU azzera `[0,1]` e `[1,0]`; dL/dW1 = dL/dZ1 (X=I).
+- **(b)** non nominato esplicitamente quali elementi (due azzerati: Z1[0,1]=-1, Z1[1,0]=0).
+- **(c)** shape `(2,2)` ok ma motivazione `(d,N)` errata → corretto `(d,h)`.
+- **(d) Feynman:** ok ma generico; manca «ReLU piatta → ∂H/∂Z1=0 → niente gradiente verso W1».
+- **Valutazione (primo tentativo):** **8/10**.
+
+### 2026-06-18 — Cap.05 Mini 4.1.A (`05_chain_rule_gd.py` — GD su 3 funzioni)
+
+- **Esercizio:** `gradient_descent_1d` su 3 parabole/polinomi; x0=10, n_steps=50; stampa ultimo x.
+- **Valutazione (primo tentativo):** **9/10**.
+- **Punti di forza:** 3 funzioni lambda corrette; parametri lr/n_steps come consegna; uso corretto di `traj[-1]`.
+- **Affinamento:** typo stampa «Funzione 2» due volte (f3 → «Funzione 3»); opzionale kwargs espliciti (`x0=10`).
+- **Post-fix stampa:** **10/10** implementazione. Nota: con lr=0.05 su `(x-1)^4` da x0=10 GD **diverge** (ultimo x lontanissimo da 1) — lezione su lr, non bug del codice studente.
+
+### 2026-06-18 — Cap.05 Mini 4.1.B (`05_chain_rule_gd.py` — GD lr troppo grande)
+
+- **Codice:** corretto (`f=(x-3)^2`, lr=1.5, stampa traiettoria).
+- **Osservazione:** scritto «oscilla» — più preciso: **diverge** (oscillazioni con ampiezza che cresce: 10→-11→31→…).
+- **Spiegazione:** ok (step troppo ampi amplificano errore); manca overshoot oltre il minimo x=3.
+- **Valutazione (primo tentativo):** **8.5/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
