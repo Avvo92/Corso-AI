@@ -1295,6 +1295,25 @@ def _grafico_gd_2d_traiettoria(
 # piu' grande -> passo piu' lungo. Anisotropia.
 # TUO CODICE QUI:
 
+f = lambda x: x[0]**2 + 4*x[1]**2
+xs_0 = np.array([2.0, 2.0])
+
+gradient_descent_nd()
+
+def my_gradient_descent_nd(
+    f: Callable[[NDArray[np.float64]], float],
+    x0: NDArray[np.float64],
+    lr: float,
+    n_steps: int    
+) -> list[NDArray[np.float64]]:
+    traiettoria = [x0.copy()]
+    x = x0
+    for _ in range(n_steps):
+        grad = gradiente_numerico(f, x)
+        x = x - (lr * grad)
+        traiettoria.append(x)
+    return traiettoria
+
 
 # 🔵 MINI-ESERCIZIO INLINE 6.1.B (~3 minuti) — genera grafico 2D
 # Chiama _grafico_gd_2d_traiettoria(out_path="figures/05_03_gd_2d.png")
