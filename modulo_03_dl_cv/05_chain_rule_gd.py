@@ -1295,10 +1295,12 @@ def _grafico_gd_2d_traiettoria(
 # piu' grande -> passo piu' lungo. Anisotropia.
 # TUO CODICE QUI:
 
+print("\nMini-esercizio in-line 6.1.A\n")
+
 f = lambda x: x[0]**2 + 4*x[1]**2
 xs_0 = np.array([2.0, 2.0])
 
-gradient_descent_nd()
+# gradient_descent_nd()
 
 def my_gradient_descent_nd(
     f: Callable[[NDArray[np.float64]], float],
@@ -1314,11 +1316,25 @@ def my_gradient_descent_nd(
         traiettoria.append(x)
     return traiettoria
 
+traj = my_gradient_descent_nd(
+    f,
+    xs_0,
+    0.1,
+    30
+)
+
+for i in range(0, len(traj), 5):
+    print(f"Step: {i} -> {traj[i]}")
+
+# la y converge più velocemente perchè viene moltiplicata per 4, quindi il suo gradiente è quattro volte più ripido, quindi i passi su y sono più lunghi.
+
 
 # 🔵 MINI-ESERCIZIO INLINE 6.1.B (~3 minuti) — genera grafico 2D
 # Chiama _grafico_gd_2d_traiettoria(out_path="figures/05_03_gd_2d.png")
 # Guarda il grafico: la traiettoria scende dritta o "a zig-zag"?
 # TUO CODICE QUI:
+
+_grafico_gd_2d_traiettoria(out_path="figures/05_03_gd_2d.png")
 
 
 # 6.2 - CONNESSIONE CON L'ADDESTRAMENTO DELLA RETE
@@ -1348,6 +1364,25 @@ def my_gradient_descent_nd(
 #   - h'(x) = sigmoid(a*x+b) * (1 - sigmoid(a*x+b)) * a
 # TUO CODICE QUI:
 
+print("\nTODO 1: CHAIN RULE PER LA SIGMOID COMPOSTA\n")
+
+a = 2
+b = -1
+
+def g(a, x, b):
+    return float(a*x + b)
+def f(u):
+    return sigmoid(u)
+def h(a, x, b):
+    return f(g(a, x, b))
+
+xs = np.array([0, 1, 2], dtype=float)
+
+for x in xs:
+    der_ana = f(g(a, x, b)) * (1 - f(g(a, x, b))) * a
+    der_num = derivata_numerica(lambda x: f(g(a, x, b)), x)
+    assert np.isclose(der_ana, der_num), f"x={x}: ana={der_ana} != num={der_num}"
+    print(f"x={x}: ana={der_ana:.6f}, num={der_num:.6f} ✓")
 
 # TODO 2 (8 minuti) — gradient_descent_1d su 3 funzioni
 # Per ognuna delle 3 funzioni qui sotto, trova il minimo con GD

@@ -350,6 +350,19 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **lr ottimo atteso:** ~0.3–0.5 (distanza ≈ 0 in 30 step); 1.0 e 1.5 pessimi.
 - **Valutazione (primo tentativo):** **6.5/10**.
 
+### 2026-06-18 — Cap.05 Mini 6.1.A (`05_chain_rule_gd.py` — GD multivariato)
+
+- **Post-fix:** stampa `traj[::5]` ok; replica `my_gradient_descent_nd` corretta.
+- **Spiegazione y più veloce:** migliorata (gradiente più ripido → passi più lunghi); opzionale citare esplicitamente `∂f/∂x=2x` vs `∂f/∂y=8y`.
+- **Valutazione (primo tentativo):** **7.5/10** → **post-fix: 9/10**.
+
+### 2026-06-18 — Cap.05 TODO 1 (`05_chain_rule_gd.py` — sigmoid composta)
+
+- **Esercizio:** h(x)=sigmoid(a*x+b), chain rule + check numerico x∈{0,1,2}.
+- **Valutazione (primo tentativo):** **9.5/10**.
+- **Punti di forza:** g,f,h scomposte; `*a`; `derivata_numerica` su h composta; assert+print.
+- **Opzionale:** `float(x)`; lambda `xv` per evitare shadowing del loop `x`.
+
 ---
 
 ## Lacune e dubbi ancora aperti
