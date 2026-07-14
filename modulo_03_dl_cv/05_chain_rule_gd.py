@@ -1394,6 +1394,22 @@ for x in xs:
 # atteso, un minimo locale, o non sei convergente.
 # TUO CODICE QUI:
 
+print("\nTODO 2\n")
+
+f_1 = lambda x: (x - 7)**2
+f_2 = lambda x: x**4 - 4*x**2 + 1
+f_3 = lambda x: abs(x - 5)
+
+configs = [
+    (f_1, 0.1, 30, 7, "minimo globale"),
+    (f_2, 0.001, 500, 2**0.5, "minimo locale destro (+√2)"),
+    (f_3, 0.1, 50, 5, "minimo globale"),
+]
+
+for i, (f, lr, n, atteso, _) in enumerate(configs, 1):
+    x_fin = gradient_descent_1d(f, 10, lr, n)[-1]
+    print(f"f_{i}: x_fin={x_fin:.4f}, atteso≈{atteso}, dist={abs(x_fin-atteso):.4f}")
+
 
 # TODO 3 (15 minuti) — gradient_descent_nd su f(w1, w2) = (w1 - 3)^2 + (w2 + 2)^2
 # Setup: x0 = np.array([0.0, 0.0]), lr = 0.3, n_steps = 30.
