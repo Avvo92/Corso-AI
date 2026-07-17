@@ -363,6 +363,14 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **Punti di forza:** g,f,h scomposte; `*a`; `derivata_numerica` su h composta; assert+print.
 - **Opzionale:** `float(x)`; lambda `xv` per evitare shadowing del loop `x`.
 
+### 2026-07-17 — Cap.05 TODO 3 (`05_chain_rule_gd.py` — GD 2D verso (3,-2))
+
+- **Setup:** f=(w1-3)²+(w2+2)², x0=[0,0], lr=0.3, n_steps=30 — corretto; converge (assert ok).
+- **Stampa:** x0 + step 1/5/15/30 ok.
+- **Lacuna:** variabile `dist_euclidea` = punto minimo, non distanza; manca `np.linalg.norm(traj[i]-minimo)`.
+- **Naming:** `grad` è la traiettoria, non il gradiente.
+- **Valutazione (primo tentativo):** **8/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti

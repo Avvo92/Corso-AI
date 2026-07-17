@@ -1420,6 +1420,25 @@ for i, (f, lr, n, atteso, _) in enumerate(configs, 1):
 # Verifica che converga al minimo.
 # TUO CODICE QUI:
 
+print("\nTODO 3\n")
+
+x0 = np.array([0.0, 0.0], dtype=float)
+
+def f(
+    x0: NDArray[np.float64]
+    ) -> float:
+    return (x0[0] - 3)**2 + (x0[1] + 2)**2
+
+traj = gradient_descent_nd(f, x0, 0.3, 30)
+    
+dist_euclidea = np.array([3.0, -2.0])
+
+assert np.allclose(dist_euclidea, traj[-1]), "Ops, qualcosa è andato storto!"
+
+print(f"x0 : {x0}")
+for step in [1, 5, 15, 30]:
+    print(f"step n° {step}: {traj[step]}")
+
 
 # TODO 4 (15 minuti) — confronto GD con 3 lr (sullo stesso problema)
 # Per f(x, y) = x^2 + y^2 (minimo in (0, 0)), x0 = np.array([5.0, 5.0]):
@@ -1431,6 +1450,50 @@ for i, (f, lr, n, atteso, _) in enumerate(configs, 1):
 # Salva in figures/05_04_lr_2d.png.
 # TUO CODICE QUI:
 
+print("\nTODO 4\n")
+
+x0 = np.array([5.0, 5.0])
+
+def f(x0: NDArray[np.float64]):
+    return x0[0]**2 + x0[1]**2
+
+lr_arr = np.array([0.05, 0.3, 0.99], dtype=float)
+min = np.array([0.0, 0.0])
+
+trajectories = []
+
+for lr in lr_arr:
+    traj = gradient_descent_nd(f, x0, lr, 30)
+    dist = np.linalg.norm(traj[-1] - min)
+    loss = f(traj[-1])
+    print(f"Loss per lr: {lr} -> {loss}")
+    trajectories.append(traj)
+    
+x_grid = np.linspace(-6, 6, 100)
+y_grid = np.linspace(-6, 6, 100)
+X, Y = np.meshgrid(x_grid, y_grid)
+F = X**2 + Y**2
+
+fig, ax = plt.subplots(figsize=(8, 8))
+ax.contour(X, Y, F, levels=20, colors="gray", alpha=0.5)
+ax.contourf(X, Y, F, levels=20, alpha=0.3, cmap="viridis")
+colors = ["#1f77b4", "#ff7f0e", "#d62728"]
+for traj, lr, color in zip(trajectories, lr_arr, colors):
+    pts = np.array(traj)
+    ax.plot(pts[:, 0], pts[:, 1], "o-", markersize=3, color=color, label=f"lr = {lr}")
+
+ax.plot(5, 5, "ks", markersize=8, label="x0 = (5, 5)")
+ax.plot(0, 0, "g*", markersize=15, label="minimo (0, 0)")
+
+ax.set_xlabel("x")
+ax.set_ylabel("y")
+ax.set_title("GD su f(x, y) = x² + y² — confronto learning rate")
+ax.set_aspect("equal")
+ax.legend()
+ax.grid(True, alpha=0.3)
+
+plt.show()
+plt.close(fig)
 
 # TODO 5 (10 minuti) — GD con gradiente numerico applicato alla BCE
 # Per un mini-modello a 1 peso:
