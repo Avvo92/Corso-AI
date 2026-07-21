@@ -1492,23 +1492,64 @@ ax.set_aspect("equal")
 ax.legend()
 ax.grid(True, alpha=0.3)
 
-plt.show()
+# plt.show()
 plt.close(fig)
 
 # TODO 5 (10 minuti) — GD con gradiente numerico applicato alla BCE
-# Per un mini-modello a 1 peso:
-#   y = sigmoid(w * x)         con x = 2, y_vera = 1
-# Vogliamo trovare il w che MINIMIZZA bce_loss(sigmoid(w*x), y_vera).
 #
-# Costruisci la funzione:
-#   def loss_w(w_vec):
-#       p = sigmoid(w_vec[0] * 2.0)
-#       return bce_loss(np.array([p]), np.array([1.0]))
+# IDEA: finora GD ha minimizzato funzioni "a mano" (parabole).
+# Qui la FUNZIONE DA MINIMIZZARE e' la BCE di un mini-modello a 1 peso.
+# Non implementi ancora il backprop: usi gradiente_numerico dentro
+# gradient_descent_nd (il computer stima la pendenza "provando" w).
 #
-# Esegui gradient_descent_nd con x0 = np.array([-3.0]), lr = 1.0,
-# n_steps = 30. A che valore di w converge? La loss finale?
+# SETUP (fisso):
+#   - 1 solo input:  x = 2.0
+#   - etichetta vera: y_vera = 1.0  (vogliamo che il modello predica ~1)
+#   - 1 solo peso:   w  (scalare)
+#   - predizione:    p = sigmoid(w * x) = sigmoid(w * 2)
+#   - loss:          L(w) = BCE(p, y_vera)
+#
+# OBIETTIVO:
+#   Trovare il w che MINIMIZZA L(w), partendo da w0 = -3
+#   (che da' p = sigmoid(-6) ~ 0, quindi loss alta: sei lontano da y=1).
+#
+# COSA FARE:
+#   1) Scrivi una funzione loss_w(w_vec) che:
+#        - prende un array NumPy di 1 elemento: w_vec = [w]
+#        - calcola p = sigmoid(w_vec[0] * 2.0)
+#        - ritorna bce_loss(np.array([p]), np.array([1.0]))  # scalare
+#      (Serve array perche' gradient_descent_nd lavora su vettori.)
+#
+#   2) Chiama:
+#        gradient_descent_nd(loss_w, x0=np.array([-3.0]), lr=1.0, n_steps=30)
+#
+#   3) Stampa e commenta:
+#        - w iniziale e w finale
+#        - loss iniziale e loss finale
+#        - p = sigmoid(w_finale * 2): e' vicino a 1? (y_vera = 1)
+#
+# CHECK MENTALE:
+#   - w negativo grande  ->  p vicino a 0  ->  loss alta (sbagli rispetto a y=1)
+#   - w positivo grande  ->  p vicino a 1  ->  loss bassa (bene)
+#   Quindi GD dovrebbe AUMENTARE w (partendo da -3).
+#
 # TUO CODICE QUI:
 
+print("\nTODO 5\n")
+y_vera = 1.0
+x = 2.0
+
+def loss_w(w_vec):
+    p = sigmoid(w_vec * x)
+    return bce_loss(np.array([p]), np.array([y_vera]))
+
+traj = gradient_descent_nd(loss_w, np.array([-3.0]), 1.0, 30)
+
+print(f"w iniziale: {traj[0]}")
+print(f"w finale: {traj[-1]}")
+print(f"loss iniziale: {bce_loss(sigmoid(traj[0] * x), y_vera)}")
+print(f"loss finale: {bce_loss(sigmoid(traj[-1] * x), y_vera)}")
+print(f"sigmoide finale: {sigmoid(traj[-1] * x)}")
 
 # TODO 6 (10 minuti) — derivata della loss rispetto al peso (chain rule + miracolosa)
 # Conferma analitica: per il TODO 5, la derivata di loss(w) rispetto a w e':
@@ -1520,6 +1561,23 @@ plt.close(fig)
 # Cosa significa il segno negativo? (Stiamo aumentando w -> p si avvicina a 1.)
 # TUO CODICE QUI:
 
+print("\nTODO 6\n")
+
+x = 2.0
+y = 1.0
+w = -3.0
+
+p = sigmoid(w * x)
+loss = bce_loss(np.array([p]), np.array([y]))
+dl_dw = (p - y) * x
+grad = gradiente_numerico(
+    lambda w_var: bce_loss(np.array([sigmoid(w_var * x)]), np.array([y])),
+    np.array([w])
+)
+    
+assert np.isclose(dl_dw, grad[0]), "Ops, qualcosa è andato storto!"
+
+# il segno negativo significa nel nostro caso (visto che è negativo), dobbiamo ottenere un w più grande
 
 # ==========================================================================
 # RINFORZI CAP.01-04 M3 (TODO 7 - 11)
@@ -1538,6 +1596,25 @@ plt.close(fig)
 # coincide con sigmoid(0)-1.
 # TUO COMMENTO + CODICE QUI:
 
+print("\nTODO 7\n")
+
+# dL/dz = dL/dp * dp/dz -> (p - y) / p(1 - p) * p(1 - p) -> p - y semplificazione miracolosa
+
+z = 0.0
+y = 1.0
+p = sigmoid(z)
+
+semp_mir = p - y
+grad = gradiente_numerico(
+    lambda z_var: bce_loss(np.array([sigmoid(z_var)]), np.array([y])),
+    np.array([z])
+)
+
+der_num = derivata_numerica(
+    lambda z_var: bce_loss(np.array([sigmoid(z_var)]), np.array([y])),
+    np.array([z])
+)
+assert np.isclose(grad, sigmoid(0)-1), "Ops, qualcosa è andato storto!"
 
 # TODO 8 (8 minuti) [🔄 RECALL cap.03 LOSS]:
 # Riscrivi bce_loss da zero (senza guardare la versione in alto).
@@ -1547,6 +1624,18 @@ plt.close(fig)
 # Verifica con p = np.array([0.9, 0.1, 0.5]), y = np.array([1, 0, 1]).
 # TUO CODICE QUI:
 
+def my_bce(
+    p: NDArray[np.float64],
+    y: NDArray[np.float64],
+    eps: float = 1e-12
+) -> float:
+    p_safe = np.clip(p, eps, 1 - eps)
+    return np.mean(- y * np.log(p_safe) - (1 - y) * np.log(1 - p_safe))
+
+p = np.array([0.9, 0.1, 0.5])
+y = np.array([1, 0, 1])
+
+assert np.isclose(my_bce(p, y), bce_loss(p, y)), "Ops qualcosa è andato storto, le bce non coincidono!"
 
 # TODO 9 (8 minuti) [🔄 RECALL cap.04 — derivata sigmoid e ReLU]:
 # Riscrivi le 2 funzioni:
@@ -1554,6 +1643,22 @@ plt.close(fig)
 #   def my_derivata_relu(z): ...
 # Vettorizzate (no for su elementi). Verifica con z = np.array([-2, 0, 2]).
 # TUO CODICE QUI:
+
+def derivata_sigmoide(
+    z: float | NDArray[np.float64]
+) -> float | NDArray[np.float64]:
+    return sigmoid(z) * (1 - sigmoid(z))
+
+def derivata_relu(
+    z: float | NDArray[np.float64]
+) -> float | NDArray[np.float64]:
+    return (z > 0).astype(float)
+
+z = np.array([-2, 0, 2])
+der_relu = derivata_relu(z)
+der_sigm = derivata_sigmoide(z)
+
+print(der_relu, der_sigm)
 
 
 # TODO 10 (8 minuti) [🔄 RECALL cap.04 — gradiente_numerico]:

@@ -371,6 +371,42 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **Naming:** `grad` è la traiettoria, non il gradiente.
 - **Valutazione (primo tentativo):** **8/10**.
 
+### 2026-07-21 — Cap.05 TODO 5 (`05_chain_rule_gd.py` — GD su BCE 1 peso)
+
+- **GD:** `gradient_descent_nd(loss_w, [-3], lr=1, 30)` converge: w≈2.39, p≈0.99, loss↓ — concetto ok.
+- **loss_w:** funziona ma shape fragile (`w_vec*x` + `np.array([p])` → (1,1)); meglio `w_vec[0]*2.0`.
+- **Stampa:** `sigmoid(traj[-1])` e `bce_loss(sigmoid(traj[0]), …)` **dimenticano ×x** → p/loss stampati sbagliati (modello è sigmoid(w*x)).
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Post-fix:** loss iniziale/finale con `sigmoid(w*x)` ok; sigmoid finale stampata ancora senza `×x`. **9/10**.
+
+### 2026-07-21 — Cap.05 TODO 6 (`05_chain_rule_gd.py` — dL/dw analitico vs numerico)
+
+- **Codice:** `(p-y)*x` + `gradiente_numerico` + `assert isclose` + `w=-3.0` (fix dtype) — corretto.
+- **Commento segno:** ok (w più grande); manca legame esplicito update `w - lr*grad` e `p→1`.
+- **Opzionale:** `w_var[0]` nella lambda; stampare ana vs num.
+- **Valutazione (primo tentativo):** **9/10**.
+
+### 2026-07-21 — Cap.05 TODO 7 (`05_chain_rule_gd.py` — retrieval dL/dz = p-y)
+
+- **Commento:** semplificazione ok; manca esplicito `z→p→L` in 4 righe.
+- **Codice:** verifica numerica ok in sostanza; usato `gradiente_numerico` invece di `derivata_numerico` (consegna); `assert` su array ok per broadcasting; `semp_mir` calcolato ma non usato nell'assert.
+- **Valutazione (primo tentativo):** **8.5/10**.
+
+### 2026-07-21 — Cap.05 TODO 8 (`05_chain_rule_gd.py` — recall my_bce)
+
+- **Clip bilaterale:** ok.
+- **Bug formula:** scritto `-y - log(p)` invece di `-y * log(p)` (manca moltiplicazione).
+- **Manca:** confronto/assert con `bce_loss` ufficiale.
+- **Valutazione (primo tentativo):** **5.5/10**.
+- **Post-fix:** formula `-y*log(p)-(1-y)*log(1-p)` + assert vs `bce_loss` — **10/10**.
+
+### 2026-07-21 — Cap.05 TODO 9 (`05_chain_rule_gd.py` — recall derivata sigmoid/ReLU)
+
+- **Formule:** sigmoid' e ReLU' corrette e vettorizzate; z=[-2,0,2] → ReLU' [0,0,1] ok.
+- **Naming:** `derivata_*` invece di `my_derivata_*` (consegna) — accettabile.
+- **Manca:** assert sui valori attesi (solo print).
+- **Valutazione (primo tentativo):** **9/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
