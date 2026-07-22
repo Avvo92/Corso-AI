@@ -84,12 +84,13 @@ Conta esercizi: ~23 mini-inline (incl. RINFORZO MIRATO R1-R6) + 17 TODO + 1 pipe
 """
 
 import os
-from typing import Callable
+from typing import Callable, Sized
 
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 import pandas as pd
+from sklearn.metrics import accuracy_score
 
 
 # ==========================================================================
@@ -1666,21 +1667,120 @@ print(der_relu, der_sigm)
 # Verifica con f(v) = v[0]^2 + v[1]^2 in (1, -2): atteso [2, -4].
 # TUO CODICE QUI:
 
+print("\nTODO 10\n")
+
+#copia della funzione gradiente_numerico:
+def my_gradiente_numerico(
+    f: Callable[[NDArray[np.float64]], float],
+    x: NDArray[np.float64],
+    h: float = 1e-6
+) -> NDArray[np.float64]:
+    grad = np.zeros_like(x)
+    for i in range(x.size):
+        xp = x.copy(); xp.flat[i] += h
+        xm = x.copy(); xm.flat[i] -= h
+        grad.flat[i] = (f(xp) - f(xm)) / (2.0 * h)        
+    return grad
+
+# verifica:
+def f(v: NDArray[np.float64]) -> float:
+    return v[0]**2 + v[1]**2
+
+arr_prova = np.array([1, -2], dtype=float)
+
+grad_control = gradiente_numerico(
+    f,
+    arr_prova
+)
+my_grad = my_gradiente_numerico(
+    f,
+    arr_prova
+)
+
+assert np.allclose(grad_control, my_grad), "Oops, qualcosa è andato storto! I gradienti non coincidono"
+
+print(grad_control)
+print(my_grad)
 
 # TODO 11 (15 minuti) [🔀 INTERLEAVING cap.02 + cap.03 + cap.05]:
-# Mini-pipeline "training di 1 step" su una rete 2-layer:
-#   1) Setup: X (5, 3), y (5,), W1 (3, 4), W2 (4, 1) random come al solito
-#   2) Forward: P = sigmoid(relu(X@W1+b1)@W2+b2).ravel()
-#   3) loss_iniziale = bce_loss(P, y)
-#   4) Calcola gradiente numerico della loss rispetto a W2 (8 valori):
-#        - "flatten" W2 in un vettore di 8 elementi
-#        - definisci una funzione f(W2_flat) -> loss
-#        - applica gradiente_numerico
-#   5) Aggiorna W2 con un passo di GD: W2_nuovo = W2 - lr * grad_W2 (con lr=0.1)
-#   6) Ricalcola forward + loss_finale.
-#   7) Verifica: loss_finale < loss_iniziale? (Dovrebbe SI, ma di poco.)
+#
+# IDEA: un solo passo di training su una rete 2-layer, SENZA backprop
+# analitico. Usi gradiente_numerico solo su W2 (come al TODO 5 su un peso).
+#
+# SETUP (shape fisse):
+#   X  (5, 3)   — 5 esempi, 3 feature
+#   y  (5,)     — etichette 0/1
+#   W1 (3, 4), b1 (4,)   — primo layer (hidden size h=4)
+#   W2 (4, 1), b2 scalare — secondo layer (1 output)
+#
+# FORWARD (come al cap.02):
+#   H = relu(X @ W1 + b1)           # (5, 4)
+#   P = sigmoid(H @ W2 + b2).ravel()  # (5,)
+#   L = bce_loss(P, y)              # scalare
+#
+# PERCHE' IL FLATTEN:
+#   gradiente_numerico(f, x) vuole x come VETTORE 1D e f(x) -> loss scalare.
+#   W2 e' una matrice (4, 1) con 4 pesi (= 4 valori, non 8: typo storico in
+#   consegne vecchie). Quindi:
+#     1) W2_flat = W2.ravel()                    # shape (4,)
+#     2) def f(W2_flat):
+#            W2_mat = W2_flat.reshape(4, 1)     # torna (4,1) per H @ W2
+#            rifai forward con W1,b1,b2 fissi
+#            return bce_loss(P, y)
+#     3) grad_flat = gradiente_numerico(f, W2_flat)   # (4,)
+#     4) grad_W2 = grad_flat.reshape(4, 1)            # stessa shape di W2
+#
+# COSA FARE (in ordine):
+#   1) Setup random (rng) di X, y, W1, b1, W2, b2
+#   2) Forward + loss_iniziale
+#   3) Gradiente numerico rispetto a W2 (schema flatten sopra)
+#   4) Un passo GD: W2_nuovo = W2 - lr * grad_W2   (lr = 0.1)
+#   5) Forward di nuovo con W2_nuovo + loss_finale
+#   6) Verifica: loss_finale < loss_iniziale? (dovrebbe SI, di poco)
+#      Stampa le due loss e la differenza.
+#
+# CHECK MENTALE:
+#   Aggiorni SOLO W2. W1/b1/b2 restano fissi in questo esercizio.
+#   Se la loss non scende: controlla reshape, lr, e che f usi W2_mat nuova.
+#
 # TUO CODICE QUI:
 
+print("\nTODO 11\n")
+
+rng = np.random.default_rng(1)
+n = 5
+d = 3
+h = 4
+X = rng.standard_normal(size=(n, d), dtype=float)
+y = np.random.randint(0, 2, size=(5, ))
+W1 = rng.standard_normal(size=(d, h)) / np.sqrt(d) * 2.0
+b1 = rng.standard_normal(size=(h))
+W2 = rng.standard_normal(size=(h, 1))
+b2 = 1.0
+
+P = sigmoid(relu(X@W1 + b1)@W2 + b2).ravel()
+loss_iniziale = bce_loss(P, y)
+
+def f(W2_flat) -> float:
+    W2 = W2_flat.reshape(h, 1)
+    return bce_loss(sigmoid(relu(X@W1 + b1)@W2 + b2).ravel(), y)
+
+grad = gradiente_numerico(
+    f,
+    W2
+)
+
+lr = 0.1
+
+W2_new = W2 - grad * lr
+
+loss_finale = bce_loss(sigmoid(relu(X@W1 + b1)@W2_new + b2).ravel(), y)
+
+assert float(loss_iniziale) > float(loss_finale), "Qualcosa non sta funzionando, la loss non è scesa!"
+
+print(loss_iniziale)
+print(loss_finale)
+print("\n")
 
 # ==========================================================================
 # PIPELINE INTEGRATA — addestramento_via_gradiente_numerico
@@ -1708,7 +1808,6 @@ print(der_relu, der_sigm)
 #       4) aggiorna [w, b] -= lr * grad      (lr = 0.5)
 #       5) ogni 20 step, stampa step / loss / w / b / accuracy
 #   - stampa risultato finale
-
 # TODO PIPE.1 (25 minuti) — implementa addestramento_via_gradiente_numerico
 #
 # Firma:
@@ -1739,6 +1838,75 @@ print(der_relu, der_sigm)
 # TUO CODICE QUI:
 
 
+print("\nPIPELINE INTEGRATA\n")
+
+x = np.array([0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0], dtype=float)
+y = (x > 2.0).astype(int)
+w = 0.0
+b = 0.0
+
+def addestramento_via_gradiente_numerico(
+    x: NDArray[np.float64],
+    w: float,
+    b:float,
+    y: NDArray[np.float64],
+    lr: float,
+    n_steps: int,
+    ) -> dict:
+    p = sigmoid(x*w+b)
+    loss_iniziale = bce_loss(p, y)
+    
+    params = np.array([w, b], dtype=float)
+    loss_history = []
+    w_history = []
+    b_history = []
+    
+    def loss_params(params):
+        ww, bb = params[0], params[1]
+        return bce_loss(sigmoid(x*ww+bb), y)
+    
+    for i in range(0, n_steps):
+        loss = loss_params(params)
+        loss_history.append(loss)
+        w_history.append(params[0])
+        b_history.append(params[1])  
+        grad = gradiente_numerico(
+            loss_params,
+            params
+        )      
+        params = params - lr * grad
+        if i%20 == 0:
+            print(i)
+            print(f"loss allo step n°{i} -> {loss}")
+            print(f"w: {params[0]}")
+            print(f"b: {params[1]}")
+            print(f"accuracy_score: {float(np.mean((sigmoid(x*params[0]+params[1]) >= 0.5).astype(int) == y))}\n")
+    loss_history.append(loss_params(params))
+    w_history.append(params[0])
+    b_history.append(params[1]) 
+    w_finale = params[0]
+    b_finale = params[1]
+    
+    acc_score = float(np.mean((sigmoid(x*params[0]+params[1]) >= 0.5).astype(int) == y))
+    
+    return {
+    "loss_history": loss_history,
+    "w_history":    w_history,
+    "b_history":    b_history,
+    "w_finale":     w_finale,
+    "b_finale":     b_finale,
+    "acc_finale":   acc_score,
+    }
+    
+result = addestramento_via_gradiente_numerico(
+    x,
+    w,
+    b,
+    y,
+    0.5,
+    200
+)
+
 # ==========================================================================
 # TIPOLOGIE STANDARD (TODO 12 - 17)
 # ==========================================================================
@@ -1755,6 +1923,11 @@ print(der_relu, der_sigm)
 # TUA RISPOSTA:
 # ...
 
+# (1) La chian rule è la regola alla base della retropropagazione dell'errore (loss), e dice che la derivata di una composizione di funzioni è uguale alla moltiplicazione delle singole derivate locali.
+# (2) Il GD cerca di abbassare la loss sfruttando il gradiente ottenuto dalla backpropagation per aggiornare i pesi nella direzione giusta per ognuno, in direzione opposta al gradiente attraverso la formula w = w -lr * grad.
+# (3) Nel caso proposta dobbiamo fare -> der_bce * der_sigmoide * der_w2 * der_relu * der_w1 -> In pratica per aggiornare i pesi w1 dobbiamo moltiplicare 5 derivate locali.
+# (4) Se il learning rate è troppo alto rischia superare il minimo e divergere. Se è troppo piccolo,la rete impara ma a passi minuscoli, e di conseguenza la curva di apprendimento può essere troppo piatta e rischierebbe di somigliare ad uno stallo.
+# (5) la semplificazione miracolosa riguarda la moltiplicazione delle derivate locali dL/dp * dp/dz. In pratica, dL/dp -> (p - y) / p(1 - p) mentre dp/dz -> p(1 - p). Dunque si ha che dL/dp * dp/dz == (p - y) / p(1 - p) * p(1 - p) == p - y.
 
 # TODO 13 (15 minuti) [🔧 REFACTORING]:
 # Questo GD funziona ma e' brutto. Riscrivilo.
@@ -1777,6 +1950,34 @@ print(der_relu, der_sigm)
 # Confronta i risultati con gradient_descent_1d su f(x) = (x-3)^2, x0=10, lr=0.2.
 # TUO CODICE QUI:
 
+def gd_bello_1d(
+    f: Callable[[float], float],
+    x0: float,
+    lr: float,
+    n_steps: int
+) -> list[float]:
+    """
+    Gradient descent per funzioni che prendono in input
+    dei valori scalari (1D).
+    """
+    
+    traj = []
+    x = x0
+    traj.append(x)
+    eps = 1e-6
+    for i in range(n_steps):        
+        g = (f(x+eps) - f(x-eps)) / (2 * eps)
+        x = x - g * lr
+        traj.append(x)
+    return traj
+
+x_prova = 10
+f_prova = lambda x: (x - 3)**2
+
+prova = gd_bello_1d(f_prova, x_prova, 0.2, 30)
+controllo = gradient_descent_1d(f_prova, x_prova, 0.2, 30)
+
+assert np.allclose(np.array(prova), np.array(controllo)), "Ops, qualcosa è andato storto, la prova e il controllo non coincidono!"
 
 # TODO 14 (15 minuti) [🔍 DEBUG]:
 # Questo codice "addestra" un mini-modello, ma la loss SALE invece di scendere.
@@ -1797,7 +1998,7 @@ print(der_relu, der_sigm)
 #
 # Spiega il bug e dai la versione corretta.
 # TUO COMMENTO + FIX:
-# ...
+# La formula corretta per l'aggiornamento della w è -> w - lr * np.mean((p - y_dati) * x_dati). Mettendo + invece che meno, invece di andare nella direzione contraria rispetto al gradiente si sposta il peso nella stessa direzione del gradiente, e quindi invece di  abbassare progressivamente la loss, la si aumenta!
 
 
 # TODO 15 (15 minuti) [🧠 RETRIEVAL cap.04]:
@@ -1808,6 +2009,27 @@ print(der_relu, der_sigm)
 # Verifica che le tue versioni coincidano con quelle in alto su 5 punti.
 # TUO CODICE QUI:
 
+def prova_derivata_sigmoid(
+    z: NDArray[np.float64] | float
+) -> NDArray[np.float64] | float:
+    return sigmoid(z) * (1 - sigmoid(z))
+
+def prova_derivata_relu(
+    z: NDArray[np.float64] | float
+) -> NDArray[np.float64] | float:
+    return (z > 0).astype(float)
+
+def prova_gradiente_numerico(
+    f: Callable[[NDArray[np.float64]], NDArray[np.float64]],
+    x: NDArray[np.float64], 
+    h: float = 1e-6,
+) -> NDArray[np.float64]:
+    grad = np.zeros_like(x)
+    for i in range(x):
+        xp = x.copy(); xp.flat[i] += h
+        xm = x.copy(); xm.flat[i] -= h
+        grad.flat[i] == ((f(xp) - f(xm)) / (2.0 / h))
+    return grad
 
 # TODO 16 (20 minuti) [🔀 INTERLEAVING cap.02 + cap.04 + cap.05]:
 # Vuoi addestrare la RETE 2-LAYER su un mini-dataset usando GD + grad numerico:
@@ -1826,7 +2048,56 @@ print(der_relu, der_sigm)
 # backward per step).
 # TUO CODICE QUI:
 
+print("\nTODO 16\n")
 
+n = 20
+d = 3
+h = 4
+
+rng = np.random.default_rng(1)
+X = rng.standard_normal(size=(n, d))
+W1 = rng.standard_normal(size=(d, h)) * np.sqrt(2.0 / d)
+b1 = rng.standard_normal(size=(h, ))
+W2 = rng.standard_normal(size=(h, 1)) * np.sqrt(2.0 / h)
+b2 = rng.standard_normal(size=(1, ))
+
+y = (X[:, 0] + X[:, 1] > 0).astype(int)
+
+theta0 = np.concatenate([
+    W1.ravel(),
+    b1.ravel(),
+    W2.ravel(),
+    b2.ravel()
+])
+
+def loss_function(
+    theta: NDArray[np.float64],
+) -> float:
+    W1 = theta[0:12].reshape(d, h)
+    b1 = theta[12:16].reshape(h, )
+    W2 = theta[16:20].reshape(h, 1)
+    b2 = theta[20:21].reshape(1, )
+    return bce_loss(sigmoid(relu(X@W1+b1)@W2+b2).ravel(), y)
+
+traiettoria = [theta0.copy()]
+theta = theta0.copy()
+lr = 0.5
+for i in range(0, 50):
+    if i %10 == 0:
+        W1 = theta[0:12].reshape(d, h)
+        b1 = theta[12:16].reshape(h, )
+        W2 = theta[16:20].reshape(h, 1)
+        b2 = theta[20:21].reshape(1, )
+        print(f"loss allo step {i}: {loss_function(theta)}")
+        acc_score = np.mean(((sigmoid(relu(X@W1 + b1)@W2 + b2).ravel() > 0.5).astype(int)) == y)
+        print(f"accuracy score allo step {i}: {acc_score}\n")
+    grad = gradiente_numerico(
+        loss_function,
+        theta
+    )
+    theta = theta - lr * grad
+    traiettoria.append(theta)
+    
 # TODO 17 (15 minuti) [🌊 REAL-WORLD]:
 # "Un collega ti dice: 'ho addestrato la rete, l'lr e' 0.001, dopo 1000
 # epoche la loss e' ancora 0.69. Cosa faccio?'"

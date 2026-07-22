@@ -407,6 +407,76 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **Manca:** assert sui valori attesi (solo print).
 - **Valutazione (primo tentativo):** **9/10**.
 
+### 2026-07-22 — Cap.05 TODO 10 (`05_chain_rule_gd.py` — recall gradiente_numerico)
+
+- **Funzione:** differenza centrata corretta (`xp += h`, `xm -= h`); verifica vs `gradiente_numerico` e atteso [2,-4] ok.
+- **Opzionale:** `zeros_like(..., dtype=float)`; assert anche su `[2,-4]`.
+- **Valutazione (primo tentativo):** **9.5/10**.
+
+### 2026-07-22 — Cap.05 TODO 11 (`05_chain_rule_gd.py` — 1 step GD numerico su W2)
+
+- **Pipeline:** setup, forward, f(W2)→loss, gradiente_numerico, W2-=lr*grad, loss finale + assert — corretto; loss scende.
+- **Note:** flatten manuale opzionale (API supporta shape (4,1)); `y` da `np.random` invece di `rng` (riproducibilità minore).
+- **Valutazione (primo tentativo):** **9.5/10**.
+
+### 2026-07-22 — Cap.05 PIPE.1 (`05_chain_rule_gd.py` — addestramento neurone via grad numerico)
+
+- **Motore:** `[w,b]` + `loss_params` + GD numerico + accuracy soglia 0.5 — corretto; con lr=0.5 tipicamente acc=1, w>0, b<0.
+- **Gap consegna:** `lr=0.3` (chiesto 0.5); history lunghezza `n_steps` non `n_steps+1` (manca stato post-ultimo update in lista); nome ≠ `addestramento_via_gradiente_numerico`; print verbose ok ma senza stato iniziale in history; bonus plot assente.
+- **Valutazione (primo tentativo):** **8.5/10**.
+
+### 2026-07-22 — Cap.05 TODO 12 Q1 (`05_chain_rule_gd.py` — chain rule colloquio)
+
+- **Risposta:** collega chain rule a backprop e moltiplicazione derivate — direzione ok.
+- **Gap:** chain rule è più generale (derivata di funzioni *composte*); backprop la *usa*. Manca formula/esempio y=f(g(x)) → f'·g'. Typo chian/regole.
+- **Valutazione (primo tentativo):** **6/10**.
+
+### 2026-07-22 — Cap.05 TODO 12 Q1+Q2 (rivalutazione)
+
+- **Q1 post-fix:** definizione composizione + derivate locali ok; ancora “alla base del backprop” come uguaglianza (meglio: backprop la usa); manca f(g(x)). **7.5/10**.
+- **Q2:** idea minimizzare/scendere ok; formulazione confusa (“minimo di ogni elemento del gradiente”); manca update `θ = θ - lr·∇L`. Confonde chain rule (calcola grad) con GD (usa grad). **5.5/10**.
+- **Q2 post-fix:** abbassa loss + usa grad backprop + aggiorna pesi — ok; manca esplicito `θ−lr∇L` e “direzione *opposta* al gradiente”. **8/10**.
+- **Q2 post-fix 2:** opposta + `w = w - lr * grad` — **9.5/10**.
+
+### 2026-07-22 — Cap.05 TODO 12 Q3 (derivate locali per W1)
+
+- **Risposta:** 5 derivate, ordine BCE→sigmoid→W2→ReLU→W1 — conteggio e catena corretti.
+- **Affinamento:** nomi `der_w2`/`der_w1` imprecisi (sono dZ2/dH e dZ1/dW1); meglio elencare i 5 simboli locali.
+- **Valutazione (primo tentativo):** **8.5/10**.
+
+### 2026-07-22 — Cap.05 TODO 12 Q4 (lr troppo grande/piccolo)
+
+- **Risposta:** lr alto → salta/diverge loss↑; lr basso → lento — corretto.
+- **Affinamento:** “salta intorno” meglio “supera il minimo / diverge”; lento ≠ solo “curva piatta” (scende ma con passi minuscoli).
+- **Valutazione (primo tentativo):** **8.5/10**.
+- **Post-fix:** lr alto → supera/diverge ok; lr basso → passi minuscoli ok; ancora rischia di confondere “lento” con “stallo/plateau”. **8.5/10** (stabile).
+
+### 2026-07-22 — Cap.05 TODO 12 Q5 bonus (semplificazione miracolosa)
+
+- **Algebra:** cancellazione (p-y)/[p(1-p)] * p(1-p) = p-y — corretta.
+- **Errore naming:** scritto `dp/dW2`; la semplificazione è su **logit z**: `dL/dz = dL/dp * dp/dz`. `dL/dW2` richiede ancora `dZ2/dW2 = H`.
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Post-fix:** `dL/dp * dp/dz` → `p-y` corretto (= `dL/dz`). **9.5/10**.
+
+### 2026-07-22 — Cap.05 TODO 13 (`05_chain_rule_gd.py` — refactor GD)
+
+- **Core:** differenza centrata + update GD corretti; converge a ~3 su (x-3)^2.
+- **Gap:** manca docstring 2 righe; return `np.array` invece di `list`; type hint `NDArray` vs lista; `eps=1e-12` (meglio ~1e-6 come corso); manca confronto/assert vs `gradient_descent_1d`.
+- **Valutazione (primo tentativo):** **8/10**.
+- **Post-fix:** `list[float]` + docstring + `eps=1e-6` + assert vs `gradient_descent_1d` OK (allclose). **10/10**.
+
+### 2026-07-22 — Cap.05 TODO 14 (`05_chain_rule_gd.py` — DEBUG segno GD)
+
+- **Diagnosi:** `w + lr * grad` → sale loss; corretto `w - lr * mean((p-y)*x)` — spiegazione chiara (stessa direzione del gradiente).
+- **Gap:** formula nel commento OK; manca la funzione riscritta eseguibile (consegna: “versione corretta”).
+- **Valutazione (primo tentativo):** **9/10**.
+
+### 2026-07-22 — Cap.05 TODO 16 (`05_chain_rule_gd.py` — INTERLEAVING rete + GD numerico)
+
+- **Core:** He ok, theta flat 21, unpack+loss BCE, GD con `-lr*grad`, print ogni 10; loss 0.66→0.16, acc 0.55→1.0.
+- **Nota:** loop GD riscritto a mano (equivalente a `gradient_descent_nd`); print prima dell’update (label step corretti).
+- **Valutazione (primo tentativo):** **9.5/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
