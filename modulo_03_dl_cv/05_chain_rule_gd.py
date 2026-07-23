@@ -2118,21 +2118,42 @@ for i in range(0, 50):
 
 # V1) Cos'e' la chain rule in 1 riga? E in 1 formula su 2 livelli?
 # TUA RISPOSTA:
-# ...
+# La chain rule è quella regola che dice che la derivata di una composizione di funzioni e uguale al prodotto delle derivate locali che formano la composizione.
+# La formula è ad esempio dL/dw = dL/dp * dp/dz * dz/dw.
 
 # V2) Hai h(x) = sin(x^2). Quanto vale h'(x)?
 # TUA RISPOSTA:
-# ...
+
+x = 5.0
+
+f_1 = lambda x: x**2
+f_2 = lambda x: np.sin(x)
+
+f_1_prime = lambda x: 2*x
+f_2_prime = lambda x: np.cos(x)
+
+def h(x):
+    return f_2(f_1(x))
+
+chain = f_2_prime(f_1(x)) * f_1_prime(x)
+
+der_chain = derivata_numerica(
+    h,
+    x
+)
+
+print(chain)
+print(der_chain)
 
 # V3) Cos'e' il gradient descent in 1 riga? Qual e' l'aggiornamento dei
 #     pesi (formula a parole)?
 # TUA RISPOSTA:
-# ...
+# Il gradient descent è la discesa del gradiente, ossia si cerca di portare la funzione alla minima loss possibile, ossia dove la sua derivata si avvicina allo 0. La si ottiene sottraendo il gradiente * lr al peso.
 
 # V4) Cosa succede al GD se lr e' troppo grande? Troppo piccolo?
 #     Cita 1 sintomo per ognuno.
 # TUA RISPOSTA:
-# ...
+# Se è troppo grande il gradiente rischia di saltare il minimo e divergere, mentre se è troppo piccolo la traiettoria dell'addestramente potrebbe avere un andamento quasi piatto, e quindi essere un processo troppo lungo. Si deve trovare il giusto equilibrio.
 
 # V5) [Trova l'errore] Questo codice "addestra" ma sbaglia:
 #       w = 0
@@ -2141,7 +2162,7 @@ for i in range(0, 50):
 #           w = w + 0.1 * grad        # bug
 # Quale e' il bug? E perche'?
 # TUA RISPOSTA:
-# ...
+# Il bug si trova in "w = w + 0.1 * grad ", la formula corretta è w = w - 0.1 * grad. In questo modo si riesce ad avere un andamento contrario al gradiente, che ci permette di diminuire la loss. 
 
 # V6) [Prevedi output] Per f(x) = x^2, x0 = 5, lr = 0.1:
 #       step 1: x = 5 - 0.1 * 10 = 4
@@ -2149,58 +2170,123 @@ for i in range(0, 50):
 #       step 3: x = 3.2 - 0.1 * ? = ?
 # Calcola.
 # TUA RISPOSTA:
-# ...
+#      step 3: x = 3.2 - 0.1 * 6.4 = 2.56
 
 # V7) Per una rete 2-layer, scrivi (a parole) le 5 derivate locali che
 #     devi moltiplicare per ottenere dL/dW1.
 # TUA RISPOSTA:
-# ...
+# dL/dW1 = dL/dP · dP/dZ2 · dZ2/dH · dH/dZ1 · dZ1/dW1
 
 # V8) [💬 Feynman] Spiega in 4 righe cosa fa il GRADIENT DESCENT a un
 #     collega web dev. VIETATO: gradiente, derivata, pendenza, loss,
 #     learning rate. Suggerimento: usa l'analogia della discesa al buio.
 # TUA RISPOSTA:
-# ...
+# immagina di essere da qualche parte sul pendio di una collina. Sai che vuoi arrivare a valle, ma è notte non vedi dove devi andare. Allora fai piccoli passi in varie direzioni per capire dove la collina si alza, e dove invece scende.
 
 
 # ==========================================================================
 # MINI-PROGETTO FINALE — `confronto_lr_su_addestramento`
 # ==========================================================================
 #
-# OBIETTIVO: confronta 4 learning rate sull'addestramento del mini-neurone
-# del PIPE.1, e produci una visualizzazione finale del piano dei pesi
-# (w, b) con la traiettoria di ogni lr.
-
-# TODO MINI-PROGETTO (30 minuti):
+# IDEA IN UNA FRASE:
+#   Stesso mini-neurone del PIPE.1, stesso dataset, stessi pesi iniziali —
+#   cambi SOLO il learning rate (lr) e confronti cosa succede. Poi disegni
+#   4 grafici che raccontano la storia a colpo d'occhio.
 #
-# Firma:
+# PERCHE' SERVE:
+#   Finora hai visto lr "troppo grande / troppo piccolo" a parole (V4, sez.5).
+#   Qui lo MISURI: stessa partenza, 4 lr diversi, numeri + figure.
+#   E' lo stesso esperimento che faresti in un training reale quando scegli lr.
+#
+# COSA RIUSI (non reinventare da zero):
+#   - Dataset PIPE.1:
+#         x = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+#         y = (x > 2.0).astype(int)
+#   - Modello: p = sigmoid(w * x + b), loss = bce_loss(p, y)
+#   - Update: params = params - lr * gradiente_numerico(loss_params, params)
+#   - Puoi RICHIAMARE `addestramento_via_gradiente_numerico(...)` cambiando
+#     solo `lr` e `n_steps`, OPPURE riscrivere un loop simile (stesso risultato).
+#   - IMPORTANTE: per ogni lr riparti da w=0, b=0 (confronto equo).
+#
+# --------------------------------------------------------------------------
+# TODO MINI-PROGETTO (~30-40 minuti) — segui i PASSI in ordine
+#
+# PASSO 1 — Scrivi la funzione con questa firma:
+#
 #   def confronto_lr_su_addestramento(
 #       lr_da_provare: list[float] = [0.01, 0.1, 0.5, 2.0],
 #       n_steps: int = 100,
 #   ) -> dict[float, dict[str, list[float] | float]]:
-#       """Per ogni lr, addestra il mini-neurone (dataset del PIPE.1)
-#       e ritorna un dict con:
-#         {
-#           lr: {
-#             'loss_history': [...],
-#             'w_history':    [...],
-#             'b_history':    [...],
-#             'acc_finale':   float
-#           }
-#         }
-#       """
+#       """Per ogni lr addestra il mini-neurone e raccoglie le storie."""
 #
-# Poi disegna 1 figura con 4 subplot:
-#   1) loss vs step per ogni lr
-#   2) traiettoria (w, b) sul piano dei pesi per ogni lr
-#   3) sovrapposizione delle accuracy finali (bar chart)
-#   4) effetto lr sul tempo di convergenza (n step per loss < 0.1)
-# Salva in figures/05_06_confronto_lr.png.
+# PASSO 2 — Dentro la funzione, per OGNI lr in lr_da_provare:
+#   a) Addestra il neurone (n_steps passi, w0=0, b0=0).
+#   b) Salva in un sotto-dizionario:
+#        'loss_history' -> lista loss (lunghezza n_steps+1 se includi lo step 0)
+#        'w_history'    -> lista w lungo il training
+#        'b_history'    -> lista b lungo il training
+#        'acc_finale'   -> accuracy a fine training (float, soglia 0.5)
+#   c) Metti quel sotto-dict nel risultato con CHIAVE = il lr (float), es.:
+#        risultati[0.5] = { 'loss_history': ..., 'w_history': ..., ... }
 #
-# Commenta:
-#   - quale lr funziona meglio?
-#   - quali divergono?
-#   - lr "fortunato" che converge a w/b plausibili?
+#   Hint: se riusi PIPE.1, qualcosa tipo:
+#     out = addestramento_via_gradiente_numerico(x, 0.0, 0.0, y, lr, n_steps)
+#     e poi prendi le chiavi che ti servono da `out`.
+#
+# PASSO 3 — Chiama la funzione UNA volta e stampa un mini-report a console:
+#   per ogni lr: acc_finale, loss finale, w finale, b finale.
+#   (cosi' vedi i numeri PRIMA di guardare i grafici)
+#
+# PASSO 4 — Disegna 1 figura con 4 subplot (usa plt.subplots(2, 2, ...)):
+#
+#   Subplot (0,0) — LOSS vs STEP
+#     Per ogni lr: plot(range(len(loss_history)), loss_history, label=f"lr={lr}")
+#     Assi: xlabel="step", ylabel="loss", titolo tipo "Loss durante il training"
+#     legend()
+#     Cosa guardare: curva che scende = ok; che esplode/oscilla = lr troppo alto;
+#     che scende lentissima = lr troppo basso.
+#
+#   Subplot (0,1) — TRAIETTORIA sul piano (w, b)
+#     Per ogni lr: plot(w_history, b_history, label=...)  # w sull'asse x, b sull'y
+#     Segna il punto di partenza (0, 0) con un marker (es. 'o').
+#     Assi: xlabel="w", ylabel="b", titolo "Cammino dei pesi"
+#     Cosa guardare: percorsi diversi verso zone simili = convergono;
+#     percorso che scappa lontano = diverge.
+#
+#   Subplot (1,0) — ACCURACY FINALE (bar chart)
+#     lr_list = list(risultati.keys())
+#     accs = [risultati[lr]['acc_finale'] for lr in lr_list]
+#     plt.bar([str(lr) for lr in lr_list], accs)
+#     ylabel="accuracy", titolo "Accuracy a fine training"
+#     Cosa guardare: chi arriva a 1.0? chi resta a ~0.5?
+#
+#   Subplot (1,1) — TEMPO DI CONVERGENZA
+#     Per ogni lr, conta il PRIMO indice i tale che loss_history[i] < 0.1.
+#     Se non arriva mai sotto 0.1, usa n_steps (o np.nan) e segnalalo.
+#     Bar chart: lr (stringa) vs n_step_per_convergere.
+#     titolo tipo "Step per arrivare a loss < 0.1"
+#     Cosa guardare: meno step = piu' veloce (se poi non diverge!).
+#
+#   Salva:
+#     os.makedirs("figures", exist_ok=True)   # se serve
+#     plt.tight_layout()
+#     plt.savefig("figures/05_06_confronto_lr.png", dpi=120)
+#     plt.close()   # oppure plt.show() se vuoi vederla in finestra
+#
+# PASSO 5 — Commento in 4-6 righe (sotto il codice o in print):
+#   Rispondi esplicitamente:
+#   1) Quale lr funziona meglio? (criterio: loss bassa + acc alta + non diverge)
+#   2) Quali lr divergono o oscillano? Come lo vedi nei grafici?
+#   3) Quale lr e' "troppo cauto" (lento ma stabile)?
+#   4) I w/b finali del lr migliore sono plausibili?
+#      (ricorda PIPE.1: w > 0, b < 0, e -b/w circa 2 = soglia del dataset)
+#
+# CHECK VELOCE prima di chiedere valutazione:
+#   [ ] risultati e' un dict con 4 chiavi (i 4 lr)
+#   [ ] ogni lr riparte da w=0, b=0
+#   [ ] figura salvata in figures/05_06_confronto_lr.png
+#   [ ] hai scritto il commento PASSO 5
+#
 # TUO CODICE QUI:
 
 

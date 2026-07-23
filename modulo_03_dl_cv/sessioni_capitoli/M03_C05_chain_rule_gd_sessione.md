@@ -477,11 +477,59 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **Nota:** loop GD riscritto a mano (equivalente a `gradient_descent_nd`); print prima dell’update (label step corretti).
 - **Valutazione (primo tentativo):** **9.5/10**.
 
+### 2026-07-23 — Cap.05 Quiz V1 (chain rule)
+
+- **Risposta:** prodotto derivate locali; formula `dL/dw = dL/dp * dp/dz * dz/dw` — corretta e pertinente al neurone.
+- **Affinamento:** “2 livelli” classico = `dh/dx = dh/du * du/dx` (2 fattori); la sua è catena a 3 anelli (ancora valida).
+- **Valutazione (primo tentativo):** **9/10**.
+
+### 2026-07-23 — Cap.05 Quiz V2 (h=sin(x²))
+
+- **Risposta:** `cos(x²)*2x` via f1=x², f2=sin; controprova `derivata_numerica(h,x)` — impostazione corretta.
+- **Valutazione (primo tentativo):** **10/10**.
+
+### 2026-07-23 — Cap.05 Quiz V3 (gradient descent)
+
+- **Update:** peso − lr·gradiente — corretto.
+- **Imprecisione:** “portare la *derivata* al minimo” → si minimizza la **funzione** (loss); al minimo il gradiente tende a ~0.
+- **Valutazione (primo tentativo):** **8/10**.
+- **Post-fix:** minimizza la loss; al minimo derivata ~0; update −lr·grad — **9.5/10**.
+
+### 2026-07-23 — Cap.05 Quiz V4 (lr grande/piccolo)
+
+- **Risposta:** lr alto → salta minimo/diverge; lr basso → traiettoria “quasi piatta” / addestramento lungo — sostanzialmente ok.
+- **Affinamento:** non è il gradiente che salta, è il **passo** `lr·grad`; “piatta” ≠ plateau (scende, ma a passi minuscoli).
+- **Valutazione (primo tentativo):** **8.5/10**.
+
+### 2026-07-23 — Cap.05 Quiz V5 (bug segno GD)
+
+- **Risposta:** `+` → `-`; contro il gradiente per far scendere la loss — corretta e chiara.
+- **Valutazione (primo tentativo):** **10/10**.
+
+### 2026-07-23 — Cap.05 Quiz V6 (prevedi output GD)
+
+- **Metodo:** `x - lr * f'(x)` con f=x² → f'=2x — schema corretto.
+- **Errore:** a x=3.2, grad=2·3.2=**6.4** (non 6.2) → x=3.2-0.64=**2.56** (non 2.58).
+- **Valutazione (primo tentativo):** **7/10**.
+- **Post-fix:** grad=6.4, x=2.56 — **10/10**.
+
+### 2026-07-23 — Cap.05 Quiz V7 (5 derivate locali → dL/dW1)
+
+- **Inizio ok:** dL/dp · dp/dz… ma poi catena sbagliata: `dz/dW2`, `dW2/dh`, `dH/dW1` (W2 non è sul percorso verso W1; manca Z1).
+- **Corretta:** dL/dP · dP/dZ2 · dZ2/dH · dH/dZ1 · dZ1/dW1.
+- **Valutazione (primo tentativo):** **5/10**.
+
+### 2026-07-23 — Cap.05 Quiz V8 (Feynman GD)
+
+- **Ok:** collina di notte, passi per sentire su/giù; niente jargon vietato.
+- **Manca:** dopo aver capito dove scende → **un passetto lì** e **ripeti**; passi troppo lunghi/corti (inciampi vs ci metti una vita).
+- **Valutazione (primo tentativo):** **7/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
 
-- _(da popolare)_
+- Catena verso **W1**: non inserire W2 come “anello”; dopo Z2 vai a **H → Z1 → W1**.
 
 ---
 
