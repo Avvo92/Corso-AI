@@ -2289,6 +2289,84 @@ print(der_chain)
 #
 # TUO CODICE QUI:
 
+print("\nMini-progetto Finale\n")
+
+def addestramento_via_gradiente_numerico(
+    lr: float,
+    n_steps: int,
+    verbose: bool = True
+    ) -> dict:
+    x = np.array([0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0], dtype=float)
+    y = (x > 2.0).astype(int)
+    w = 0.0
+    b = 0.0
+    p = sigmoid(x*w+b)
+    loss_iniziale = bce_loss(p, y)
+    
+    params = np.array([w, b], dtype=float)
+    loss_history = []
+    w_history = []
+    b_history = []
+    
+    def loss_params(params):
+        ww, bb = params[0], params[1]
+        return bce_loss(sigmoid(x*ww+bb), y)
+    
+    for i in range(0, n_steps):
+        loss = loss_params(params)
+        loss_history.append(loss)
+        w_history.append(params[0])
+        b_history.append(params[1])  
+        grad = gradiente_numerico(
+            loss_params,
+            params
+        )      
+        params = params - lr * grad
+        if i%20 == 0 and verbose == True:
+            print(i)
+            print(f"loss allo step n°{i} -> {loss}")
+            print(f"w: {params[0]}")
+            print(f"b: {params[1]}")
+            print(f"accuracy_score: {float(np.mean((sigmoid(x*params[0]+params[1]) >= 0.5).astype(int) == y))}\n")
+    loss_history.append(loss_params(params))
+    w_history.append(params[0])
+    b_history.append(params[1]) 
+    w_finale = params[0]
+    b_finale = params[1]
+    
+    acc_score = float(np.mean((sigmoid(x*params[0]+params[1]) >= 0.5).astype(int) == y))
+    
+    return {
+    "loss_history": loss_history,
+    "w_history":    w_history,
+    "b_history":    b_history,
+    "w_finale":     w_finale,
+    "b_finale":     b_finale,
+    "acc_finale":   acc_score,
+    }
+
+def confronto_lr_su_addestramento(
+    lr_da_provare: list[float] = [0.01, 0.1, 0.5, 2.0],
+    n_steps: int = 100,
+) -> dict[float, dict[str, list[float] | float]]:
+    report = {}
+    for lr in lr_da_provare:
+        out = addestramento_via_gradiente_numerico(
+            lr,
+            n_steps,
+            False
+        )
+        report[lr] = out
+    for i, v in report.items():
+        print(f"Learnig rate: {i}:")     
+        print(f"accuracy_score finale ->{v["acc_finale"]}")
+        print(f"loss finale           ->{v["loss_history"][-1]}")
+        print(f"w finale              ->{v["w_finale"]}")
+        print(f"b finale              ->{v["b_finale"]}\n")
+        
+    return report
+
+confronto_lr_su_addestramento()
 
 # ==========================================================================
 # CHECKPOINT FINALE
