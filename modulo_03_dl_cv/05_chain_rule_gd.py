@@ -2282,16 +2282,16 @@ print(der_chain)
 #      (ricorda PIPE.1: w > 0, b < 0, e -b/w circa 2 = soglia del dataset)
 #
 # CHECK VELOCE prima di chiedere valutazione:
-#   [ ] risultati e' un dict con 4 chiavi (i 4 lr)
-#   [ ] ogni lr riparte da w=0, b=0
-#   [ ] figura salvata in figures/05_06_confronto_lr.png
-#   [ ] hai scritto il commento PASSO 5
+#   [v] risultati e' un dict con 4 chiavi (i 4 lr)
+#   [v] ogni lr riparte da w=0, b=0
+#   [v] figura salvata in figures/05_06_confronto_lr.png
+#   [v] hai scritto il commento PASSO 5
 #
 # TUO CODICE QUI:
 
 print("\nMini-progetto Finale\n")
 
-def addestramento_via_gradiente_numerico(
+def addestramento_via_gradiente_numerico_progetto_finale(
     lr: float,
     n_steps: int,
     verbose: bool = True
@@ -2348,25 +2348,88 @@ def addestramento_via_gradiente_numerico(
 def confronto_lr_su_addestramento(
     lr_da_provare: list[float] = [0.01, 0.1, 0.5, 2.0],
     n_steps: int = 100,
+    verbose: bool = False
 ) -> dict[float, dict[str, list[float] | float]]:
     report = {}
     for lr in lr_da_provare:
-        out = addestramento_via_gradiente_numerico(
+        out = addestramento_via_gradiente_numerico_progetto_finale(
             lr,
             n_steps,
             False
         )
         report[lr] = out
-    for i, v in report.items():
-        print(f"Learnig rate: {i}:")     
-        print(f"accuracy_score finale ->{v["acc_finale"]}")
-        print(f"loss finale           ->{v["loss_history"][-1]}")
-        print(f"w finale              ->{v["w_finale"]}")
-        print(f"b finale              ->{v["b_finale"]}\n")
+    if verbose:
+        for i, v in report.items():
+            print(f"Learnig rate: {i}:")     
+            print(f"accuracy_score finale ->{v["acc_finale"]}")
+            print(f"loss finale           ->{v["loss_history"][-1]}")
+            print(f"w finale              ->{v["w_finale"]}")
+            print(f"b finale              ->{v["b_finale"]}\n")
         
     return report
 
-confronto_lr_su_addestramento()
+material = confronto_lr_su_addestramento(verbose = True)
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+
+for lr, dati in material.items():
+    loss_history = dati["loss_history"]
+    axes[0, 0].plot(
+        range(len(loss_history)),
+        loss_history,
+        label=f"lr={lr}",
+    )
+axes[0, 0].set_xlabel("step")
+axes[0, 0].set_ylabel("loss")
+axes[0, 0].set_title("Loss durante il training")
+axes[0, 0].legend()
+
+lr_list = list(material.keys())
+accs = []
+for lr, dati in material.items():
+    accs.append(dati['acc_finale'])
+
+axes[1, 0].bar([str(lr) for lr in lr_list], accs)
+axes[1, 0].set_ylabel("accuracy")
+axes[1, 0].set_title("Accuracy a fine training")
+
+for lr, dati in material.items():
+    axes[0, 1].plot(dati['w_history'], dati['b_history'], label=f"lr={lr}")
+axes[0, 1].plot(0, 0, "o", color="black", label="start (0,0)")
+axes[0, 1].set_xlabel("w")
+axes[0, 1].set_ylabel("b")
+axes[0, 1].set_title("Cammino dei pesi")
+axes[0, 1].legend()
+
+step_conv = []
+for lr, dati in material.items():
+    loss_history = dati['loss_history']
+    trovato = None
+    n_steps = 100
+    for i, loss in enumerate(loss_history):
+        if loss < 0.1:
+            trovato = i
+            break
+    if trovato == None:
+        trovato = n_steps
+    step_conv.append(trovato)    
+
+axes[1, 1].bar([str(lr) for lr in lr_list], step_conv)
+axes[1, 1].set_xlabel("lr")
+axes[1, 1].set_ylabel("n_steps")
+axes[1, 1].set_title("Step per arrivare a loss < 0.1")
+# Nessun lr riesce a scendere sotto lo 0.1 di loss in soli 100 steps.
+
+out_path = os.path.join(os.path.dirname(__file__), "figures", "05_06_confronto_lr.png")
+plt.tight_layout()
+plt.savefig(out_path)
+plt.show()
+plt.close()
+
+# 1) il miglior lr è 0.5.
+# 2) diverge e oscilla il lr 2.0
+# 3) l'lr troppo stabile è 0.1
+# 4) Si sono plusibili.
 
 # ==========================================================================
 # CHECKPOINT FINALE

@@ -3,10 +3,10 @@
 | Campo | Valore |
 |-------|--------|
 | **Modulo** | M03 — Deep Learning & Computer Vision |
-| **File capitolo** | `05_chain_rule_gd.py` (segnaposto al 27/05/2026) |
+| **File capitolo** | `05_chain_rule_gd.py` |
 | **File diario** | `M03_C05_chain_rule_gd_sessione.md` |
-| **Stato** | da aprire — bridge **M03_R04** poi cap.05 |
-| **Voto difficoltà** | — / X/10 (atteso 7–8/10) |
+| **Stato** | ✅ **Chiuso il 27/07/2026** — bridge **M03_R05** popolato, rinforzi inseriti in cap.06 |
+| **Voto difficoltà** | ⏳ da confermare (atteso 7–8/10) |
 
 ---
 
@@ -531,8 +531,34 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 
 - Catena verso **W1**: non inserire W2 come “anello”; dopo Z2 vai a **H → Z1 → W1**.
 
+### 2026-07-27 — Cap.05 Mini-progetto `confronto_lr_su_addestramento`
+
+- **Core:** 4 subplot + PNG ok; train da w=b=0; lr 0.5 stabile con acc=1; lr 2.0 oscilla (visibile).
+- **Gap commenti:** “troppo cauto” indicato 0.1 invece di **0.01**; Q4 vaga (“plusibili”); report console non stampato (`verbose=False`); soglia loss&lt;0.1 → tutte barre a 100 (nessun lr sotto 0.1 in 100 step).
+- **Valutazione (primo tentativo):** **8/10**.
+- **Post-fix:** rinominata trainer; `verbose=True`; nota barre tutte a 100. Commenti 3–4 ancora errati/vaghi (cauto=0.01; plausibilità con `-b/w`). **8.5/10**.
+
+---
+
+### 2026-07-27 — Chiusura capitolo 05 (sintesi)
+
+- **Media valutazioni capitolo:** ~**8.6/10** (primi tentativi). Punte: V2, V5 10/10; refactoring `gd_bello_1d` 10/10 post-fix; PIPE/TODO 16 9.5/10.
+- **Punti bassi:** **V7 5/10** (catena `dL/dW1` passata da W2 → lacuna #39), **V8 7/10** (Feynman senza il ciclo iterativo → lacuna #40), mini-progetto 8/10 sui commenti.
+- **Pattern nuovo #27** (traduzione formula → codice): `/` per `*`, `*` per `@`, `==` per `=`, parentesi mancanti. Concetto sempre corretto, trascrizione no.
+- **Chiusi:** lacune #33 (vanishing, Q1), #34 (clip bilaterale, TODO 8), #35 (ordine `bce_loss`, TODO 8). #36 (`p-y`) rinforzato con R1–R6, verifica finale al quiz ingresso cap.06.
+- **Non svolti (opzionali, non bloccanti):** mini 1.2.A, R6 punto B, TODO 17 REAL-WORLD, checkpoint C1–C5.
+- **Artefatti:** `figures/05_01_gd_1d.png`, `05_02_lr_confronto.png`, `05_03_gd_2d.png`, `05_06_confronto_lr.png`.
+
 ---
 
 ## Note per il capitolo successivo (cap.06 backprop_training)
 
-- _(da popolare a chiusura del cap.05 — questo bridge e' il piu' delicato perche' il cap.06 e' il pezzo piu' tosto)_
+- **Bridge obbligatorio prima:** `quiz_ripasso_tra_capitoli/M03_R05_after_C05_before_C06_chain_to_backprop.md` — popolato il 27/07/2026 con **11 esercizi** (chain rule numerica, direzione GD, lr, ReLU@0, `dL/dp` vs `dL/dz`, catena W1, shape, regola shape gradiente, sanity check, NumPy, Feynman).
+- **Rinforzi 🔁 inseriti in `06_backprop_training.py`:**
+  - `dL/dp` vs `dL/dz` (#38) — blocco pre-SEZIONE 1, analogia del termostato + 2 micro-esercizi.
+  - Catena verso W1 (#39) — blocco pre-SEZIONE 1, analogia dei due affluenti + 2 micro-esercizi.
+  - `derivata_relu` in z=0 (#37) — sez. 2.4, analogia valvola di non ritorno + previsione output.
+  - Pattern #27 formula → codice — sez. 3, tre regole di lettura + quiz sulle shape.
+  - Feynman come ciclo (#40) — sez. 4, prima del training loop.
+- **Attenzione al ritmo:** il cap.06 è il più lungo del modulo (~19 TODO + pipeline + mini-progetto reale + CONFRONTO PRIMA/DOPO). Pianificare **2–3 sessioni**: (1) sez.1–2 backward step-by-step, (2) sez.3–4 sanity check + training loop, (3) mini-progetto su CSV M2 + chiusura primo blocco M3.
+- **Da chiedere all'apertura:** il **voto difficoltà del cap.05** se non ancora dato.

@@ -3,10 +3,10 @@
 | Campo | Valore |
 |-------|--------|
 | **Modulo** | M03 — Deep Learning & Computer Vision |
-| **File capitolo** | `06_backprop_training.py` (segnaposto al 27/05/2026) |
+| **File capitolo** | `06_backprop_training.py` |
 | **File diario** | `M03_C06_backprop_training_sessione.md` |
-| **Stato** | da aprire dopo chiusura cap.05 |
-| **Voto difficoltà** | — / X/10 (atteso 8/10 dopo split, era 9/10 nel vecchio monolitico) |
+| **Stato** | 🟢 **Pronto ad aprire** (27/07/2026) — prima il bridge `M03_R05`; rinforzi 🔁 già inseriti nel file |
+| **Voto difficoltà** | — / X/10 (atteso 8–9/10 dopo split, era 9/10 nel vecchio monolitico) |
 
 ---
 
@@ -24,7 +24,19 @@
 - Sequenza per OGNI concetto: **analogia concreta -> codice -> grafico -> formula in parole**.
 - Le SHAPE di `dW1, db1, dW2, db2, dZ1, dZ2` devono essere VISIBILI in ogni passaggio (meta' dei bug di backprop sono shape mismatch).
 - Se a meta' capitolo lo studente e' bloccato -> STOP, mini-recap dedicato.
-- ⚠️ Capitolo difficile - andare lenti.
+- ⚠️ Capitolo difficile - andare lenti. Pianificare **2-3 sessioni**: (1) sez.1-2, (2) sez.3-4, (3) mini-progetto + confronto prima/dopo.
+
+### Rinforzi 🔁 inseriti alla chiusura del cap.05 (27/07/2026)
+
+| Lacuna | Blocco | Posizione nel file |
+|--------|--------|--------------------|
+| #38 `dL/dp` vs `dL/dz` | Analogia del **termostato** + verifica con `gradiente_numerico` su `p` e su `z` | dopo RINFORZO SHAPE, prima di SEZIONE 1 |
+| #39 catena verso `W1` | Analogia dei **due affluenti** (W1/W2 rami, non tappe) + catena per `db1` | dopo RINFORZO SHAPE, prima di SEZIONE 1 |
+| #37 `derivata_relu` in z=0 | Analogia **valvola di non ritorno**; convenzione corso/PyTorch = **0**; `>` non `>=` | sez. 2.4, prima del mini 2.4.A |
+| Pattern #27 formula → codice | 3 regole di lettura (`*` vs `@`, shape attesa, `=` vs `==`) + quiz sulle shape | sez. 3, prima di `sanity_check_grad` |
+| #40 Feynman come ciclo | "senti → passo → ripeti" + ruolo della dimensione del passo | sez. 4, prima di `train_rete_2_layer` |
+
+**Da verificare durante il capitolo:** quiz ingresso Q2 (catena W1 → #39), Q3 (`p-y` → #36/#38), Q4 (ReLU spenta → #37), Q7 (Feynman → #40).
 
 ---
 

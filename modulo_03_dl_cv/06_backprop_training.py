@@ -63,13 +63,18 @@ MAPPA DEL CAPITOLO
    *  PRONTUARIO TRANELLI                       [B1] - [B8]
    *  QUIZ D'INGRESSO                           Q1 - Q8
    *  RINFORZO SHAPE (carry-over)               1 micro-esercizio
+   *  🔁 RINFORZO MIRATO cap.05                 dL/dp vs dL/dz (#38)
+                  + la catena verso W1: W2 non e' un anello (#39)
    *  SEZIONE 1  Forward con CACHE              1.1 - 1.2
                   con 3 mini-esercizi inline
    *  SEZIONE 2  Backward step-by-step          2.1 - 2.6 (6 step)
                   con un mini-esercizio per step
+                  + 🔁 RINFORZO derivata_relu in z=0 (#37) allo step 2.4
    *  SEZIONE 3  Sanity check numerico          3.1 - 3.2
+                  + 🔁 RINFORZO formula -> codice (Pattern #27)
                   con 2 mini-esercizi inline
    *  SEZIONE 4  Training loop                  4.1 - 4.3
+                  + 🔁 RINFORZO "spiegare il training come ciclo" (#40)
                   con 3 mini-esercizi inline
    *  SEZIONE 5  Visualizzazione                5.1 - 5.2
                   loss curve + decision boundary
@@ -91,6 +96,10 @@ Conta esercizi: ~14 mini-inline + 19 TODO + 1 pipeline + 1 mini-progetto reale.
 ----------------------------------------------------------------------------
 COME USARE QUESTO FILE
 ----------------------------------------------------------------------------
+   0. PRIMA di aprire questo file: fai il bridge di ripasso
+      quiz_ripasso_tra_capitoli/M03_R05_after_C05_before_C06_chain_to_backprop.md
+      (11 esercizi, 15-20 min). Questo capitolo e' il piu' tosto del modulo:
+      conviene arrivarci con i fondamentali freschi.
    1. Sezioni 1-4 in ORDINE. Il backward e' "step-by-step" per imparare,
       poi al TODO 7 lo unifichi in una funzione `backward_2layer`.
    2. Il sanity check (sez. 3) e' OBBLIGATORIO: e' come ti accorgi dei
@@ -294,6 +303,84 @@ def he_init(
 
 
 # ==========================================================================
+# 🔁 RINFORZO MIRATO — `dL/dp` vs `dL/dz` (lacuna #38)
+# ==========================================================================
+#
+# Al bridge R04 (Q6) hai risposto che `dL/dp = p - y`. Non e' cosi':
+# `p - y` e' `dL/dZ2`, cioe' la derivata rispetto al LOGIT, non rispetto
+# alla probabilita'.
+#
+# Rivediamolo con un esempio diverso da quello del quiz — un TERMOSTATO:
+#
+#   z = "quanto giri la manopola"      (logit, puo' essere qualsiasi numero)
+#   p = "temperatura che ne esce"      (probabilita', schiacciata fra 0 e 1)
+#   L = "quanto sei scontento"         (loss)
+#
+#   dL/dp = "se la temperatura sale di un filo, quanto cala lo scontento?"
+#   dp/dz = "se giro la manopola di un filo, quanto sale la temperatura?"
+#   dL/dz = "se giro la manopola di un filo, quanto cala lo scontento?"
+#
+# Solo l'ULTIMA e' `p - y`, e solo perche' le altre due si moltiplicano e
+# il fattore `p(1-p)` si cancella:
+#
+#   dL/dp = (p - y) / (p * (1 - p))        <- ha il denominatore
+#   dp/dz = p * (1 - p)                    <- derivata della sigmoid
+#   dL/dz = (p - y)                        <- il denominatore sparisce
+#
+# Nel backward di questo capitolo parti SEMPRE da `dL/dZ2 = (P - y)/N`:
+# non incontrerai mai `dL/dp` da solo. Ma devi sapere perche'.
+#
+# Prova subito:
+# 1) Con p = 0.8 e y = 1, calcola a mano i tre valori (dL/dp, dp/dz, dL/dz)
+#    e verifica che il prodotto dei primi due dia il terzo.
+# 2) Verifica in codice con gradiente_numerico:
+#      p = np.array([0.8]); y = np.array([1.0]); z = np.log(p/(1-p))
+#      num_p = gradiente_numerico(lambda pv: bce_loss(pv, y), p)
+#      num_z = gradiente_numerico(lambda zv: bce_loss(sigmoid(zv), y), z)
+#      # num_p deve valere circa dL/dp, num_z circa (p - y)
+# TUO CODICE / COMMENTO QUI:
+
+
+# ==========================================================================
+# 🔁 RINFORZO MIRATO — la catena verso W1: W2 NON e' un anello (lacuna #39)
+# ==========================================================================
+#
+# Al quiz V7 del cap.05 hai scritto la catena verso W1 passando da W2
+# (`... dZ2/dW2 · dW2/dH ...`). W2 e' un PARAMETRO, non una tappa.
+#
+# Analogia (diversa da quella del cap.05) — due rami di un fiume:
+#
+#            X ──▶ Z1 ──▶ H ──▶ Z2 ──▶ P ──▶ L
+#                  ▲             ▲
+#                  │             │
+#                 W1            W2
+#
+# W1 e W2 sono due AFFLUENTI che entrano nel fiume in punti diversi.
+# Per risalire il fiume dalla foce (L) fino all'affluente W1, passi per
+# Z2 e per H — ma non "entri" nell'affluente W2: quello e' un altro ramo,
+# e lo risali solo quando cerchi `dL/dW2`.
+#
+# W2 compare nel percorso verso W1 solo come VALORE (un numero che
+# moltiplica), dentro `dZ2/dH = W2`. Non come tappa della catena.
+#
+# Catena corretta (5 anelli):
+#     dL/dW1 = dL/dP · dP/dZ2 · dZ2/dH · dH/dZ1 · dZ1/dW1
+# Catena corretta per W2 (3 anelli):
+#     dL/dW2 = dL/dP · dP/dZ2 · dZ2/dW2
+#
+# Regola pratica: gli anelli sono sempre "variabile precedente → variabile
+# successiva" lungo il forward. Se in un anello compare un PARAMETRO al
+# denominatore (dW2), quella catena si sta fermando li'.
+#
+# Prova subito:
+# 1) Scrivi (commento) la catena per `dL/db1`. Quanti anelli ha?
+#    Suggerimento: b1 entra nello stesso punto di W1.
+# 2) Vero o falso: "per calcolare dL/dW2 devo prima calcolare dL/dW1".
+#    Motiva in una riga.
+# TUO COMMENTO QUI:
+
+
+# ==========================================================================
 # SEZIONE 1 - FORWARD con CACHE
 # ==========================================================================
 #
@@ -434,6 +521,37 @@ def forward_2layer(
 #
 # La derivata di ReLU "spegne" i neuroni con Z1 <= 0 (dying ReLU).
 
+
+# --------------------------------------------------------------------------
+# 🔁 RINFORZO MIRATO — `derivata_relu` in z = 0 (lacuna #37)
+# --------------------------------------------------------------------------
+# Al bridge R04 (Q4) hai risposto `derivata_relu([-2, 0, 3]) = [0, 0.5, 1]`.
+# Il valore in z = 0 e' **0**, non 0.5. Lo 0.5 e' `sigmoid(0)`: due funzioni
+# diverse, non mescolarle.
+#
+# Perche' 0? Nel punto z = 0 la ReLU fa un "gomito": a sinistra e' piatta
+# (pendenza 0), a destra sale a 45 gradi (pendenza 1). In quel punto esatto
+# la derivata matematicamente NON esiste, quindi ogni libreria sceglie una
+# convenzione. PyTorch, TensorFlow e questo corso scelgono **0**.
+#
+# Esempio diverso — un rubinetto con valvola di non ritorno:
+#   pressione negativa o nulla -> non passa niente, e muovere ancora la
+#   manopola non cambia nulla (sensibilita' 0)
+#   pressione positiva        -> passa tutto, 1 a 1 (sensibilita' 1)
+#
+# Nel codice del capitolo la regola e' scritta cosi':
+#     (z > 0).astype(float)          # STRETTAMENTE maggiore
+# Se scrivessi `>=` otterresti 1 in z = 0: e' l'altra convenzione, e ti
+# farebbe fallire i confronti con PyTorch al cap.07.
+#
+# Prova subito:
+# 1) Stampa `derivata_relu(np.array([-2.0, -0.0, 0.0, 1e-9, 3.0]))`.
+#    Quanti 1 ti aspetti PRIMA di eseguire? Scrivi la previsione, poi esegui.
+# 2) In una riga: cosa succede al gradiente di un neurone che ha Z1 = 0
+#    per TUTTE le pratiche del batch? (collegalo a "dying ReLU")
+# TUO CODICE / COMMENTO QUI:
+
+
 # 🔵 MINI-ESERCIZIO INLINE 2.4.A (~5 minuti) — calcola dL/dZ1
 # Aggiungi:
 #   Z1 = np.array([[ 1.0, -1.0], [2.0, 1.0], [-3.0, 3.0]])   # shape (3, 2)
@@ -539,6 +657,40 @@ def backward_2layer(
 # Se non coincidono: c'e' un bug.
 
 
+# --------------------------------------------------------------------------
+# 🔁 RINFORZO MIRATO — dalla formula al codice senza sbagliare operatore
+#    (Pattern #27, emerso nel cap.05)
+# --------------------------------------------------------------------------
+# Nel cap.05 il concetto era sempre giusto, ma la trascrizione no:
+#     sigmoid(z) / (1 - sigmoid(z))   invece di   sigmoid(z) * (1 - sigmoid(z))
+#     H * W2                          invece di   H @ W2
+#     (2.0 / h)                       invece di   (2.0 * h)
+#     grad.flat[i] == ...             invece di   grad.flat[i] = ...
+#
+# Il backward di questo capitolo e' 6 righe di NumPy piene di `@`, `.T` e
+# `sum(axis=...)`: la probabilita' di un errore di trascrizione e' alta.
+# La buona notizia: il sanity check numerico li trova TUTTI. E' letteralmente
+# il motivo per cui esiste.
+#
+# Tre regole di lettura, prima di eseguire:
+#   1) `*` = elemento per elemento (stessa shape o broadcasting).
+#      `@` = prodotto matriciale (le dimensioni interne devono combaciare).
+#      Se stai combinando due matrici "grandi" per ottenerne una piu' piccola,
+#      quasi sempre e' `@`.
+#   2) Controlla la SHAPE attesa prima di scrivere: se `grad_W1` deve essere
+#      (d, h) e hai X (N, d) e dZ1 (N, h), l'unico modo e' `X.T @ dZ1`.
+#   3) Dentro un ciclo, `=` assegna e `==` confronta. Se una riga "non fa
+#      niente", cerca prima i doppi uguale.
+#
+# Prova subito:
+# 1) Senza eseguire, di' quale di queste e' corretta per grad_W2 (shape (h,1)),
+#    con H (N, h) e dZ2 (N, 1):
+#       (a) H * dZ2     (b) H.T @ dZ2     (c) dZ2 @ H.T     (d) H @ dZ2
+#    Motiva con le shape.
+# 2) Scrivi la shape del risultato di `dZ2 @ W2.T` con dZ2 (N,1) e W2 (h,1).
+# TUO COMMENTO QUI:
+
+
 def sanity_check_grad(
     X: NDArray[np.float64],
     y: NDArray[np.int64] | NDArray[np.float64],
@@ -630,6 +782,32 @@ def sanity_check_grad(
 #      d) update: W1 -= lr * grad_W1, ...
 #      e) (ogni K epoch) stampa loss + accuracy
 #   3) ritorna pesi finali + history
+
+
+# --------------------------------------------------------------------------
+# 🔁 RINFORZO MIRATO — spiegare il training come CICLO (lacuna #40)
+# --------------------------------------------------------------------------
+# Al quiz V8 del cap.05 hai spiegato il gradient descent con l'analogia della
+# collina: giusta, ma ti sei fermato a "capisco dove e' piu' giu'". Mancavano
+# i due pezzi che fanno di quella immagine un ALGORITMO:
+#
+#   (1) il CICLO: senti → fai un passo → risenti da dove sei → ripeti,
+#       finche' non smetti di migliorare;
+#   (2) la DIMENSIONE del passo (il learning rate): passi lunghi ti fanno
+#       scavalcare il fondo, passi corti ti fanno arrivare a notte fonda.
+#
+# Il training loop qui sotto e' esattamente quel ciclo scritto in Python:
+# ogni `epoch` e' un "senti → passo". Guardando il codice puoi finalmente
+# indicare col dito dove sta ognuna delle due cose.
+#
+# Prova subito:
+# 1) Dopo aver letto `train_rete_2_layer`, scrivi in 4 righe la spiegazione
+#    dell'addestramento a un collega web dev, includendo esplicitamente
+#    "ripeti" e "quanto e' grande il passo".
+#    VIETATO: gradiente, derivata, loss, peso, learning rate.
+# 2) Indica con il numero di riga (o copiando la riga) dove nel loop sta:
+#    (a) il "senti", (b) il "fai un passo", (c) il "ripeti".
+# TUO COMMENTO QUI:
 
 
 def train_rete_2_layer(
