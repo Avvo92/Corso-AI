@@ -50,7 +50,116 @@
 
 > Voto = "primo tentativo".
 
-_(Nessuna valutazione ancora — capitolo da aprire.)_
+### 2026-07-27 — Cap.06 Quiz ingresso Q1 (chain rule + update GD)
+
+- **Risposta:** chain rule = prodotto delle derivate locali della composizione; update `w = w - grad * lr` con i tre termini nominati. Entrambe corrette a freddo.
+- **Manca (1):** le derivate locali vanno **valutate nel punto giusto** — `h'(x) = f'(g(x))·g'(x)`, non `f'(x)·g'(x)`. È la ragione d'essere della cache del forward (`derivata_relu` valutata in `Z1`).
+- **Manca (2):** il **perché del segno meno** (il gradiente punta in salita, si va contro per minimizzare) — concetto che aveva invece esplicitato bene al V5 del cap.05.
+- **Forma:** typo "uguale la prodotto" → "al prodotto".
+- **Valutazione (primo tentativo):** **9/10**.
+
+### 2026-07-27 — Cap.06 Quiz ingresso Q2 (quante derivate per dL/dW1) — ✅ chiude lacuna #39
+
+- **Risposta:** 5 derivate, `dL/dp · dp/dZ2 · dZ2/dH · dH/dZ1 · dZ1/dW1` — ordine corretto, **W2 non inserito** come anello.
+- **Confronto:** al V7 del cap.05 aveva scritto `dz/dW2 · dW2/dh · dH/dW1` (5/10). Il rinforzo 🔁 "due affluenti" ha funzionato → **lacuna #39 → 🟢**.
+- **Neo:** ultimo fattore scritto `dZ1*dW1` invece di `dZ1/dW1` (Pattern #27, scivolata di operatore in trascrizione).
+- **Notazione:** con batch conviene `dL/dP` e `dP/dZ2` maiuscoli (matrice), la minuscola è il singolo campione.
+- **Valutazione (primo tentativo):** **9.5/10**.
+
+### 2026-07-27 — Cap.06 Quiz ingresso Q3 (semplificazione miracolosa) — ✅ chiude #36 e #38
+
+- **Risposta:** `dL/dp * dp/dZ2 → (p-y)/p(1-p) * p(1-p) → p-y`, con cancellazione mostrata passo per passo.
+- **Chiude #38:** `dL/dp` scritta **con il denominatore**, distinta da `p-y`. Chiude anche **#36** (`p-y` sotto stress, senza aprire il cap.04).
+- **Manca la seconda metà della domanda:** valore di `dL/dZ2` sul **batch** → `(P - y).reshape(-1,1) / N`, shape `(N,1)`. Mancano sia il **`/N`** (loss come media) sia il **reshape** (rischio broadcasting silenzioso `(N,N)`).
+- **Da verificare:** mini 2.1.A (calcolo di `dL/dZ2`) e mini 3.1.B (esperimento senza `/N`).
+- **Forma:** "tra tra" ripetuto; `p(1-p)` → `p*(1-p)` se trasferito in codice.
+- **Valutazione (primo tentativo):** **8/10**.
+- **Fix applicato (post-feedback):** aggiunta `dL_dZ2 = (P - y).reshape(-1, 1) / N` con motivazione corretta di entrambi i pezzi (shape allineata a `Z2`; `/N` perché la loss è una media sul batch, applicata a ogni elemento). **Post-feedback 10/10** — il voto d'esame resta 8/10. Unica precisazione lessicale: `N` = numero di **campioni** (qui coincide con le righe).
+
+### 2026-07-27 — Cap.06 Quiz ingresso Q4 (ReLU spenta e gradiente di W1)
+
+- **Risposta:** "la derivata parziale dei neuroni disattivati varrà 0" — nucleo corretto ma molto compresso.
+- **Manca (1):** la conseguenza operativa — `W1 -= lr * 0` lascia il peso **invariato**, il neurone spento non impara.
+- **Manca (2) — imprecisione concettuale:** la maschera ReLU agisce **elemento per elemento** su `Z1` `(N, h)`. Con "metà dei valori negativi" il gradiente di `W1` **non è zero**: `grad_W1 = X.T @ dZ1` somma su tutto il batch, quindi perde metà dei contributi ma continua ad aggiornarsi. Zero esatto solo se il neurone è spento per **tutti** i campioni → **dying ReLU**.
+- **Da colloquio:** distinguere "spento per questo campione" da "spento per sempre".
+- **Lacuna #37 NON ancora chiusa:** la domanda non testa il caso `z = 0` (la convenzione è già scritta nel testo della domanda). Verifica rimandata al blocco 🔁 di sez. 2.4 (previsione output su `[-2, -0.0, 0.0, 1e-9, 3.0]`).
+- **Valutazione (primo tentativo):** **7.5/10**.
+- **Fix applicato (post-feedback):** aggiunta la conseguenza `w = w - 0 * lr` → peso invariato (punto 1 chiuso). **Punto 2 ancora aperto:** continua ad affermare che i neuroni "non impareranno nulla", mentre con metà valori negativi `grad_W1 = X.T @ dZ1` riceve comunque i contributi degli altri campioni. Nullo solo se spento su **tutto** il batch (dying ReLU). **Post-feedback 8.5/10** — voto d'esame resta 7.5/10. Da riverificare al mini 2.4.A e al blocco 🔁 sez.2.4.
+- **Secondo re-check (stessa sessione):** modifica solo lessicale ("i" → "quei" neuroni), punto 2 invariato. Nodo concettuale: "disattivato" è uno stato della coppia **(neurone, campione)**, non del neurone. Deciso di **non insistere a parole** e riprendere la risposta dopo il mini 2.4.A, dove le celle azzerate di `dL_dZ1` rendono la cosa visiva.
+
+### 2026-07-27 — Cap.06 Quiz ingresso Q5 (shape N=10, d=5, h=8)
+
+- **Corrette 7/9:** `X (10,5)`, `W1 (5,8)`, `Z1 (10,8)`, `H (10,8)`, `W2 (8,1)`, `b2 (1,)`, `Z2 (10,1)` — inclusi i prodotti matriciali.
+- **Errore 1:** `b1` scritto `(8,1)` invece di **`(8,)`**. Incoerente con `b2 (1,)` scritto giusto. Conseguenza concreta: `X@W1 + b1` con `(10,8)+(8,1)` → **ValueError** (10 vs 8 dopo l'allineamento da destra).
+- **Errore 2:** `P` scritto `(10,1)` invece di **`(10,)`**. Ignorato il `.ravel()` in `forward_2layer`. Conseguenza: `P - y` → `(10,10)` per broadcasting **silenzioso**, loss calcolata su 100 numeri senza senso.
+- **Famiglia dell'errore:** vettore 1D vs colonna 2D — imparentata con la vecchia lacuna #23 (chiusa a maggio). Riemersa → **nuova lacuna #41**.
+- **Regola data:** "uno per neurone / uno per campione" = 1D (`b1`, `b2`, `y`, `P`); "tabella campioni × qualcosa" = 2D.
+- **Valutazione (primo tentativo):** **7/10**.
+- **Fix applicato (post-feedback):** corretti i **valori concreti** → `(8,)` e `(10,)`. Resta sbagliata la **forma simbolica**: `b1.shape == (h, 1) == (8, )` e `P.shape == (N, 1) == (10, )` sono uguaglianze false; vanno `(h,)` e `(N,)`. Segnalato che la forma simbolica è quella che si generalizza (rischio di rifare l'errore con `h` diverso). **Post-feedback 8.5/10** — voto d'esame resta 7/10. Lacuna #41 resta 🔴.
+- **Secondo fix:** corrette anche le forme simboliche → `b1 (h,)`, `P (N,)`. **Tutte le 9 shape corrette e coerenti, post-feedback 10/10** (voto d'esame resta 7/10). Lacuna #41 resta 🔴 fino alla verifica pratica al mini 1.1.A/1.1.B.
+
+### 2026-07-27 — Cap.06 Quiz ingresso Q6 (sanity check)
+
+- **Risposta:** "prova del nove tramite gradiente numerico" — tecnica giusta, immagine efficace, ma **8 parole**: nomina lo strumento senza procedura né criterio.
+- **Manca (1) procedura:** perturbare ogni parametro di `±h` (`1e-6`), forward completo, differenza centrata; confronto su **tutti e 4** i parametri (un bug nel passo 3 lascia `grad_W2` sano e rompe solo `grad_W1`).
+- **Manca (2) criterio:** `max|num - ana| < 1e-4` (idealmente `< 1e-6`), come in `sanity_check_grad`.
+- **Manca (3) diagnosi:** le 4 cause tipiche — trasposta, `axis` in `sum`, segno, `/N` mancante.
+- **Manca (4) perché non in training:** 2 forward per parametro (98 forward per 49 parametri) → solo controllo una tantum.
+- **Pattern:** tendenza a risposte troppo compresse nelle domande "a parole" (già vista in Q4). Da monitorare in ottica colloquio.
+- **Valutazione (primo tentativo):** **7/10**.
+
+### 2026-07-27 — Cap.06 Quiz ingresso Q8 (loss e accuracy iniziali)
+
+- **Risposta:** `~0.69` e `~0.5` — entrambe corrette (opzioni b, b).
+- **Manca (non richiesto, ma prezioso):** `0.69 = -ln(0.5)`; pesi random → logit ~0 → `sigmoid ≈ 0.5` per tutti → su dataset bilanciato BCE = 0.693 e accuracy = 0.5.
+- **Conseguenza operativa data:** 0.69 è il **pavimento di riferimento** — se dopo il training la loss è ancora lì, la rete non impara (lr, scaling, init, dataset degenere). Collegato al **TODO 17 REAL-WORLD del cap.05 rimasto in sospeso** (collega con loss 0.69 dopo 1000 epoche).
+- **Valutazione (primo tentativo):** **9/10**.
+- **Nota:** **Q7 (Feynman backprop) ancora vuota** — è la verifica della lacuna #40.
+
+### 2026-07-27 — Cap.06 Micro-esercizio RINFORZO SHAPE (carry-over)
+
+- **Tutte le 10 shape corrette** (incluse `y (10,)` non richiesta in Q5): `b1 (8,)` e `P (10,)` al posto giusto, notazione e valori coerenti.
+- **Caveat:** svolto pochi minuti dopo la correzione di Q5 → memoria fresca, non recupero autonomo. **Lacuna #41 → 🟡**; conferma definitiva al **mini 1.1.A** (shape stampate dal codice, non scritte a mano).
+- **Forma:** `(10,  )` con doppio spazio — abituarsi a `(10,)` compatto per coerenza con `reshape`.
+- **Valutazione (primo tentativo):** **10/10**.
+
+### 2026-07-27 — Cap.06 Q7 (Feynman backprop): saltata per scelta
+
+- Lo studente ha deciso di **non svolgere** la Q7 del quiz d'ingresso (unica delle 8 rimasta aperta), rifiutando anche la variante orale in chat.
+- **Lacuna #40 (Feynman senza ciclo iterativo) resta 🔴**: verifica spostata a **fine capitolo**, dopo aver visto la backprop in codice — dove la spiegazione a parole sarà comunque richiesta.
+- Nota per il mentor: non insistere; riproporre il Feynman a fine cap.06 quando il concetto sarà supportato dal codice scritto.
+
+### 2026-07-27 — Cap.06 🔁 RINFORZO #38 punto 1 (`dL/dp` vs `dL/dz`, p=0.8 y=1)
+
+- **Valori tutti corretti**: `dL/dp = -1.25`, `dp/dz = 0.16`, prodotto `-0.2 = p - y`. La distinzione `dL/dp` ≠ `dL/dz` è ora esplicita con due numeri diversi → **#38 confermata chiusa**.
+- **Pattern #27 riemerso nella scrittura** (non nel calcolo): `(0.8-1) / 0.8*(1-0.8)` senza parentesi al denominatore → in Python vale `-0.05`, non `-1.25`; inoltre `p(1-p)` implicito → `TypeError: not callable`. **Pattern #27 resta 🔴.**
+- Minore: virgole decimali (`-1,25`) miste a punti; in Python è una tupla.
+- **Punto 2 non svolto** (verifica con `gradiente_numerico`, riga 361) — da recuperare.
+- **Valutazione (primo tentativo):** **8.5/10**.
+
+### 2026-07-27 — Cap.06 🔁 RINFORZO #38 punto 2 (verifica con `gradiente_numerico`)
+
+- **Codice corretto ed eseguito**: `grad_p = -1.25000000004`, `grad_z = -0.20000000003` → coincidono con i valori calcolati a mano al punto 1.
+- **Bene:** lambda con parametri `p_var`/`z_var` (niente shadowing); `bce_loss(sigmoid(z_var), y)` e non `bce_loss(z_var, y)`; indicizzazione `[0]`.
+- **Manca:** verifica solo **visiva** (due `print` nudi). Indicato il pattern `assert np.allclose(...)` + print con valore atteso — è l'antidoto formale al **Pattern #27**.
+- Minore: `y = np.array([1])` int invece di `1.0`.
+- **Domanda posta:** perché `z = np.log(p/(1-p))` → spiegato logit/log-odds come inversa della sigmoid (buon segnale: ha chiesto invece di copiare).
+- **Valutazione (primo tentativo):** **9/10**.
+
+### 2026-07-27 — Cap.06 🔁 RINFORZO #39 punto 1 (catena `dL/db1`)
+
+- Catena corretta e **senza W2 come anello** (terza conferma di fila) → **#39 chiusa senza riserve**.
+- **Manca il conteggio degli anelli** (5), esplicitamente richiesto nella stessa riga → **Pattern #6** (lettura incompleta delle consegne) ancora attivo.
+- Aggiunto in feedback: `dZ1/db1 = 1` (il bias entra sommato) e la conseguenza `grad_b1 = dL_dZ1.sum(axis=0)` da `(N,h)` a `(h,)` — aggancio diretto alla lacuna #41.
+- **Valutazione (primo tentativo):** **9/10**.
+- *Fix applicato:* aggiunto `== 5 anelli` (10/10 post-feedback; voto di riferimento resta 9/10 — Pattern #6 riguarda la lettura, non il conteggio).
+
+### 2026-07-27 — Cap.06 🔁 RINFORZO #39 punto 2 (V/F: `dL/dW2` prima di `dL/dW1`)
+
+- **Verdetto corretto (Falso)**, ma motivazione imprecisa: «si procede a ritroso *da* `dL/dW2` *per arrivare a* `dL/dW1`» implica una dipendenza fra i due gradienti che non esiste. Eco attenuata della #39.
+- Chiarito: i due sono **rami indipendenti**; il pezzo riusato è **`dL/dZ2`** (variabile intermedia), non `dL/dW2`. È questo il risparmio della backprop sul gradiente numerico.
+- Corollario pratico dato in feedback: `dZ2/dH = W2` → **non aggiornare W2 prima di aver calcolato tutti i gradienti** (bug silenzioso: la loss scende comunque, storta).
+- **Valutazione (primo tentativo):** **8/10**.
 
 ---
 

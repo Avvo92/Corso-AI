@@ -230,33 +230,43 @@ def he_init(
 # Q1) [Recall cap.05] Cos'e' la chain rule in 1 riga? E qual e'
 #     l'aggiornamento dei pesi con gradient descent?
 # TUA RISPOSTA:
-# ...
+# La chain rule è quella regola che dice la derivata di una composizione di funzioni è uguale la prodotto delle derivate locali delle funzioni che compongono la composizione.
+# l'aggiornamento dei pesi tramite gradiente descent è w = w - grad * lr dove w è il peso iniziale, grad è il gradiente e lr il learning rate.
 
 # Q2) [Recall cap.05] Hai una rete 2-layer. Per calcolare dL/dW1 devi
 #     comporre QUANTE derivate locali (con la chain rule)? Quali?
 # TUA RISPOSTA:
-# ...
+# Il numero di derivate locali di cui si deve fare il prodotto è 5. dL/dp * dp/dZ2 * dZ2/dH * dH/dZ1 * dZ1/dW1 
 
 # Q3) [Recall cap.04] Qual e' la semplificazione miracolosa per BCE +
 #     sigmoid? Quanto vale dL/dZ2 in una rete con output sigmoid?
 # TUA RISPOSTA:
-# ...
+# la semplificazione miracolosa avviene tra tra dL/dp * dp/dZ2 -> (p-y) / p(1-p) * p(1-p) -> p-y.
+# dL_dZ2 = (P - y).reshape(-1, 1) / N    Gli ridiamo la shape identica al dZ2 e poi dividiamo per il numero righe ogni risultato perchè la loss è una media di tutto il batch.
 
 # Q4) [Recall cap.04] La derivata di ReLU(z) vale: 1 se z > 0, 0 se z <= 0.
 #     In una rete dove l'hidden ha Z1 con la meta' dei valori negativi,
 #     cosa succede al gradiente di W1 in quei "neuroni" inattivi?
 # TUA RISPOSTA:
-# ...
+# la derivata parziale dei neuroni disattivati all'interno del gradiente varrà 0. Questo significa che avremo w = w - 0 * lr per i neuroni che erano stati disattivati, e quindi quei neuroni non impareranno nulla e non verranno aggiornati.
 
 # Q5) [Recall cap.02 M3] Quali sono le SHAPE di X, W1, b1, Z1, H, W2, b2,
 #     Z2, P per una rete con (N=10, d=5, h=8, output=1)?
 # TUA RISPOSTA:
-# ...
+# X.shape == (N, d) == (10, 5)
+# W1.shape == (d, h) == (5, 8)
+# b1.shape == (h, ) == (8, )
+# Z1.shape == (N, h) == (10, 8)
+# H.shape == (N, h) == (10, 8)
+# W2.shape == (h, 1) == (8, 1)
+# b2.shape == (1, )
+# Z2.shape == (N, 1) == (10, 1)
+# P.shape == (N, ) == (10, ) 
 
 # Q6) [Intuizione - sanity check] Hai implementato un backward "a mano".
 #     Come verifichi che NON ci siano bug PRIMA di lanciare il training?
 # TUA RISPOSTA:
-# ...
+# facendo la prova del nove tramite gradiente numerico.
 
 # Q7) [💬 Feynman] Spiega in 4 righe il backpropagation a un collega
 #     web dev. VIETATO: gradiente, derivata, layer, chain, backward.
@@ -269,7 +279,8 @@ def he_init(
 #     - loss iniziale (epoch 0): circa quanto?         (a) ~0   (b) ~0.69   (c) ~5
 #     - accuracy iniziale: circa quanto?               (a) ~0   (b) ~0.5    (c) ~1
 # TUA RISPOSTA:
-# ...
+# circa 0.69.
+# circa 0.5
 
 
 # ==========================================================================
@@ -300,7 +311,16 @@ def he_init(
 #   grad_b2.shape == (1,)
 #
 # Micro-esercizio: per N=10, d=5, h=8, quanto vale ogni shape sopra?
-
+# X.shape == (10, 5)
+# y.shape == (10, )
+# W1.shape == (5, 8)
+# b1.shape == (8, )
+# Z1.shape == (10, 8)
+# H.shape == (10, 8)
+# W2.shape == (8, 1)
+# b2.shape == (1, )
+# Z2.shape == (10, 1)
+# P.shape == (10,  )
 
 # ==========================================================================
 # 🔁 RINFORZO MIRATO — `dL/dp` vs `dL/dz` (lacuna #38)
@@ -333,12 +353,32 @@ def he_init(
 # Prova subito:
 # 1) Con p = 0.8 e y = 1, calcola a mano i tre valori (dL/dp, dp/dz, dL/dz)
 #    e verifica che il prodotto dei primi due dia il terzo.
+
+# dL/dp = (p - y)/p(1 - p) == (0.8 - 1) / 0.8*(1 - 0.8) == -1,25
+# dp/dZ2 = p(1 - p) == 0,16
+# dL/dZ2 == (p - y)/p(1 - p) * p(1 - p) == -1.25 * 0.16 == -0,2 == p - y == 0,8 - 1 == -0,2
+
 # 2) Verifica in codice con gradiente_numerico:
 #      p = np.array([0.8]); y = np.array([1.0]); z = np.log(p/(1-p))
 #      num_p = gradiente_numerico(lambda pv: bce_loss(pv, y), p)
 #      num_z = gradiente_numerico(lambda zv: bce_loss(sigmoid(zv), y), z)
 #      # num_p deve valere circa dL/dp, num_z circa (p - y)
 # TUO CODICE / COMMENTO QUI:
+
+p = np.array([0.8])
+y = np.array([1])
+z = np.log(p/(1-p))
+grad_p = gradiente_numerico(
+    lambda p_var: bce_loss(p_var, y),
+    p
+)
+print(grad_p[0])
+
+grad_z = gradiente_numerico(
+    lambda z_var: bce_loss(sigmoid(z_var), y),
+    z
+)
+print(grad_z[0])
 
 
 # ==========================================================================
@@ -375,10 +415,11 @@ def he_init(
 # Prova subito:
 # 1) Scrivi (commento) la catena per `dL/db1`. Quanti anelli ha?
 #    Suggerimento: b1 entra nello stesso punto di W1.
+# dL/dp * dp/dZ2 * dZ2/dH * dH/dZ1 * dZ1/db1 == 5 anelli
 # 2) Vero o falso: "per calcolare dL/dW2 devo prima calcolare dL/dW1".
 #    Motiva in una riga.
 # TUO COMMENTO QUI:
-
+# Falso: sono due rami indipendenti dello stesso backward. Ciò che si riusa è dL/dZ2, non dL/dW2.
 
 # ==========================================================================
 # SEZIONE 1 - FORWARD con CACHE
@@ -428,6 +469,18 @@ def forward_2layer(
 # cache["Z1"], cache["H"], cache["Z2"]. Atteso: (10,), (10,8), (10,8), (10,1).
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 1.1.A\n")
+
+n = 10
+d = 5
+h = 8
+
+rng = np.random.default_rng(1)
+X = rng.standard_normal(size=(n, d))
+W1 = rng.standard_normal(size=(d, h)) * np.sqrt(2/d)
+b1 = np.zeros(h)
+W2 = rng.standard_normal(size=(h, 1)) * np.sqrt(2/h)
+b2 = np.zeros(1)
 
 # 🔵 MINI-ESERCIZIO INLINE 1.1.B (~3 minuti) — perche' "ravel"?
 # In commento (2 righe): perche' alla fine di forward facciamo

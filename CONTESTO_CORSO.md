@@ -44,7 +44,7 @@
 | **Ultimo completato** | modulo_03_dl_cv/**05_chain_rule_gd.py** (27/07/2026) — chain rule 2/3/4 livelli, GD 1D/nD, learning rate, piano dei pesi, pipeline `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` (8.5/10); **voto difficoltà** **9**/10 (il più alto del modulo). |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
 | **Difficoltà media** | ~**7.02** (26 capitoli con voto; archivi M1/M2/Ponte in `archivi/`) — trend M3: 8, 8, 8, 8, **9** ↑ |
-| **Priorità attive** | 🔴 #39 catena `dL/dW1` (V7: W2 è ramo parallelo); 🔴 #37 ReLU@0; 🔴 #38 `dL/dp` vs `dL/dz`; 🔴 #40 Feynman GD senza ciclo iterativo (V8); 🔴 Pattern #27 traduzione formula→codice (`/` vs `*`, `*` vs `@`); 🟡 #33–#36; 🟡 Pattern #6; 🟡 #21; 🟡 #31 UAT; 🟡 E6 system design (fine M3). |
+| **Priorità attive** | 🟢 chiuse al quiz ingresso cap.06: #39 catena `dL/dW1` (Q2), #36 e #38 `p-y` / `dL/dp` (Q3); 🟡 **#41 shape 1D vs colonna** (`b1` `(h,)`, `P` `(N,)` — rinforzata, conferma al mini 1.1.A); 🔴 #37 ReLU@0 (verifica al blocco 🔁 sez.2.4) + corollario "spento per campione ≠ spento sempre" (Q4); 🔴 #40 Feynman senza ciclo iterativo (**Q7 saltata per scelta 27/07** → verifica rimandata a fine cap.06); 🔴 Pattern #27 traduzione formula→codice; 🟡 Pattern #6; 🟡 #21; 🟡 #31 UAT; 🟡 E6 system design (fine M3). |
 | **Sessione corrente** | Sessione 25 |
 
 ---
@@ -99,9 +99,10 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 39 | **Catena `dL/dW1`**: percorso `P→Z2→H→Z1→W1`, NON passare da W2 | 🔴 Da rinforzare | Cap.06: blocco 🔁 pre-backward + quiz ingresso Q2 + bridge R05 es.6 |
+| 41 | **Shape 1D vs colonna**: `b1` è `(h,)` non `(h,1)`; `P` è `(N,)` non `(N,1)` | 🟡 Rinforzato | Micro-esercizio SHAPE cap.06 (27/07): 10/10, ma a memoria fresca. Conferma al mini 1.1.A (shape stampate dal codice) |
+| 39 | **Catena `dL/dW1`**: percorso `P→Z2→H→Z1→W1`, NON passare da W2 | 🟢 Superato | Quiz ingresso cap.06 Q2 (27/07/2026): 5 anelli corretti, W2 non inserito |
 | 37 | **`derivata_relu` in z=0** → vale **0** (non 0.5) | 🔴 Da rinforzare | Cap.06: blocco 🔁 allo step ReLU (sez. 2.4) + bridge R05 es.4 |
-| 38 | **`dL/dp` vs `dL/dz`**: `p-y` è `dL/dz` | 🔴 Da rinforzare | Cap.06: blocco 🔁 pre-backward + quiz ingresso Q3 + bridge R05 es.5 |
+| 38 | **`dL/dp` vs `dL/dz`**: `p-y` è `dL/dz` | 🟢 Superato | Quiz ingresso cap.06 Q3 (27/07/2026): `dL/dp` con denominatore, distinta da `p-y` |
 | 40 | **Feynman GD**: manca il ciclo "ripeti" e il ruolo della dimensione del passo | 🔴 Da rinforzare | Cap.06: quiz ingresso Q7 (Feynman backprop) + bridge R05 es.11 |
 | 23 | Shape `X @ w`: `(N,)` vs `(N, 1)` in NumPy | 🟢 Superato | Quiz ingresso M3 cap.01 Q1 (07/05/2026): shape + spiegazione `(N,d)@(d,)→(N,)` vs `(N,d)@(d,1)→(N,1)` |
 | 26 | Velocità `X @ w` vs loop Python (`np.dot` per riga) | 🟢 Superato | Quiz Q4 + mini RINFORZO #26 (08/05/2026): overhead interprete per iterazione + memoria contigua/cache vs heap oggetti Python |
@@ -1033,6 +1034,12 @@ completezza del self-check e chiedere correzioni.
 | 9 | Usare `-1` al posto di `n_steps` come indice | Sì: `lista[-1]` è l'ultimo elemento, più robusto se la lunghezza cambia |
 | 10 | Progetti portfolio per candidarsi come AI Engineer | Discussi 4 filoni + come costruire dati di prova sintetici quando non hai un contesto aziendale reale |
 
+### Cap.06 M3 — Backpropagation e training
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | Perché `z = np.log(p/(1-p))` nel rinforzo #38? | È la **sigmoid invertita** (funzione **logit** / log-odds). Serve a ricavare lo `z` che produce esattamente `p=0.8`, così le due derivate numeriche si misurano **nello stesso punto di lavoro**. Nella rete vera `Z2` arriva dal forward, non serve invertire |
+
 ---
 
 ## Pattern di Errore Ricorrenti — Solo Attivi
@@ -1042,7 +1049,7 @@ completezza del self-check e chiedere correzioni.
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🟡 In miglioramento | Persistito nel M1, da monitorare nel M2 |
+| 6 | **Lettura incompleta delle consegne** | 🟡 In miglioramento | Persistito nel M1, da monitorare nel M2. **Riemerso M3 cap.06 (27/07):** rinforzo #39 punto 1 — catena `dL/db1` scritta correttamente ma **conteggio anelli non dato**, pur richiesto nella stessa riga. Sintomo tipico: due richieste in una riga, la seconda evapora |
 | 18 | **Confusione Series vs DataFrame** | 🟡 In miglioramento | Rinforzato cap.01-02; quiz cap.02 ok |
 | 19 | **`if var:` vs `is not None` per numeri opzionali** | 🟡 In miglioramento | Emerso cap 12 — rinforzo terminologico cap.02 |
 | 20 | **Anti-pattern valutazione vs feature engineering** | 🟡 In miglioramento | Quiz cap.01 + rinforzo cap.02 |
@@ -1052,7 +1059,7 @@ completezza del self-check e chiedere correzioni.
 | 24 | **`iloc[i, "col_str"]` (etichetta) vs `loc`/parentesi quadre** | 🟡 Nuovo (Ponte cap.01) | Nel mini-progetto ha usato `pratiche.iloc[i, "pratica_id"]` → TypeError. `iloc` accetta solo INDICI numerici (riga, colonna come int), `loc` accetta etichette. Alternativa: `pratiche.iloc[i]["pratica_id"]`. Rinforzo cap.02 Ponte. |
 | 25 | **Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Nuovo (Ponte cap.01) | Nelle funzioni `norma` e `coseno` ha scritto `def norma(v: np.array)`. `np.array` è la FACTORY function, il tipo è `np.ndarray`. Per type hint moderni: `from numpy.typing import NDArray; def norma(v: NDArray) -> float`. Rinforzo cap.02 Ponte. |
 | 26 | **`h`/`eps` troppo piccolo in derivata/gradiente numerico** | 🟡 In miglioramento (M3 cap.04→05) | Ha usato `eps=1e-24` (C4) e `h=1e-16` (TODO 12) → risultati instabili. Cap.05 TODO 13: ancora `eps=1e-12`, corretto a **`1e-6`** dopo feedback. Ricontrollare nel sanity check cap.06. |
-| 27 | **Traduzione formula → codice: operatore sbagliato** | 🔴 Nuovo (M3 cap.05) | `sigmoid(z) / (1-sigmoid(z))` invece di `*`; `H * W2` invece di `H @ W2`; `sigmoid(z)/1 - sigmoid(z)` senza parentesi; `(2.0 / h)` invece di `(2.0 * h)`; `grad.flat[i] == ...` invece di `=`. Il concetto è corretto, si perde nella trascrizione. Antidoto: rileggere **simbolo per simbolo** + `assert np.allclose` contro il numerico. Rinforzo naturale nel cap.06. |
+| 27 | **Traduzione formula → codice: operatore sbagliato** | 🔴 Nuovo (M3 cap.05) | `sigmoid(z) / (1-sigmoid(z))` invece di `*`; `H * W2` invece di `H @ W2`; `sigmoid(z)/1 - sigmoid(z)` senza parentesi; `(2.0 / h)` invece di `(2.0 * h)`; `grad.flat[i] == ...` invece di `=`. **Riemerso cap.06 (27/07, rinforzo #38):** `(0.8-1) / 0.8*(1-0.8)` senza parentesi al denominatore (in Python vale `-0.05`, non `-1.25`) e `p(1-p)` con moltiplicazione implicita (`TypeError: not callable`). Il concetto è corretto, si perde nella trascrizione. Antidoto: rileggere **simbolo per simbolo** + parentesi esplicite al denominatore + `assert np.allclose` contro il numerico. |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠️ Da consolidare | 🟢 Superato
 
@@ -1373,11 +1380,12 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 33 | **Vanishing gradient — sigmoid solo in output** | Checkpoint C3 M3 cap.03 + V8/C2 cap.04 | **Chiusura:** quiz ingresso cap.05 **Q1** (27/07/2026): `0.25` in z=0, `~4.5e-05` in z=10, `0.25^n_layer` citato correttamente. R6 punto A ok (ReLU non permette la cancellazione). | M3 cap.05 Q1 | 🟢 |
 | 34 | **Clip bilaterale — log(1-p) con p=1** | Quiz V4 M3 cap.03 + rinforzo cap.04 sez.5 | **Chiusura:** cap.05 TODO 8 — `my_bce` riscritta da zero con `np.clip(p, eps, 1-eps)` bilaterale al primo tentativo. | M3 cap.05 TODO 8 | 🟢 |
 | 35 | **Ordine `bce_loss(p, y)`** | TODO 4.3 / 10 M3 cap.03 + cap.04 | **Chiusura:** cap.05 TODO 8 (`my_bce` riscritta da zero con ordine corretto) + uso corretto in R3/R4/PIPE/mini-progetto. | M3 cap.05 TODO 8 | 🟢 |
-| 36 | **Chain rule backward BCE+sigmoid → `dL/dz = p - y`** | Sessione cap.04 / TODO 6–7 / Quiz V7 / C3 | **Rinforzo R1–R6 cap.05 superato** (27/07/2026): R1–R2 a parole, R3 numerico vs analitico su `z`, R5 su 1 neurone, TODO 7 retrieval. Da confermare al quiz ingresso cap.06 Q3. | M3 cap.06 Q3 | 🟡 → verifica finale |
+| 36 | **Chain rule backward BCE+sigmoid → `dL/dz = p - y`** | Sessione cap.04 / TODO 6–7 / Quiz V7 / C3 | Rinforzo R1–R6 cap.05 superato. **Chiusura:** quiz ingresso cap.06 **Q3** (27/07/2026) — cancellazione mostrata passo per passo a freddo. Residuo minore: sul batch manca il fattore **`/N`** e il reshape `(N,1)` (verifica ai mini 2.1.A e 3.1.B). | M3 cap.06 Q3 | 🟢 |
 | 37 | **`derivata_relu` in z=0** — convenzione corso | Bridge R04 Q4 (16/06/2026) | `z=0 → 0.5` invece di **0**; regola: `1 se z>0`, `0 se z≤0` (PyTorch idem). Cap.05 TODO 9: funzione corretta `(z>0).astype(float)` ma il caso `z=0` non è stato verificato esplicitamente. Rinforzo 🔁 in cap.06 sez.2.4 + bridge R05 es.4. | M3 cap.06 sez.2.4 🔁 | 🔴 |
-| 38 | **`dL/dp` vs `dL/dz`** — non confondere le due | Bridge R04 Q6 (16/06/2026) | Risposto **Sì** a `dL/dp = p-y`; `dL/dp = (p-y)/(p(1-p))`, `p-y` è solo `dL/dz`. Cap.05 R4 svolto correttamente. Rinforzo 🔁 in cap.06 (pre-backward) + bridge R05 es.5. | M3 cap.06 🔁 pre-backward | 🔴 |
-| 39 | **Catena `dL/dW1`** — percorso H→Z1→W1, non W2 | Quiz verifica V7 cap.05 (23/07/2026) | Scritto `… dz/dW2 · dW2/dh · dH/dW1`; W2 è ramo parallelo. Corretta: `dL/dP · dP/dZ2 · dZ2/dH · dH/dZ1 · dZ1/dW1`. Rinforzo 🔁 in cap.06 (pre-backward) + quiz ingresso Q2 + bridge R05 es.6. | M3 cap.06 🔁 pre-backward | 🔴 |
-| 40 | **Feynman gradient descent** — manca il ciclo iterativo | Quiz verifica V8 cap.05 (27/07/2026) | Analogia della collina corretta e vincoli lessicali rispettati, ma la risposta descrive **dove guardare**, non il ciclo "senti → fai un passo → risenti → ripeti" né l'effetto della **dimensione del passo**. Rinforzo: quiz ingresso cap.06 Q7 (Feynman backprop) + bridge R05 es.11. | M3 cap.06 Q7 | 🔴 |
+| 38 | **`dL/dp` vs `dL/dz`** — non confondere le due | Bridge R04 Q6 (16/06/2026) | Risposto **Sì** a `dL/dp = p-y`. Cap.05 R4 svolto correttamente. **Chiusura:** quiz ingresso cap.06 **Q3** (27/07/2026) — `dL/dp` scritta con il denominatore `p(1-p)` e tenuta distinta da `p-y`. Il blocco 🔁 in cap.06 resta come consolidamento. | M3 cap.06 Q3 | 🟢 |
+| 39 | **Catena `dL/dW1`** — percorso H→Z1→W1, non W2 | Quiz verifica V7 cap.05 (23/07/2026) | Scritto `… dz/dW2 · dW2/dh · dH/dW1`; W2 è ramo parallelo. **Chiusura:** quiz ingresso cap.06 **Q2** (27/07/2026) — 5 anelli nell'ordine corretto, W2 non inserito (9.5/10, unico neo `*` invece di `/` nell'ultimo fattore). Rinforzo 🔁 "due affluenti" efficace. | M3 cap.06 Q2 | 🟢 |
+| 41 | **Shape 1D vs colonna 2D: `b1` è `(h,)` e `P` è `(N,)`** | Quiz ingresso Q5 cap.06 (27/07/2026) | `b1` scritto `(8,1)` invece di `(8,)` (→ ValueError in `X@W1+b1`) e `P` scritto `(10,1)` invece di `(10,)` (→ `P-y` diventa `(10,10)` per broadcasting **silenzioso**). Incoerenza interna: `b2 (1,)` scritto giusto. Riemersione della famiglia della vecchia lacuna #23. Regola: "uno per neurone / per campione" = 1D; "tabella campioni × qualcosa" = 2D. **Rinforzo:** micro-esercizio SHAPE carry-over 10/10 subito dopo (memoria fresca) → 🟡; conferma al mini 1.1.A con shape stampate dal codice. | M3 cap.06 mini 1.1.A/1.1.B | 🟡 |
+| 40 | **Feynman gradient descent** — manca il ciclo iterativo | Quiz verifica V8 cap.05 (27/07/2026) | Analogia della collina corretta e vincoli lessicali rispettati, ma la risposta descrive **dove guardare**, non il ciclo "senti → fai un passo → risenti → ripeti" né l'effetto della **dimensione del passo**. Rinforzo: quiz ingresso cap.06 Q7 (Feynman backprop) + bridge R05 es.11. **27/07: Q7 saltata per scelta dello studente** → verifica spostata a fine cap.06, dopo la backprop in codice. | M3 fine cap.06 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
 
