@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 27/07/2026 — **Chiusura M3 cap.05** `05_chain_rule_gd.py` (voto difficoltà **da confermare**); Stato → **06_backprop_training.py**; bridge **M03_R05** popolato (11 esercizi); rinforzi 🔁 #37/#38/#39 inseriti in cap.06.
+> **Ultimo aggiornamento**: 27/07/2026 — **Chiusura M3 cap.05** `05_chain_rule_gd.py` (voto difficoltà **9**/10, media → ~**7.02**); Stato → **06_backprop_training.py**; bridge **M03_R05** popolato (11 esercizi); rinforzi 🔁 #37/#38/#39 inseriti in cap.06.
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -41,9 +41,9 @@
 | Campo | Valore |
 |-------|--------|
 | **Capitolo in corso** | modulo_03_dl_cv/**06_backprop_training.py** — forward con cache, backward step-by-step 2-layer, sanity check numerico vs analitico, training loop, mini-progetto rete su CSV M2 vs LogReg. Parte 4/4 split backprop (chiude il primo blocco M3). |
-| **Ultimo completato** | modulo_03_dl_cv/**05_chain_rule_gd.py** (27/07/2026) — chain rule 2/3/4 livelli, GD 1D/nD, learning rate, piano dei pesi, pipeline `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` (8.5/10); **voto difficoltà** ⏳ da confermare. |
+| **Ultimo completato** | modulo_03_dl_cv/**05_chain_rule_gd.py** (27/07/2026) — chain rule 2/3/4 livelli, GD 1D/nD, learning rate, piano dei pesi, pipeline `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` (8.5/10); **voto difficoltà** **9**/10 (il più alto del modulo). |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
-| **Difficoltà media** | ~**6.94** (25 capitoli con voto; ricalcolo al voto M3-05 — archivi M1/M2/Ponte in `archivi/`) |
+| **Difficoltà media** | ~**7.02** (26 capitoli con voto; archivi M1/M2/Ponte in `archivi/`) — trend M3: 8, 8, 8, 8, **9** ↑ |
 | **Priorità attive** | 🔴 #39 catena `dL/dW1` (V7: W2 è ramo parallelo); 🔴 #37 ReLU@0; 🔴 #38 `dL/dp` vs `dL/dz`; 🔴 #40 Feynman GD senza ciclo iterativo (V8); 🔴 Pattern #27 traduzione formula→codice (`/` vs `*`, `*` vs `@`); 🟡 #33–#36; 🟡 Pattern #6; 🟡 #21; 🟡 #31 UAT; 🟡 E6 system design (fine M3). |
 | **Sessione corrente** | Sessione 25 |
 
@@ -59,8 +59,8 @@
 | **Data** | 27/07/2026 |
 | **Cosa è stato fatto** | **Chiusura M3 cap.05** `05_chain_rule_gd.py`: quiz ingresso Q1–Q7, RINFORZO R1–R6 (p-y), sez.1–6 con mini-inline, esercizi 3.A–3.C mappa backward, TODO 1–17, PIPE `addestramento_via_gradiente_numerico`, quiz V1–V8, mini-progetto **`confronto_lr_su_addestramento`** con figura a 4 pannelli (8.5/10). Bridge **M03_R05** popolato (11 esercizi). Rinforzi 🔁 #37/#38/#39 inseriti in `06_backprop_training.py`. |
 | **Errori emersi** | **V7** catena `dL/dW1` passata da W2 (5/10 → lacuna #39); **V8** Feynman GD senza ciclo iterativo né ruolo del passo (7/10 → #40); derivata sigmoid scritta con `/` invece di `*`; `H @ W2` scritto con `*`; He init dimenticata su W2; `range(x)` invece di `range(x.size)`; `==` invece di `=` in assegnazione; commento mini-progetto: "troppo cauto" attribuito a 0.1 invece di 0.01 e plausibilità w/b non argomentata. **Non svolti:** mini 1.2.A, R6 punto B, TODO 17 REAL-WORLD, checkpoint C1–C5. |
-| **Cosa fare nella prossima sessione** | (1) **Voto difficoltà cap.05 (1-10)** — da dare; (2) bridge **`M03_R05`** (~15–20 min, il più importante del modulo); (3) aprire **`06_backprop_training.py`**: quiz ingresso Q1–Q8 + **🔁 RINFORZO MIRATO #38/#39** (pre-backward) e **#37** (step ReLU); (4) sez.1–2 forward con cache + backward step-by-step. Difficoltà attesa: **8–9/10** (capitolo più tosto del modulo). |
-| **Stato motivazione** | Alto — ha portato a termine un mini-progetto lungo con grafici a 4 pannelli e ha fatto domande di prospettiva (progetti portfolio, sbocchi come AI Engineer). Attenzione: capitolo lungo, il cap.06 va spezzato in più sessioni. |
+| **Cosa fare nella prossima sessione** | (1) bridge **`M03_R05`** (~15–20 min, il più importante del modulo); (2) aprire **`06_backprop_training.py`**: quiz ingresso Q1–Q8 + **🔁 RINFORZO MIRATO #38/#39** (pre-backward) e **#37** (step ReLU); (3) sez.1–2 forward con cache + backward step-by-step, **fermandosi lì**. Difficoltà attesa: **8–9/10**. |
+| **Stato motivazione** | Alto — ha portato a termine un mini-progetto lungo con grafici a 4 pannelli e ha fatto domande di prospettiva (progetti portfolio, sbocchi come AI Engineer). **Voto difficoltà 9/10**: il capitolo è costato fatica pur essendo andato bene → nel cap.06 spezzare in 2–3 sessioni e non comprimere. |
 
 ---
 
@@ -139,7 +139,7 @@
 | **Concetti ⚠️ da monitorare** | Catena verso W1 senza passare da W2 (#39); ReLU@0 = 0 (#37); `dL/dp` ≠ `p-y` (#38); Feynman con ciclo iterativo esplicito (#40); `h=1e-6` nel sanity check. |
 | **Pattern 🔴 da monitorare** | 🔴 **#27 traduzione formula → codice** (`*` vs `@`, `*` vs `/`, `==` vs `=`): il cap.06 è pieno di prodotti matriciali, va usato il sanity check come rete di sicurezza. 🟡 #6 consegne; 🟡 #21 tuple/`round`; 🟡 #26 `h` numerico. |
 | **Ponte mentale da riusare** | Backprop = "passare la colpa indietro lungo la catena di reparti"; gradiente = bussola sulla collina; GD = `w -= lr * grad`; cache del forward = "scontrino che conservi per il reso". |
-| **Note** | Cap.05 chiuso (voto ⏳ da confermare). Residui **opzionali** in `05_chain_rule_gd.py`: mini 1.2.A, R6 punto B, **TODO 17 REAL-WORLD**, checkpoint C1–C5. Il cap.06 è il più lungo/difficile del modulo: pianificare **2–3 sessioni** (sez.1–2 / sez.3–4 / progetto+confronto). |
+| **Note** | Cap.05 chiuso con voto **9**/10 (il più alto del modulo): il cap.06 è atteso allo stesso livello o più, quindi **non comprimere**. Residui **opzionali** in `05_chain_rule_gd.py`: mini 1.2.A, R6 punto B, **TODO 17 REAL-WORLD**, checkpoint C1–C5. Il cap.06 è il più lungo/difficile del modulo: pianificare **2–3 sessioni** (sez.1–2 / sez.3–4 / progetto+confronto). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -786,9 +786,9 @@ completezza del self-check e chiedere correzioni.
 | **M3-02_reti_neurali** | **8** | Confermato studente **21/05/2026**; forward 2-layer + He + R2; mini-progetto 9/10; E6 rinviato; lacuna AUC→prob risolta in sessione |
 | **M3-03_loss** | **8** | Confermato studente **01/06/2026**; split cap.03 LOSS; BCE/clip/soglia + PIPE.1 + `valuta_modello_completo`; pattern BCE chiusi in codice; residui vanishing gradient (C3), V5–V7 opzionali |
 | **M3-04_derivate_gradiente** | **8** | Confermato C5 auto-rating **16/06/2026**; derivata/gradiente numerico, sigmoid' max 0.25, ReLU step, BCE→`p-y`, PIPE `derivate_check`, mini-progetto attivazioni; blocco iniziale parziali C4 poi 9/10; TODO 16 opzionale; V8 Feynman post-fix ok |
-| **M3-05_chain_rule_gd** | ⏳ **da confermare** | Chiusura **27/07/2026**; chain rule 2/3/4 livelli, mappa backward 3.A–3.C, GD 1D/nD, lr sweep, PIPE `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` 8.5/10; V7 5/10 (catena W1), V8 7/10 (Feynman); C1–C5 non compilati. Media da ricalcolare al voto |
+| **M3-05_chain_rule_gd** | **9** | +1 ↑ vs M3-04 — primo 9/10 del modulo. Confermato studente **27/07/2026**. Chiusura **27/07/2026**; chain rule 2/3/4 livelli, mappa backward 3.A–3.C, GD 1D/nD, lr sweep, PIPE `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` 8.5/10; V7 5/10 (catena W1), V8 7/10 (Feynman); C1–C5 non compilati. Media da ricalcolare al voto |
 
-**Media attuale**: ~**6.94** (25 capitoli con voto; dettaglio M1/M2/Ponte negli archivi). Il voto M3-05 è in attesa: alla conferma la media va ricalcolata su 26 capitoli.
+**Media attuale**: ~**7.02** (26 capitoli con voto, incluso M3-05 = **9**; dettaglio M1/M2/Ponte negli archivi). Prima volta sopra quota 7: la curva M3 sta salendo (8, 8, 8, 8, **9**) — nel cap.06 (atteso 8-9) andare più lenti e spezzare in più sessioni.
 
 ---
 
@@ -2090,6 +2090,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 27/07/2026 | **Voto difficoltà M3-05: 9/10** confermato dallo studente; media ricalcolata ~**7.02** (26 capitoli); trend M3 8,8,8,8,**9** ↑; nota operativa: spezzare il cap.06 in 2–3 sessioni. | Risposta studente in chiusura capitolo | Stato Attuale, Ultima Sessione, Prossimo Cap, Valutazioni, diario cap.05, README modulo, Changelog |
 | 27/07/2026 | **Chiusura M3 cap.05** (`05_chain_rule_gd.py`): Stato → `06_backprop_training.py`; Ultimo completato + Ultima Sessione; Priorità Attive (lacune 🔴 #37/#38/#39/#40 + Pattern #27); Prossimo Cap; Valutazioni **M3-05** voto ⏳ da confermare; Glossario nuova sezione cap.05 (11 termini) + contatori aggiornati (`p-y` 2/3); Domande cap.05 (10 entry); Pattern **#27** traduzione formula→codice (🔴) e #26 aggiornato; Ponti Mentali (catena trasformatori, collina al buio, ramo parallelo); Competenze cap.05; Ripasso Programmato **nuova tabella Concetti M3**; Lacune #33/#34/#35 → 🟢, #36 → verifica finale cap.06, **#40** nuova; Checklist (5 nuovi controlli); Progetto incrementale riga cap.05; bridge **M03_R05** popolato (11 esercizi); rinforzi 🔁 #38/#39 e #37 inseriti in `06_backprop_training.py`; Sessione **25**. File capitolo **non modificato** (protocollo H). | Chiusura formale cap.05 M3 su richiesta studente | Stato, sessioni, priorità, valutazioni, glossario, domande, pattern, ponti, competenze, ripasso, lacune, checklist, progetto, bridge, cap.06, changelog |
 | 16/06/2026 | **Chiusura M3 cap.04** (`04_derivate_gradiente.py`): Stato → `05_chain_rule_gd.py`; Ultimo completato + Ultima Sessione; Prossimo Cap; diff media ~**6.94** (25 cap); Valutazioni **M3-04** **8**/10 (C5); Glossario (derivata, gradiente numerico, p-y, vanishing); Competenze cap.04; Lacune #33–36 🟡; Pattern #26 h troppo piccolo; bridge **M03_R04** popolato; rinforzi p-y già in cap.05; Sessione **24**. File capitolo **non modificato** (H). | Handshake chiusura capitolo 4 M3 | Stato, sessioni, valutazioni, glossario, competenze, lacune, pattern, bridge, cap.05, changelog |
 | 29/05/2026 | **Bridge M03_R03 completato** (~8.4/10): Ultima Sessione; Prossimo Cap (bridge ✅); diario cap.03 + stato cap.04; Sessione **23**. | Handoff loss → derivate prima di `04_derivate_gradiente.py` | Stato header, Ultima Sessione, Prossimo Cap, diari |

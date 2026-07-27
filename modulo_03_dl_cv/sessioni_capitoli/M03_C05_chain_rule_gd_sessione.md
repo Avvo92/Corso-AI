@@ -6,7 +6,7 @@
 | **File capitolo** | `05_chain_rule_gd.py` |
 | **File diario** | `M03_C05_chain_rule_gd_sessione.md` |
 | **Stato** | ✅ **Chiuso il 27/07/2026** — bridge **M03_R05** popolato, rinforzi inseriti in cap.06 |
-| **Voto difficoltà** | ⏳ da confermare (atteso 7–8/10) |
+| **Voto difficoltà** | **9**/10 (confermato studente 27/07/2026; atteso era 7–8/10) |
 
 ---
 
@@ -548,6 +548,7 @@ _(Nessuna valutazione ancora — capitolo da aprire.)_
 - **Chiusi:** lacune #33 (vanishing, Q1), #34 (clip bilaterale, TODO 8), #35 (ordine `bce_loss`, TODO 8). #36 (`p-y`) rinforzato con R1–R6, verifica finale al quiz ingresso cap.06.
 - **Non svolti (opzionali, non bloccanti):** mini 1.2.A, R6 punto B, TODO 17 REAL-WORLD, checkpoint C1–C5.
 - **Artefatti:** `figures/05_01_gd_1d.png`, `05_02_lr_confronto.png`, `05_03_gd_2d.png`, `05_06_confronto_lr.png`.
+- **Voto difficoltà: 9/10** (confermato 27/07/2026) — sopra l'atteso (7–8). Scostamento significativo: i risultati sono buoni ma il costo cognitivo è alto. Media corso → ~7.02. **Conseguenza operativa:** il cap.06 va spezzato in 2–3 sessioni, con stop obbligatorio dopo la sezione 2 (backward step-by-step) nella prima.
 
 ---
 
