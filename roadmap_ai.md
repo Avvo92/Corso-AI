@@ -6,7 +6,12 @@
 > **Profilo di arrivo**: professionista che sa collegare LLM, RAG e agenti a prodotti web reali —
 > il profilo più ricercato nel mercato tech italiano ed europeo nel 2026.
 >
-> **Ultimo aggiornamento**: 22/02/2026 (integrazione obiettivo broker / MVP vendibile: § Modulo 10)
+> **Ultimo aggiornamento**: 28/07/2026 — **revisione di allineamento al mercato**. Verificata contro le roadmap
+> AI Engineer 2026 pubbliche, lo stato dei framework per agenti, il fine-tuning e i dati occupazionali.
+> Modifiche principali: nuovo capitolo **Context Engineering** (M6-10), strato **multi-provider** e decisione
+> **contesto lungo vs RAG** (M5), reranking e pgvector (M6), sicurezza MCP (M7), DPO/GRPO/RFT (M8),
+> sezione mercato riscritta con dati 2026 e forbici salariali italiane.
+> Revisione precedente: 22/02/2026 (integrazione obiettivo broker / MVP vendibile: § Modulo 10).
 
 ---
 
@@ -47,7 +52,12 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | **5** | M8 — Fine-Tuning + M9 — MLOps | Pipeline produzione completa |
 | **6** | M10 — Progetto Finale | Prodotto full-stack deployato + portfolio completo |
 
-**Totale**: ~6 mesi → profilo AI Engineer completo con 8 progetti deployati.
+**Totale**: **6-9 mesi** → profilo AI Engineer completo con 8 progetti deployati.
+
+> **Nota sulla timeline (rev. 28/07/2026)**: i 6 mesi restano il piano "a pieno ritmo". Le roadmap indipendenti
+> 2026 indicano 6-12 mesi (8-12 per chi parte da zero; tu parti da sviluppatore web, quindi nella fascia bassa).
+> Il ritmo reale dei primi 3 moduli suggerisce **8-9 mesi** come previsione onesta. Non è un problema:
+> il vincolo vero è arrivare ai moduli M5-M7 (LLM, RAG, agenti) con basi solide, non arrivarci in fretta.
 
 ---
 
@@ -161,6 +171,14 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 **Tempo**: 3-4 settimane (post split: il blocco matematico 03-06 va piu' graduale, ma ogni sotto-capitolo e' piu' "digeribile").
 
+> **Nota di calibrazione (28/07/2026)**: nessun colloquio chiedera' mai di scrivere la backpropagation a mano.
+> Le roadmap 2026 collocano la matematica alla voce "minimo indispensabile": algebra lineare per gli embedding,
+> probabilita' per temperature e sampling, gradienti per l'**intuizione** sulla backprop. Il blocco 03-06 e'
+> dentro questo perimetro — serve a rendere comprensibili M4 (attention) e M8 (LoRA) — ma e' il tratto del corso
+> con il ritorno diretto sul mercato piu' basso. Regola operativa: **capire, non padroneggiare**. Se un
+> sotto-capitolo costa piu' di ~1 settimana, chiudere con quello che si e' capito e proseguire: i concetti
+> tornano in forma applicata nel M7 (PyTorch) dove autograd calcola i gradienti al posto tuo.
+
 ---
 
 ## Modulo 4 — NLP, Embeddings & Transformers
@@ -193,26 +211,32 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 | # | File | Argomento | Perché serve |
 |---|------|-----------|-------------|
-| 01 | `01_api_openai.py` | Setup, autenticazione, chat completions, modelli | La base di tutto |
+| 01 | `01_api_llm.py` | Setup, autenticazione, chat completions, modelli | La base di tutto |
 | 02 | `02_prompt_engineering.py` | Zero-shot, few-shot, chain-of-thought, delimitatori | Skill #2 globale |
 | 03 | `03_structured_output_pydantic.py` | Structured Outputs + Pydantic: risposte JSON con schema validato | Elimina il 90% dei bug in produzione |
 | 04 | `04_function_calling.py` | L'LLM "chiama" le tue funzioni Python | Ponte tra linguaggio naturale e codice |
 | 05 | `05_streaming_errori.py` | Streaming risposte + gestione errori + rate limiting | UX reattiva + robustezza |
-| 06 | `06_ollama_modelli_locali.py` | Ollama + modelli open-source: deployment locale, API vs locale | Strategia costi + privacy |
-| 07 | `07_multimodale_vision.py` | Inviare immagini all'LLM (GPT-4o Vision) | Trend in crescita — testo + visione |
-| 08 | `08_costi_caching.py` | Scelta modello, caching, batching, semantic caching (concetto) | Costi esplodono senza ottimizzazione |
-| 09 | `09_sicurezza_ai.py` | Prompt injection, input sanitization, guardrails, content filtering | Non negoziabile in produzione |
-| 10 | `10_progetto_assistente.py` | Progetto: assistente e-commerce con function calling + Streamlit | Portfolio piece #4 |
+| 06 | `06_multi_provider_litellm.py` | **NUOVO** — OpenAI vs Anthropic vs Gemini: differenze reali (streaming, rate limit, contesto, multimodale) + **LiteLLM** come strato unificato + fallback tra provider | Le roadmap 2026 danno per scontato il multi-provider. Scrivere codice legato a un solo fornitore e' debito tecnico |
+| 07 | `07_ollama_modelli_locali.py` | Ollama + modelli open-source: deployment locale, API vs locale | Strategia costi + privacy |
+| 08 | `08_multimodale_vision.py` | Inviare immagini all'LLM (vision) | Trend in crescita — testo + visione |
+| 09 | `09_contesto_lungo_vs_rag.py` | **NUOVO** — finestre da 1-2M token: quando il contesto lungo basta e RAG e' overhead. **Prompt caching** lato provider (fino a ~90% di risparmio sulle parti fisse del prompt). Framework di decisione con calcolo costi | E' la prima decisione architetturale del 2026, e va presa **prima** di costruire un RAG. Prerequisito consapevole del M6 |
+| 10 | `10_costi_caching.py` | Scelta modello, batching, semantic caching (concetto), tracciamento costi | Costi esplodono senza ottimizzazione |
+| 11 | `11_sicurezza_ai.py` | Prompt injection, input sanitization, guardrails, content filtering | Non negoziabile in produzione |
+| 12 | `12_progetto_assistente.py` | Progetto: assistente e-commerce con function calling + Streamlit | Portfolio piece #4 |
 
-**Librerie**: openai, pydantic-ai, ollama
+**Librerie**: openai, anthropic, google-genai, litellm, pydantic-ai, ollama
+
+> **Perche' 12 capitoli invece di 10 (rev. 28/07/2026)**: i capitoli 06 e 09 sono aggiunte della revisione di
+> allineamento. Il vecchio `01_api_openai.py` diventa `01_api_llm.py` perche' il corso non deve legarsi a un
+> singolo fornitore: le roadmap 2026 elencano tutte OpenAI + Anthropic + Gemini + un layer unificato.
 
 **Piattaforma**: CPU locale. Ollama con modelli fino a 3B parametri (Phi-3 Mini, Qwen2) per esercizi gratuiti + API OpenAI per esercizi che richiedono qualita superiore.
 
 **Demo di modulo**: assistente AI e-commerce con function calling per cercare prodotti, controllare stock, calcolare preventivi — risposte in streaming.
 
-**Analogie ponte**: Function calling → API REST endpoint (l'LLM fa la richiesta). Structured output → validazione form. Prompt → query SQL (istruisci il "database" a restituire ciò che vuoi).
+**Analogie ponte**: Function calling → API REST endpoint (l'LLM fa la richiesta). Structured output → validazione form. Prompt → query SQL (istruisci il "database" a restituire ciò che vuoi). LiteLLM → un ORM (Eloquent) che parla con MySQL o PostgreSQL senza cambiare il tuo codice. Prompt caching → cache HTTP: la parte che non cambia non la ripaghi.
 
-**Tempo**: 2-3 settimane
+**Tempo**: 3 settimane (era 2-3, +2 capitoli)
 
 ---
 
@@ -225,23 +249,35 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | 01 | `01_perche_rag.py` | Limiti degli LLM: conoscenza ferma, allucinazioni, niente dati privati | Il "problema" che RAG risolve |
 | 02 | `02_document_loading.py` | Caricare PDF, CSV, Markdown, pagine web | L'input del sistema |
 | 03 | `03_chunking_strategies.py` | Dimensione fissa, ricorsivo, semantico | La qualità del RAG dipende all'80% dal chunking |
-| 04 | `04_chromadb_vector_store.py` | ChromaDB: collection, inserimento, query, metadata filtering | Lo storage degli embedding |
+| 04 | `04_vector_store.py` | ChromaDB: collection, inserimento, query, metadata filtering. **+ pgvector**: la stessa cosa dentro PostgreSQL, con nota su quando si sceglie l'uno o l'altro | Lo storage degli embedding |
 | 05 | `05_pipeline_completo.py` | Query → embedding → retrieval → prompt augmentation → LLM → risposta | Architettura end-to-end |
 | 06 | `06_langchain_basics.py` | LangChain: chain, retriever, prompt template, output parser | Il framework standard per RAG |
-| 07 | `07_hybrid_search.py` | Ricerca semantica + keyword (BM25) combinati | Migliora la qualità del retrieval |
-| 08 | `08_ragas_evaluation.py` | RAGAS: faithfulness, answer relevancy, context precision | 65% delle app LLM falliscono senza valutazione |
-| 09 | `09_langsmith_observability.py` | LangSmith: tracing, debugging, monitoraggio pipeline | Sapere PERCHÉ il RAG ha risposto male |
-| 10 | `10_progetto_rag.py` | Progetto: assistente documentale RAG + Streamlit | Portfolio piece #5 |
+| 07 | `07_hybrid_search_reranking.py` | Ricerca semantica + keyword (BM25) + **reranking** (un secondo modello riordina i candidati per pertinenza) | La formula 2026 e' "vettoriale + BM25 + riordino": fermarsi ai primi due lascia qualita' sul tavolo |
+| 08 | `08_ragas_evaluation.py` | RAGAS: faithfulness, answer relevancy, context precision. **+ DeepEval**: le stesse metriche dentro pytest come test bloccanti in CI | 65% delle app LLM falliscono senza valutazione |
+| 09 | `09_observability.py` | Tracing e debugging della pipeline: **LangSmith** (nativo LangChain) e **Langfuse** (open source, self-hosted) | Sapere PERCHÉ il RAG ha risposto male |
+| 10 | `10_context_engineering.py` | **NUOVO** — budget della finestra di contesto; **compaction/compressione** della cronologia; **memoria persistente vs retrieval** (non sono la stessa cosa); progressive disclosure degli strumenti; routing verso la fonte giusta | Disciplina emersa nel 2025-26 e oggi considerata **il** mestiere dell'AI Engineer. Riduzioni di token del 60-80% documentate. Gartner: "foundational" entro 18 mesi |
+| 11 | `11_progetto_rag.py` | Progetto: assistente documentale RAG + Streamlit | Portfolio piece #5 |
 
-**Librerie**: langchain, langchain-community, chromadb, ragas, langsmith
+**Librerie**: langchain, langchain-community, chromadb, pgvector, ragas, deepeval, langsmith, langfuse
+
+> **Il capitolo 10 e' l'aggiunta piu' importante di questa revisione (28/07/2026).** Il corso aveva prompt
+> engineering (M5-02) e RAG (M6-01/09), ma non lo strato intermedio: **cosa entra nella finestra di contesto,
+> cosa viene compresso e cosa viene buttato**. Due errori che le fonti 2026 segnalano come i piu' frequenti e
+> che il capitolo deve chiudere esplicitamente:
+> 1. **Usare RAG come memoria.** RAG e' recupero *senza stato* da un corpus; la memoria e' persistenza *con
+>    stato* tra sessioni. I sistemi in produzione usano entrambe, alimentate da fonti diverse.
+> 2. **Compattare il contesto riscrivendolo con l'LLM.** La versione ingenua della compressione introduce
+>    allucinazioni: si riassume cio' che il modello ha gia' frainteso.
 
 **Demo di modulo**: assistente documentale che risponde a domande su una knowledge base con metriche di qualità visibili.
 
 **Principio "concetti prima, framework dopo"**: il file 05 (pipeline completo) costruisce un RAG da zero con puro Python + ChromaDB — senza LangChain. Solo dal file 06 si introduce LangChain come astrazione. Così se LangChain cambia API (è già successo 3 volte in 2 anni), i concetti restano.
 
-**Analogie ponte**: Vector DB → database SQL, ma cerca per significato. Chunking → paginazione API. RAG pipeline → middleware Laravel (intercetta, arricchisce, passa al controller).
+**Analogie ponte**: Vector DB → database SQL, ma cerca per significato. Chunking → paginazione API. RAG pipeline → middleware Laravel (intercetta, arricchisce, passa al controller). Reranking → ordinamento dei risultati di ricerca per rilevanza dopo la query. Context engineering → decidere cosa mettere nel bagaglio a mano quando il peso è limitato: RAG ti dice cosa esiste, il context engineering decide cosa parte.
 
-**Tempo**: 2-3 settimane
+**Tempo**: 3 settimane (era 2-3, +1 capitolo)
+
+**Nota pgvector (rev. 28/07/2026)**: Chroma resta la scelta didattica giusta — si installa con un `pip install`, gira dentro il processo, e sotto i 5 milioni di vettori è produzione-ready. Ma quando hai già PostgreSQL in stack (ed è il caso del prodotto M10), **pgvector** è il default di produzione 2026: vettori e dati relazionali nella stessa tabella, stessa transazione, filtri in SQL, nessun servizio in più da monitorare. Il capitolo 04 mostra entrambi e la regola di scelta.
 
 ---
 
@@ -254,18 +290,22 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | 01 | `01_agenti_vs_workflow.py` | Cos'è un agente vs un workflow (collega autonomo vs checklist) | Framework mentale |
 | 02 | `02_langgraph_intro.py` | LangGraph: grafi, nodi, edge, stato, conditional routing | Framework standard per agenti |
 | 03 | `03_tool_use.py` | Dare all'agente strumenti (API, database, file, web search) | L'agente diventa utile quando agisce nel mondo reale |
-| 04 | `04_memoria_stato.py` | Agente con memoria: stato persistente, contesto tra interazioni | Conversazioni che "ricordano" |
-| 05 | `05_pattern_avanzati.py` | ReAct, Plan-and-Execute, Reflection | I pattern usati in produzione |
-| 06 | `06_multi_agent.py` | Agenti che collaborano (intro a CrewAI) | Sistemi complessi con agenti specializzati |
-| 07 | `07_mcp_server.py` | MCP: come funziona + costruire un MCP server custom | Capisci Cursor + sai estenderlo |
-| 08 | `08_agentic_rag.py` | RAG dove l'agente decide QUANDO e COME cercare | Evoluzione del RAG classico |
+| 04 | `04_memoria_stato.py` | Agente con memoria: stato persistente, contesto tra interazioni. **Distinzione esplicita memoria vs RAG** (ripresa da M6-10): recupero senza stato ≠ persistenza tra sessioni | Conversazioni che "ricordano" — e l'errore architetturale piu' comune del 2026 |
+| 05 | `05_agentic_rag.py` | RAG dove l'agente decide QUANDO, DOVE e QUANTE VOLTE cercare: ciclo di recupero invece di pipeline fissa, riformulazione della query, iterazione fino a sufficienza | **Spostato dal 08 al 05 (rev. 28/07/2026)**: nel 2026 non e' piu' l'evoluzione avanzata, e' il pattern predefinito. Va visto prima dei pattern generali, non dopo |
+| 06 | `06_pattern_avanzati.py` | ReAct, Plan-and-Execute, Reflection | I pattern usati in produzione |
+| 07 | `07_multi_agent.py` | Agenti che collaborano (intro a CrewAI) | Sistemi complessi con agenti specializzati |
+| 08 | `08_mcp_server.py` | MCP: come funziona + costruire un MCP server custom + **sicurezza MCP** (tool poisoning, prompt injection via descrizione degli strumenti, OAuth 2.1, governo del registry) | Capisci Cursor + sai estenderlo. La parte sicurezza e' il rischio piu' segnalato e meno mitigato del 2026 |
 | 09 | `09_progetto_agente.py` | Progetto: agente di ricerca e analisi + Streamlit | Portfolio piece #6 |
 
 **Librerie**: langgraph, langchain, crewai
 
 **Demo di modulo**: agente che cerca informazioni, le analizza, e produce un report strutturato con fonti.
 
-**Principio "concetti prima, framework dopo"**: il file 01-03 costruiscono un agente con puro Python (loop, tool use manuale, stato). Solo dal file 04 si introduce LangGraph come framework. CrewAI (file 06) è introduttivo — il focus è sui concetti di multi-agent, non sul framework specifico.
+**Principio "concetti prima, framework dopo"**: il file 01-03 costruiscono un agente con puro Python (loop, tool use manuale, stato). Solo dal file 04 si introduce LangGraph come framework. CrewAI (file 07) è introduttivo — il focus è sui concetti di multi-agent, non sul framework specifico.
+
+**Verifica framework (rev. 28/07/2026)**: LangGraph è confermato come lo standard 2026 per agenti con stato, cicli e human-in-the-loop, ed è la scelta della stessa squadra che ha fatto LangChain. Le critiche ricorrenti a LangChain — documentazione frammentata tra v0 e v1, stack di chiamate profondi, difficoltà di debug — sono precisamente il motivo per cui il principio "concetti prima, framework dopo" resta la difesa giusta. Alternative da conoscere di nome per i colloqui, senza studiarle: **Pydantic AI** (agenti con tipi verificati), **OpenAI Agents SDK** e **Claude Agent SDK** (nativi di un singolo fornitore), **LlamaIndex Workflows** (quando il retrieval domina), **smolagents** (agenti che scrivono ed eseguono Python).
+
+**Nota MCP (rev. 28/07/2026)**: la scommessa sul capitolo MCP ha pagato. Da dicembre 2025 il protocollo è governato dalla **Agentic AI Foundation** della Linux Foundation (co-fondatori Anthropic, Block, OpenAI; membri platinum AWS, Google, Microsoft, Cloudflare, Bloomberg), conta oltre 10.000 server pubblici e ~97 milioni di download mensili degli SDK, ed è supportato nativamente da ChatGPT, Claude, Gemini, Microsoft Copilot, VS Code e Cursor. Non è più una curiosità: è la via di integrazione attesa.
 
 **Analogie ponte**: Agente → collega junior che segue istruzioni ma decide come. LangGraph → state machine. MCP → API REST che Cursor usa per parlare con i tuoi strumenti.
 
@@ -279,15 +319,23 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 | # | File | Argomento | Perché serve |
 |---|------|-----------|-------------|
-| 01 | `01_quando_fare_cosa.py` | Fine-tuning vs RAG vs prompt engineering — decision framework | La domanda da colloquio #1 |
+| 01 | `01_quando_fare_cosa.py` | Fine-tuning vs RAG vs prompt engineering — decision framework. **+ secondo livello di decisione**: SFT vs DPO vs GRPO/RFT, scelto in base ai dati che hai (output etichettati → SFT; coppie di preferenze → DPO; solo pollice su/giù → KTO; ricompensa verificabile come matematica/codice/formato → GRPO o RFT) | La domanda da colloquio #1 — e nel 2026 la risposta ha due livelli, non uno |
 | 02 | `02_preparazione_dataset.py` | Formato, pulizia, bilanciamento, qualità dati | "Garbage in, garbage out" |
 | 03 | `03_lora_spiegato.py` | LoRA: cos'è e perché funziona (aggiungere una stanza, non ristrutturare) | 99% riduzione parametri |
 | 04 | `04_qlora_pratico.py` | QLoRA: fine-tuning su hardware consumer (6-10GB VRAM) | Democratizza il fine-tuning |
-| 05 | `05_training_peft.py` | Training con PEFT + Transformers + bitsandbytes | Hands-on completo |
+| 05 | `05_training_peft.py` | Training con PEFT + TRL + bitsandbytes + **Unsloth** (rende il training fattibile su GPU piccole: memoria ridotta e training piu' veloce a parita' di hardware) | Hands-on completo — e Unsloth e' cio' che rende il capitolo eseguibile sulla GPU gratuita di Colab |
 | 06 | `06_valutazione_merge.py` | Valutazione modello fine-tunato + merge adapter | Verificare che il fine-tuning funziona |
 | 07 | `07_progetto_finetuning.py` | Progetto: modello per descrizioni e-commerce + demo comparativa | Portfolio piece #7 |
 
-**Librerie**: peft, bitsandbytes, trl, transformers, datasets
+**Librerie**: peft, bitsandbytes, trl, unsloth, transformers, datasets
+
+> **Verifica 2026 (28/07/2026)**: LoRA/QLoRA restano dominanti — circa il **62%** dei progetti di fine-tuning usa
+> metodi ad adattatori, e il full fine-tuning e' ormai riservato ai laboratori con cluster. Il modulo e' centrato.
+> Sigle da conoscere almeno di nome, perche' compaiono nei colloqui: **DPO** (~38% dei progetti, allineamento da
+> coppie di preferenze senza reward model), **GRPO** (~22% e in crescita rapida, e' la tecnica dietro DeepSeek R1,
+> richiede una ricompensa verificabile), **DoRA** (variante di LoRA con qualita' leggermente superiore a costo
+> simile), **RFT** (reinforcement fine-tuning gestito, sui modelli di ragionamento OpenAI). PPO e RLHF classico
+> sono in calo: DPO e GRPO danno il 90% del beneficio al 10% del costo di ingegneria.
 
 **Piattaforma**: **Google Colab** (GPU gratuita) — QLoRA richiede GPU NVIDIA. Workflow: preparazione dataset in locale → training su Colab → valutazione e demo in locale/HuggingFace Spaces.
 
@@ -308,7 +356,7 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | 01 | `01_async_python.py` | asyncio, async/await in FastAPI, event loop | Prerequisito per servizi AI performanti |
 | 02 | `02_docker_fondamentali.py` | Container, Dockerfile, docker-compose, multi-stage build | Il tuo codice gira ovunque, identico |
 | 03 | `03_containerizzare_ai.py` | FastAPI + modello AI + ChromaDB in container | Stack completo in container |
-| 04 | `04_testing_ai.py` | Unit test, integration test, semantic evaluation, LLM-as-judge | 65% delle app LLM falliscono senza testing |
+| 04 | `04_testing_ai.py` | Unit test, integration test, semantic evaluation, LLM-as-judge. **Architettura a due strati**: valutazione offline che blocca il deploy in CI (DeepEval/RAGAS) + osservabilita' in produzione che traccia il traffico vero (Langfuse/LangSmith) e rimanda i fallimenti reali nel dataset offline | 65% delle app LLM falliscono senza testing. Nel 2026 lo standard non e' "quale strumento" ma "i due strati" |
 | 05 | `05_github_actions_cicd.py` | Build automatica, test, deploy su push | Workflow professionale |
 | 06 | `06_deploy_cloud.py` | Railway/Render/Fly.io (tier gratuiti) | Link live nel CV = 10x un repo statico |
 | 07 | `07_monitoring_logging.py` | Health checks, logging strutturato, alerting | Sapere quando qualcosa si rompe |
@@ -410,10 +458,10 @@ Esercizi allineati alle domande reali dei colloqui AI Engineer 2026 (60%+ GenAI-
 | M2 | "Spiega bias-variance tradeoff", "Cos'è overfitting?", "Che metrica per classificatore sbilanciato?" |
 | M3 | "Spiega backpropagation con parole tue", "Cos'è il transfer learning e quando lo usi?" |
 | M4 | "Cos'è un embedding?", "Come funziona un Transformer ad alto livello?" |
-| M5 | "Progetta un chatbot customer service", "Cos'è il function calling?", "Cos'è il prompt injection?" |
-| M6 | "Progetta un RAG per 10M documenti", "Come valuteresti la qualità del retrieval?" |
-| M7 | "Progetta un agente che gestisce ordini", "Quando workflow vs agente?" |
-| M8 | "Quando fine-tuning vs RAG vs prompt engineering?", "Cos'è LoRA?" |
+| M5 | "Progetta un chatbot customer service", "Cos'è il function calling?", "Cos'è il prompt injection?", "Con una finestra da 1M token, ti serve ancora RAG?" |
+| M6 | "Progetta un RAG per 10M documenti", "Come valuteresti la qualità del retrieval?", "Qual è la differenza tra memoria e retrieval?", "Come riduci i token senza perdere qualità?" |
+| M7 | "Progetta un agente che gestisce ordini", "Quando workflow vs agente?", "Cos'è MCP e che problema risolve?", "Quali rischi di sicurezza introduce un server MCP?" |
+| M8 | "Quando fine-tuning vs RAG vs prompt engineering?", "Cos'è LoRA?", "SFT, DPO o GRPO: come scegli?" |
 | M9 | "Come deployeresti un servizio LLM?", "Come gestisci i costi in produzione?" |
 
 Ogni modulo ha: almeno 2 esercizi `🎯 [COLLOQUIO]` + dal M5 in poi almeno 1 esercizio `📐 [SYSTEM DESIGN]`.
@@ -437,30 +485,79 @@ Ogni modulo ha: almeno 2 esercizi `🎯 [COLLOQUIO]` + dal M5 in poi almeno 1 es
 
 ## Copertura Skill Mercato 2026
 
-| Skill | % job posting | Modulo |
-|-------|--------------|--------|
-| RAG | 74.5% | M6 + M7 |
-| Python | 65.1% | M1 + tutto |
-| Prompt Engineering | #2 globale (+135.8%) | M5 |
-| NLP | +155% | M4 |
-| AI Agents | 31.6%, $10.86B | M7 |
-| LLM Fine-Tuning | $250K-$350K+ | M8 |
-| MLOps / Deploy | 87% modelli falliscono | M9 |
-| Docker | Prerequisito | M9 |
-| AI Security | Crescente | M5 + M9 |
-| Evaluation / Observability | Critica | M6 + M9 |
-| Function calling / Structured output | Standard | M5 |
-| Vector DB / Embeddings | Prerequisito RAG | M4 + M6 |
-| System design AI | Colloqui senior | Trasversale (M5+) |
-| Streaming / Async | Produzione | M5 + M9 |
-| CI/CD | Professionale | M9 |
-| Open-source / Ollama | Strategia costi | M5 |
-| Multimodale | Trend crescita | M5 |
-| Semantic caching | Ottimizzazione | M9 |
-| Full-stack integration | Raro e ricercatissimo | M10 |
-| Portfolio / Demo | Requisito pratico | Trasversale |
+> **Revisione 28/07/2026**: la versione precedente di questa sezione citava percentuali di provenienza 2024-2025
+> ("RAG 74.5% delle job posting", "prompt engineering +135.8%") e forbici salariali **statunitensi**
+> ("$250K-$350K+" per il fine-tuning), fuorvianti per il mercato in cui Gianluca cerchera' lavoro.
+> Sostituite con dati 2026 verificabili e con la fotografia italiana.
 
-**Copertura: 20/20 skill. Zero lacune.**
+### Copertura per skill
+
+| Skill | Stato 2026 | Modulo |
+|-------|-----------|--------|
+| Python (async, type hints, Pydantic) | Non negoziabile in tutte le roadmap | M1 + tutto |
+| API / FastAPI / JSON schema | Non negoziabile | M1 + M9 |
+| Prompt engineering | Base, non piu' differenziante da solo | M5 |
+| **Context engineering** | **La disciplina emergente** — Gartner: "foundational" entro 18 mesi | **M6-10** (nuovo) |
+| RAG | Ancora core, ma nella forma **agentic**, non pipeline fissa | M6 + M7 |
+| Contesto lungo vs RAG + prompt caching | Prima decisione architetturale 2026 | M5-09 (nuovo) |
+| AI Agents / tool use / orchestrazione | Requisito core, non piu' "nice to have" | M7 |
+| MCP | Standard di fatto, governato da Linux Foundation | M7-08 |
+| Evaluation (offline, in CI) | Critica — RAGAS, DeepEval | M6-08 + M9-04 |
+| Observability (produzione) | Critica — LangSmith, Langfuse | M6-09 + M9 |
+| Multi-provider / LiteLLM | Atteso: nessun lock-in su un fornitore | M5-06 (nuovo) |
+| Vector DB / Embeddings | Prerequisito RAG — Chroma per prototipo, **pgvector** in produzione | M4 + M6 |
+| Function calling / Structured output | Standard | M5 |
+| Fine-tuning (LoRA/QLoRA) | ~62% dei progetti; sapere **quando NON farlo** vale piu' del farlo | M8 |
+| Allineamento (DPO / GRPO / RFT) | Da conoscere a livello di decisione | M8-01 |
+| MLOps / Docker / CI-CD / Deploy | Prerequisito professionale | M9 |
+| AI Security (incl. sicurezza MCP) | In crescita, poco presidiata | M5-11 + M7-08 |
+| NLP / Transformer / embeddings | Fondamenta per tutto il resto | M4 |
+| Deep Learning / PyTorch | Utile come intuizione, non come mestiere | M3 |
+| System design AI | Colloqui mid/senior | Trasversale (M5+) |
+| Full-stack integration | Raro e ricercatissimo | M10 |
+| Portfolio / Demo deployate | Requisito pratico | Trasversale |
+
+**Copertura: 22 skill su 22 dopo questa revisione.** Prima della revisione mancavano **context engineering**,
+**multi-provider** e la decisione **contesto lungo vs RAG**: la vecchia dicitura "zero lacune" non era piu' vera.
+
+### Fotografia del mercato (dati 2026)
+
+**Globale** — *PwC AI Jobs Barometer 2026*, oltre 1 miliardo di annunci analizzati in 27 paesi:
+- **+69%** di offerte che richiedono competenze AI rispetto all'anno precedente
+- **+42%** di premio salariale medio rispetto a profili equivalenti senza competenze AI
+- Oltre 400 skill AI distinte mappate: non basta "saper usare un chatbot", serve integrare l'AI nei processi
+  con risultati misurabili
+
+**Italia** — *LinkedIn, gennaio 2026*:
+- **24ª su 27** paesi UE per concentrazione di ingegneri AI: **0,43%** degli iscritti contro una media
+  europea dello **0,90%** (davanti solo a Romania e Croazia)
+- Saldo migratorio **negativo**: -0,21 ingegneri AI ogni 10.000 iscritti. L'Italia perde piu' talenti di
+  quanti ne attragga
+- Tasso di assunzioni complessivo **-30%** rispetto a gennaio 2019 (peggio della media UE, -26%)
+- Gli annunci che richiedono competenze AI sono circa **1,7%** del totale pubblicato
+
+**Come leggere questi due dati insieme**: domanda in crescita rapida su una base ancora piccola, e concorrenza
+interna scarsa. Per chi entra adesso e' piu' opportunita' che ostacolo — ma conviene guardare anche a posizioni
+**remote per aziende estere**, dove finiscono le retribuzioni migliori.
+
+### Forbici salariali italiane (RAL lorda annua, 2026)
+
+| Livello | Esperienza | Range realistico |
+|---------|-----------|------------------|
+| Junior | 0-2 anni | 22.000 - 32.000 € |
+| Mid-level | 3-5 anni | 45.000 - 65.000 € |
+| Senior (specializzato LLM / GenAI) | 6+ anni | 70.000 - 100.000 €+ |
+
+Milano paga il 10-15% sopra la media nazionale. Torino e Bologna sono competitive sull'AI industriale con
+costo della vita migliore.
+
+### Norma UNI 11621-8:2026 — i nomi ufficiali dei ruoli
+
+A inizio 2026 è stata pubblicata la **UNI 11621-8:2026**, primo standard nazionale in Europa che definisce
+**12 profili professionali AI** con competenze e indicatori associati, allineato all'AI Act europeo
+(Regolamento UE 2024/1689). Interessa direttamente la fase CV/colloqui: dà i nomi che le aziende italiane e
+la Pubblica Amministrazione inizieranno a usare negli annunci. Da consultare al M10, quando si costruisce il
+posizionamento professionale.
 
 ---
 

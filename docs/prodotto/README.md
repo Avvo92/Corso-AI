@@ -15,6 +15,12 @@
 | [`ARCHITETTURA_PRODOTTO_DUE_APP.md`](ARCHITETTURA_PRODOTTO_DUE_APP.md) | Piano, gap G1–G11, DoD M10, integrazione §5 |
 | [`PROTOCOLLO_LOOP_ANTAGONISTA_VR.md`](PROTOCOLLO_LOOP_ANTAGONISTA_VR.md) | Ciclo 8 step, evasion, rule discovery |
 
+## Documenti NON canonici (parcheggio)
+
+| Documento | Contenuto |
+|-----------|-----------|
+| [`IDEA_POST_CORSO_MENTOR_ENGINE.md`](IDEA_POST_CORSO_MENTOR_ENGINE.md) | **Post-M10.** Canonizzare in applicativo il sistema di apprendimento del corso. **Non compete con Validator/Replicator**: da riprendere solo a M10 chiuso |
+
 ---
 
 ## Codice
@@ -56,3 +62,4 @@
 | 2026-05-22 | **Fixer controllato** (`controlled_fix`, §3b REPLICATOR): gap G10; bundle + `fix_report`; divieto fix libero su terzi. |
 | 2026-05-22 | **Loop antagonista V↔R:** `PROTOCOLLO_LOOP_ANTAGONISTA_VR.md`; gap G11; esempi `evasion_report` / `rule_candidates`. |
 | 2026-05-22 | **`CANONE_STRESS_TEST_LAB_VR.md`:** Validator solo PDF; Replicator `stress_test` vs `internal`; `metadata_mimic_y`; contraddizioni bundle/metadati risolte. |
+| 2026-07-28 | **Mentor Engine parcheggiato come idea post-M10** (`IDEA_POST_CORSO_MENTOR_ENGINE.md`). Motivo: riusa lo stack del M10 (memoria agente, retrieval, structured output, LLM-as-judge, FastAPI/Docker) quindi costa poco **dopo**, ma aprirlo ora spaccherebbe il focus sul prodotto del corso. Tre nodi aperti: economia dei token per studente, chi scrive i contenuti, prova di efficacia oltre n=1. |

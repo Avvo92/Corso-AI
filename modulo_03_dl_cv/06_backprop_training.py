@@ -482,11 +482,27 @@ b1 = np.zeros(h)
 W2 = rng.standard_normal(size=(h, 1)) * np.sqrt(2/h)
 b2 = np.zeros(1)
 
+result = forward_2layer(
+    X,
+    W1,
+    b1,
+    W2,
+    b2,
+)
+
+print(f"Shape di P: {result[0].shape}")
+print(f"Shape di Z1:{result[1]['Z1'].shape}")
+print(f"Shape di H:{result[1]['H'].shape}")
+print(f"Shape di Z2:{result[1]['Z2'].shape}")
+
+
 # 🔵 MINI-ESERCIZIO INLINE 1.1.B (~3 minuti) — perche' "ravel"?
 # In commento (2 righe): perche' alla fine di forward facciamo
 # sigmoid(Z2).ravel() invece di lasciare Z2 con shape (N, 1)?
 # Suggerimento: pensa a come usiamo P per BCE e accuracy - serve shape (N,).
 # TUO COMMENTO QUI:
+
+# ravel viene utilizzato perchè la funzione bce_loss ha bisogno di un vettore 1D per il suo funzionamento, così come l'accuracy score.
 
 
 # 1.2 - PERCHE' SERVE LA CACHE (intuizione)
@@ -499,6 +515,7 @@ b2 = np.zeros(1)
 #   - meglio MEMORIZZARE durante forward (1 sola volta) che ricalcolare.
 # TUO COMMENTO QUI:
 
+# Da P posso ricavare Z2 invertendo la sigmoide tramite la formula np.log(p / (1 - p)). Ma non potrei risalire ad H perche essendo Z2 il risultato del prodotto matriciale tra H e W2 + b2, perchè il prodotto matriciale non è univocamente reversibile (visto che infiniti fattori possono dare lo stesso risultato). L'unico modo è memorizzare ogni layer nella fase di forward, così da non aver bisogno di calcolarlo.
 
 # ==========================================================================
 # SEZIONE 2 - BACKWARD step-by-step
@@ -530,6 +547,15 @@ b2 = np.zeros(1)
 # = [-0.033, 0.133, -0.1]. Reshape -> (3, 1).
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 2.1.A\n")
+
+N = 3.0
+P = np.array([0.9, 0.4, 0.7], dtype=float)
+y = np.array([1, 0, 1], dtype=float)
+
+dL_dZ2 = ((P - y) / N).reshape(-1, 1)
+print(dL_dZ2.shape)
+print(dL_dZ2)
 
 # 2.2 - STEP 2: dL/dW2 e dL/db2 (dal dL/dZ2)
 #
@@ -551,6 +577,15 @@ b2 = np.zeros(1)
 # Stampa shape e valori.
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 2.2\n")
+
+H = np.array([[1.0, 0.0], [2.0, 1.0], [0.0, 3.0]])
+dL_dW2 = H.T @ dL_dZ2
+dL_db2 = dL_dZ2.sum(axis=0)
+print(dL_dW2.shape)
+print(dL_dW2)
+print(dL_db2.shape)
+print(dL_db2)
 
 # 2.3 - STEP 3: dL/dH (dal dL/dZ2)
 #
@@ -566,6 +601,13 @@ b2 = np.zeros(1)
 # Stampa shape e valori.
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 2.3.A\n")
+
+W2 = np.array([[0.5], [1.0]])
+
+dL_dH = dL_dZ2 @ W2.T
+print(dL_dH.shape)
+print(dL_dH)
 
 # 2.4 - STEP 4: dL/dZ1 (dal dL/dH, attraverso la ReLU)
 #
@@ -573,7 +615,6 @@ b2 = np.zeros(1)
 #   dL/dZ1 = dL/dH * derivata_relu(Z1)       elementwise   shape (N, h)
 #
 # La derivata di ReLU "spegne" i neuroni con Z1 <= 0 (dying ReLU).
-
 
 # --------------------------------------------------------------------------
 # 🔁 RINFORZO MIRATO — `derivata_relu` in z = 0 (lacuna #37)
@@ -604,6 +645,20 @@ b2 = np.zeros(1)
 #    per TUTTE le pratiche del batch? (collegalo a "dying ReLU")
 # TUO CODICE / COMMENTO QUI:
 
+# Succede che il neurone essendo spento non passa il segnale all'indietro e quindi il peso collegato a quel logit non viene aggiornato.
+
+def my_derivata_relu(
+    z: NDArray[np.float64] | float) -> NDArray[np.float64] | float:
+    return (z > 0).astype(int)
+
+arr_prova = np.array([-2.0, -0.0, 0.0, 1e-9, 3.0], dtype=float)
+assert np.allclose(derivata_relu(arr_prova), my_derivata_relu(arr_prova)), "Ops qualcosa è andato storto!"
+
+previsione = 2.0
+
+assert np.isclose(derivata_relu(arr_prova).mean(), previsione / len(arr_prova)), "Ops qualcosa è andato storto!"
+
+print(derivata_relu(arr_prova))
 
 # 🔵 MINI-ESERCIZIO INLINE 2.4.A (~5 minuti) — calcola dL/dZ1
 # Aggiungi:
@@ -613,6 +668,12 @@ b2 = np.zeros(1)
 # Stampa shape e valori. Cosa noti per gli elementi con Z1 < 0? (azzerati)
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 2.4.A\n")
+
+Z1 = np.array([[ 1.0, -1.0], [2.0, 1.0], [-3.0, 3.0]])
+dL_dZ1 = dL_dH * derivata_relu(Z1)
+print(dL_dZ1.shape)
+print(dL_dZ1)
 
 # 2.5 - STEP 5: dL/dW1 e dL/db1 (dal dL/dZ1)
 #
@@ -629,6 +690,17 @@ b2 = np.zeros(1)
 # Stampa shape.
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 2.5\n")
+
+X = np.array([[1.0, 2.0, 3.0], [0.0, 1.0, 0.0], [1.0, -1.0, 1.0]])
+
+dL_dW1 = X.T @ dL_dZ1
+dL_db1 = dL_dZ1.sum(axis=0)
+
+print(dL_dW1.shape)
+print(dL_dW1)
+print(dL_db1.shape)
+print(dL_db1)
 
 # 2.6 - METTI INSIEME: funzione `backward_2layer`
 
@@ -692,6 +764,22 @@ def backward_2layer(
 #   grad_b2.shape == (1,)
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 2.6.A\n")
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal((10, 5))
+y = rng.integers(0, 2, size=10).astype(float)
+W1 = he_init(5, 8, seed=0); b1 = np.zeros(8)
+W2 = he_init(8, 1, seed=1); b2 = np.zeros(1)
+
+P, cache = forward_2layer(X, W1, b1, W2, b2)
+
+grads = backward_2layer(cache, y, W2)
+
+assert np.allclose(grads['grad_W1'].shape, (5, 8)), "Ops, qualcosa è andato storto!"
+assert np.allclose(grads['grad_b1'].shape, (8, )), "Ops, qualcosa è andato storto!"
+assert np.allclose(grads['grad_W2'].shape, (8, 1)), "Ops, qualcosa è andato storto!"
+assert np.allclose(grads['grad_b2'].shape, (1, )), "Ops, qualcosa è andato storto!"
 
 # ==========================================================================
 # SEZIONE 3 - SANITY CHECK numerico vs analitico
@@ -708,6 +796,217 @@ def backward_2layer(
 # (gradiente_numerico). Devono coincidere a meno di ~1e-5.
 #
 # Se non coincidono: c'e' un bug.
+
+# ==========================================================================
+# 🧠 [RETRIEVAL] — ricrea forward, backward e sanity check (~25-40 min)
+# ==========================================================================
+#
+# PRIMA di fare il mini 3.0.A: riscrivi da zero le tre funzioni qui sotto.
+# REGOLA DURA: NON copiare da sez.1-2 / dalla `sanity_check_grad` piu' sotto.
+# Scrolla SU solo se sei bloccato da 10+ minuti (scala progressiva: prova
+# prima a ricordare le shape e i 5 step del backward).
+#
+# Puoi riusare: `relu`, `sigmoid`, `derivata_relu`, `bce_loss`,
+# `gradiente_numerico`, `he_init` (gia' definite in cima al file).
+#
+# Dopo aver scritto, esegui il blocco di VERIFICA in fondo: deve passare.
+# TUO CODICE QUI:
+
+def my_forward_2layer(
+    X: NDArray[np.float64],
+    W1: NDArray[np.float64],
+    b1: NDArray[np.float64],
+    W2: NDArray[np.float64],
+    b2: NDArray[np.float64],
+) -> tuple[NDArray[np.float64], dict[str, NDArray[np.float64]]]:
+    Z1 = X @ W1 + b1
+    H = relu(Z1)
+    Z2 = H @ W2 + b2
+    P = sigmoid(Z2).ravel()
+    cache = {
+        "X": X,
+        "Z1": Z1,
+        "H": H,
+        "Z2": Z2,
+        "P": P
+    }
+    return P, cache
+
+def my_backward_2layer(
+    cache: dict[str, NDArray[np.float64]],
+    y: NDArray[np.int64] | NDArray[np.float64],
+    W2: NDArray[np.float64],
+) -> dict[str, NDArray[np.float64]]:
+    
+    dZ2 = (cache['P'] - y).reshape(-1, 1) / cache['X'].shape[0]
+    grad_W2 = cache['H'].T @ dZ2
+    grad_b2 = dZ2.sum(axis=0)
+    d_H = dZ2 @ W2.T
+    d_Z1 = derivata_relu(cache['Z1']) * d_H
+    grad_W1 = cache['X'].T @ d_Z1
+    grad_b1 = d_Z1.sum(axis=0)
+    
+    return {
+        "grad_W1": grad_W1,
+        "grad_b1": grad_b1,
+        "grad_W2": grad_W2,
+        "grad_b2": grad_b2
+    }
+
+def my_sanity_check_grad(
+    X: NDArray[np.float64],
+    y: NDArray[np.int64] | NDArray[np.float64],
+    W1: NDArray[np.float64],
+    b1: NDArray[np.float64],
+    W2: NDArray[np.float64],
+    b2: NDArray[np.float64],
+    h: float = 1e-6,
+    rtol: float = 1e-4,
+) -> dict[str, float]:
+    
+    def loss_di_params(W1v, b1v, W2v, b2v):
+        return bce_loss(my_forward_2layer(X, W1v, b1v, W2v, b2v)[0], y)
+    
+    _, cache = my_forward_2layer(X, W1, b1, W2, b2)
+    grads_ana = my_backward_2layer(cache, y, W2)
+    
+    grad_num_W1 = gradiente_numerico(
+        lambda W1_var: loss_di_params(W1_var, b1, W2, b2),
+        W1
+    )
+    W1_max_diff = float(np.abs(grad_num_W1 - grads_ana['grad_W1']).max())
+    
+    grad_num_b1 = gradiente_numerico(
+        lambda b1_var: loss_di_params(W1, b1_var, W2, b2),
+        b1
+    )
+    b1_max_diff = float(np.abs(grad_num_b1 - grads_ana['grad_b1']).max())
+    
+    grad_num_W2 = gradiente_numerico(
+        lambda W2_var: loss_di_params(W1, b1, W2_var, b2),
+        W2
+    )
+    W2_max_diff = float(np.abs(grad_num_W2 - grads_ana['grad_W2']).max())
+    
+    grad_num_b2 = gradiente_numerico(
+        lambda b2_var: loss_di_params(W1, b1, W2, b2_var),
+        b2
+    )
+    b2_max_diff = float(np.abs(grad_num_b2 - grads_ana['grad_b2']).max())
+    
+    return {
+        "W1_max_diff": W1_max_diff,
+        "b1_max_diff": b1_max_diff,
+        "W2_max_diff": W2_max_diff,
+        "b2_max_diff": b2_max_diff,
+        "ok": all(x < rtol for x in (W1_max_diff, b1_max_diff, W2_max_diff, b2_max_diff)),
+    }
+    
+# --- VERIFICA RETRIEVAL (esegui quando hai finito le tre funzioni) ---
+print("\n[RETRIEVAL] verifica my_forward / my_backward / my_sanity_check\n")
+_rng = np.random.default_rng(0)
+_X = _rng.standard_normal((10, 5))
+_y = _rng.integers(0, 2, size=10).astype(float)
+_W1 = he_init(5, 8, seed=0); _b1 = np.zeros(8)
+_W2 = he_init(8, 1, seed=1); _b2 = np.zeros(1)
+
+_P_ref, _c_ref = forward_2layer(_X, _W1, _b1, _W2, _b2)
+_P_my, _c_my = my_forward_2layer(_X, _W1, _b1, _W2, _b2)
+assert np.allclose(_P_my, _P_ref), "my_forward: P diversa dall'originale"
+for _k in ("X", "Z1", "H", "Z2", "P"):
+    assert _k in _c_my, f"my_forward: manca cache['{_k}']"
+    assert np.allclose(_c_my[_k], _c_ref[_k]), f"my_forward: cache['{_k}'] diversa"
+
+_g_ref = backward_2layer(_c_ref, _y, _W2)
+_g_my = my_backward_2layer(_c_my, _y, _W2)
+for _k in ("grad_W1", "grad_b1", "grad_W2", "grad_b2"):
+    assert np.allclose(_g_my[_k], _g_ref[_k], atol=1e-10), (
+        f"my_backward: {_k} diversa dall'originale"
+    )
+
+_sc = my_sanity_check_grad(_X, _y, _W1, _b1, _W2, _b2)
+print(_sc)
+assert _sc["ok"], "my_sanity_check_grad: ok=False — c'e' un bug"
+print("[RETRIEVAL] OK — puoi passare al mini 3.0.A")
+
+
+# 🔵 MINI-ESERCIZIO INLINE 3.0.A (~8 minuti) — un solo peso, due modi
+# Idea: prima di controllare TUTTI i parametri, verifica UN solo scalare.
+# Se W1[0, 0] torna, la catena verso quel pezzo di W1 e' probabilmente ok.
+#
+# PREREQUISITO consigliato: aver completato il RETRIEVAL qui sopra.
+# (Puoi usare my_forward_2layer / my_backward_2layer oppure le originali.)
+#
+# Setup (puoi riusare variabili del MINI 2.6.A se sono ancora in scope,
+# altrimenti ricrea lo stesso setup con seed 0):
+#   rng = np.random.default_rng(0)
+#   X = rng.standard_normal((10, 5))
+#   y = rng.integers(0, 2, size=10).astype(float)
+#   W1 = he_init(5, 8, seed=0); b1 = np.zeros(8)
+#   W2 = he_init(8, 1, seed=1); b2 = np.zeros(1)
+#
+# Passi:
+# 1) Forward + backward analitico:
+#      P, cache = forward_2layer(X, W1, b1, W2, b2)
+#      grads = backward_2layer(cache, y, W2)
+#      g_ana = float(grads["grad_W1"][0, 0])   # un solo numero
+#
+# 2) Gradiente NUMERICO sullo stesso scalare.
+#    Definisci una loss che dipende SOLO da un vettore 1D di lunghezza 1
+#    (il valore di W1[0,0]), tenendo fissi tutti gli altri pesi:
+#
+#      def loss_solo_w00(w00_vec: NDArray[np.float64]) -> float:
+#          W1_tmp = W1.copy()
+#          W1_tmp[0, 0] = float(w00_vec[0])
+#          P_tmp, _ = forward_2layer(X, W1_tmp, b1, W2, b2)
+#          return bce_loss(P_tmp, y)
+#
+#      g_num = float(
+#          gradiente_numerico(loss_solo_w00, np.array([W1[0, 0]]))[0]
+#      )
+#
+# 3) Confronta:
+#      print("analitico:", g_ana)
+#      print("numerico: ", g_num)
+#      print("|diff|:   ", abs(g_ana - g_num))
+#      assert abs(g_ana - g_num) < 1e-5, "Sanity check fallito su W1[0,0]"
+#
+# Domanda in commento (1 riga): se la |diff| fosse ~0.5 invece di ~1e-8,
+# quale tipo di bug cercheresti PRIMA nel backward? (segno / @ vs * / shape)
+# TUO CODICE / COMMENTO QUI:
+
+print("\nMini-esercizio 3.0.A\n")
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal((10, 5))
+y = rng.integers(0, 2, size=10).astype(float)
+W1 = he_init(5, 8, seed=0); b1 = np.zeros(8)
+W2 = he_init(8, 1, seed=1); b2 = np.zeros(1)
+
+P, cache = forward_2layer(
+    X,
+    W1,
+    b1,
+    W2,
+    b2
+)
+
+grads_ana = backward_2layer(cache, y, W2)
+grad_W1_ana = float(grads_ana['grad_W1'][0, 0])
+
+def loss_solo_w00(w00_vec: NDArray[np.float64]) -> float:
+    W1_tmp = W1.copy()
+    W1_tmp[0, 0] = float(w00_vec[0])
+    P_tmp, _ = forward_2layer(X, W1_tmp, b1, W2, b2)
+    return bce_loss(P_tmp, y)
+
+grad_W1_num = float(gradiente_numerico(
+    loss_solo_w00, np.array([W1[0, 0]])
+)[0])
+
+print(grad_W1_ana)
+print(grad_W1_num)
+    
 
 
 # --------------------------------------------------------------------------

@@ -161,11 +161,81 @@
 - Corollario pratico dato in feedback: `dZ2/dH = W2` → **non aggiornare W2 prima di aver calcolato tutti i gradienti** (bug silenzioso: la loss scende comunque, storta).
 - **Valutazione (primo tentativo):** **8/10**.
 
+### 2026-07-28 — Cap.06 Mini 1.1.A (forward + shape stampate)
+
+- Eseguito: `P (10,)`, `Z1 (10,8)`, `H (10,8)`, `Z2 (10,1)` — tutte e quattro come atteso. **Lacuna #41 → 🟢** (conferma dal codice, non a memoria fresca).
+- Setup corretto: `b1`/`b2` come array (`np.zeros(h)`, `np.zeros(1)`); He a mano ok.
+- Stile migliorabile: `P, cache = forward_2layer(...)` invece di `result[0]` / `result[1]` (tuple unpacking più leggibile).
+- **Valutazione (primo tentativo):** **9.5/10**.
+
+### 2026-07-28 — Cap.06 Mini 1.1.B (perché `.ravel()`)
+
+- Direzione corretta: BCE e accuracy vogliono `P` come vettore 1D `(N,)`.
+- **Manca il perché pericoloso**: con `P (N,1)` e `y (N,)`, `P - y` (e le operazioni in BCE) fanno **broadcasting silenzioso** → shape `(N,N)`, loss/metriche sbagliate senza crash. Eco della #41.
+- **Valutazione (primo tentativo):** **8/10**.
+
+### 2026-07-28 — Cap.06 Mini 1.2.A (backward alla cieca / cache)
+
+- **Concetto centrale corretto**: da `P` → `Z2` via logit; da `Z2` **non** si ricostruisce `H` in modo univoco (matmul non invertibile univocamente). Quindi serve la cache del forward.
+- Completo: ha citato sia l'inversione sigmoid sia il prodotto matriciale non reversibile.
+- Minore: anche `Z1`→`H` (ReLU) non è invertibile in modo unico (i negativi diventano 0).
+- **Valutazione (primo tentativo):** **9.5/10**.
+
+### 2026-07-28 — Cap.06 Mini 2.1.A (`dL/dZ2` a mano)
+
+- Shape `(3,1)` e valori `[-0.0333, 0.1333, -0.1]` corretti: `(P-y)/N` + `reshape(-1,1)`.
+- **Naming:** variabile chiamata `Z2` ma è il **gradiente** `dL/dZ2`, non il logit del forward. Confusione pericolosa nel backward (due oggetti diversi con lo stesso nome).
+- **Valutazione (primo tentativo):** **9/10**.
+- *Fix applicato:* rinominato in `dL_dZ2` → **10/10** post-feedback (voto di riferimento resta 9/10).
+
+### 2026-07-28 — Cap.06 Mini 2.2.A (`dL/dW2`, `dL/db2`)
+
+- Shape e valori corretti: `dL_dW2 (2,1) ≈ [[0.233], [-0.167]]`; `dL_db2 (1,) ≈ 0` (somma batch: -0.033+0.133-0.1).
+- Formule giuste: `H.T @ dL_dZ2` e `sum(axis=0)`; naming coerente.
+- Nota: `~1e-17` è rumore float ≈ zero, non un errore.
+- **Valutazione (primo tentativo):** **10/10**.
+
+### 2026-07-28 — Cap.06 Mini 2.3.A (`dL/dH`)
+
+- Shape `(3,2)` e valori corretti: ogni riga = `dL_dZ2[i] * W2.T` (es. riga0 ≈ `[-0.0167, -0.0333]`).
+- Formula `dL_dZ2 @ W2.T` giusta — qui **W2 è un valore moltiplicatore**, non una tappa della catena (eco #39 chiusa).
+- **Valutazione (primo tentativo):** **10/10**.
+
+### 2026-07-28 — Cap.06 🔁 RINFORZO #37 (`derivata_relu` @0 + dying ReLU)
+
+- **Punto 1 ok**: previsione **2** uni su `[-2, -0, 0, 1e-9, 3]` — `z=0` e `-0` → 0 (convenzione corso). `my_derivata_relu` con `z > 0`. **#37 → 🟢**.
+- **Punto 2**: intuizione corretta (niente update se spento su tutto il batch) ma naming sbagliato: non è `Z1 = Z1 - 0*lr`, sono i **pesi/bias** di quel neurone (`W1[:,j]`, `b1[j]`) a restare fermi. Dying ReLU: se resta sempre ≤0, resta bloccato.
+- **Valutazione (primo tentativo):** **8.5/10**.
+- *Fix applicato (commento):* ora parla di segnale all’indietro e pesi non aggiornati. Da precisare: parametri = `W1`/`b1` di quel neurone; condizione “tutto il batch”.
+
+### 2026-07-28 — Cap.06 Mini 2.4.A + 2.5.A (`dL/dZ1`, `dL/dW1`, `dL/db1`)
+
+- **2.4.A**: shape `(3,2)`; elementi con `Z1<0` azzerati (colonna1 riga0, colonna0 riga2) — ReLU gate ok.
+- **2.5.A**: `dL_dW1 (3,2)` e `dL_db1 (2,)` corretti (`X.T @ dL_dZ1`, `sum(axis=0)`). Catena backward mini completa fino a W1/b1.
+- **Valutazione 2.5.A (primo tentativo):** **10/10**.
+
+### 2026-07-28 — Cap.06 Mini 2.6.A (`forward` + `backward_2layer`, shape grads)
+
+- Setup e chiamate corrette; 4 assert sulle shape `(5,8)`, `(8,)`, `(8,1)`, `(1,)` — passano.
+- Minore: per le shape meglio `grads["grad_W1"].shape == (5, 8)` invece di `np.allclose(...)` (allclose è per float; sulle tuple funziona per caso).
+- **Valutazione (primo tentativo):** **9.5/10**.
+
+### 2026-07-28 — Cap.06 🧠 [RETRIEVAL] `my_forward` / `my_backward` / `my_sanity_check` (righe ~799–930)
+
+- **Verifica finale:** assert vs `forward_2layer`/`backward_2layer` OK; `ok=True` con max_diff ~`1e-10` / `1e-11`.
+- **Forward (1° tentativo):** catena e cache ok; mancava `.ravel()` su `P` (eco #41 / mini 1.1.B) → fix immediato.
+- **Backward (1° tentativo):** formula a 5 step presente, ma (1) `P` non dalla cache; (2) `/N` sbagliato due volte (`X[0]` / `len(X[0])` = `d` invece di `shape[0]`); (3) `X.T` invece di `cache["X"].T`. Dopo fix: allineato al ref.
+- **Sanity (1° tentativo, guidato):** confusione `[0]`/`[1]` sulla tupla forward; `W1v` al posto di `W1` per grads ana; `W1.flat()` invece di flatten/reshape — poi versione pulita senza flatten (corretta per questa `gradiente_numerico`).
+- **Valutazione (primo tentativo — aggregato):** **7.5/10**. *Fix applicato: verifica passa (post-feedback OK).*
+- **Pattern / note:** shape `N` vs `d`; accesso cache; indice tupla `(P, cache)`. Pattern #27 non riaperto (nessun `*` vs `@` qui). Domanda laterale dying ReLU / init → intuizione buona (già trattata in #37).
+
 ---
 
 ## Lacune e dubbi ancora aperti
 
-- _(da popolare)_
+- 🔴 #40 Feynman (fine cap. / Q7 saltata)
+- 🔴 Pattern #27 formula→codice
+- (corollario Q4: spento per campione ≠ spento sempre — ancora da tenere a mente nel mini 2.4/2.5)
 
 ---
 
