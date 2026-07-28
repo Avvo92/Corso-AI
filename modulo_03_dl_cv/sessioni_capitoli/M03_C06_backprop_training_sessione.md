@@ -229,6 +229,13 @@
 - **Valutazione (primo tentativo — aggregato):** **7.5/10**. *Fix applicato: verifica passa (post-feedback OK).*
 - **Pattern / note:** shape `N` vs `d`; accesso cache; indice tupla `(P, cache)`. Pattern #27 non riaperto (nessun `*` vs `@` qui). Domanda laterale dying ReLU / init → intuizione buona (già trattata in #37).
 
+### 2026-07-28 — Cap.06 Mini 3.0.A (sanity su un solo peso `W1[0,0]`)
+
+- Setup, `loss_solo_w00`, analitico vs numerico: **assert passa** (`|diff|` reale ~1e-12).
+- Commento diagnostica (`|diff|~0.5` → **segno**): direzione corretta come prima ipotesi; `@` vs `*` di solito crasha o dà errori grossi; shape spesso esplode/NaN.
+- Nota run terminale: stampa `Differenza: 0.044...` = `abs(ana) - num` (con entrambi negativi ≈ 2·|g|), non `abs(ana-num)`. Il check `assert` era comunque ok. Eco Pattern #27 (parentesi / ordine operazioni).
+- **Valutazione (primo tentativo):** **9/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti

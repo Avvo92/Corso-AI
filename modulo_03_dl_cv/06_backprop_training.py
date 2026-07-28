@@ -929,7 +929,6 @@ print(_sc)
 assert _sc["ok"], "my_sanity_check_grad: ok=False — c'e' un bug"
 print("[RETRIEVAL] OK — puoi passare al mini 3.0.A")
 
-
 # 🔵 MINI-ESERCIZIO INLINE 3.0.A (~8 minuti) — un solo peso, due modi
 # Idea: prima di controllare TUTTI i parametri, verifica UN solo scalare.
 # Se W1[0, 0] torna, la catena verso quel pezzo di W1 e' probabilmente ok.
@@ -975,6 +974,8 @@ print("[RETRIEVAL] OK — puoi passare al mini 3.0.A")
 # quale tipo di bug cercheresti PRIMA nel backward? (segno / @ vs * / shape)
 # TUO CODICE / COMMENTO QUI:
 
+# Direi il segno
+
 print("\nMini-esercizio 3.0.A\n")
 
 rng = np.random.default_rng(0)
@@ -1004,10 +1005,11 @@ grad_W1_num = float(gradiente_numerico(
     loss_solo_w00, np.array([W1[0, 0]])
 )[0])
 
-print(grad_W1_ana)
-print(grad_W1_num)
-    
+assert np.abs(grad_W1_ana - grad_W1_num) < 1e-5, "Sanity check fallito su W1[0,0]"
 
+print(f"Gradiente analitico: {grad_W1_ana}")
+print(f"Gradiente numerico: {grad_W1_num}")
+print(f"Differenza: {float(np.abs(grad_W1_ana - grad_W1_num))}") 
 
 # --------------------------------------------------------------------------
 # 🔁 RINFORZO MIRATO — dalla formula al codice senza sbagliare operatore
