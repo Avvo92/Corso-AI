@@ -1708,6 +1708,27 @@ sanity_check_bug = my_sanity_check_grad_bug(
 # Salva loss curve in figures/06_03_loss_lineare.png.
 # TUO CODICE QUI:
 
+print("\nTODO 4\n")
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal(size=(300, 4))
+y = (X[:, 0] - X[:, 1] > 0).astype(float)
+
+result = train_rete_2_layer(
+    X,
+    y,
+    verbose = True
+)
+
+assert result['loss_history'][-1] < 0.2, "Ops, qualcosa non va con la loss" 
+assert result['acc_history'][-1] > 0.95, "Ops, qualcosa non va con l'accuracy"
+
+out_path = os.path.join(os.path.dirname(__file__), "figures", "06_03_loss_lineare.png")
+
+grafico_loss_curve(
+    result,
+    out_path = out_path,
+)
 
 # TODO 5 (15 minuti) — train su CERCHIO (dataset non lineare)
 # Setup:
@@ -1719,6 +1740,35 @@ sanity_check_bug = my_sanity_check_grad_bug(
 # Salva decision boundary in figures/06_04_boundary_cerchio.png.
 # TUO CODICE QUI:
 
+print("\nTODO 5\n")
+
+rng = np.random.default_rng(0)
+X = rng.uniform(-3, 3, size=(400, 2))
+y = (X[:, 0] **2 + X[:, 1]**2 < 4).astype(float)
+
+print(X)
+
+result = train_rete_2_layer(
+    X,
+    y,
+    h = 32,
+    lr = .1,
+    n_epochs = 500
+)
+
+assert result['acc_history'][-1] > 0.95,"Ops, qualcosa è andato storto e l'accuracy non è salita abbastanza!"
+
+out_path = os.path.join(os.path.dirname(__file__), "figures", "06_04_boundary_cerchio.png")
+
+grafico_decision_boundary(
+    X,
+    y,
+    result['W1'],
+    result['b1'],
+    result['W2'],
+    result['b2'],
+    out_path = out_path
+)
 
 # TODO 6 (15 minuti) — effetto della larghezza h
 # Stesso dataset cerchio del TODO 5. Prova h in [2, 4, 8, 16, 32]:
@@ -1728,6 +1778,8 @@ sanity_check_bug = my_sanity_check_grad_bug(
 # Commenta in 2 righe: "la UAT (cap.02 M3) dice che basta h grande;
 # in pratica per cerchio bastano h = ?".
 # TUO CODICE QUI:
+
+
 
 
 # TODO 7 (15 minuti) — refactoring del backward in stile "step rule"

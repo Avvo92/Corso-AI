@@ -291,6 +291,19 @@
 - Manca la verifica positiva del protesto: l’assert sul bug è **commentato**. Serve qualcosa tipo `assert sanity_check_bug["ok"] is False` (o `assert all(v > 1e-4 for ...)`), più stampa dei max_diff buggati. Altrimenti non dimostri che “protesta”.
 - **Valutazione (primo tentativo):** **8.5/10**.
 
+### 2026-07-29 — Cap.06 TODO 4 (train lineare + loss curve PNG)
+
+- Training con default h=16/lr=0.1/n_epochs=200; loss finale **0.11** (<0.2), acc **0.987** (>0.95); PNG `figures/06_03_loss_lineare.png` salvato — ok.
+- Errori/scostamenti: (1) label **`X[:,0] + X[:,1]`** invece di **`X[:,0] - X[:,1]`** come da consegna; (2) manca check loss iniziale ~0.69 (nel run: **0.85** — non ~0.69); (3) `np.array((...))` superfluo su `y`.
+- **Valutazione (primo tentativo):** **8/10**.
+
+### 2026-07-29 — Cap.06 TODO 5 (cerchio + decision boundary)
+
+- Acc finale **0.958** (>0.95), PNG boundary salvato, `n_epochs=500` / `lr=0.1` ok.
+- Scostamenti: (1) `X` con **`standard_normal`** invece di **`uniform(-3, 3)`** — distribuzione diversa (più punti vicino all’origine); (2) **`h=16`** (default) invece di **`h=32`**; (3) riscrittura `my_train_*` + lista `parametri` inutile: `train_rete_2_layer` già ritorna `W1`… nel dict; (4) messaggio assert “accuracy non è scesa” — l’accuracy deve **salire**.
+- **Valutazione (primo tentativo):** **7.5/10**.
+- *Rivalutazione post-fix:* `uniform(-3,3)`, `h=32`, `train_rete_2_layer` ufficiale + pesi dal dict, messaggio assert corretto. **Post-fix: 10/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
