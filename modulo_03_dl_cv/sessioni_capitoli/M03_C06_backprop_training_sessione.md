@@ -236,11 +236,66 @@
 - Nota run terminale: stampa `Differenza: 0.044...` = `abs(ana) - num` (con entrambi negativi ≈ 2·|g|), non `abs(ana-num)`. Il check `assert` era comunque ok. Eco Pattern #27 (parentesi / ordine operazioni).
 - **Valutazione (primo tentativo):** **9/10**.
 
+### 2026-07-29 — Cap.06 Mini 3.1.A (`sanity_check_grad` ufficiale)
+
+- Setup corretto (`he_init` seed 0/1, N=10,d=5,h=8); call ufficiale + assert `ok` + loop sui max_diff `< 1e-4` — passano (~1e-10).
+- Extra (opzionale consegna): confronto `my_sanity_check_grad` con `np.allclose` sui valori — ok sullo stesso seed (stesso ordine di grandezza / stessi numeri).
+- Minori: (1) consegna chiedeva stampa del **dict** intero (nel run si vede solo l’array dei diff); (2) confrontare `list(values)` è fragile se l’ordine chiavi diverge — meglio `assert abs(result[k]-my_result[k]) < …` per chiave; (3) `== True` funziona, `assert result["ok"]` è più idiomatico.
+- **Valutazione (primo tentativo):** **9.5/10**.
+
+### 2026-07-29 — Cap.06 Mini 3.1.B (sanity fallito: perché numerico ok / analitico no)
+
+- **Idea centrale corretta:** il numerico passa da `forward + bce_loss` (perturbazione black-box), non da `backward_2layer` → resta allineato alla loss vera; l’analitico usa la formula buggata → max_diff grandi / `ok=False`.
+- **Errori:** (1) chiama `dL/dp` il pezzo `(P-y)/N` — è **`dL/dZ2`** (eco #38, già 🟢 ma naming); (2) `/ X[0].shape` — di nuovo **`d` (feature)** al posto di **`N = X.shape[0]`** (stesso bug del RETRIEVAL backward); (3) “numerico non usa chain rule” è ok come intuizione, più preciso: non scompone la rete, stima ∂loss/∂param sulla loss implementata.
+- **Valutazione (primo tentativo):** **7/10**.
+- *Rivalutazione post-feedback (2026-07-29):* corretto `dL/dZ2`, `N = X.shape[0]`, e “numerico non scompone i layer / stima d_loss/d_param”. Rimasto un doppio “perché invece perché” (solo stile). **Post-fix: 9.5/10**.
+
+### 2026-07-29 — Cap.06 🔁 RINFORZO #40 (training come ciclo — Feynman)
+
+- **Punto 1 (prosa):** ha “ripeti/ciclo” e “quanto sono grandi i passi”; niente parole vietate. Analogia collina al buio chiara. **Ordine invertito** rispetto al GD classico: nel testo fa *prima il passo e poi sente*; nel GD vero *prima senti la pendenza (dove scende), poi fai il passo*. La versione “provo e se salgo cambio” è più trial-and-error.
+- **Punto 2 (codice):** `(c) for epoch` ok; ma ha messo `(b) passo` sul **forward** e `(a) senti` solo su `bce_loss`. Il **passo** sono gli update `W -= lr * grad` (le sue righe “decidi”); il **senti** è forward + loss + **backward** (capire dove scende).
+- **Lacuna #40 → 🟡** (ciclo+dimensione passo presenti in prosa; mapping codice da rifissare).
+- **Valutazione (primo tentativo):** **6.5/10**.
+- *Fix applicato (etichette codice):* `(a)` su forward, `(b)` sugli update, `(c)` sul `for`. **#40 → 🟢**. Idealmente `(a)` = blocco fino a `backward`, `(b)` = tutte e 4 le righe `-=`. Prosa ancora “passo poi senti” (residuo soft).
+
+### 2026-07-29 — Cap.06 Mini 4.1.A (train su dataset lineare facile)
+
+- Setup corretto (N=200, d=5, y da `X[:,0]+X[:,1]>0`); `train_rete_2_layer(..., h=16, n_epochs=300)` (lr default 0.1 ok).
+- Risultati: loss finale **0.0885** (<0.3 e <0.1), acc **0.975** (>0.9). Assert passano. Curva monotona discendente.
+- **Valutazione (primo tentativo):** **10/10**.
+
+### 2026-07-29 — Cap.06 Mini 4.3.A (confronto lr)
+
+- Loop su `[0.001, 0.01, 0.1, 1.0]`, stesso dataset 4.1.A, `verbose=False`; `n_epochs=200` via default ok.
+- Risultati: 0.001→loss~0.80 acc 0.56; 0.01→0.44/0.80; 0.1→0.12/0.98; **1.0→0.024/1.0**. Commento “converge meglio 1.0” corretto *su questo* problema facile a 200 epoch.
+- Nota didattica: lr alto non è sempre meglio (su XOR / loss rumore può oscillare); qui il dataset lineare lo regge. Preferibile passare `n_epochs=200` esplicito.
+- **Valutazione (primo tentativo):** **9.5/10**.
+
+### 2026-07-29 — Cap.06 TODO 1 (forward + ispezione cache)
+
+- Setup `(20,4)` / h=6, forward, stampa shape cache, assert `H>=0` e `P in (0,1)` — corretti e passano.
+- Scostamento minore: consegna `W2 = he_init(..., seed=1)`, tu hai `seed=0` (stesso di W1). Non invalida i check; per riproduibilità allineata alla consegna usa seed 1 su W2.
+- **Valutazione (primo tentativo):** **9.5/10**.
+
+### 2026-07-29 — Cap.06 TODO 2 (backward + shape)
+
+- `backward_2layer` + assert shape `(4,6)/(6,)/(6,1)/(1,)` + stampa somma assoluta: ok (passano).
+- Scostamenti: (1) consegna `y = rng.integers(0,2,size=20)` — tu hai label lineari da `X[:,0]+X[:,1]`; per le shape va bene, ma non è la consegna; (2) `list = [...]` **ombra** il builtin `list` — rinomina in `shapes_attese`; (3) zip su `.items()` funziona per ordine di inserimento, ma assert per chiave (`result["grad_W1"].shape == (4,6)`) è più robusto.
+- **Valutazione (primo tentativo):** **8.5/10**.
+- *Rivalutazione post-fix:* `y = rng.integers(...)` e `shape_attese` (niente shadow di `list`). Assert per chiave resta opzionale. **Post-fix: 9.5/10**.
+
+### 2026-07-29 — Cap.06 TODO 3 (sanity_check + bonus bug `/N`)
+
+- Parte base: `sanity_check_grad` ufficiale + assert tutti i max_diff `< 1e-4` — ok.
+- Bonus: copia `my_backward_*_bug` senza `/N` + sanity dedicata — **meglio** che sporcare `backward_2layer` ufficiale.
+- Manca la verifica positiva del protesto: l’assert sul bug è **commentato**. Serve qualcosa tipo `assert sanity_check_bug["ok"] is False` (o `assert all(v > 1e-4 for ...)`), più stampa dei max_diff buggati. Altrimenti non dimostri che “protesta”.
+- **Valutazione (primo tentativo):** **8.5/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
 
-- 🔴 #40 Feynman (fine cap. / Q7 saltata)
+- 🟢 #40 Feynman (chiusa; residuo soft ordine analogia)
 - 🔴 Pattern #27 formula→codice
 - (corollario Q4: spento per campione ≠ spento sempre — ancora da tenere a mente nel mini 2.4/2.5)
 

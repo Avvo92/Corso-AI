@@ -44,7 +44,7 @@
 | **Ultimo completato** | modulo_03_dl_cv/**05_chain_rule_gd.py** (27/07/2026) — chain rule 2/3/4 livelli, GD 1D/nD, learning rate, piano dei pesi, pipeline `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` (8.5/10); **voto difficoltà** **9**/10 (il più alto del modulo). |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
 | **Difficoltà media** | ~**7.02** (26 capitoli con voto; archivi M1/M2/Ponte in `archivi/`) — trend M3: 8, 8, 8, 8, **9** ↑ |
-| **Priorità attive** | 🟢 chiuse al quiz ingresso cap.06: #39 catena `dL/dW1` (Q2), #36 e #38 `p-y` / `dL/dp` (Q3); 🟢 **#41 shape 1D vs colonna** (mini 1.1.A 28/07: shape stampate ok); 🔴 #40 Feynman senza ciclo iterativo (**Q7 saltata per scelta 27/07** → verifica rimandata a fine cap.06); 🔴 Pattern #27 traduzione formula→codice; 🟡 Pattern #6; 🟡 #21; 🟡 #31 UAT; 🟡 E6 system design (fine M3). |
+| **Priorità attive** | 🟢 chiuse al quiz ingresso cap.06: #39 catena `dL/dW1` (Q2), #36 e #38 `p-y` / `dL/dp` (Q3); 🟢 **#41 shape 1D vs colonna**; 🟢 **#40** Feynman ciclo+passo (29/07, residuo soft ordine analogia); 🔴 Pattern #27 traduzione formula→codice; 🟡 Pattern #6; 🟡 #21; 🟡 #31 UAT; 🟡 E6 system design (fine M3). |
 | **Sessione corrente** | Sessione 25 |
 
 ---
@@ -103,7 +103,7 @@
 | 39 | **Catena `dL/dW1`**: percorso `P→Z2→H→Z1→W1`, NON passare da W2 | 🟢 Superato | Quiz ingresso cap.06 Q2 (27/07/2026): 5 anelli corretti, W2 non inserito |
 | 37 | **`derivata_relu` in z=0** → vale **0** (non 0.5) | 🟢 Superato | Cap.06 rinforzo 🔁 (28/07): previsione 2 uni su array con due zeri; `z > 0` |
 | 38 | **`dL/dp` vs `dL/dz`**: `p-y` è `dL/dz` | 🟢 Superato | Quiz ingresso cap.06 Q3 (27/07/2026): `dL/dp` con denominatore, distinta da `p-y` |
-| 40 | **Feynman GD**: manca il ciclo "ripeti" e il ruolo della dimensione del passo | 🔴 Da rinforzare | Cap.06: quiz ingresso Q7 (Feynman backprop) + bridge R05 es.11 |
+| 40 | **Feynman GD**: ciclo "ripeti" + dimensione del passo | 🟢 Superato | Cap.06 rinforzo 🔁 (29/07): prosa con ripeti+grandezza passi; codice: (c)`for`, (a)forward→…, (b)update. Residuo soft: analogia ancora "passo poi senti" invece di "senti poi passo" |
 | 23 | Shape `X @ w`: `(N,)` vs `(N, 1)` in NumPy | 🟢 Superato | Quiz ingresso M3 cap.01 Q1 (07/05/2026): shape + spiegazione `(N,d)@(d,)→(N,)` vs `(N,d)@(d,1)→(N,1)` |
 | 26 | Velocità `X @ w` vs loop Python (`np.dot` per riga) | 🟢 Superato | Quiz Q4 + mini RINFORZO #26 (08/05/2026): overhead interprete per iterazione + memoria contigua/cache vs heap oggetti Python |
 | 24 | Tupla accidentale `(0.1,)` vs scalare `0.1` (bias) | 🟢 Superato | Quiz ingresso M3 cap.01 Q3 (07/05/2026): `+ 0.1`, motivazione stile + `type((0.1,))` |

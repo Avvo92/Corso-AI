@@ -116,6 +116,7 @@ from typing import Callable
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
+from sklearn.model_selection import train_test_split
 
 
 # ==========================================================================
@@ -1105,23 +1106,110 @@ def sanity_check_grad(
     risultati["ok"] = all(v < rtol for k, v in risultati.items() if k.endswith("_max_diff"))
     return risultati
 
-
-# 🔵 MINI-ESERCIZIO INLINE 3.1.A (~5 minuti) — esegui sanity_check
-# Setup come MINI 2.6.A. Chiama sanity_check_grad e stampa i risultati.
-# Tutti i max_diff devono essere < 1e-4 (idealmente < 1e-6).
-# Se UNO solo e' grande -> c'e' un bug nel backward (rispetto a quel
-# parametro). Per ora la nostra implementazione e' corretta -> tutto ok.
+# 🔵 MINI-ESERCIZIO INLINE 3.1.A (~5 minuti) — esegui la sanity_check UFFICIALE
+#
+# PERCHE' farlo ORA (anche se hai gia' fatto RETRIEVAL + mini 3.0.A)?
+#   - 3.0.A = 1 solo peso W1[0,0]  →  "il pezzo funziona?"
+#   - RETRIEVAL = hai SCRITTO tu my_sanity_check_grad
+#   - 3.1.A = usi la funzione UFFICIALE del capitolo su TUTTI i parametri
+#     (W1, b1, W2, b2). E' il cancello prima del training loop (sez.4):
+#     se ok=False, NON ha senso addestrare (stai scendendo la collina
+#     nella direzione sbagliata).
+#
+# Setup (stesso seed del mini 2.6.A / 3.0.A / RETRIEVAL — confrontabile):
+#   rng = np.random.default_rng(0)
+#   X = rng.standard_normal((10, 5))          # (N, d) — NON uno scalare
+#   y = rng.integers(0, 2, size=10).astype(float)
+#   W1 = he_init(5, 8, seed=0); b1 = np.zeros(8)
+#   W2 = he_init(8, 1, seed=1); b2 = np.zeros(1)
+#
+# Passi:
+# 1) Chiama la funzione UFFICIALE (quella subito sopra, NON my_*):
+#      risultati = sanity_check_grad(X, y, W1, b1, W2, b2)
+# 2) Stampa l'intero dict (4 max_diff + chiave "ok").
+# 3) Assert:
+#      assert risultati["ok"] is True
+#      for k in ("W1_max_diff", "b1_max_diff", "W2_max_diff", "b2_max_diff"):
+#          assert risultati[k] < 1e-4
+#    (Idealmente vedrai valori ~1e-10 / 1e-11, come nel RETRIEVAL.)
+#
+# Opzionale (1 riga di commento): i tuoi my_* max_diff del RETRIEVAL
+# devono essere dello STESSO ordine di grandezza. Se no, c'e' un bug
+# in my_backward / my_sanity, non nella ufficiale.
+#
+# Lettura del risultato:
+#   - TUTTI i max_diff piccoli + ok=True  →  backward affidabile, vai avanti
+#   - UNO solo grande                     →  bug localizzato su quel parametro
+#   - TUTTI grandi                        →  bug precoce (es. dZ2 / N, o loss)
+#
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 3.1.A\n")
 
-# 🔵 MINI-ESERCIZIO INLINE 3.1.B (~3 minuti) — sanity check fallito
-# Simula un bug: modifica TEMPORANEAMENTE backward_2layer per "dimenticare"
-# /N nel passo 1 (commenta il "/N"). Esegui sanity_check_grad: cosa cambia
-# nei max_diff? Rimetti a posto il /N dopo l'esperimento.
-# (Per non sporcare il file, commenta + spiega: con N=10 i grad sono
-# 10 volte piu' grandi -> max_diff > 0.01.)
+n = 10
+d = 5
+h = 8
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal((n, d))
+y = rng.integers(0, 2, size=n).astype(float)
+W1 = he_init(5, 8, seed=0); b1 = np.zeros(8)
+W2 = he_init(8, 1, seed=1); b2 = np.zeros(1)
+
+result = sanity_check_grad(
+    X,
+    y,
+    W1, 
+    b1,
+    W2,
+    b2
+)
+
+assert result['ok'], "Il sanity check non è andato a buon fine!"
+
+senza_ok = {k: v for k, v in result.items() if k != 'ok'}
+
+for k, v in senza_ok.items():
+    assert v < 1e-4, f"La {k} è troppo elevata!!"
+    
+my_result = my_sanity_check_grad(
+    X,
+    y,
+    W1, 
+    b1,
+    W2,
+    b2
+)
+
+my_senza_ok = np.array(list({k:v for k, v in my_result.items() if k != 'ok'}.values()))
+
+senza_ok = np.array(list(senza_ok.values()))
+
+assert np.allclose(senza_ok, my_senza_ok), "Le funzioni, come gli stessi parametri, non producono gli stessi risultati!"
+
+# l'assert conferma che le funzioni funzionano nello stesso modo, producendo risultati similari!
+
+# 🔵 MINI-ESERCIZIO INLINE 3.1.B (~5 minuti) — sanity check fallito (a proposito)
+#
+# NON modificare permanentemente backward_2layer. Due modi validi:
+#
+#   A) Mentale / commento (consigliato se non vuoi sporcare il file):
+#      Se dimentichi "/ N" in dZ2 = (P - y).reshape(-1,1) / N, con N=10
+#      i gradienti analitici diventano ~10x piu' grandi del numerico.
+#      Aspettativa: max_diff dell'ordine di |grad| (spesso >> 1e-4), ok=False.
+#
+#   B) Esperimento controllato (opzionale):
+#      - commenta temporaneamente il "/ N" in backward_2layer
+#      - riesegui solo il blocco 3.1.A
+#      - annota i nuovi max_diff
+#      - RIMETTI subito il "/ N"
+#
+# Domanda in commento (2-3 righe): perche' il numerico resta "giusto" mentre
+# l'analitico si rompe? (hint: gradiente_numerico chiama forward+bce_loss,
+# non passa da backward_2layer.)
 # TUO COMMENTO QUI:
 
+# Il numerico non si rompe perchè non usa la chain rule, quindi non scompone i layer, ma utilizza la perturbazione di un parametro alla volta per trovare le derivate parziali che vanno a formare il gradiente e stimare quindi la d_loss/d_parametri. L'analitico si rompe perchè invece si basa sulla rigorosita della chain rule, e nel primo passaggio che serve a trovare dL/dZ2, essendo la bce loss una media, se noi non dividiamo la derivata parziale per il numero di righe X.shape[0], automaticamente ci ritroveremo con un valore di dL/dZ2 che sarà X.shape[0] volte più grande rispetto a quello corretto.
 
 # ==========================================================================
 # SEZIONE 4 - TRAINING LOOP completo
@@ -1163,6 +1251,8 @@ def sanity_check_grad(
 #    (a) il "senti", (b) il "fai un passo", (c) il "ripeti".
 # TUO COMMENTO QUI:
 
+# L'addestamento di una rete di due layer può essere visto come una persona che di notte, completamente al buoi, cerca di orientarsi per scendere dalla collina in cui si trova per raggiungere la valle. Il procedimento funziona in questo modo: la persona fa un passo, sente con la gamba se questo passo lo sta portando in su verso la cima o in giù verso la valle.  A quel punto, capito dove quella direzione lo sta portando,  decide o di cambiare direzione se quel passo lo ha fatto salire o invece proseguire verso la stessa direzione che stava facendo se questa lo stava facendo scendere. Ripetendo questo procedimento (ciclo) per tante volte, e in base a quanto sono grandi i suoi passi, dopo molte ripetizioni riesce ad arrivare a valle.
+
 
 def train_rete_2_layer(
     X: NDArray[np.float64],
@@ -1189,8 +1279,8 @@ def train_rete_2_layer(
     loss_history: list[float] = []
     acc_history: list[float] = []
 
-    for epoch in range(n_epochs):
-        P, cache = forward_2layer(X, W1, b1, W2, b2)
+    for epoch in range(n_epochs): # (c) ripeti
+        P, cache = forward_2layer(X, W1, b1, W2, b2) #(a) senti
         loss = bce_loss(P, y)
         acc = accuracy_score(P, y)
         loss_history.append(loss)
@@ -1200,7 +1290,7 @@ def train_rete_2_layer(
         W1 -= lr * grads["grad_W1"]
         b1 -= lr * grads["grad_b1"]
         W2 -= lr * grads["grad_W2"]
-        b2 -= lr * grads["grad_b2"]
+        b2 -= lr * grads["grad_b2"] #(b) fai il passo
 
         if verbose and (epoch % log_every == 0 or epoch == n_epochs - 1):
             print(f"epoch {epoch:>4d}  loss = {loss:>7.4f}  acc = {acc:>5.3f}")
@@ -1210,7 +1300,6 @@ def train_rete_2_layer(
         "loss_history": loss_history,
         "acc_history": acc_history,
     }
-
 
 # 🔵 MINI-ESERCIZIO INLINE 4.1.A (~10 minuti) — addestra su dataset "facile"
 # Setup:
@@ -1224,17 +1313,75 @@ def train_rete_2_layer(
 #   - accuracy finale > 0.9
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 4.1.A\n")
+
+rng = np.random.default_rng(0)
+N, d = 200, 5
+X = rng.standard_normal(size=(N, d))
+y = (X[:, 0] + X[:, 1] > 0).astype(float)
+
+result = train_rete_2_layer(
+    X,
+    y,
+    h = 16,
+    n_epochs = 300
+)
+
+assert result['loss_history'][-1] < 0.3, "La loss non è scesa sotto 0.3!"
+assert result['acc_history'][-1] > 0.9, "L'accuracy alla fine del training è troppo bassa!"
 
 # 🔵 MINI-ESERCIZIO INLINE 4.2.A (~10 minuti) — addestra su XOR (non lineare)
-# Setup:
-#   X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=float)
-#   y = np.array([0, 1, 1, 0], dtype=float)
-# Esegui train_rete_2_layer(X, y, h=8, lr=0.5, n_epochs=2000, log_every=200).
-# XOR e' il classico problema NON lineare che dimostra perche' la rete
-# 2-layer batte la regressione logistica (che NON impara mai XOR).
-# Verifica: accuracy finale = 1.0 (su 4 pratiche).
+#
+# PERCHE' XOR?
+#   XOR = "o l'uno o l'altro, non entrambi":
+#     (0,0)->0  (0,1)->1  (1,0)->1  (1,1)->0
+#   Non puoi separare le due classi con UNA sola retta (problema non lineare).
+#   Una regressione logistica (un solo "neurone" lineare + sigmoid) NON
+#   impara mai XOR. Una rete 2-layer con ReLU nel mezzo SI', perche'
+#   il layer nascosto piega lo spazio prima della decisione finale.
+#
+#   Nel mini 4.1.A il problema era lineare-facile: qui dimostri il valore
+#   del layer nascosto.
+#
+# Setup (4 sole pratiche — l'intero dataset XOR classico):
+#   X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=float)  # shape (4, 2)
+#   y = np.array([0, 1, 1, 0], dtype=float)                      # shape (4,)
+#
+# Training (iperparametri volutamente "generosi": dataset piccolo e duro):
+#   result = train_rete_2_layer(
+#       X, y,
+#       h=8,           # neuroni nascosti
+#       lr=0.5,        # passo piu' grande del 4.1.A (solo 4 punti)
+#       n_epochs=2000, # serve piu' tempo per chiudere XOR
+#       log_every=200,
+#   )
+#
+# Verifica:
+#   1) Stampa loss e accuracy finali (ultimi elementi delle history).
+#   2) Assert:
+#        assert result["acc_history"][-1] == 1.0
+#      (su 4 pratiche, accuracy 1.0 = tutte indovinate a soglia 0.5)
+#   3) Opzionale: stampa anche P = forward finale sulle 4 righe
+#      (dovresti vedere probabilita' vicine a 0, 1, 1, 0).
+#
+# Se accuracy < 1.0: riprova con seed diverso o n_epochs piu' alto;
+# non e' un bug del backward se il sanity check 3.1.A era ok — XOR e'
+# sensibile a init/lr.
+#
 # TUO CODICE QUI:
 
+print("\nMini-esercizio 4.2.A\n")
+
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=float)
+y = np.array(np.array([0, 1, 1, 0], dtype=float))
+
+result = train_rete_2_layer(
+    X, y,
+    h = 8,
+    n_epochs = 2000,
+    log_every = 200
+)
+assert result['acc_history'][-1] == 1, "Ops, qualcosa è andato storto!"
 
 # 🔵 MINI-ESERCIZIO INLINE 4.3.A (~5 minuti) — confronta lr sull'addestramento
 # Sul dataset di 4.1.A, prova lr in [0.001, 0.01, 0.1, 1.0]:
@@ -1243,7 +1390,28 @@ def train_rete_2_layer(
 # Quale lr converge meglio? Commenta in 1 riga.
 # TUO CODICE QUI:
 
+print("Mini-esercizio 4.3.A\n")
 
+rng = np.random.default_rng(0)
+N, d = 200, 5
+X = rng.standard_normal(size=(N, d))
+y = (X[:, 0] + X[:, 1] > 0).astype(float)
+
+out = {}
+
+for lr in [0.001, 0.01, 0.1, 1.0]:
+    result = train_rete_2_layer(
+        X, y,
+        lr = lr,
+        verbose = False
+    )
+    out[lr] = result['loss_history'][-1]
+    print(f"Learning rate: {lr}")
+    print(f"Loss finale:     {result['loss_history'][-1]}")
+    print(f"Accuracy finale: {result['acc_history'][-1]}\n")
+    
+# Quello che converge meglio è 1.0.
+    
 # ==========================================================================
 # SEZIONE 5 - VISUALIZZAZIONE
 # ==========================================================================
@@ -1252,6 +1420,8 @@ def train_rete_2_layer(
 #   1) Loss curve (loss vs epoch) - mostra che la loss scende
 #   2) Decision boundary - per dataset 2D, mostra come la rete separa
 #      i positivi dai negativi
+
+
 
 
 def grafico_loss_curve(
@@ -1279,6 +1449,8 @@ def grafico_loss_curve(
     if show:
         plt.show()
     plt.close(fig)
+    
+grafico_loss_curve(train_rete_2_layer(X, y))
 
 
 def grafico_decision_boundary(
@@ -1371,12 +1543,53 @@ def grafico_decision_boundary(
 #   - verifica che P in (0, 1) ovunque (sigmoid)
 # TUO CODICE QUI:
 
+print("\nTODO 1\n")
+
+N = 20
+d = 4
+h = 6
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal(size=(N, d))
+W1 = he_init(d, h, seed=0); b1 = np.zeros(h)
+W2 = he_init(h, 1, seed=0); b2 = np.zeros(1)
+
+P, cache = forward_2layer(
+    X,
+    W1,
+    b1,
+    W2,
+    b2    
+)
+
+for k, v in cache.items():
+    print(f"Shape di {k}: {v.shape}")
+    
+assert np.all(cache['H'] >= 0), "Ops, qualcosa per H è andato storto!"
+assert np.all(cache['P'] > 0) and np.all(cache['P'] < 1), "Ops, qualcosa per P è andato storto!"
 
 # TODO 2 (15 minuti) — backward_2layer + verifica shape
 # Continuando dal TODO 1, aggiungi y = rng.integers(0, 2, size=20).astype(float).
 # Chiama backward_2layer. Stampa per ogni gradiente: shape + somma assoluta.
 # Verifica che le shape siano (4, 6), (6,), (6, 1), (1,).
 # TUO CODICE QUI:
+
+print("\nTODO 2\n")
+
+y = rng.integers(0, 2, size=20).astype(float) # np.array((X[:, 0] + X[:, 1] > 0).astype(float))
+
+result = backward_2layer(
+    cache,
+    y,
+    W2
+)
+
+shape_attese = [(4, 6), (6,), (6, 1), (1,)]
+
+for a, (k, v) in zip(shape_attese, result.items()):
+    assert a == v.shape, "Ops, qualcosa è andato storto!"
+    print(f"Shape di {k}: {v.shape}")
+    print(f"Somma assoluta di {k}: {np.abs(v).sum()}")
 
 
 # TODO 3 (20 minuti) — sanity_check_grad in azione
@@ -1385,6 +1598,101 @@ def grafico_decision_boundary(
 # Bonus: prova a INTRODURRE un bug nel backward (es. ometti il /N) e
 # verifica che sanity_check_grad PROTESTA correttamente. Poi rimetti a posto.
 # TUO CODICE QUI:
+
+sanity_check = sanity_check_grad(
+    X,
+    y,
+    W1,
+    b1,
+    W2,
+    b2
+)
+
+for k, v in {k: v for k, v in sanity_check.items() if k != 'ok'}.items():
+    assert v < 1e-4, f"Per {k} è stata riscontrata una differenza troppo alta!"
+    
+def my_backward_2layer_bug(
+    cache: dict[str, NDArray[np.float64]],
+    y: NDArray[np.int64] | NDArray[np.float64],
+    W2: NDArray[np.float64],
+) -> dict[str, NDArray[np.float64]]:
+    
+    dZ2 = (cache['P'] - y).reshape(-1, 1) # / cache['X'].shape[0]
+    grad_W2 = cache['H'].T @ dZ2
+    grad_b2 = dZ2.sum(axis=0)
+    d_H = dZ2 @ W2.T
+    d_Z1 = derivata_relu(cache['Z1']) * d_H
+    grad_W1 = cache['X'].T @ d_Z1
+    grad_b1 = d_Z1.sum(axis=0)
+    
+    return {
+        "grad_W1": grad_W1,
+        "grad_b1": grad_b1,
+        "grad_W2": grad_W2,
+        "grad_b2": grad_b2
+    }
+    
+def my_sanity_check_grad_bug(
+    X: NDArray[np.float64],
+    y: NDArray[np.int64] | NDArray[np.float64],
+    W1: NDArray[np.float64],
+    b1: NDArray[np.float64],
+    W2: NDArray[np.float64],
+    b2: NDArray[np.float64],
+    h: float = 1e-6,
+    rtol: float = 1e-4,
+) -> dict[str, float]:
+    
+    def loss_di_params(W1v, b1v, W2v, b2v):
+        return bce_loss(my_forward_2layer(X, W1v, b1v, W2v, b2v)[0], y)
+    
+    _, cache = my_forward_2layer(X, W1, b1, W2, b2)
+    grads_ana = my_backward_2layer_bug(cache, y, W2)
+    
+    grad_num_W1 = gradiente_numerico(
+        lambda W1_var: loss_di_params(W1_var, b1, W2, b2),
+        W1
+    )
+    W1_max_diff = float(np.abs(grad_num_W1 - grads_ana['grad_W1']).max())
+    
+    grad_num_b1 = gradiente_numerico(
+        lambda b1_var: loss_di_params(W1, b1_var, W2, b2),
+        b1
+    )
+    b1_max_diff = float(np.abs(grad_num_b1 - grads_ana['grad_b1']).max())
+    
+    grad_num_W2 = gradiente_numerico(
+        lambda W2_var: loss_di_params(W1, b1, W2_var, b2),
+        W2
+    )
+    W2_max_diff = float(np.abs(grad_num_W2 - grads_ana['grad_W2']).max())
+    
+    grad_num_b2 = gradiente_numerico(
+        lambda b2_var: loss_di_params(W1, b1, W2, b2_var),
+        b2
+    )
+    b2_max_diff = float(np.abs(grad_num_b2 - grads_ana['grad_b2']).max())
+    
+    return {
+        "W1_max_diff": W1_max_diff,
+        "b1_max_diff": b1_max_diff,
+        "W2_max_diff": W2_max_diff,
+        "b2_max_diff": b2_max_diff,
+        "ok": all(x < rtol for x in (W1_max_diff, b1_max_diff, W2_max_diff, b2_max_diff)),
+    }
+    
+
+sanity_check_bug = my_sanity_check_grad_bug(
+    X,
+    y,
+    W1,
+    b1,
+    W2,
+    b2
+)
+
+# for k, v in {k: v for k, v in sanity_check_bug.items() if k != 'ok'}.items():
+#     assert v < 1e-4, f"Per {k} è stata riscontrata una differenza troppo alta!"
 
 
 # TODO 4 (15 minuti) — train_rete_2_layer su dataset semplice
