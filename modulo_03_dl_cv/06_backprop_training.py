@@ -116,6 +116,7 @@ from typing import Callable
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
+from scipy.stats import f
 from sklearn.model_selection import train_test_split
 
 
@@ -1891,13 +1892,59 @@ grads_per_confronto = {
 for k, v in grads_per_confronto.items():
     assert np.allclose(grads_per_confronto[k], bw_fun_results[k]), "Ops, qualcosa è andato storto e i gradienti non coincidono!!"
 
-# TODO 8 (15 minuti) — confronto BCE finale tra reti con seed diversi
-# Sul dataset del TODO 4 (lineare), addestra 5 reti con seed = 0..4
-# (stesso lr, stesso h, stesso n_epochs). Stampa una tabella con:
-#   - seed | loss finale | accuracy finale
-# Cosa noti? La rete e' "deterministica" data la stessa init? Oppure
-# converge a SOLUZIONI DIVERSE? Commenta in 2 righe.
+# TODO 8 (15 minuti) — seed diversi: stessa rete, soluzioni diverse?
+#
+# IDEA DA FISSARE
+#   - Forward DETERMINISTICO: stessi X + stessi pesi → stesso P (sempre).
+#   - Training con SEED DIVERSI: partono da pesi INIZIALI diversi
+#     → spesso arrivano a pesi FINALI diversi (soluzioni diverse),
+#     anche se loss/accuracy finali sono simili.
+#
+# Setup — RICREA il dataset del TODO 4 (non riusare X/y di TODO 5/6/7):
+#   rng = np.random.default_rng(0)
+#   X = rng.standard_normal((300, 4))
+#   y = (X[:, 0] - X[:, 1] > 0).astype(float)
+#   # X e y restano FISSI per tutti i seed; cambia solo seed del training
+#
+# Training (identico tranne il seed):
+#   for seed in [0, 1, 2, 3, 4]:
+#       result = train_rete_2_layer(
+#           X, y,
+#           h=16, lr=0.1, n_epochs=200,
+#           seed=seed,
+#           verbose=False,
+#       )
+#       # annota: seed, loss_history[-1], acc_history[-1]
+#
+# Output atteso: tabella (anche solo print) tipo
+#   seed | loss_finale | acc_finale
+#
+# Domande (commento 2-3 righe):
+#   1) Le loss finali sono IDENTICHE o solo VICINE?
+#   2) Quindi: a parita' di dataset/iperparametri, seed diversi
+#      → stessa soluzione di pesi, o soluzioni DIVERSE?
+#   3) In una riga: "deterministico" si riferisce al forward a pesi fissi,
+#      non al fatto che tutti i seed diano gli stessi pesi finali.
+#
 # TUO CODICE QUI:
+
+# la rete, a parita' di input, rimane deterministica.
+
+print("\nTODO 8\n")
+
+seeds = [0, 1, 2, 3, 4]
+
+for s in seeds:
+    results = train_rete_2_layer(
+        X,
+        y,
+        seed = s,
+        verbose = False
+    )
+    print(f"Seed: {s}")
+    print(f"Loss finale: {results['loss_history'][-1]}")
+    print(f"Accuracy finale: {results['acc_history'][-1]}\n")
+    
 
 
 # ==========================================================================
@@ -1909,12 +1956,53 @@ for k, v in grads_per_confronto.items():
 # Verifica con p=np.array([0.9, 0.1, 0.5]), y=np.array([1, 0, 1]).
 # TUO CODICE QUI:
 
+print("\nTODO 9\n")
+
+def my_bce_loss(
+    p: NDArray[np.float64],
+    y: NDArray[np.float64],
+    eps: float = 1e-12
+) -> float:
+    p_safe = np.clip(p, eps, 1-eps)
+    return float(np.mean(- y  * np.log(p_safe) - (1 - y) * np.log(1 - p_safe)))
+
+p = np.array([0.9, 0.1, 0.5], dtype=float)
+y = np.array([1, 0, 1], dtype=float)
+
+bce_real = bce_loss(p, y)
+bce_test = my_bce_loss(p, y)
+
+assert np.isclose(bce_real, bce_test), "Ops, qualcosa è andato storto e le bce non coincidono!"
 
 # TODO 10 (10 minuti) [🔄 RECALL cap.04 — derivata sigmoid]:
 # Riscrivi derivata_sigmoid (formula: s(z) * (1 - s(z))).
 # Verifica numericamente con derivata_numerica per z in [-3, 0, 3].
 # TUO CODICE QUI:
 
+print("\nTODO 10\n")
+
+def derivata_numerica(
+    f: Callable[[float], float],
+    x,
+    h: float = 1e-6
+) -> float:
+    return (f(x + h) - f(x - h)) / (2.0 * h)
+
+def my_derivata_sigmoid(
+    z: NDArray[np.float64]
+) -> NDArray[np.float64]:
+    return sigmoid(z) * (1 - sigmoid(z))
+
+arr = np.array([-3, 0, 3])
+
+for a in arr:
+    out = derivata_numerica(
+        sigmoid,
+        a
+    )
+    out_2 = my_derivata_sigmoid(a)
+    assert np.isclose(out, out_2), "Ops, qualcosa è andato storto!"
+    print(out, out_2)
 
 # TODO 11 (15 minuti) [🔄 RECALL cap.05 — gradient descent]:
 # Riscrivi gradient_descent_1d (con differenza centrata) e usala per
@@ -1922,19 +2010,100 @@ for k, v in grads_per_confronto.items():
 # Stampa la traiettoria. Atteso: converge a 4 in ~ 20 step.
 # TUO CODICE QUI:
 
+def my_gradient_descent(
+    f: Callable[[float], float],
+    x0: float,
+    lr: float = 0.1,
+    n_steps: int = 30,   
+) -> list[float]:
+    x = x0
+    traj = [x]
+    for s in range(n_steps):
+        grad = derivata_numerica(
+            f,
+            x
+        )
+        x = x - lr * grad
+        traj.append(x)
+    return traj
+    
+
+def fun_prova(
+    x: float
+) -> float:
+    return float((x-4)**2)
+
+x0 = -2.0
+
+prova_grad_desc = my_gradient_descent(
+    fun_prova,
+    x0,
+    lr =  0.3
+)
+
+print(prova_grad_desc)
 
 # TODO 12 (15 minuti) [🧠 RETRIEVAL cap.02 M3 — rete_2_layer da zero]:
 # Senza guardare il cap.02 ne' i precedenti TODO, riscrivi forward_2layer
 # (con cache) da zero. Verifica con il setup del TODO 1.
 # TUO CODICE QUI:
 
+print("\nTODO 12\n")
+
+def my_forward_2layer(
+    X: NDArray[np.float64],
+    W1: NDArray[np.float64],
+    b1: NDArray[np.float64],
+    W2: NDArray[np.float64],
+    b2: NDArray[np.float64]
+) -> tuple[NDArray[np.float64], dict[str, NDArray[np.float64]]]:
+    Z1 = X @ W1 + b1
+    H = relu(Z1)
+    Z2 = H @ W2 + b2
+    P = sigmoid(Z2).ravel()
+    
+    cache = {
+        "X": X,
+        "Z1": Z1,
+        "H": H,
+        "Z2": Z2,
+        "P": P
+    }
+    return P, cache
+
+# ho copiato il set up del TODO 1
+N = 20
+d = 4
+h = 6
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal(size=(N, d))
+W1 = he_init(d, h, seed=0); b1 = np.zeros(h)
+W2 = he_init(h, 1, seed=0); b2 = np.zeros(1)
+
+result = my_forward_2layer(
+    X,
+    W1,
+    b1,
+    W2,
+    b2
+)
+
+confronto = forward_2layer(
+    X,
+    W1,
+    b1,
+    W2,
+    b2
+)
+
+assert np.allclose(result[0], confronto[0]), "Ops, qualcosa è andato storto!"
 
 # TODO 13 (20 minuti) [🔀 INTERLEAVING MEGA cap.01-05 + cap.06]:
 # Mini-pipeline completa "carico CSV M2 + addestro + valuto":
-#   1) Carica i dati dal CSV del cap.M2_C04 (mini-progetto LogReg):
+#   1) Carica i dati dal CSV pratiche (copia M2 in modulo_03/dati/):
 #         path_csv = os.path.join(
-#             os.path.dirname(__file__), "..", "modulo_02_ml",
-#             "dati", "pratiche.csv",
+#             os.path.dirname(__file__), "dati", "pratiche.csv",
 #         )
 #      Se il CSV NON esiste, usa il dataset sintetico:
 #         rng = np.random.default_rng(0)
@@ -1950,6 +2119,58 @@ for k, v in grads_per_confronto.items():
 #      La rete deve battere la baseline (di almeno 5 punti percentuali).
 # TUO CODICE QUI:
 
+print("\nTODO 13\n")
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+path_csv = os.path.join(os.path.dirname(__file__), "dati", "pratiche.csv")
+df = pd.read_csv(path_csv)
+
+df_clean = df.drop(columns=['pratica_id', 'y_alterato'])
+
+X = df_clean.to_numpy()
+y = np.array(df['y_alterato'])
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=.2, random_state=42, stratify=y
+)
+
+scaler = StandardScaler()
+scaler.fit(X_train)
+
+X_train_scaled = scaler.transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+rete = train_rete_2_layer(
+    X_train_scaled,
+    y_train,
+    lr = .1,
+    n_epochs = 300,
+    verbose = False    
+)
+
+print(rete['loss_history'][-1])
+print(rete['acc_history'][-1])
+
+P, cache = forward_2layer(
+    X_test_scaled,
+    rete['W1'],
+    rete['b1'],
+    rete['W2'],
+    rete['b2']
+)
+
+loss_rete_add = bce_loss(P, y_test)
+acc_rete_add = accuracy_score(P, y_test, 0.5)
+
+baseline = max(y_test.mean(), (1 - y_test.mean()))
+
+assert acc_rete_add >= baseline + 0.05, "La rete non riesce a battere la baseline!"
+
+print(loss_rete_add)
+print(acc_rete_add)
 
 # ==========================================================================
 # PIPELINE INTEGRATA — train_rete_2_layer_completo
@@ -1984,6 +2205,99 @@ for k, v in grads_per_confronto.items():
 # sanity check passi e che la rete converga ad accuracy > 0.95.
 # TUO CODICE QUI:
 
+print("\nPIPELINE INTEGRATA\n")
+
+def train_rete_2_layer_completo(
+    X: NDArray[np.float64],
+    y: NDArray[np.float64],
+    h: int = 16,
+    lr: float = 0.1,
+    n_epochs: int = 200,
+    seed: int = 0,
+    fai_sanity_check: bool = True,
+) -> dict:
+    
+    N, d = X.shape
+    rng = np.random.default_rng(seed)
+    W1 = rng.standard_normal((d, h)) * np.sqrt(2.0 / d)
+    b1 = np.zeros(h)
+    W2 = rng.standard_normal((h, 1)) * np.sqrt(2.0 / h)
+    b2 = np.zeros(1)
+    
+    if fai_sanity_check:
+        check = sanity_check_grad(
+            X,
+            y,
+            W1,
+            b1,
+            W2,
+            b2
+        )
+        if check['ok']:   
+            rete = train_rete_2_layer(
+                X,
+                y,
+                h,
+                lr,
+                n_epochs,
+                seed,
+                False
+            )
+            
+            return {
+                "W1_finale": rete['W1'],
+                "b1_finale": rete['b1'],
+                "W2_finale": rete['W2'],
+                "b2_finale": rete['b2'],
+                "loss_history": rete['loss_history'],
+                "accuracy_history": rete['acc_history'],
+                "loss_iniziale": rete['loss_history'][0],
+                "accuracy_iniziale": rete['acc_history'][0],
+                "loss_finale": rete['loss_history'][-1],
+                "accuracy_finale": rete['acc_history'][-1],
+                "sanity_check_result": check
+            }
+            
+        raise ValueError("Il check ha dato esito negativo!")
+    
+    rete = train_rete_2_layer(
+                X,
+                y,
+                h,
+                lr,
+                n_epochs,
+                seed,
+                False
+            )
+                
+    return {
+        "W1_finale": rete['W1'],
+        "b1_finale": rete['b1'],
+        "W2_finale": rete['W2'],
+        "b2_finale": rete['b2'],
+        "loss_history": rete['loss_history'],
+        "accuracy_history": rete['acc_history'],
+        "loss_iniziale": rete['loss_history'][0],
+        "accuracy_iniziale": rete['acc_history'][0],
+        "loss_finale": rete['loss_history'][-1],
+        "accuracy_finale": rete['acc_history'][-1],
+        "sanity_check_result": "Non eseguito"
+    }
+
+rng = np.random.default_rng(0)
+X = rng.uniform(-3, 3, size=(400, 2))
+y = (X[:, 0] **2 + X[:, 1]**2 < 4).astype(float)
+    
+prova = train_rete_2_layer_completo(
+    X,
+    y,
+    h = 32,
+    n_epochs = 500
+)
+
+import pprint as p
+
+p.pprint(prova)
 
 # ==========================================================================
 # MINI-PROGETTO FINALE — `train_rete_su_csv_m2`

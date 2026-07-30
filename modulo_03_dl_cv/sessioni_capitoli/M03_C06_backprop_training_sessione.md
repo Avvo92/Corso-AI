@@ -320,6 +320,79 @@
 - Verifica incompleta: non confronti `grad_b1` / `grad_W2` / `grad_b2`. Meglio `np.allclose` sul dict intero vs `backward_2layer`.
 - Minore: `for i in range(len(dW1_test))` confronta per riga; basta `assert np.allclose(dW1_test, dW1_man)`.
 - **Valutazione (primo tentativo):** **7/10**.
+- *Rivalutazione post-fix:* confronti tutti e 4 i gradienti con `allclose` vs ufficiale — ok. Manca ancora la funzione **`backward_2layer_v2`** (orchestratore riusabile); la catena è inline. **Post-fix: 8.5/10**.
+
+### 2026-07-30 — Cap.06 TODO 8 (seed diversi)
+
+- Loop seed 0..4 + stampa loss/acc: ok. Numeri: loss diverse (~0.056–0.105), acc tutte 1.0 → **soluzioni di pesi diverse**, performance simile.
+- Commento incompleto: “deterministica a parità di input” — vero per il *forward*, ma la domanda punta a: **seed diversi → init diverse → convergono a pesi diversi** (non alla stessa soluzione).
+- Dataset: riusi `X,y` lasciati dal TODO 7 `(20,5)`, non ricrei il lineare del **TODO 4** `(300,4)`. Con 20 punti l’acc=1.0 su tutti i seed è troppo “facile”.
+- **Valutazione (primo tentativo):** **6.5/10**.
+
+### 2026-07-30 — Cap.06 TODO 9 (RECALL `bce_loss`)
+
+- `my_bce_loss`: clip bilaterale `eps…1-eps`, formula BCE media, `float(...)`; assert `isclose` vs ufficiale — ok.
+- **Valutazione (primo tentativo):** **10/10**.
+
+### 2026-07-30 — Cap.06 TODO 10 (RECALL `derivata_sigmoid`)
+
+- Formula `s*(1-s)` con `*` (non `/` — Pattern #27 ok); check numerico su z∈{-3,0,3} con differenza centrata `h=1e-6` — assert passano.
+- Minori: `sigmoid` chiamata due volte (si può `s=sigmoid(z); return s*(1-s)`); ridefinisce `derivata_numerica` (ombra quella in cima al file — funziona, ridondante).
+- **Valutazione (primo tentativo):** **9.5/10**.
+
+### 2026-07-30 — Cap.06 TODO 11 (RECALL `gradient_descent_1d`)
+
+- Loop corretto: derivata numerica centrata → `x = x - lr * grad` → traiettoria; `f=(x-4)^2`, `x0=-2`, `lr=0.3`.
+- Converge a ~4 già entro ~5–10 step (a step 20: ≈4.0) — allineato all’atteso “~20 step”.
+- Specchio fedele di `gradient_descent_1d` del cap.05; stampa lista completa ok.
+- **Valutazione (primo tentativo):** **10/10**.
+
+### 2026-07-30 — Cap.06 TODO 12 (RETRIEVAL `forward_2layer`)
+
+- Corpo forward ok in sé: `Z1 → ReLU → Z2 → sigmoid`, cache con Z1/H/Z2/P.
+- Bug di consegna: def `my_forwar_2layer` (manca la `d`) ma call `my_forward_2layer` → l’assert confronta la **vecchia** `my_forward_2layer` (riga ~817), non la riscrittura del TODO 12. Verifica illusoria.
+- Rispetto all’ufficiale mancano: `P = sigmoid(Z2).ravel()` e `"X"` in cache (serve al backward).
+- Type hint cache `dict[str, float]` impreciso (sono array).
+- **Valutazione (primo tentativo):** **7.5/10**.
+
+### 2026-07-30 — Cap.06 TODO 12 (post-feedback)
+
+- Fix: nome `my_forward_2layer`, `P.ravel()`, cache con `"X"`, type hint array — allineato a `forward_2layer`.
+- Assert su `P` vs ufficiale ora testa davvero questa riscrittura (nota: ridefinisce/sovrascrive la `my_forward_2layer` precedente nel file — ok in questo capitolo).
+- **Valutazione (post-feedback):** **10/10** (voto esame primo tentativo resta **7.5/10**).
+
+### 2026-07-30 — Cap.06 TODO 13 (INTERLEAVING — versione esplorativa train/test)
+
+- Intentional upgrade vs consegna: split stratificato + `StandardScaler` fit solo su train + train rete + eval test con pesi finali.
+- Numeri: train loss≈0.182 acc≈0.949; test loss≈0.153 acc≈0.945 — generalizza; batte baseline costante ≈0.65 di gran lunga (>5pp).
+- Gap vs consegna stretta: no `DictReader`, no `(X-mean)/std` a mano, no print/assert baseline esplicita, no fallback sintetico se CSV assente.
+- **Valutazione (esplorativa / ML practice):** **9.5/10**. **Vs consegna letterale:** **7.5/10**.
+
+### 2026-07-30 — Cap.06 PIPE.1 (`train_rete_2_layer_completo`)
+
+- Schema ok: sanity opzionale → `train_rete_2_layer` → dict di ritorno; dataset cerchio corretto; sanity `ok=True`.
+- Verifica fallita: con default `h=16`, `n_epochs=200` acc finale ≈**0.86** (<0.95). Su cerchio serve tipo TODO 5: `h=32`, `n_epochs=500` nella chiamata.
+- Bug concettuale: `he_init` senza seed per il sanity, poi `train_rete_2_layer(seed=0)` reinizializza altri pesi → sanity e train non condividono il passo 0.
+- `return print(...)` se sanity fallisce → ritorna `None`; meglio alert + dict/`raise`. Manca loss/acc **iniziali** nel return.
+- **Valutazione (primo tentativo):** **7/10**.
+
+### 2026-07-30 — Cap.06 PIPE.1 (post-feedback)
+
+- Fix: stesso stream RNG di `train_rete_2_layer` (W1→W2) → sanity e train condividono il passo 0; `raise` se check fallisce; chiamata cerchio con `h=32`, `n_epochs=500`.
+- Sanity `ok=True`; exit 0.
+- Residuo minore: nel return mancano ancora loss/acc **iniziali**; i pesi init esterni restano solo per il check (poi `train_*` li ricrea — ora coerente).
+- **Valutazione (post-feedback):** **9/10** (voto esame primo tentativo resta **7/10**).
+
+### 2026-07-30 — Cap.06 PIPE.1 (post-feedback #2 — loss/acc iniziali)
+
+- Aggiunti campi iniziali, ma typo: chiave `"accuracy_finale": rete['acc_history'][0]` invece di `"accuracy_iniziale"`.
+- Poi la seconda `"accuracy_finale": ...[-1]` **sovrascrive** la prima → nel dict resta solo l’acc finale; l’iniziale si perde. `loss_iniziale` ok.
+- **Valutazione (post-feedback #2):** **8.5/10** (fix naming; primo tentativo resta **7/10**).
+
+### 2026-07-30 — Cap.06 PIPE.1 (post-feedback #3)
+
+- Fix: `accuracy_iniziale` + `accuracy_finale` distinte; loss iniziale/finale ok; sanity allineata; cerchio `h=32`/`n_epochs=500`.
+- **Valutazione (post-feedback #3):** **9.5/10** (primo tentativo resta **7/10**).
 
 ---
 
