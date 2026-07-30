@@ -1779,8 +1779,34 @@ grafico_decision_boundary(
 # in pratica per cerchio bastano h = ?".
 # TUO CODICE QUI:
 
+print("\nTODO 6\n")
 
+hs = [2, 4, 8, 16, 32]
 
+for h in hs:
+    result = train_rete_2_layer(
+        X,
+        y,
+        h = h,
+        n_epochs = 500,
+        verbose = False
+    )
+    print(f"h: {h}")
+    print(f"Loss finale: {result['loss_history'][-1]}")
+    print(f"Accuracy finale: {result['acc_history'][-1]}\n")
+    
+    out_path = os.path.join(os.path.dirname(__file__), "figures", "test", f"h_{h}.png")
+    grafico_decision_boundary(
+        X,
+        y,
+        result['W1'],
+        result['b1'],
+        result['W2'],
+        result['b2'],
+        out_path = out_path
+    )
+    
+# dalle prove fatte, il minimo valore di "h" per far si che la rete apprenda il cerchio è h = 8.
 
 # TODO 7 (15 minuti) — refactoring del backward in stile "step rule"
 # Riscrivi backward_2layer scomposto in 5 funzioni che fanno UNO step
@@ -1795,6 +1821,75 @@ grafico_decision_boundary(
 # (Refactoring che ti aiuta a "vedere" la chain rule in codice.)
 # TUO CODICE QUI:
 
+print("\nTODO 7\n")
+
+def step1_dZ2(
+    P: NDArray[np.float64],
+    y: NDArray[np.float64]
+) -> NDArray[np.float64]:
+    return (P - y).reshape(-1, 1) / len(P)
+
+def step2_W2(
+    H: NDArray[np.float64],
+    dZ2: NDArray[np.float64]
+    
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+    return H.T @ dZ2, dZ2.sum(axis=0)
+
+def step3_H(
+    W2: NDArray[np.float64],
+    dZ2: NDArray[np.float64]
+) -> NDArray[np.float64]:
+    return dZ2 @ W2.T
+
+def step4_dZ1(
+    dH: NDArray[np.float64],
+    Z1
+) -> NDArray[np.float64]:
+    return derivata_relu(Z1) * dH
+
+def step5_dW1(
+    X: NDArray[np.float64],
+    dZ1: NDArray[np.float64]
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+    return X.T @ dZ1, dZ1.sum(axis=0)
+
+N = 20
+d = 5
+h = 8
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal(size=(N, d))
+y = (X[:, 0] - X[:, 1] > 0).astype(float)
+W1 = rng.standard_normal(size=(d, h)) * np.sqrt(2 / d); b1 = np.zeros(h)
+W2 = rng.standard_normal(size=(h, 1)) * np.sqrt(2 / h); b2 = np.zeros(1)
+
+P, cache = forward_2layer(
+    X,
+    W1,
+    b1,
+    W2,
+    b2
+)
+
+bw_fun_results = backward_2layer(
+    cache,
+    y,
+    W2
+)
+
+grad_W2_man, grad_b2_man = step2_W2(cache['H'], step1_dZ2(P, y))
+grad_W1_man, grad_b1_man = step5_dW1(X, step4_dZ1(step3_H(W2, step1_dZ2(P, y)), cache['Z1']))
+
+grads_per_confronto = {
+    "grad_W1": grad_W1_man,
+    "grad_b1": grad_b1_man,
+    "grad_W2": grad_W2_man,
+    "grad_b2": grad_b2_man
+}
+
+for k, v in grads_per_confronto.items():
+    assert np.allclose(grads_per_confronto[k], bw_fun_results[k]), "Ops, qualcosa è andato storto e i gradienti non coincidono!!"
 
 # TODO 8 (15 minuti) — confronto BCE finale tra reti con seed diversi
 # Sul dataset del TODO 4 (lineare), addestra 5 reti con seed = 0..4

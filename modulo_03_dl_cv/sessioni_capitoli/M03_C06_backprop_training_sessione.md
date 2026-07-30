@@ -304,6 +304,23 @@
 - **Valutazione (primo tentativo):** **7.5/10**.
 - *Rivalutazione post-fix:* `uniform(-3,3)`, `h=32`, `train_rete_2_layer` ufficiale + pesi dal dict, messaggio assert corretto. **Post-fix: 10/10**.
 
+### 2026-07-30 — Cap.06 TODO 6 (effetto larghezza `h` sul cerchio)
+
+- Loop `h∈[2,4,8,16,32]`, 500 epoch, stampa loss/acc; bonus PNG boundary per ogni h — ottimo.
+- Numeri (run): h2→acc **0.64**; h4→**0.93**; h8→**0.96**; h16→**0.96**; h32→**0.98**.
+- **Errore di lettura:** commento “minimo h=16” — con soglia tipo TODO 5 (acc>0.95) il minimo è **h=8**; h=4 è già quasi cerchio (0.93). UAT: più capacità aiuta, ma per *questo* task non serve “il più grande possibile”.
+- Manca il pezzo esplicito della consegna sul collegamento UAT cap.02 (“basta h grande” vs pratica).
+- **Valutazione (primo tentativo):** **7.5/10**.
+- *Rivalutazione post-fix:* minimo corretto a **h=8** (allineato ad acc>0.95). Residuo soft: manca la formulazione esplicita “UAT dice h grande / in pratica h=8”. **Post-fix: 9.5/10**.
+
+### 2026-07-30 — Cap.06 TODO 7 (backward a 5 step + v2)
+
+- I 5 step isolati: formule ok (`step1`…`step5`, incluso `Z1` in step4 e `sum(axis=0)` sui bias).
+- Manca **`backward_2layer_v2`**: orchestratore che chiama i 5 step e ritorna il dict completo. Hai solo una catena manuale su **`grad_W1`**.
+- Verifica incompleta: non confronti `grad_b1` / `grad_W2` / `grad_b2`. Meglio `np.allclose` sul dict intero vs `backward_2layer`.
+- Minore: `for i in range(len(dW1_test))` confronta per riga; basta `assert np.allclose(dW1_test, dW1_man)`.
+- **Valutazione (primo tentativo):** **7/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
