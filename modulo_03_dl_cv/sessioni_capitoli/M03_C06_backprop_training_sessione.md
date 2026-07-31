@@ -402,6 +402,116 @@
 - Bug metrico: `bce_loss(y_pred_logreg, y_test)` su etichette 0/1 (non `predict_proba`) → BCE LogReg ~0.86 fuorviante vs rete ~0.15 a parità di accuracy.
 - **Valutazione (primo tentativo):** **8/10**.
 
+### 2026-07-31 — Cap.06 TODO 14 COLLOQUIO (solo punto 1, in corso)
+
+- Idea ok: backprop serve a capire come aggiustare i pesi rispetto all’errore.
+- Troppo carico per (1): già entra in derivate/gradiente/GD (punti 3–4). “Incidenza” vago → meglio “quanto ogni peso ha contribuito all’errore”.
+- **Valutazione punto (1) primo tentativo:** **7/10**.
+
+### 2026-07-31 — Cap.06 TODO 14 COLLOQUIO (punto 2)
+
+- Analogia collina/notte solida e chiara (pendenza → passo → correggi direzione).
+- Più da **gradient descent / training loop** che da backprop: manca il pezzo “l’errore si riparte all’indietro tra i layer/pesi”.
+- **Valutazione punto (2) primo tentativo:** **7/10**.
+
+### 2026-07-31 — Cap.06 TODO 14 COLLOQUIO (punto 2, frase loop)
+
+- Aggiunta sul ripeti-fino-a-valle: rafforza bene l’idea di **ciclo/epoch** e minimo locale (“ovunque sali”).
+- Resta analogia da GD; per backprop ancora utile mezza riga sul ripartire l’errore all’indietro.
+- **Valutazione punto (2) post-fix:** **7.5/10**.
+
+### 2026-07-31 — Cap.06 TODO 14 COLLOQUIO (punto 2, link backprop)
+
+- Frase su “quanto ogni parametro ha contribuito”: collega finalmente collina ↔ backprop.
+- Lievemente imprecisa (“contribuito a muoverti verso quella direzione” ≈ più al passo GD; meglio “contribuito all’errore / alla loss”). Comunque ok da colloquio.
+- **Valutazione punto (2) post-fix #2:** **8.5/10**.
+
+### 2026-07-31 — Cap.06 TODO 15 REFACTORING `train_brutto`
+
+- Diagnosi 4/4 ok: seed legacy, He init, `b1` shape `(h,)` vs `(h,1)`, broadcast.
+- Fix quasi ok; bug nella versione “bella”: `np.default_rng` → deve essere `np.random.default_rng`.
+- Minore: stesso `seed` su entrambi `he_init` (stream resettato due volte); meglio `seed` / `seed+1` o un solo `rng` come in `train_rete_2_layer`.
+- **Valutazione (primo tentativo):** **8/10**.
+
+### 2026-07-31 — Cap.06 TODO 15 (post-feedback)
+
+- Rimosso `np.default_rng` errato; restano `he_init` + `b1` shape ok.
+- Residuo soft: stesso `seed` su W1 e W2 in `he_init` (preferibile `seed` / `seed+1`).
+- **Valutazione (post-feedback):** **9/10** (primo tentativo resta **8/10**).
+
+### 2026-07-31 — Cap.06 TODO 14 COLLOQUIO (punto 3)
+
+- Ricetta completa: loop epoche → forward (P∈(0,1)) → loss → backward/chain rule → update `w - lr*grad`. Allineata alla consegna.
+- Typo/lingua: imput→input, “a influito”→“ha influito”, “ripete”→“ripetere”; “parametri a” ok.
+- **Valutazione punto (3) primo tentativo:** **9/10**.
+
+### 2026-07-31 — Cap.06 TODO 14 COLLOQUIO (punto 4)
+
+- Idea nella direzione giusta (update con gradiente = GD), ma frase circolare/poco chiara (“discesa… per il ciclo successivo”).
+- Manca il distacco netto: **backprop calcola** il gradiente; **GD lo usa** per fare il passo `w := w - lr*grad`.
+- Typo: ciclio → ciclo.
+- **Valutazione punto (4) primo tentativo:** **6.5/10**.
+
+### 2026-07-31 — Cap.06 TODO 14 COLLOQUIO (punto 4 post-fix)
+
+- Distacco backprop vs GD corretto in una frase.
+- **Valutazione punto (4) post-fix:** **10/10** (primo tentativo resta **6.5/10**).
+
+### 2026-07-31 — Cap.06 TODO 14 COLLOQUIO (punto 5)
+
+- Vanishing + sigmoid ≤0.25 in catena: spiegazione solida.
+- LR troppo grande: idea ok (loss sale / divergenza); “aumentare il gradiente” impreciso → meglio “passi troppo lunghi / overshoot, la loss può salire”.
+- 2 problemi bastano (consegna 2–3); opzionale terzo: dataset sbilanciato.
+- Typo: aggiornamente → aggiornamenti.
+- **Valutazione punto (5) primo tentativo:** **8.5/10**.
+
+### 2026-07-31 — Cap.06 TODO 14 COLLOQUIO (punto 5 post-fix)
+
+- LR: passi lunghi + loss che oscilla/esplode = ok; “gradiente che diverge verso il minimo” ancora un filo confuso (diverge l’ottimizzazione/i pesi, non “il gradiente verso il minimo”).
+- Typo residui: aggiornamente, lunnghi.
+- **Valutazione punto (5) post-fix:** **9/10** (primo tentativo resta **8.5/10**).
+
+### 2026-07-31 — Cap.06 TODO 16 DEBUG (varianza X×100)
+
+- Setup (3) ok: `X = standard_normal * 100`, y lineare come TODO 4; curve/log mostrano loss iniziale ~9.85 (non ~0.69).
+- Gap: non usa i settaggi TODO 4 (`lr=0.1`) — ha messo `lr=0.001` (così impara, ma non mostra il fallimento tipico con lr “normale” su feature enormi).
+- Manca commento esplicito: cosa succede + come risolvi (standardizzare X; eventualmente abbassare lr è un pezza, non la fix principale).
+- **Valutazione (primo tentativo):** **6.5/10**.
+
+### 2026-07-31 — Cap.06 TODO 16 (post-feedback, confronto scaled)
+
+- Idea confronto raw vs scaled + lr=0.1 ok; commento “tramite standardizzazione” presente ma incompleto su “cosa succede”.
+- Bug formula: `X - mean / std` → per precedenza operatori è `X - (mean/std)`, non `(X-mean)/std`. Di fatto lo “scaled” resta a varianza enorme (entrambe le curve partono ~9.85).
+- Bug guardia: `std[std==0] = 0` dovrebbe essere `1.0` (altrimenti dividi per zero).
+- **Valutazione (post-feedback):** **7/10** (primo tentativo resta **6.5/10**).
+
+### 2026-07-31 — Cap.06 TODO 17 RETRIEVAL (bce / d_sigmoid / d_relu)
+
+- `derivata_sigmoid` e `derivata_relu` ok; assert passano sul caso `z=2`, `y=1`.
+- Gap consegna: `new_bce_loss` **senza clip bilaterale** (`np.clip(p, eps, 1-eps)`) — richiesto esplicitamente; sul test “sicuro” l’assert passa lo stesso.
+- Test troppo stretto: un solo punto; non stressa p≈0/1, z≤0 per ReLU, confronto numerico opzionale.
+- **Valutazione (primo tentativo):** **7.5/10**.
+
+### 2026-07-31 — Cap.06 TODO 17 (post-feedback)
+
+- Clip messo su `new_derivata_sigmoid(z)` con range `[eps, 1-eps]` → **sbagliato** (z è un logit reale, non una probabilità; a `z=2` lo schiacci a ~1 e rovini la derivata).
+- `new_bce_loss` ancora **senza** clip su `p` — è lì che serve il bilaterale.
+- ReLU ok; test ancora su un solo punto.
+- **Valutazione (post-feedback):** **6.5/10** (peggio del primo tentativo sulle derivate; primo tentativo resta **7.5/10**).
+
+### 2026-07-31 — Cap.06 TODO 17 (post-feedback #2)
+
+- BCE: clip presente ma su `z` invece che su `p` → ancora sbagliato.
+- `new_derivata_sigmoid`: usa `z_safe` non definito → NameError; deve essere `sigmoid(z)*(1-sigmoid(z))`.
+- ReLU ok.
+- **Valutazione (post-feedback #2):** **5.5/10** (primo tentativo resta **7.5/10**).
+
+### 2026-07-31 — Cap.06 TODO 17 (post-feedback #3)
+
+- BCE con `np.clip(p, eps, 1-eps)` ok; sigmoid `s*(1-s)` ok; ReLU step ok; assert vs funzioni ufficiali/my_*.
+- Residuo soft: test su un solo `z=2` (non stressa bordi BCE / ReLU a z≤0).
+- **Valutazione (post-feedback #3):** **9.5/10** (primo tentativo resta **7.5/10**).
+
 ---
 
 ## Lacune e dubbi ancora aperti

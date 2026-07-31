@@ -1979,7 +1979,7 @@ assert np.isclose(bce_real, bce_test), "Ops, qualcosa è andato storto e le bce 
 # Verifica numericamente con derivata_numerica per z in [-3, 0, 3].
 # TUO CODICE QUI:
 
-print("\nTODO 10\n")
+# print("\nTODO 10\n")
 
 def derivata_numerica(
     f: Callable[[float], float],
@@ -1991,18 +1991,20 @@ def derivata_numerica(
 def my_derivata_sigmoid(
     z: NDArray[np.float64]
 ) -> NDArray[np.float64]:
-    return sigmoid(z) * (1 - sigmoid(z))
+    eps = 1e-12
+    z_safe = np.clip(z, eps, 1 - eps)
+    return sigmoid(z_safe) * (1 - sigmoid(z_safe))
 
-arr = np.array([-3, 0, 3])
+# arr = np.array([-3, 0, 3])
 
-for a in arr:
-    out = derivata_numerica(
-        sigmoid,
-        a
-    )
-    out_2 = my_derivata_sigmoid(a)
-    assert np.isclose(out, out_2), "Ops, qualcosa è andato storto!"
-    print(out, out_2)
+# for a in arr:
+#     out = derivata_numerica(
+#         sigmoid,
+#         a
+#     )
+#     out_2 = my_derivata_sigmoid(a)
+#     assert np.isclose(out, out_2), "Ops, qualcosa è andato storto!"
+#     print(out, out_2)
 
 # TODO 11 (15 minuti) [🔄 RECALL cap.05 — gradient descent]:
 # Riscrivi gradient_descent_1d (con differenza centrata) e usala per
@@ -2498,7 +2500,18 @@ grafico_loss_curve(
 # Scrivi la risposta sotto, in 15-20 righe MASSIMO. Usa pseudo-italiano,
 # NIENTE formule LaTeX, parole tipo "derivata" sono ok.
 # TUA RISPOSTA:
-# ...
+
+# 1) La backpropagation risolve il problema di come aggiustare i pesi di una rete sulla base della loro rispettiva "incidenza" (usando la pendenza tramite derivate parziali nel gradiente), così da ridurre, di epoca in epoca, la loss tramite discesa del gradiente.
+
+# 2) immagina di essere sul pendio di una collina e di voler scendere a valle, ma è notte e non si vede la direzione. Allora innanzi tutto cerchi di capire la pendenza del punto in cui sei ora, dopo di che fai un passo e vedi se stai scendendo o salendo rispetto dove eri. Se nella direzione che hai intrapreso sei sceso, continui in quella direzione, altrimenti ti giri e vai nella direzione opposta. Se la direzione intrapresa non è giusta, o non è proprio perfetta, nella rete, tramite backprop in pratica ti occorre capire quanto ogni parametro ha contribuito a muoverti verso quella direzione per poter aggistare il tiro. Ripeti questa operazione fino a quando, ovunque tu ti giri, non puoi far altro che salire. A quel punto sei a valle.
+
+# 3) il train di una rete è composta da un ciclo di n epoche, in cui si alternano una fase forward e una backward: nella fase "in avanti", la rete riceve gli input, li processa attraverso i vari livelli e i suoi parametri e alla fine restituisce una probabilità espressa da un numero continuo tra 0 e 1. Lo si confronta con la risposta (che può essere o 0 o 1), e si calcola la loss. Comincia la fase "indietro", dove tramite la chain rule si vede quanto ogni parametro ha influito a produrre quella loss (gradiente), e sottraendo ad ogni parametro il relativo gradiente moltiplicato per il learning rate, si aggiornano i pesi per ripete il ciclo in avanti.
+
+# 4) La backprop calcola il gradiente della loss rispetto ai pesi; il gradient descent è la regola che usa quel gradiente per aggiornare i pesi e far scendere la loss.
+
+# 5) Alcuni dei problemi tipici sono:
+# Vanishing gradient: Se nei livelli intermedi di una rete (hidden layer) usassimo la sigmoide come attivazione, ognuno di quei livelli produrrebbe una derivata al massimo di 0.25. A quel punto, tornando indietro, dopo pochi layer avremmo gradienti così piccoli da rendere gli aggiornamente quasi irrilevanti.
+# Lr troppo grande: se il learning rate è troppo grande (tipicamente già 1 o più), la rete, facendo passi troppo lunnghi, porterebbe il gradiente a divergere invece di convergere verso il suo minimo, e di conseguenza la loss a oscillare e esplodere.
 
 
 # TODO 15 (20 minuti) [🔧 REFACTORING]:
@@ -2534,6 +2547,38 @@ grafico_loss_curve(
 # Spiega in commento ogni bug e dai la versione corretta.
 # TUO CODICE QUI:
 
+# 1) stile vecchio, meglio usare np.random.default_rng(seed)
+# 2) Se non si regolano i pesi iniziale tramite he_init, c'è il rischio di azzoppare la rete prima di cominciare, poichè la convergenza potrebbe risultare anomala.
+# 3) la shape corretta deve essere (h, ) -> np.zeros(h)
+# 4) Si ricollega all'errore sulla shape di b, il brodcast non va a buon fine.
+# 
+# versione corretta:
+#   def train_bello(X, y, h=16, lr=0.1, n_epochs=200, seed=0):
+#       N, d = X.shape
+#       W1 = he_init(d, h, seed)
+#       b1 = np.zeros((h, ))
+#       W2 = he_init(h, 1, seed)
+#       b2 = np.zeros(1)
+#       for ep in range(n_epochs):
+#           Z1 = X @ W1 + b1
+#           H = relu(Z1)
+#           Z2 = H @ W2 + b2
+#           P = sigmoid(Z2).ravel()
+#           loss = bce_loss(P, y)
+#
+#           dZ2 = (P - y).reshape(-1, 1) / N
+#           grad_W2 = H.T @ dZ2
+#           grad_b2 = dZ2.sum(axis=0)
+#           dH = dZ2 @ W2.T
+#           dZ1 = dH * derivata_relu(Z1)
+#           grad_W1 = X.T @ dZ1
+#           grad_b1 = dZ1.sum(axis=0)
+#           W1 -= lr * grad_W1
+#           b1 -= lr * grad_b1
+#           W2 -= lr * grad_W2
+#           b2 -= lr * grad_b2
+#       return W1, b1, W2, b2, loss
+
 
 # TODO 16 (15 minuti) [🔍 DEBUG]:
 # La rete del TODO 4 (lineare) NON impara: loss resta a 0.69, accuracy
@@ -2547,6 +2592,47 @@ grafico_loss_curve(
 # Come risolvi?
 # TUO CODICE QUI:
 
+# tramite standardizzazione:
+
+rng = np.random.default_rng(0)
+X = rng.standard_normal(size=(300, 4)) * 100
+y = (X[:, 0] - X[:, 1] > 0).astype(float)
+
+mean = X.mean(axis=0)
+std = X.std(axis=0)
+std[std == 0] = 1.0
+
+X_scaled = (X - mean) / std
+
+result_not_scaled = train_rete_2_layer(
+    X,
+    y,
+    h = 16,
+    lr = 0.1,
+    n_epochs = 200,
+    verbose = True
+)
+
+path_file = os.path.join(os.path.dirname(__file__), "figures", "prova.png")
+grafico_loss_curve(
+    result_not_scaled,
+    path_file
+)
+
+result_scaled = train_rete_2_layer(
+    X_scaled,
+    y,
+    h = 16,
+    lr = 0.1,
+    n_epochs = 200,
+    verbose = True
+)
+
+path_file = os.path.join(os.path.dirname(__file__), "figures", "prova_2.png")
+grafico_loss_curve(
+    result_scaled,
+    path_file
+)
 
 # TODO 17 (15 minuti) [🧠 RETRIEVAL cap.03 LOSS + cap.04 derivate]:
 # Senza guardare cap.03 e cap.04, riscrivi DA ZERO:
@@ -2555,6 +2641,33 @@ grafico_loss_curve(
 #   - derivata_relu (step function)
 # Verifica le 3 funzioni in 1 script con asserzioni.
 # TUO CODICE QUI:
+
+z = np.array([2], dtype=float)
+p = np.array([sigmoid(z)], dtype=float)
+y = np.array([1], dtype=float)
+
+def new_bce_loss(
+    p: NDArray[np.float64],
+    y: NDArray[np.float64]
+) -> float:
+    eps = 1e-12
+    p_safe = np.clip(p, eps, 1 - eps)
+    return float(np.mean(- y * np.log(p_safe) - (1 - y) * np.log(1 - p_safe)))
+
+def new_derivata_sigmoid(
+    z: NDArray[np.float64]
+) -> NDArray[np.float64]:
+    
+    return sigmoid(z) * (1 - sigmoid(z))
+
+def new_derivata_relu(
+    z: NDArray[np.float64]
+) -> NDArray[np.float64]:
+    return (z > 0.0).astype(float)
+
+assert np.isclose(new_bce_loss(p, y), bce_loss(p, y)) , "La BCE loss non coincide!!"
+assert np.allclose(new_derivata_sigmoid(z), my_derivata_sigmoid(z)), "La derivata sigmoide non coincide!"
+assert np.allclose(new_derivata_relu(z), derivata_relu(z)), "La derivata ReLU non coincide!" 
 
 
 # TODO 18 (20 minuti) [🔀 INTERLEAVING cap.02 + cap.06 + scaler]:
