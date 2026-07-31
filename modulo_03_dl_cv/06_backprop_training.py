@@ -2642,33 +2642,32 @@ grafico_loss_curve(
 # Verifica le 3 funzioni in 1 script con asserzioni.
 # TUO CODICE QUI:
 
-z = np.array([2], dtype=float)
-p = np.array([sigmoid(z)], dtype=float)
-y = np.array([1], dtype=float)
+# z = np.array([2], dtype=float)
+# p = np.array([sigmoid(z)], dtype=float)
+# y = np.array([1], dtype=float)
 
-def new_bce_loss(
-    p: NDArray[np.float64],
-    y: NDArray[np.float64]
-) -> float:
-    eps = 1e-12
-    p_safe = np.clip(p, eps, 1 - eps)
-    return float(np.mean(- y * np.log(p_safe) - (1 - y) * np.log(1 - p_safe)))
+# def new_bce_loss(
+#     p: NDArray[np.float64],
+#     y: NDArray[np.float64]
+# ) -> float:
+#     eps = 1e-12
+#     p_safe = np.clip(p, eps, 1 - eps)
+#     return float(np.mean(- y * np.log(p_safe) - (1 - y) * np.log(1 - p_safe)))
 
-def new_derivata_sigmoid(
-    z: NDArray[np.float64]
-) -> NDArray[np.float64]:
+# def new_derivata_sigmoid(
+#     z: NDArray[np.float64]
+# ) -> NDArray[np.float64]:
     
-    return sigmoid(z) * (1 - sigmoid(z))
+#     return sigmoid(z) * (1 - sigmoid(z))
 
-def new_derivata_relu(
-    z: NDArray[np.float64]
-) -> NDArray[np.float64]:
-    return (z > 0.0).astype(float)
+# def new_derivata_relu(
+#     z: NDArray[np.float64]
+# ) -> NDArray[np.float64]:
+#     return (z > 0.0).astype(float)
 
-assert np.isclose(new_bce_loss(p, y), bce_loss(p, y)) , "La BCE loss non coincide!!"
-assert np.allclose(new_derivata_sigmoid(z), my_derivata_sigmoid(z)), "La derivata sigmoide non coincide!"
-assert np.allclose(new_derivata_relu(z), derivata_relu(z)), "La derivata ReLU non coincide!" 
-
+# assert np.isclose(new_bce_loss(p, y), bce_loss(p, y)) , "La BCE loss non coincide!!"
+# assert np.allclose(new_derivata_sigmoid(z), my_derivata_sigmoid(z)), "La derivata sigmoide non coincide!"
+# assert np.allclose(new_derivata_relu(z), derivata_relu(z)), "La derivata ReLU non coincide!" 
 
 # TODO 18 (20 minuti) [🔀 INTERLEAVING cap.02 + cap.06 + scaler]:
 # Mini-pipeline che integra "regola scaler" del cap.M2:
@@ -2683,6 +2682,39 @@ assert np.allclose(new_derivata_relu(z), derivata_relu(z)), "La derivata ReLU no
 #      standardizzazione converge molto piu' veloce.
 # TUO CODICE QUI:
 
+N = 200
+d = 2
+
+rng = np.random.default_rng(0)
+X1 = rng.standard_normal(N)
+X2 = rng.standard_normal(N) * 100
+X = np.column_stack([X1, X2])
+y = (X1 + X2 > 0).astype(float)
+
+rete_cruda = train_rete_2_layer(
+    X,
+    y
+)
+
+mean = X.mean(axis=0)
+std = X.std(axis=0)
+std[std == 0] = 1.0
+
+X_scaled = (X - mean) / std
+
+rete_scaled = train_rete_2_layer(
+    X_scaled,
+    y
+)
+
+grafico_loss_curve(
+    rete_cruda,
+    out_path = os.path.join(os.path.dirname(__file__), "figures", "prova_3_cruda.png")
+)
+grafico_loss_curve(
+    rete_scaled,
+    out_path = os.path.join(os.path.dirname(__file__), "figures", "prova_4_scalata.png")
+)
 
 # TODO 19 (20 minuti) [🌊 REAL-WORLD]:
 # "Una rete che hai deployato 6 mesi fa stava al 92% di accuracy. Oggi
