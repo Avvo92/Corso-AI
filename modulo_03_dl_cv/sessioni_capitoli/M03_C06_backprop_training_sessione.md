@@ -394,6 +394,14 @@
 - Fix: `accuracy_iniziale` + `accuracy_finale` distinte; loss iniziale/finale ok; sanity allineata; cerchio `h=32`/`n_epochs=500`.
 - **Valutazione (post-feedback #3):** **9.5/10** (primo tentativo resta **7/10**).
 
+### 2026-07-31 — Cap.06 MINI-PROGETTO `train_rete_su_csv_m2` (script inline)
+
+- Pipeline ok: load pratiche → shuffle 80/20 → scale fit train → rete `h=32`/500 → eval test; LogReg sklearn; LogReg a mano + PNG loss.
+- Target: rete_acc **0.96875** ≥ 0.85; vs LogReg acc **0.96875** → diff 0 ≥ -0.05. Curve loss (scaled) sane.
+- Gap consegna: non wrappato in `def train_rete_su_csv_m2` + dict return; usa `train_rete_2_layer` non `*_completo`; no fallback CSV assente; no boundary 2D (bonus).
+- Bug metrico: `bce_loss(y_pred_logreg, y_test)` su etichette 0/1 (non `predict_proba`) → BCE LogReg ~0.86 fuorviante vs rete ~0.15 a parità di accuracy.
+- **Valutazione (primo tentativo):** **8/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti

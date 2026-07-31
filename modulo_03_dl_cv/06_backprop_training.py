@@ -2355,6 +2355,132 @@ p.pprint(prova)
 # feature per poter visualizzare il decision boundary.
 # TUO CODICE QUI:
 
+from sklearn.linear_model import LogisticRegression
+
+file_path = os.path.join(os.path.dirname(__file__), "dati", "pratiche.csv")
+df = pd.read_csv(file_path)
+
+X = (df.drop(columns=["pratica_id", "y_alterato"])).to_numpy()
+y = (df['y_alterato']).to_numpy()
+
+rng = np.random.default_rng(0)
+idx = rng.permutation(len(y))
+
+X_shuffle = X[idx]
+y_shuffle = y[idx]
+
+cut = int((len(X_shuffle) *80)/100)
+
+X_train = X_shuffle[: cut]
+X_test = X_shuffle[cut :]
+y_train = y_shuffle[: cut]
+y_test = y_shuffle[cut :]
+
+mean = X_train.mean(axis=0)
+std = X_train.std(axis=0)
+std[std == 0] = 1.0
+
+X_train_scaled = (X_train - mean) / std
+X_test_scaled = (X_test - mean) / std
+
+rete = train_rete_2_layer(
+    X_train_scaled,
+    y_train,
+    h = 32,
+    n_epochs = 500,
+    verbose = False
+)
+
+P_rete, cache_rete = forward_2layer(
+    X_test_scaled,
+    rete['W1'],
+    rete['b1'],
+    rete['W2'],
+    rete['b2']
+)
+
+rete_bce = bce_loss(P_rete, y_test)
+rete_acc = accuracy_score(P_rete, y_test, 0.5)
+
+log_reg = LogisticRegression(random_state=42, max_iter=2_000)
+log_reg.fit(X_train_scaled, y_train)
+
+y_pred_logreg = log_reg.predict(X_test_scaled)
+
+logreg_bce = bce_loss(y_pred_logreg, y_test)
+logreg_acc = accuracy_score(y_pred_logreg, y_test, 0.5)
+
+
+print("Risultati Rete Neurale vs. Regressore Logistico\n")
+print(f"Rete BCE Loss:       {rete_bce:.5f} -> Regressore BCE Loss:       {logreg_bce:.5f}")
+print(f"Rete Accuracy_score: {rete_acc:.5f} -> Regressore Accuracy_score: {logreg_acc:.5f}\n")
+
+def forward_1layer(
+    X: NDArray[np.float64],
+    w: NDArray[np.float64],
+    b: NDArray[np.float64]
+) -> tuple[NDArray[np.float64], dict[str, float]]:
+    Z = X @ w + b 
+    P = sigmoid(Z)
+    cache = {
+        "Z": Z,
+        "W": w,
+        "b": b        
+    }
+    return P, cache
+
+def train_log_reg(
+    X: NDArray[np.float64],
+    y: NDArray[np.float64],
+    lr: float = 0.1,
+    n_epochs: int = 1_000,
+    seed: int = 0
+) -> dict[str, NDArray[np.float64]]:
+    rng = np.random.default_rng(seed)
+    w = rng.standard_normal(size=X.shape[1]) 
+    b = 0.0    
+    loss_history: list[float] = []
+    acc_history: list[float] = []
+    for i in range(n_epochs):
+        P, cache = forward_1layer(
+            X,
+            w,
+            b
+        )
+        loss = bce_loss(P, y)
+        acc = accuracy_score(P, y, 0.5)
+        loss_history.append(loss)
+        acc_history.append(acc)
+        grad_w = X.T @ (P - y) / X.shape[0]
+        grad_b = np.mean(P - y)
+        w = w - grad_w * lr
+        b = b - grad_b * lr
+    return {
+        "w": w,
+        "b": b,
+        "loss_history": loss_history,
+        "acc_history": acc_history,
+    }
+    
+man_log_reg = train_log_reg(
+    X_train_scaled,
+    y_train,
+    lr = .1,
+    n_epochs = 500
+)
+
+path_fig_logreg = os.path.join(os.path.dirname(__file__), "figures", "mini_progetto_finale", "logreg.png")
+path_fig_rete = os.path.join(os.path.dirname(__file__), "figures", "mini_progetto_finale", "rete.png")
+    
+grafico_loss_curve(
+    man_log_reg,
+    path_fig_logreg
+)
+
+grafico_loss_curve(
+    rete,
+    path_fig_rete    
+)
 
 # ==========================================================================
 # TIPOLOGIE STANDARD (TODO 14 - 19)
