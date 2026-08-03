@@ -321,7 +321,8 @@ print("44 sanity check: OK (i due metodi coincidono)")
 # ==========================================================================
 # DIZIONARIO NumPy → PyTorch  (la "Rosetta Stone" del capitolo)
 # ==========================================================================
-#
+def dizionario():
+    return
 # Tieni questa tabella a portata di mano: il 90% della confusione iniziale
 # e' solo vocabolario.
 #
@@ -476,13 +477,24 @@ print(type(arr_torch))
 # Mini 1.3 — (nuovo) Prendi X_demo (float64, definito nel rinforzo #43),
 #            convertilo in tensor float32 e stampa shape + dtype.
 # TUO CODICE:
-# ...
+X_demo = np.array([[12.0, 25.0], [8.0, 15.0]])
+X_tensor = torch.tensor(X_demo, dtype=torch.float32)
+
+print(X_tensor.shape)
+print(X_tensor.dtype)
 
 # Mini 1.4 — (nuovo) Crea due tensori (2,3) e (3,2) e moltiplicali con @.
 #            Che shape ti aspetti PRIMA di stampare?
 # TUO CODICE:
-# ...
 
+tensor_1 = torch.rand(2, 3)
+tensor_2 = torch.rand(3, 2)
+
+product = tensor_1 @ tensor_2
+
+# shape attesa == (2, 2)
+
+print(product.shape)
 
 # ==========================================================================
 # SEZIONE 2 — Autograd: il "nastro" che sostituisce il backward manuale
@@ -530,6 +542,17 @@ print("2.1 y =", y_out.item(), "| dy/dw =", w.grad.item())
 #   y = u^2  con u = w*x  →  dy/du = 2u = 2*6 = 12 ;  du/dw = x = 3
 #   dy/dw = 12 * 3 = 36  ✓  (coincide con w.grad)
 
+w_1 = np.array([2.0], dtype=float)
+x_1 = np.array([3.0], dtype=float)
+eps = 1e-6
+
+f_1 = lambda x: x**2
+f_2 = lambda w: w*x_1
+
+derivata_numerica = (f_1(f_2(w_1 + eps)) - f_1(f_2(w_1 - eps))) / (2.0 * eps)
+
+assert np.isclose(w.grad.item(), derivata_numerica), "Ops, qualcosa è andato storto!"
+
 # 2.2 — requires_grad: chi e' "sorvegliato"
 peso = torch.tensor([1.0, 2.0], requires_grad=True)   # PARAMETRO → sorvegliato
 dato = torch.tensor([5.0, 7.0])                       # DATO     → no
@@ -566,17 +589,28 @@ print("2.4 dentro no_grad, requires_grad del risultato:", prova.requires_grad)
 # Mini 2.1 — Calcola a mano dy/dw per y = (w+1)^2 in w=1, poi verifica
 #            con autograd (requires_grad=True).
 # TUO CODICE:
-# ...
+
+w_np = 1.0
+y_np = (w_np+1)**2
+der_ana = float(2*(w_np+1))
+
+w_tch = torch.tensor(1.0, requires_grad=True)
+y_tch = (w_tch+1)**2
+y_tch.backward()
+
+assert np.isclose(der_ana, w_tch.grad.item()), "Ops, qualcosa è andato"
+
+print(der_ana)
+print(w_tch.grad.item())
 
 # Mini 2.2 — 💬 In 2 frasi: cosa sostituisce autograd rispetto al cap.06?
 # TUA RISPOSTA:
-# ...
+# sostituisce la cache e le derivate parziali calcolate a mano usando la chian rule. Non sostituisce il gradiente descent.
 
 # Mini 2.3 — (nuovo) Perche' `q.grad` valeva 2, poi 4, poi 6 in 2.3?
 #            Rispondi in 1 riga usando la parola "accumulo".
 # TUA RISPOSTA:
-# ...
-
+# Perchè .grad accumula (somma) i gradienti effettuati in ogni ciclo.
 
 # ==========================================================================
 # SEZIONE 3 — nn.Module, nn.Linear, attivazioni

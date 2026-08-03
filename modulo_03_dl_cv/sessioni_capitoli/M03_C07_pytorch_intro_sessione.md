@@ -178,6 +178,71 @@
 - **Correzione / suggerimento:** Frase da colloquio: “Autograd calcola i gradienti al posto tuo; il sanity check manuale serve soprattutto se implementi un’operazione custom.”
 - **Pattern errore / ID contesto:** #44 resta 🟢 (44.A ha chiuso il meccanismo; 44.B ok con nit)
 
+### 2026-08-03 — Sez.1 Mini 1.3 (`07_pytorch_intro.py` ~476–484)
+
+- **Esercizio / blocco:** Mini 1.3 — X_demo float64 → tensor float32, stampa shape + dtype
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**
+- **Punti di forza:** `from_numpy` + print di `.shape` e `.dtype` ok; risultato pratico float32 shape `(2, 2)`.
+- **Errori / lacune:** Hai **ricreato** `X_demo` già in `float32`, saltando il punto dell’esercizio: usare l’`X_demo` del rinforzo #43 (float64 di default) e **convertire**. Soft Pattern #6 (lettura consegna).
+- **Correzione / suggerimento:** `torch.tensor(X_demo, dtype=torch.float32)` oppure `torch.from_numpy(X_demo.astype(np.float32))` sull’array già definito sopra.
+- **Pattern errore / ID contesto:** soft #6 consegne; tranello dtype 64→32 da consolidare
+- **Fix applicato (post-feedback):** `X_demo` senza dtype (→ float64) + `torch.tensor(..., dtype=torch.float32)` + print shape/dtype — **corretto**.
+
+### 2026-08-03 — Sez.1 Mini 1.4 (`07_pytorch_intro.py` ~486–497)
+
+- **Esercizio / blocco:** Mini 1.4 — tensori (2,3)@(3,2), shape attesa prima di stampare
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** Shape attesa `(2, 2)` corretta (regola `(m,k)@(k,n)→(m,n)`); `@` usato bene; print di `.shape` ok.
+- **Errori / lacune:** nessuno (`torch.rand` va benissimo al posto di `randn`/`zeros`)
+- **Correzione / suggerimento:** —
+- **Pattern errore / ID contesto:** —
+
+### 2026-08-03 — Sez.2 verifica numerica esempio 2.1 (`07_pytorch_intro.py` ~541–552)
+
+- **Esercizio / blocco:** Check numerico di `dy/dw` per `y=(w*x)^2` (dopo esempio autograd)
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**
+- **Punti di forza:** Dopo correzione: perturba `w` (non `x`); composizione `u=w*x`, `y=u^2`; differenza centrata `/ (2*eps)` corretta → ≈ 36, allineato a chain rule e `w.grad`.
+- **Errori / lacune:** Soft: riscrive `w`/`x` torch con NumPy (meglio `w_np`/`x_np`); manca un `print`/`assert` esplicito del confronto nel snippet (la formula però è giusta).
+- **Correzione / suggerimento:** `print(derivata_numerica)` e confronta con 36; non sovrascrivere i tensori dell’esempio 2.1.
+- **Pattern errore / ID contesto:** — (primo tentativo aveva dy/dx; fix applicato prima della valutazione formale)
+
+### 2026-08-03 — Sez.2 verifica numerica esempio 2.1 RIVALUTAZIONE (`07_pytorch_intro.py` ~534–555)
+
+- **Esercizio / blocco:** Autograd `(w*x)^2` + check numerico + `assert` vs `w.grad`
+- **Valutazione (richiesta esplicita post-fix):** **10/10**
+- **Punti di forza:** Tensori torch intatti (`w`/`x`); NumPy in `w_1`/`x_1`; formula centrata su `w`; `assert np.isclose(w.grad.item(), derivata_numerica)` chiude il cerchio analitico/autograd/numerico.
+- **Errori / lacune:** nessuno
+- **Correzione / suggerimento:** —
+- **Pattern errore / ID contesto:** —
+
+### 2026-08-03 — Sez.2 Mini 2.1 (`07_pytorch_intro.py` ~589–605)
+
+- **Esercizio / blocco:** Mini 2.1 — dy/dw di `y=(w+1)^2` a `w=1`, a mano + autograd
+- **Valutazione (primo tentativo — "voto esame"):** **5.5/10**
+- **Punti di forza:** Parte PyTorch corretta: `requires_grad=True`, `y=(w_tch+1)**2`, `.backward()`, confronto con `.grad`.
+- **Errori / lacune:** Formula analitica sbagliata: `2*w` invece di `2*(w+1)`. Usi il `w` torch dell’esempio sopra (=2), non `w_np` (=1) → `der_ana=4` e l’assert **passa per coincidenza** (a `w=1` il vero gradiente è comunque 4). `y_np` calcolato ma non usato.
+- **Correzione / suggerimento:** A mano: `dy/dw = 2*(w+1)` → a `w=1` vale **4**. Codice: `der_ana = 2*(w_np+1)` e usa solo `w_np` / `w_tch`.
+- **Pattern errore / ID contesto:** soft #6 variabili; attenzione assert “fortunati”
+- **Fix applicato (post-feedback):** `der_ana = 2*(w_np+1)`, `y_np` su `w_np`, autograd invariato → **corretto** (rivalutazione informale **10/10**).
+
+### 2026-08-03 — Sez.2 Mini 2.2 (`07_pytorch_intro.py` ~606–609)
+
+- **Esercizio / blocco:** Mini 2.2 — cosa sostituisce autograd rispetto al cap.06 (2 frasi)
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**
+- **Punti di forza:** Nocciolo corretto: niente più derivate/backward scritti a mano con chain rule.
+- **Errori / lacune:** Solo 1 frase (ne chiedeva 2). Manca il pezzo “cache/scontrino”: autograd sostituisce anche la contabilità manuale dei valori intermedi. Typo `chian` → chain. Non confondere: non sostituisce il GD/`optimizer.step()`.
+- **Correzione / suggerimento:** Frase 2 es.: “Registra il grafo delle operazioni (come la cache) e con `.backward()` riempie `.grad`.”
+- **Pattern errore / ID contesto:** —
+
+### 2026-08-03 — Sez.2 Mini 2.3 (`07_pytorch_intro.py` ~609–613)
+
+- **Esercizio / blocco:** Mini 2.3 — perché `q.grad` = 2, 4, 6 (parola accumulo)
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** Meccanismo corretto: `.grad` somma i contributi di ogni `backward` se non azzeri → 2+2+2. Usa la famiglia lessicale di “accumulo”.
+- **Errori / lacune:** nessuno (nit: “accumula” vs sostantivo “accumulo”; non scala)
+- **Correzione / suggerimento:** Ecco perché esiste `optimizer.zero_grad()` a ogni step.
+- **Pattern errore / ID contesto:** —
+
 ### 2026-08-03 — Revisione capitolo (richiesta studente)
 
 - **Motivo:** confusione sul passaggio NumPy → PyTorch.
