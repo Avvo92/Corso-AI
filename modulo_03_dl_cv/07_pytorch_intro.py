@@ -18,6 +18,27 @@ Chiusura anticipata cap.06 (03/08/2026): ~3000 righe, residui NON svolti
 migrati qui come blocchi 🔁 RINFORZO (quiz V, confronto 01→06, scaler,
 drift, clip BCE, Pattern #27).
 
+REVISIONE 03/08/2026 (richiesta studente): capitolo riscritto con MOLTE piu'
+spiegazioni sul passaggio NumPy → PyTorch. Le tue risposte precedenti sono
+state conservate parola per parola.
+
+----------------------------------------------------------------------------
+COME LEGGERE QUESTO FILE
+----------------------------------------------------------------------------
+Ogni sezione segue sempre lo stesso schema, per non perdere la bussola:
+
+    [1] ANALOGIA          "come nella vita reale / nel web"
+    [2] COME LO FACEVI    codice NumPy del cap.01-06 (lo conosci)
+    [3] COME SI FA ORA    codice PyTorch equivalente
+    [4] COSA CAMBIA       le 2-3 differenze che contano davvero
+    [5] TRANELLI          gli errori che fanno TUTTI la prima volta
+    [6] MINI-ESERCIZIO    2-4 righe da scrivere tu
+
+Regola d'oro del capitolo: **PyTorch non introduce concetti nuovi di
+matematica**. Introduce solo un modo piu' comodo (e piu' veloce) di scrivere
+le stesse cose. Se ti senti confuso, torna alla domanda:
+"questa riga PyTorch quale riga NumPy del cap.06 sta sostituendo?"
+
 ----------------------------------------------------------------------------
 DEFINITION OF DONE (cap.07)
 ----------------------------------------------------------------------------
@@ -40,12 +61,14 @@ MAPPA DEL CAPITOLO
    *  🔁 RINFORZO #42 clip BCE su p (non su z)              micro
    *  🔁 RINFORZO #43 scaler: (X-mean)/std                 micro
    *  🔁 RINFORZO Pattern #27 formula→codice               micro
-   *  SEZIONE 1  Tensori vs NumPy                          mini inline
-   *  SEZIONE 2  Autograd = backward automatico            mini + 🔁 cache
-   *  SEZIONE 3  nn.Module / Linear / ReLU / Sigmoid       mini
-   *  SEZIONE 4  Dataset + DataLoader                      mini
-   *  SEZIONE 5  Training loop standard                    mini + 🔁 loop
-   *  SEZIONE 6  state_dict save/load                      mini
+   *  🔁 RINFORZO #44 sanity check = analitico vs numerico  micro
+   *  DIZIONARIO NumPy → PyTorch (tabella di traduzione)
+   *  SEZIONE 1  Tensori vs ndarray                        1.1 - 1.5 + mini
+   *  SEZIONE 2  Autograd = backward automatico            2.1 - 2.5 + mini
+   *  SEZIONE 3  nn.Module / Linear / attivazioni          3.1 - 3.4 + mini
+   *  SEZIONE 4  Dataset + DataLoader                      4.1 - 4.3 + mini
+   *  SEZIONE 5  Training loop standard                    5.1 - 5.4 + mini
+   *  SEZIONE 6  state_dict save/load                      6.1 - 6.2 + mini
    *  🔁 CONFRONTO PRIMA/DOPO (migrato da cap.06)          prosa
    *  🔁 TODO 18-ish: StandardScaler + train               commento
    *  🔁 TODO 19-ish: drift REAL-WORLD                     ipotesi
@@ -61,6 +84,16 @@ from __future__ import annotations
 
 # ---------------------------------------------------------------------------
 # Import: NumPy sempre; torch opzionale in locale (obbligatorio su Colab)
+#
+# NOTA (errore reale incontrato il 03/08/2026):
+#   In locale l'import di torch puo' fallire con
+#       OSError: [WinError 126] ... torch_python.dll
+#   che NON e' un ImportError: significa "pacchetto trovato, ma Windows non
+#   riesce a caricare le librerie native". Per questo qui catturiamo
+#   Exception e non solo ImportError.
+#   Cause tipiche: Python molto recente (3.14), Visual C++ Redistributable
+#   mancante, installazione torch corrotta. Soluzione consigliata dal corso:
+#   fare le sezioni 1-6 su Google Colab.
 # ---------------------------------------------------------------------------
 import numpy as np
 
@@ -69,12 +102,15 @@ try:
     import torch.nn as nn
     from torch.utils.data import Dataset, DataLoader, TensorDataset
     TORCH_OK = True
-except ImportError:
+except Exception as errore_torch:            # ImportError, OSError (DLL), ...
     TORCH_OK = False
     print(
-        "[AVVISO] torch non installato in questo ambiente. "
-        "Su Colab: gia' presente. In locale CPU-only: "
-        "pip install torch --index-url https://download.pytorch.org/whl/cpu"
+        "[AVVISO] torch non utilizzabile in questo ambiente:\n"
+        f"         {type(errore_torch).__name__}: {errore_torch}\n"
+        "         Le sezioni 1-6 vanno eseguite su Google Colab.\n"
+        "         (In locale CPU-only si puo' provare:\n"
+        "          pip install torch --index-url "
+        "https://download.pytorch.org/whl/cpu)"
     )
 
 # ==========================================================================
@@ -94,6 +130,11 @@ except ImportError:
 #
 # Analogia: Colab = "macchina da cantiere in affitto"; Cursor = "ufficio
 # dove progetti i pezzi". Non serve CUDA sul tuo PC.
+#
+# ATTENZIONE (visto il 03/08/2026): se stampi a.device e leggi "cpu", NON e'
+# un bug. I tensori nascono SEMPRE su CPU. La GPU si usa solo se:
+#   (a) il runtime Colab ha l'acceleratore GPU attivo, E
+#   (b) tu sposti il tensore: torch.tensor(..., device="cuda") oppure .to(dev)
 
 
 # ==========================================================================
@@ -120,27 +161,27 @@ except ImportError:
 
 # Q4) Sanity check del backward: cos'e' e perche' farlo PRIMA di addestrare?
 # TUA RISPOSTA:
-# ...
+# per vedere che le funzioni contenute all'interno del training non abbiamo subito modifiche che rompano il risultato finale. Una prova del nove ci evita calcoli inutili.
 
 # Q5) [Trova errore] dZ2 = (P - y).reshape(-1, 1)  # manca qualcosa per la
 #     media di batch della BCE. Cosa?
 # TUA RISPOSTA:
-# ...
+# P - y deriva dalla semplificazione miracoloso di dL/dp * dp/dZ2. ma dato che la loss è una media sul batch, (P-y) va diviso per N righe del batch. La formula corretta è ((P-y) / N).reshape(-1, 1)
 
 # Q6) Dataset bilanciato, rete random: loss iniziale BCE circa quanto?
 #     (pista: -log(0.5))
 # TUA RISPOSTA:
-# ...
+# circa 0,693147
 
 # Q7) Dopo 500 epoche loss = 0.692. Cosa pensi? (a/b/c/d come V7 cap.06)
 # TUA RISPOSTA:
-# ...
+# Penso che qualcosa non funziona, perchè la rete dopo 500 epoche non dovrebbe produrre risultati simili a dataset bilanciate e rete random.
 
 # Q8) 💬 Feynman: in 4-6 frasi, differenza tra backpropagation e
 #     gradient descent. (Punto debole TODO 14 cap.06 — non mischiarli.)
 # TUA RISPOSTA:
-# ...
-
+# Backpropagation: è la "retropropagazione dell'errore". Usando la chian rule (moltiplicazione di derivate locali), si "distribuisce l'errore" su ogni parametro della rete.
+# Gradient descent: usando poi le derivate parziali prodotte dalla chian rule, si aggiornano i parametri (fase update), tramite la formula w = w - grad * lr.
 
 # ==========================================================================
 # 🔁 RINFORZO MIRATO #42 — Clip BCE su p, NON su z
@@ -154,13 +195,18 @@ except ImportError:
 # termometro fuori scala: tagli la LETTURA del termometro (p), non il fuoco (z).
 #
 # Micro 42.A — completa (una riga ciascuna):
-#   p_safe = np.clip(___, eps, 1 - eps)
+#   p_safe = np.clip(p, eps, 1 - eps)
 #   loss = -np.mean(y * np.log(p_safe) + (1 - y) * np.log(1 - p_safe))
 #
 # Micro 42.B — V/F: "clippare z in [eps, 1-eps] e' equivalente a clippare p".
 # TUA RISPOSTA:
-# ...
-
+# Falso. nell formula della BCE usiamo p, e lo clippiamo per evitare di avere -log(0) e - log(1), i quali produrrebbero inf e nan.
+#
+# ⭐ ANTICIPO UTILE (vedi Sez.3): in PyTorch questo problema si risolve
+#    strutturalmente usando `nn.BCEWithLogitsLoss()`, che prende in input i
+#    LOGIT (z) e applica la sigmoid *dentro* la loss in modo numericamente
+#    stabile. In pratica: il "clip" non lo scrivi piu' tu, ma il motivo per
+#    cui serve resta esattamente quello che hai scritto sopra.
 
 # ==========================================================================
 # 🔁 RINFORZO MIRATO #43 — Scaler: (X - mean) / std  (parentesi!)
@@ -180,11 +226,11 @@ X_right = (X_demo - mean_demo) / std_demo
 print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # Commenta in 1 riga: perche' i due risultati sono diversi?
 # TUA RISPOSTA:
-# ...
+# Per via della precedenza sulle operazioni. I risultati della sottrazioni devo poi dopo essere divisi, ma dato che non avevamo messo le parentesi la precedenza veniva sballata.
 
 # Micro 43.B — std==0: cosa metti al posto dello 0 per non dividere per zero?
 # TUA RISPOSTA:
-# ...
+# Mettiamo 1.0
 
 
 # ==========================================================================
@@ -196,34 +242,244 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # Micro 27.A — riscrivi in NumPy (senza moltiplicazione implicita tipo p(1-p)):
 #   dL/dp = (p - y) / (p * (1 - p))
 # TUA CODICE (1 riga, p e y array):
-# ...
+
+print("\nRINFORZO MIRATO Pattern 27\n")
+
+p = np.array([.68, .23], dtype=float)
+y = np.array([1, 0], dtype=float)
+
+dL_dp = (p - y) / (p * (1 - p))
+
+print(dL_dp)
 
 # Micro 27.B — quale e' corretto per hidden @ pesi output?
 #   (a) H * W2   (b) H @ W2   (c) W2 @ H
 # TUA RISPOSTA:
-# ...
+# (b)
+#
+# PROMEMORIA ANTI-#27 (vale per tutto il capitolo):
+#   1. leggi la formula UN SIMBOLO ALLA VOLTA;
+#   2. denominatore sempre tra parentesi;
+#   3. dopo aver scritto la riga, rileggi solo i NOMI delle variabili
+#      (l'errore di ieri era `(1 - y)` al posto di `(1 - p)`: formula giusta,
+#      variabile sbagliata);
+#   4. quando puoi, chiudi con un assert.
+
+
+# ==========================================================================
+# 🔁 RINFORZO MIRATO #44 — Cos'e' ESATTAMENTE un sanity check
+# ==========================================================================
+#
+# Nel quiz Q4 hai detto "prova del nove per non fare calcoli inutili":
+# giusto come SPIRITO, ma manca il MECCANISMO. Fissiamolo con un esempio
+# minuscolo (nessuna rete, solo una funzione).
+#
+# Sanity check del gradiente = confrontare DUE modi di calcolare la stessa
+# derivata:
+#   (a) ANALITICO  → la formula che hai derivato a mano (veloce, ma sbagliabile)
+#   (b) NUMERICO   → differenza centrata (lento, ma quasi impossibile sbagliare)
+# Se coincidono → il backward e' corretto. Se no → c'e' un bug, e addestrare
+# sarebbe tempo buttato.
+
+
+def f_demo(x: float) -> float:
+    """Funzione di prova: f(x) = 3x^2 + 2x."""
+    return 3.0 * x ** 2 + 2.0 * x
+
+
+def derivata_analitica_demo(x: float) -> float:
+    """Derivata a mano: f'(x) = 6x + 2."""
+    return 6.0 * x + 2.0
+
+
+def derivata_numerica_demo(f, x: float, h: float = 1e-6) -> float:
+    """Differenza centrata: (f(x+h) - f(x-h)) / (2h). Attenzione: 2*h, non 2/h."""
+    return (f(x + h) - f(x - h)) / (2.0 * h)
+
+
+_x0 = 2.0
+_an = derivata_analitica_demo(_x0)
+_nu = derivata_numerica_demo(f_demo, _x0)
+print(f"\n44 sanity check: analitico={_an:.6f} numerico={_nu:.6f}")
+assert np.isclose(_an, _nu, atol=1e-5), "backward/derivata da correggere!"
+print("44 sanity check: OK (i due metodi coincidono)")
+
+# Micro 44.A — riscrivi in 1 frase la definizione operativa di sanity check
+#              usando le parole "analitico" e "numerico".
+# TUA RISPOSTA:
+# il sanity check tra analitico e numerico serve perchè la formula della derivata analitica è rigorosa ma sbagliabile, invece la numerica è lenta ma praticamente sempre esatta. Se i valori coincidono, allora la derivata analitica è corretta, e si può procedere con l'addestramento.
+#
+# Micro 44.B — in PyTorch il sanity check "manuale" quasi non serve piu'.
+#              Perche'? (1 frase; pista: chi calcola i gradienti?)
+# TUA RISPOSTA:
+# Perchè i gradienti sono gestiti direttamente da pytorch, quindi molto improbabile che si sbagli
+#
+# (Per curiosita': PyTorch ha comunque `torch.autograd.gradcheck`, usato
+#  quando ti scrivi un layer custom. Stesso principio, automatizzato.)
+
+
+# ==========================================================================
+# DIZIONARIO NumPy → PyTorch  (la "Rosetta Stone" del capitolo)
+# ==========================================================================
+#
+# Tieni questa tabella a portata di mano: il 90% della confusione iniziale
+# e' solo vocabolario.
+#
+#   CONCETTO                 NumPy (cap.01-06)          PyTorch (cap.07)
+#   -----------------------  -------------------------  ------------------------
+#   contenitore di numeri    np.ndarray                 torch.Tensor
+#   creare zeri              np.zeros((4,3))            torch.zeros(4, 3)
+#   creare random normale    rng.standard_normal(...)   torch.randn(...)
+#   tipo dei numeri          dtype=np.float32           dtype=torch.float32
+#   forma                    a.shape                    t.shape  (uguale!)
+#   prodotto matriciale      A @ B                      A @ B    (uguale!)
+#   element-wise             A * B                      A * B    (uguale!)
+#   trasposta                A.T                        A.T / A.t()
+#   somma su asse            a.sum(axis=0)              t.sum(dim=0)   ← axis→dim
+#   media                    a.mean()                   t.mean()
+#   reshape                  a.reshape(-1, 1)           t.reshape(-1, 1) / view
+#   da (N,1) a (N,)          a.ravel() / a[:,0]         t.squeeze(-1)
+#   copia in numpy           —                          t.detach().cpu().numpy()
+#   scalare Python           float(a)                   t.item()
+#   dove vive il dato        (sempre RAM/CPU)           t.device  ("cpu"/"cuda:0")
+#   -----------------------  -------------------------  ------------------------
+#   LOSS BCE                 tua bce_loss(p, y)         nn.BCELoss()(p, y)
+#                                                       nn.BCEWithLogitsLoss()(z,y)
+#   layer Dense              X @ W + b                  nn.Linear(d, h)
+#   ReLU                     np.maximum(0, z)           torch.relu(z)
+#   sigmoid                  1/(1+np.exp(-z))           torch.sigmoid(z)
+#   -----------------------  -------------------------  ------------------------
+#   BACKWARD                 lo scrivi TU (5 step)      loss.backward()
+#   gradiente di un peso     grad_W1 (array che crei)   W1.grad (lo riempie torch)
+#   UPDATE                   W -= lr * grad_W           optimizer.step()
+#   azzerare i gradienti     (non serve: li ricrei)     optimizer.zero_grad()  ⚠️
+#
+# LE UNICHE 3 COSE VERAMENTE NUOVE:
+#   1) device        → il dato puo' stare su CPU o GPU
+#   2) autograd      → i gradienti li calcola il framework
+#   3) zero_grad     → i gradienti si ACCUMULANO, quindi vanno svuotati
+#
+# Tutto il resto e' NumPy con un altro nome.
+
+
+# --------------------------------------------------------------------------
+# Da qui in poi serve torch: se non e' disponibile in locale, fermiamoci
+# con un messaggio chiaro invece di far esplodere il file.
+# --------------------------------------------------------------------------
+if not TORCH_OK:
+    print(
+        "\n[STOP LOCALE] I rinforzi NumPy sopra sono stati eseguiti.\n"
+        "              Le SEZIONI 1-6 richiedono torch: aprile su Colab.\n"
+    )
+    raise SystemExit(0)
 
 
 # ==========================================================================
 # SEZIONE 1 — Tensori PyTorch vs ndarray NumPy
 # ==========================================================================
 #
-# Analogia: ndarray = foglio Excel di numeri; Tensor = stesso foglio MA
-# puo' stare su GPU e puo' "ricordare" le operazioni (se requires_grad=True).
+# ---------- [1] ANALOGIA --------------------------------------------------
+# ndarray  = un foglio Excel di numeri, in un cassetto del tuo ufficio (RAM).
+# Tensor   = lo STESSO foglio, ma con due superpoteri:
+#            (a) puoi spostarlo in un altro ufficio piu' potente (la GPU);
+#            (b) se glielo chiedi, tiene il registro di cio' che gli fai
+#                (serve per le derivate — Sezione 2).
 #
-# JS: un Array di numeri. PHP: un array numerico. Qui in piu': device + tape.
+# Nel mondo web: come passare da un array PHP in memoria a un record che
+# vive su un server dedicato e tiene un log delle modifiche.
 #
-# if TORCH_OK:
-#     a = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
-#     b = torch.from_numpy(np.array([1.0, 2.0], dtype=np.float32))
-#     print(a.shape, a.dtype, a.device)
-#     # .numpy() solo se tensor e' su CPU e non richiede grad (o .detach())
+# ---------- [2] COME LO FACEVI (cap.01-06) --------------------------------
+#   X = np.zeros((4, 3), dtype=np.float32)
+#   H = np.maximum(0, X @ W1 + b1)
 #
+# ---------- [3] COME SI FA ORA --------------------------------------------
+#   X = torch.zeros(4, 3)                  # float32 di default
+#   H = torch.relu(X @ W1 + b1)
+#
+# Nota che `@`, `+`, broadcasting, `.shape`: IDENTICI a NumPy.
+
+print("\n=== SEZIONE 1 — tensori ===")
+
+# 1.1 — creare tensori (i 4 modi che userai davvero)
+t_zeri = torch.zeros(4, 3)                     # zeri, float32
+t_uni = torch.ones(2, 2)                       # uni
+t_rand = torch.randn(3, 2)                     # normale standard (media 0, std 1)
+t_lista = torch.tensor([[1.0, 2.0], [3.0, 4.0]])   # da lista Python
+print("1.1 shape/dtype/device:", t_zeri.shape, t_zeri.dtype, t_zeri.device)
+
+# 1.2 — dtype: il tranello numero 1 del passaggio da NumPy
+#
+# NumPy crea float64 per default. PyTorch lavora in float32 per default
+# (meta' memoria, doppia velocita' su GPU). Se mischi i due, ottieni errori
+# tipo: "expected scalar type Float but found Double".
+arr64 = np.array([1.0, 2.0])                   # float64!
+t_da64 = torch.tensor(arr64)                   # → torch.float64
+t_ok32 = torch.tensor(arr64, dtype=torch.float32)
+print("1.2 dtype da numpy:", t_da64.dtype, "| forzato:", t_ok32.dtype)
+#
+# REGOLA PRATICA: quando porti dati da NumPy/Pandas verso PyTorch, converti
+# SEMPRE in float32:
+#     X_np.astype(np.float32)      oppure     torch.tensor(X_np, dtype=torch.float32)
+
+# 1.3 — from_numpy vs tensor: copia o memoria condivisa?
+arr_shared = np.array([1.0, 2.0, 3.0], dtype=np.float32)
+t_shared = torch.from_numpy(arr_shared)        # CONDIVIDE la memoria
+t_copy = torch.tensor(arr_shared)              # COPIA
+arr_shared[0] = 99.0
+print("1.3 from_numpy (condivisa):", t_shared, "| tensor (copia):", t_copy)
+#
+# Quando usare cosa:
+#   from_numpy → dataset grossi, vuoi evitare di duplicare la RAM
+#   tensor     → vuoi essere sicuro che nessuno ti cambi i dati sotto i piedi
+
+# 1.4 — tornare a NumPy (per Matplotlib, sklearn, Pandas...)
+t_qualunque = torch.randn(3)
+arr_di_ritorno = t_qualunque.detach().cpu().numpy()
+print("1.4 tensor → numpy:", type(arr_di_ritorno).__name__, arr_di_ritorno.shape)
+#
+# Perche' quella catena di 3 metodi?
+#   .detach()  stacca il tensore dal registro delle derivate (altrimenti errore)
+#   .cpu()     lo riporta dalla GPU alla RAM (se era su GPU)
+#   .numpy()   converte
+# In locale su CPU senza gradienti bastano `.numpy()`, ma la catena completa
+# funziona SEMPRE: imparala cosi' e non ci pensi piu'.
+
+# 1.5 — device: dove vive il tensore
+device = "cuda" if torch.cuda.is_available() else "cpu"
+t_sul_device = torch.zeros(2, 2, device=device)
+print(f"1.5 device scelto: {device} | tensor su: {t_sul_device.device}")
+#
+# ⚠️ TRANELLO: puoi fare operazioni SOLO tra tensori sullo STESSO device.
+#    Se il modello e' su GPU e i dati su CPU → RuntimeError "expected all
+#    tensors to be on the same device". La fix e' sempre `.to(device)`.
+
+# ---------- [5] TRANELLI DELLA SEZIONE 1 ----------------------------------
+#   T1) float64 di NumPy vs float32 di PyTorch     → converti con astype
+#   T2) `axis=` non esiste, si chiama `dim=`
+#   T3) .numpy() su tensore con gradienti          → serve .detach()
+#   T4) tensori su device diversi                  → .to(device)
+#   T5) shape (N,1) vs (N,)                        → .squeeze(-1), come in cap.06
+
 # Mini 1.1 — Crea un tensor float32 shape (4, 3) di zeri su CPU.
+# TUO CODICE:
+a = torch.tensor(np.zeros((4, 3), dtype=np.float32))
+# [valutato 8.5/10 — corretto; versione idiomatica: torch.zeros(4, 3)]
+
+# Mini 1.2 — Converti un ndarray (5,) in tensor e stampa .shape.
+# TUO CODICE:
+arr_numpy = np.array([1, 2, 3, 4, 5], dtype=np.float32)
+print(type(arr_numpy))
+arr_torch = torch.tensor(arr_numpy)
+print(type(arr_torch))
+# [valutato 6.5/10 — la consegna chiedeva .shape, non type(): aggiungi la riga]
+
+# Mini 1.3 — (nuovo) Prendi X_demo (float64, definito nel rinforzo #43),
+#            convertilo in tensor float32 e stampa shape + dtype.
 # TUO CODICE:
 # ...
 
-# Mini 1.2 — Converti un ndarray (5,) in tensor e stampa .shape.
+# Mini 1.4 — (nuovo) Crea due tensori (2,3) e (3,2) e moltiplicali con @.
+#            Che shape ti aspetti PRIMA di stampare?
 # TUO CODICE:
 # ...
 
@@ -232,20 +488,81 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # SEZIONE 2 — Autograd: il "nastro" che sostituisce il backward manuale
 # ==========================================================================
 #
-# Cap.06: scrivevi a mano dZ2, dH, dZ1, grad_W...
-# Qui: PyTorch registra le operazioni (come uno scontrino / tape recorder)
-# e .backward() calcola i gradienti.
+# ---------- [1] ANALOGIA --------------------------------------------------
+# Nel cap.06 tenevi la CACHE: ti segnavi a mano Z1, H, Z2, P perche' ti
+# servivano dopo, nel backward. Era come conservare gli scontrini dei pezzi
+# per poter fare il reso.
 #
-# 🔁 Ponte con CACHE cap.06: la cache manuale = pezzi dello scontrino.
-#    Autograd conserva lo scontrino intero per te.
+# Autograd fa la stessa cosa, ma automaticamente e COMPLETAMENTE: registra
+# ogni operazione che fai su un tensore "sorvegliato" (requires_grad=True),
+# costruendo un grafo. Quando chiami .backward(), ripercorre quel grafo
+# all'indietro applicando la chain rule al posto tuo.
 #
-# Esempio (se TORCH_OK):
-#   w = torch.tensor(2.0, requires_grad=True)
-#   x = torch.tensor(3.0)
-#   y = (w * x) ** 2          # y = 36
-#   y.backward()
-#   print(w.grad)             # dy/dw = 2*(w*x)*x = 36
+# In una frase da colloquio: "autograd e' la backpropagation automatica".
 #
+# ---------- [2] COME LO FACEVI (cap.06) -----------------------------------
+#   P, cache = forward_2layer(X, W1, b1, W2, b2)
+#   dZ2 = (P - y).reshape(-1, 1) / N
+#   grad_W2 = cache["H"].T @ dZ2
+#   dH = dZ2 @ W2.T
+#   dZ1 = dH * (cache["Z1"] > 0)
+#   grad_W1 = X.T @ dZ1
+#   ... 5 step scritti a mano, ogni volta ricontrollati col sanity check
+#
+# ---------- [3] COME SI FA ORA --------------------------------------------
+#   loss.backward()      # ...e basta. I gradienti finiscono in W1.grad, ecc.
+#
+# ---------- [4] COSA CAMBIA DAVVERO ---------------------------------------
+#   (a) non scrivi piu' le derivate → meno bug (Pattern #27 respira);
+#   (b) i gradienti NON stanno in variabili tue, stanno in `.grad` dei tensori;
+#   (c) `.grad` si ACCUMULA (si somma) tra chiamate → va azzerato.
+
+print("\n=== SEZIONE 2 — autograd ===")
+
+# 2.1 — il caso minimo: una moltiplicazione
+w = torch.tensor(2.0, requires_grad=True)   # "sorveglia questo numero"
+x = torch.tensor(3.0)                       # dato: non serve gradiente
+y_out = (w * x) ** 2                        # y = (2*3)^2 = 36
+y_out.backward()                            # calcola dy/dw
+print("2.1 y =", y_out.item(), "| dy/dw =", w.grad.item())
+#
+# Verifica a mano (chain rule del cap.05):
+#   y = u^2  con u = w*x  →  dy/du = 2u = 2*6 = 12 ;  du/dw = x = 3
+#   dy/dw = 12 * 3 = 36  ✓  (coincide con w.grad)
+
+# 2.2 — requires_grad: chi e' "sorvegliato"
+peso = torch.tensor([1.0, 2.0], requires_grad=True)   # PARAMETRO → sorvegliato
+dato = torch.tensor([5.0, 7.0])                       # DATO     → no
+print("2.2 requires_grad:", peso.requires_grad, dato.requires_grad)
+#
+# Regola: requires_grad=True va sui PARAMETRI da imparare (W, b), non sui dati.
+# Con nn.Module (Sezione 3) non lo scrivi nemmeno: i parametri lo hanno di serie.
+
+# 2.3 — l'accumulo dei gradienti (il tranello piu' frequente in assoluto)
+q = torch.tensor(1.0, requires_grad=True)
+for passo in range(3):
+    perdita = q ** 2            # dL/dq = 2q = 2
+    perdita.backward()          # NON azzeriamo: guarda cosa succede
+    print(f"2.3 dopo backward #{passo + 1}: q.grad = {q.grad.item()}")
+# Output: 2, 4, 6 → i gradienti si SOMMANO.
+# Ecco perche' nel training loop esiste optimizer.zero_grad() (Sezione 5).
+q.grad = None                    # azzerare "a mano" (equivalente a zero_grad)
+
+# 2.4 — no_grad: quando NON vuoi il registro
+with torch.no_grad():
+    # dentro questo blocco autograd non registra nulla:
+    # meno memoria, piu' velocita'. Si usa in VALUTAZIONE/inferenza.
+    prova = peso * 2
+print("2.4 dentro no_grad, requires_grad del risultato:", prova.requires_grad)
+
+# 2.5 — 🔁 ponte esplicito con la CACHE del cap.06
+#
+#   cap.06: cache = {"Z1": Z1, "H": H, "Z2": Z2, "P": P}   ← la scrivevi tu
+#   cap.07: il grafo di autograd                            ← lo scrive torch
+#
+# Stessa idea (conservare l'informazione del forward per il backward),
+# due livelli di automazione. Non e' magia: e' contabilita'.
+
 # Mini 2.1 — Calcola a mano dy/dw per y = (w+1)^2 in w=1, poi verifica
 #            con autograd (requires_grad=True).
 # TUO CODICE:
@@ -255,25 +572,119 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # TUA RISPOSTA:
 # ...
 
+# Mini 2.3 — (nuovo) Perche' `q.grad` valeva 2, poi 4, poi 6 in 2.3?
+#            Rispondi in 1 riga usando la parola "accumulo".
+# TUA RISPOSTA:
+# ...
+
 
 # ==========================================================================
 # SEZIONE 3 — nn.Module, nn.Linear, attivazioni
 # ==========================================================================
 #
-# Ponte Matematico / cap.02: Dense = X @ W + b.
-# PyTorch: nn.Linear(in_features, out_features) FA ESATTAMENTE quello.
+# ---------- [1] ANALOGIA --------------------------------------------------
+# nn.Linear = il layer Dense che hai costruito a mano nel Ponte Matematico.
+# nn.Module = la "scatola" (classe) che tiene insieme i layer e sa dirti
+#             quali sono i suoi parametri. Come un Controller Laravel che
+#             raccoglie le sue dipendenze invece di lasciarle sparse.
 #
-# class Rete2Layer(nn.Module):
-#     def __init__(self, d, h):
-#         super().__init__()
-#         self.fc1 = nn.Linear(d, h)
-#         self.fc2 = nn.Linear(h, 1)
-#     def forward(self, x):
-#         h = torch.relu(self.fc1(x))
-#         return torch.sigmoid(self.fc2(h)).squeeze(-1)
+# ---------- [2] COME LO FACEVI (cap.02/06) --------------------------------
+#   W1 = he_init(d, h); b1 = np.zeros(h)
+#   W2 = he_init(h, 1); b2 = np.zeros(1)
+#   H = np.maximum(0, X @ W1 + b1)
+#   P = sigmoid(H @ W2 + b2).ravel()
+#   → 4 variabili sciolte da passare a mano a ogni funzione
 #
+# ---------- [3] COME SI FA ORA --------------------------------------------
+#   model = Rete2Layer(d, h)
+#   P = model(X)
+#   → i 4 parametri vivono DENTRO il modello, e li vedi con .parameters()
+
+print("\n=== SEZIONE 3 — nn.Module ===")
+
+
+class Rete2Layer(nn.Module):
+    """Stessa architettura del cap.06: input → hidden ReLU → output sigmoid."""
+
+    def __init__(self, d: int, h: int) -> None:
+        super().__init__()                  # obbligatorio: registra i layer
+        self.fc1 = nn.Linear(d, h)          # = X @ W1 + b1
+        self.fc2 = nn.Linear(h, 1)          # = H @ W2 + b2
+
+    def forward(self, x: "torch.Tensor") -> "torch.Tensor":
+        h = torch.relu(self.fc1(x))         # hidden con ReLU
+        z = self.fc2(h)                     # logit, shape (N, 1)
+        return torch.sigmoid(z).squeeze(-1)  # probabilita', shape (N,)
+
+
+modello_demo = Rete2Layer(d=7, h=8)
+
+# 3.1 — dove sono finiti W e b?
+print("3.1 parametri del modello:")
+for nome, parametro in modello_demo.named_parameters():
+    print(f"    {nome:<12} shape={tuple(parametro.shape)} "
+          f"requires_grad={parametro.requires_grad}")
+#
+# Cosa vedi (e perche' e' importante):
+#   fc1.weight  (8, 7)   ← ATTENZIONE: (out, in), NON (in, out) come il tuo W1!
+#   fc1.bias    (8,)     ← come il tuo b1
+#   fc2.weight  (1, 8)
+#   fc2.bias    (1,)
+
+# 3.2 — la convenzione (out, in): il tranello di shape del capitolo
+#
+# Nel cap.06 scrivevi:      H = X @ W1        con W1 di shape (d, h)
+# PyTorch memorizza invece: weight di shape (h, d)  e calcola  x @ weight.T + bias
+#
+# Cioe': stessa matematica, matrice memorizzata trasposta.
+# Non e' un capriccio: rende piu' efficienti alcune operazioni interne.
+lin = nn.Linear(4, 3)                       # in=4, out=3
+print("3.2 weight.shape =", tuple(lin.weight.shape), "(out, in)")
+xb_demo = torch.randn(5, 4)                 # 5 campioni, 4 feature
+out_pytorch = lin(xb_demo)
+out_manuale = xb_demo @ lin.weight.T + lin.bias
+print("3.2 uguali?", torch.allclose(out_pytorch, out_manuale))
+# ↑ questo assert e' il "sanity check" versione PyTorch: dimostri a te stesso
+#   che nn.Linear NON fa niente di magico.
+
+# 3.3 — inizializzazione: la He del cap.02 esiste anche qui
+#
+# Di default nn.Linear usa una Kaiming-uniform (parente della He), quindi
+# NON parti da zeri e non hai il "collasso" che avevi visto nel cap.02.
+# Se vuoi esattamente He normale come nel corso:
+nn.init.kaiming_normal_(lin.weight, nonlinearity="relu")
+nn.init.zeros_(lin.bias)
+print("3.3 He applicata a mano: std ≈", round(lin.weight.std().item(), 3))
+
+# 3.4 — sigmoid dentro il modello o dentro la loss? (collegamento a #42)
+#
+# Due strade equivalenti in matematica, diverse in stabilita' numerica:
+#
+#   (A) modello restituisce PROBABILITA' p  → loss = nn.BCELoss()(p, y)
+#       ↳ e' la traduzione letterale del cap.06 (tua bce_loss su p)
+#       ↳ ma serve il clip di p, altrimenti log(0) → inf/nan
+#
+#   (B) modello restituisce LOGIT z         → loss = nn.BCEWithLogitsLoss()(z, y)
+#       ↳ sigmoid + log calcolati insieme in modo stabile (clip incorporato)
+#       ↳ e' quello che si usa in produzione
+#
+# In questo capitolo useremo (A) perche' e' il ponte diretto col cap.06,
+# ma sappi che (B) e' la scelta professionale: e' letteralmente la lacuna
+# #42 risolta a livello di libreria.
+
 # Mini 3.1 — Istanzia Rete2Layer(d=7, h=8) e stampa i parametri
 #            (nome + shape) con model.named_parameters().
+# TUO CODICE:
+# ...
+
+# Mini 3.2 — (nuovo) Conta i parametri totali del modello con
+#            sum(p.numel() for p in model.parameters()).
+#            Verifica a mano: d*h + h + h*1 + 1. Torna?
+# TUO CODICE:
+# ...
+
+# Mini 3.3 — (nuovo) Passa un batch torch.randn(10, 7) al modello e stampa
+#            la shape dell'output. Perche' NON e' (10, 1)?
 # TUO CODICE:
 # ...
 
@@ -282,16 +693,96 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # SEZIONE 4 — Dataset e DataLoader
 # ==========================================================================
 #
-# Analogia: Dataset = scaffale di pratiche; DataLoader = carrello che prende
-# N pratiche a caso (batch) e le mescola (shuffle) ogni epoca.
+# ---------- [1] ANALOGIA --------------------------------------------------
+# Dataset    = lo SCAFFALE con tutte le pratiche, numerate. Sai dire
+#              "dammi la pratica numero 37" e quante pratiche ci sono.
+# DataLoader = il CARRELLO che gira per lo scaffale, prende 32 pratiche alla
+#              volta (batch), le mescola a ogni giro (shuffle) e te le porta.
 #
-# Perche' non passare tutto X ogni volta?
-#   - memoria GPU limitata
-#   - SGD stocastico: rumore del batch aiuta a non bloccarsi
+# Nel web: Dataset = la tabella + il metodo find($id);
+#          DataLoader = la paginazione con ordinamento casuale.
 #
+# ---------- [2] COME LO FACEVI (cap.06) -----------------------------------
+#   for epoca in range(n_epoche):
+#       P, cache = forward(X, ...)      # TUTTO il dataset in un colpo
+#       ...
+#   (era "full batch": va bene con 200 righe, non con 200.000 immagini)
+#
+# ---------- [3] COME SI FA ORA --------------------------------------------
+#   for epoca in range(n_epoche):
+#       for xb, yb in loader:           # ← un pezzo alla volta
+#           ...
+#
+# ---------- [4] PERCHE' A PEZZI (3 motivi concreti) -----------------------
+#   1) MEMORIA: le immagini del cap.08-10 non entrano tutte in GPU;
+#   2) VELOCITA': aggiorni i pesi molte volte per epoca invece di una sola;
+#   3) RUMORE UTILE: il gradiente stimato su un batch e' "sporco", e questo
+#      rumore aiuta a non incastrarsi (SGD = Stochastic Gradient Descent).
+#
+# ---------- VOCABOLARIO da fissare bene ----------------------------------
+#   campione (sample) = 1 riga / 1 immagine
+#   batch             = un gruppo di campioni (es. 32)
+#   step (iterazione) = un update dei pesi = un batch processato
+#   epoca (epoch)     = un giro completo su TUTTO il dataset
+#   → con N=200 e batch_size=32 → 7 step per epoca (6 pieni + 1 da 8)
+
+print("\n=== SEZIONE 4 — Dataset e DataLoader ===")
+
+# 4.1 — la via rapida: TensorDataset (quando i dati sono gia' tensori)
+N_demo, d_demo = 200, 7
+rng_demo = np.random.default_rng(42)
+X_np_demo = rng_demo.standard_normal((N_demo, d_demo)).astype(np.float32)
+y_np_demo = (X_np_demo[:, 0] + X_np_demo[:, 1] > 0).astype(np.float32)
+
+X_t = torch.from_numpy(X_np_demo)
+y_t = torch.from_numpy(y_np_demo)
+
+dataset_demo = TensorDataset(X_t, y_t)
+loader_demo = DataLoader(dataset_demo, batch_size=32, shuffle=True)
+print(f"4.1 campioni={len(dataset_demo)} | batch per epoca={len(loader_demo)}")
+
+primo_xb, primo_yb = next(iter(loader_demo))
+print("4.1 shape primo batch:", tuple(primo_xb.shape), tuple(primo_yb.shape))
+
+# 4.2 — la via manuale: Dataset custom (ti servira' per le immagini nel cap.08)
+#
+# Devi implementare solo 3 metodi. E' un'interfaccia, come un Repository:
+
+
+class PraticheDataset(Dataset):
+    """Dataset custom: legge da array NumPy e restituisce tensori float32."""
+
+    def __init__(self, X: np.ndarray, y: np.ndarray) -> None:
+        self.X = X.astype(np.float32)
+        self.y = y.astype(np.float32)
+
+    def __len__(self) -> int:
+        """Quante pratiche ci sono sullo scaffale."""
+        return len(self.X)
+
+    def __getitem__(self, idx: int):
+        """Dammi la pratica numero idx (come find($id))."""
+        return torch.from_numpy(self.X[idx]), torch.tensor(self.y[idx])
+
+
+ds_custom = PraticheDataset(X_np_demo, y_np_demo)
+print("4.2 dataset custom: len =", len(ds_custom),
+      "| item 0 shape =", tuple(ds_custom[0][0].shape))
+
+# 4.3 — parametri del DataLoader che userai davvero
+#   batch_size   quante righe per volta (32 / 64 tipici)
+#   shuffle=True SOLO sul train (sul test non serve e confonde i confronti)
+#   drop_last    scarta l'ultimo batch se incompleto (utile con BatchNorm)
+#   num_workers  processi paralleli per caricare i dati (0 = tutto nel main)
+
 # Mini 4.1 — Da X_np (N,d) e y_np (N,) crea TensorDataset + DataLoader
 #            batch_size=32, shuffle=True. Stampa la shape del primo batch.
 # TUO CODICE:
+# ...
+
+# Mini 4.2 — (nuovo) Con N=200 e batch_size=64, quanti step per epoca?
+#            Rispondi PRIMA a mente, poi verifica con len(loader).
+# TUA RISPOSTA:
 # ...
 
 
@@ -299,20 +790,76 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # SEZIONE 5 — Training loop standard PyTorch
 # ==========================================================================
 #
-# Cap.06 (NumPy):
-#   P, cache = forward(...)
-#   loss = bce(P, y)
-#   grads = backward(...)
-#   W -= lr * grad_W
+# ---------- LA TABELLA CHE VALE TUTTA LA SEZIONE -------------------------
 #
-# PyTorch:
-#   optimizer.zero_grad()     # svuota gradienti accumulati
-#   p = model(xb)
-#   loss = criterion(p, yb)
-#   loss.backward()           # riempie .grad
-#   optimizer.step()          # update tipo GD/Adam
+#   COSA FA                cap.06 (NumPy, a mano)      cap.07 (PyTorch)
+#   ---------------------  --------------------------  ----------------------
+#   azzera i gradienti     (implicito: li ricreavi)    optimizer.zero_grad()
+#   forward                P, cache = forward(X, ...)  p = model(xb)
+#   loss                   loss = bce_loss(P, y)       loss = criterion(p, yb)
+#   backward               dZ2, dH, dZ1, grad_W...     loss.backward()
+#   update                 W1 -= lr * grad_W1 (x4)     optimizer.step()
 #
-# 🔁 RINFORZO training loop (da V1 cap.06): completa a parole
+# Cinque righe di PyTorch = tutto il lavoro del cap.06.
+# Se sai spiegare questa tabella, sai spiegare il capitolo.
+#
+# ---------- PERCHE' zero_grad() E' LA PRIMA RIGA -------------------------
+# L'hai visto in 2.3: `.grad` si ACCUMULA. Se non lo svuoti, al secondo step
+# useresti la somma dei gradienti di due batch → passi troppo grandi, loss
+# che impazzisce. Non e' un dettaglio stilistico: e' il bug numero 1 dei
+# principianti in PyTorch.
+#
+# ---------- CHI E' L'OPTIMIZER -------------------------------------------
+# `torch.optim.SGD(model.parameters(), lr=0.1)` e' letteralmente il tuo
+# `W -= lr * grad` del cap.05/06, scritto una volta per tutti i parametri.
+# `Adam` e' un parente piu' furbo (passo adattivo per parametro): lo userai
+# dal cap.08, ma il concetto e' lo stesso — backprop calcola, l'optimizer
+# cammina.
+
+print("\n=== SEZIONE 5 — training loop ===")
+
+# 5.1 — training loop completo e commentato (il modello che riuserai)
+modello_train = Rete2Layer(d=d_demo, h=8)
+criterio = nn.BCELoss()                                   # loss su PROBABILITA'
+ottimizzatore = torch.optim.SGD(modello_train.parameters(), lr=0.1)
+
+storia_loss: list[float] = []
+for epoca in range(5):
+    modello_train.train()                                 # modalita' training
+    somma_loss, n_batch = 0.0, 0
+
+    for xb, yb in loader_demo:
+        ottimizzatore.zero_grad()                         # 1. svuota i .grad
+        p_pred = modello_train(xb)                        # 2. forward
+        perdita_batch = criterio(p_pred, yb)              # 3. loss
+        perdita_batch.backward()                          # 4. backward (autograd)
+        ottimizzatore.step()                              # 5. update dei pesi
+
+        somma_loss += perdita_batch.item()                # .item() → float Python
+        n_batch += 1
+
+    media = somma_loss / n_batch
+    storia_loss.append(media)
+    print(f"5.1 epoca {epoca + 1}: loss media = {media:.4f}")
+
+# 5.2 — la valutazione va SEMPRE dentro no_grad + eval
+modello_train.eval()                                      # spegne dropout/BN
+with torch.no_grad():                                     # niente grafo: piu' veloce
+    p_finale = modello_train(X_t)
+    acc = ((p_finale >= 0.5).float() == y_t).float().mean().item()
+print(f"5.2 accuracy sul train: {acc:.3f}")
+#
+# NOTA: la soglia 0.5 e' esattamente quella del cap.03 (lacuna storica sulla
+# soglia). Non cambia niente: cambia solo la sintassi.
+
+# 5.3 — cosa NON devi fare (raccolta dei classici)
+#   ✗ dimenticare zero_grad()          → gradienti sommati
+#   ✗ chiamare backward() su un vettore → serve uno SCALARE (la loss media)
+#   ✗ tenere `loss` invece di `loss.item()` in una lista → memory leak del grafo
+#   ✗ valutare senza no_grad()         → lento e memoria sprecata
+#   ✗ dati e modello su device diversi → RuntimeError
+
+# 5.4 — 🔁 RINFORZO training loop (da V1 cap.06): completa a parole
 #   zero_grad → forward → ? → backward → ?
 # TUA RISPOSTA:
 # ...
@@ -322,19 +869,58 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # TUO CODICE:
 # ...
 
+# Mini 5.2 — (nuovo) Commenta la riga `ottimizzatore.step()` (mettila come
+#            commento) e rilancia: cosa fa la loss? Perche'?
+# TUA RISPOSTA:
+# ...
+
 
 # ==========================================================================
 # SEZIONE 6 — Salvare e caricare i pesi (state_dict)
 # ==========================================================================
 #
-# Analogia: state_dict = "export delle manopole" (W e b), non tutto il codice.
+# ---------- [1] ANALOGIA --------------------------------------------------
+# state_dict = l'export delle MANOPOLE (i valori di W e b), non della macchina.
+# Come esportare solo il .env / la configurazione: per ricostruire il sistema
+# ti serve comunque il codice della classe.
 #
-# torch.save(model.state_dict(), "pesi.pt")
-# model2.load_state_dict(torch.load("pesi.pt", map_location="cpu"))
+# Concretamente: e' un dizionario {nome_parametro: tensore}.
 #
+# ---------- [2] PERCHE' TI SERVE ORA -------------------------------------
+# Perche' addestri su Colab (che si spegne) e usi il modello in locale.
+# Senza salvataggio, chiudere la scheda = buttare il training.
+
+print("\n=== SEZIONE 6 — state_dict ===")
+
+# 6.1 — cosa c'e' dentro
+print("6.1 chiavi dello state_dict:", list(modello_train.state_dict().keys()))
+
+# 6.2 — salva e ricarica (il ciclo completo Colab → locale)
+percorso_pesi = "rete_demo_cap07.pt"
+torch.save(modello_train.state_dict(), percorso_pesi)
+
+modello_ricaricato = Rete2Layer(d=d_demo, h=8)             # stessa ARCHITETTURA
+modello_ricaricato.load_state_dict(
+    torch.load(percorso_pesi, map_location="cpu")          # GPU → CPU
+)
+modello_ricaricato.eval()
+
+with torch.no_grad():
+    uguali = torch.allclose(modello_train(X_t), modello_ricaricato(X_t))
+print("6.2 il modello ricaricato dà le stesse predizioni?", uguali)
+#
+# ⚠️ La classe Rete2Layer deve essere definita PRIMA di load_state_dict:
+#    i pesi senza l'architettura sono numeri senza contesto.
+#    (`map_location="cpu"` serve quando i pesi sono stati salvati da GPU.)
+
 # Mini 6.1 — Salva e ricarica i pesi di un nn.Linear(3,1) su file temporaneo.
 #            Verifica allclose sui weight.
 # TUO CODICE:
+# ...
+
+# Mini 6.2 — (nuovo) Cosa succede se ricarichi lo state_dict in un modello
+#            con h diverso (es. h=16)? Prova e leggi il messaggio d'errore.
+# TUA RISPOSTA:
 # ...
 
 
@@ -363,6 +949,10 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # Obiettivo: 5-8 righe di COMMENTO (non solo plot):
 #   - raw vs scaled: cosa cambia su loss iniziale / convergenza?
 #   - fit dello scaler SOLO sul train (mai sul test intero prima dello split)
+#
+# Promemoria dal cap.06 (e da M2): lo scaler si "impara" (mean, std) sul TRAIN
+# e si APPLICA al test. Se calcoli mean/std su tutto, il test "sbircia" il
+# train → data leakage, e la metrica ti mente.
 #
 # Poi, se TORCH_OK: train 2 modelli uguali (raw vs scaled) 20 epoche e
 # confronta loss finale.
@@ -404,6 +994,8 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # Riscrivi in PyTorch (nn.Module) la rete 2-layer del cap.06:
 #   hidden ReLU, output sigmoid, BCE, SGD.
 # Confronta mentalmente con train_rete_2_layer NumPy.
+# Bonus: fallo con BCEWithLogitsLoss (modello che restituisce logit) e
+#        spiega in 1 riga perche' e' piu' stabile (collegamento #42).
 # TUO CODICE:
 # ...
 
@@ -414,6 +1006,7 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 #   A) loss.backward() senza zero_grad → gradienti sommati
 #   B) tensor su CUDA e modello su CPU (device mismatch)
 #   C) BCELoss con target float vs Long per CrossEntropy (famiglie diverse)
+#   D) X in float64 da NumPy dentro nn.Linear float32
 # TUA RISPOSTA:
 # ...
 
@@ -430,6 +1023,7 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # --------------------------------------------------------------------------
 # Carica (o simula) un CSV stile M2: X (N,d), y (N,).
 # Custom Dataset __getitem__ → DataLoader → 1 epoca di training.
+# Riusa PraticheDataset della sez. 4.2 come modello di partenza.
 # TUO CODICE:
 # ...
 
@@ -457,6 +1051,14 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 #
 # Output atteso: dict con chiavi
 #   acc_test, bce_test, n_epochs, device, path_pesi
+#
+# Suggerimento di metodo (non la soluzione):
+#   1) carica il CSV con Pandas, X/y come nel M2;
+#   2) split train/test PRIMA di tutto;
+#   3) scaler fit sul train (rinforzo #43), astype(np.float32) (tranello 1.2);
+#   4) TensorDataset + DataLoader;
+#   5) loop delle 5 righe della Sezione 5;
+#   6) valutazione in no_grad + torch.save.
 #
 # TUO CODICE:
 # ...
@@ -507,6 +1109,12 @@ print("43.A wrong[0]=", X_wrong[0], "right[0]=", X_right[0])
 # Q7) (b) qualcosa non funziona (sei ancora al livello random)
 # Q8) Backprop = calcolare i gradienti lungo la catena;
 #     GD = usare quei gradienti per aggiornare w -= lr * grad
+#
+# --- Rinforzi ---
+# 44.A) Confronto tra gradiente analitico (formula a mano) e numerico
+#       (differenza centrata, h≈1e-6): se coincidono, il backward è corretto.
+# 44.B) Perché i gradienti li calcola autograd: non c'è una tua formula da
+#       verificare (resta utile per layer custom → torch.autograd.gradcheck).
 #
 # --- Verifica ---
 # V1) Dire a PyTorch di tracciare operazioni su quel tensore per .backward()

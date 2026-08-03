@@ -44,7 +44,7 @@
 | **Ultimo completato** | modulo_03_dl_cv/**06_backprop_training.py** (03/08/2026, **chiusura anticipata**) — forward+cache, backward 2-layer, sanity check, training loop, PIPE `train_rete_2_layer_completo`, mini-progetto CSV vs LogReg (~8/10); TODO 1–17 svolti; residui → cap.07. **Voto difficoltà** **7**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
 | **Difficoltà media** | ~**7.02** (27 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, **7** ↓ |
-| **Priorità attive** | 🔴 Pattern #27 formula→codice (riemerso clip/scaler); 🔴 lacune **#42** clip BCE su z vs p, **#43** precedenza `(X-mean)/std`; 🟡 **#44** sanity check = analitico vs numerico (Q4 cap.07); 🟡 Pattern #6 consegne; 🟡 soft backprop vs GD (TODO 14); 🟡 #31 UAT; 🟡 E6 system design fine M3. |
+| **Priorità attive** | 🔴 Pattern #27 formula→codice (altri casi `*`/`@`); 🟢 **#42** clip BCE; 🟢 **#43** scaler parentesi; 🟢 **#44** sanity check analitico vs numerico (Micro 44.A); 🟡 Pattern #6; 🟢 soft backprop vs GD; 🟡 #31 UAT; 🟡 E6 system design fine M3. |
 | **Sessione corrente** | Sessione 26 |
 
 ---
@@ -99,9 +99,9 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 44 | **Sanity check = grad analitico vs numerico** | 🟡 Attivo | Cap.07 Q4: idea “prova del nove” ok, manca il meccanismo concreto |
-| 43 | **Scaler `(X-mean)/std`**: parentesi obbligatorie | 🔴 Attivo | Cap.06 TODO 16/18: `X - mean / std` → non standardizza. Rinforzo 🔁 #43 in cap.07 |
-| 42 | **Clip BCE su `p`, non su `z`** | 🔴 Attivo | Cap.06 TODO 17: clip su logit; fix al 3° feedback. Rinforzo 🔁 #42 in cap.07 |
+| 44 | **Sanity check = grad analitico vs numerico** | 🟢 Superato | Cap.07 Micro 44.A (03/08/2026): confronto analitico (sbagliabile) vs numerico (lento ma fidato); se coincidono → si addestra |
+| 43 | **Scaler `(X-mean)/std`**: parentesi obbligatorie | 🟢 Superato | Cap.07 🔁 #43 (03/08/2026): 43.A precedenza `/` vs `-`; 43.B `std==0 → 1.0` |
+| 42 | **Clip BCE su `p`, non su `z`** | 🟢 Superato | Cap.07 🔁 #42 (03/08/2026): 42.A clip su `p` + BCE; 42.B Falso con motivazione log(0)/nan |
 | 41 | **Shape 1D vs colonna**: `b1` è `(h,)` non `(h,1)`; `P` è `(N,)` non `(N,1)` | 🟢 Superato | Mini 1.1.A (28/07): shape stampate dal forward `(10,) (10,8) (10,8) (10,1)` — conferma dal codice |
 | 39 | **Catena `dL/dW1`**: percorso `P→Z2→H→Z1→W1`, NON passare da W2 | 🟢 Superato | Quiz ingresso cap.06 Q2 (27/07/2026): 5 anelli corretti, W2 non inserito |
 | 37 | **`derivata_relu` in z=0** → vale **0** (non 0.5) | 🟢 Superato | Cap.06 rinforzo 🔁 (28/07): previsione 2 uni su array con due zeri; `z > 0` |
@@ -139,7 +139,8 @@
 |-------|--------|
 | **Prossimo capitolo** | modulo_03_dl_cv/**07_pytorch_intro.py** — tensori, autograd, `nn.Module`/`Linear`, Dataset/DataLoader, training loop (`zero_grad`→forward→loss→`backward`→`step`), `state_dict`; workflow **Colab GPU**. |
 | **Bridge obbligatorio prima** | **`M03_R06_after_C06_before_C07_backprop_to_pytorch.md`** — arricchito 03/08/2026 (fondamentali Python/NumPy + training loop, clip BCE, scaler, backprop vs GD, Colab). |
-| **Rinforzi già in cap.07 (🔁)** | ✅ **#42** clip BCE su `p`; ✅ **#43** scaler parentesi; ✅ Pattern **#27**; ✅ CONFRONTO PRIMA/DOPO (migrato); ✅ scaler+train (TODO 18); ✅ drift REAL-WORLD (TODO 19); quiz ingresso = temi V1–V8 cap.06. |
+| **Rinforzi già in cap.07 (🔁)** | ✅ **#42** clip BCE su `p` (+ ponte `BCEWithLogitsLoss`); ✅ **#43** scaler parentesi; ✅ Pattern **#27** (+ promemoria anti-#27); ✅ **#44** sanity check analitico vs numerico (blocco eseguibile con assert); ✅ CONFRONTO PRIMA/DOPO; ✅ scaler+train (TODO 18); ✅ drift (TODO 19); quiz ingresso = temi V1–V8 cap.06. |
+| **Revisione cap.07 (03/08/2026)** | File riscritto **più esplicativo** su richiesta studente (confusione NumPy→PyTorch): schema fisso per sezione (analogia → NumPy → PyTorch → cosa cambia → tranelli → mini), **dizionario di traduzione NumPy↔torch**, tranelli dtype float64/32, `from_numpy` vs `tensor`, device, accumulo `.grad`, convenzione `weight (out,in)`, vocabolario batch/step/epoca, tabella training loop cap.06↔cap.07, `state_dict`. Aggiunti mini 1.3/1.4, 2.3, 3.2/3.3, 4.2, 5.2, 6.2. `try/except` allargato a `Exception` (OSError DLL Windows) + stop pulito se torch assente. Risposte studente **conservate**. |
 | **Concetti ⚠️ da monitorare** | Autograd ≠ GD; `zero_grad`; device CPU/CUDA; clip su `p`; scaler fit-on-train; backprop vs GD in Feynman. |
 | **Pattern 🔴 da monitorare** | 🔴 **#27** formula→codice + parentesi; 🔴 #42/#43; 🟡 #6 consegne. |
 | **Ponte mentale da riusare** | Autograd = "scontrino completo al posto della cache manuale"; DataLoader = carrello di pratiche; Colab = cantiere in affitto / Cursor = ufficio. |
@@ -954,7 +955,7 @@ completezza del self-check e chiedere correzioni.
 | Derivata parziale | Muovi **una** variabile, altre ferme; addendo senza quella variabile → contributo 0 | M3-04 | 0/3 | 🔄 |
 | `derivata_sigmoid` | `s(z)*(1-s(z))`; max **0.25** in z=0; base vanishing gradient | M3-04 | 0/3 | 🔄 (cap.05: scritta con `/` invece di `*` — Pattern #27) |
 | Vanishing gradient | Moltiplicazione per ≤0.25 a ogni layer sigmoid → segnale ~`0.25^n`; ReLU in hidden mitiga | M3-04 | 1/3 | 🔄 |
-| Semplificazione `p-y` | Con BCE+sigmoid: `dL/dz = p-y` (cancellazione `p(1-p)`); vale solo con questa coppia | M3-04 | 2/3 | 🔄 (R1–R5 + TODO 7 corretti senza aiuto) |
+| Semplificazione `p-y` | Con BCE+sigmoid: `dL/dz = p-y` (cancellazione `p(1-p)`); vale solo con questa coppia | M3-04 | 3/3 | ✅ (anche `/N` batch: Q5 cap.07) |
 | `derivata_relu` | Step: 1 se z>0, 0 se z≤0; dying ReLU se tutti Z<0 | M3-04 | 1/3 | 🔄 (attenzione a z=0 — lacuna #37) |
 | `derivate_check_completo` | Pipeline sanity: sigmoid', ReLU', BCE su p e z vs numerico | M3-04 | 0/3 | 🔄 |
 
@@ -1411,13 +1412,13 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 33 | **Vanishing gradient — sigmoid solo in output** | Checkpoint C3 M3 cap.03 + V8/C2 cap.04 | **Chiusura:** quiz ingresso cap.05 **Q1** (27/07/2026): `0.25` in z=0, `~4.5e-05` in z=10, `0.25^n_layer` citato correttamente. R6 punto A ok (ReLU non permette la cancellazione). | M3 cap.05 Q1 | 🟢 |
 | 34 | **Clip bilaterale — log(1-p) con p=1** | Quiz V4 M3 cap.03 + rinforzo cap.04 sez.5 | **Chiusura:** cap.05 TODO 8 — `my_bce` riscritta da zero con `np.clip(p, eps, 1-eps)` bilaterale al primo tentativo. | M3 cap.05 TODO 8 | 🟢 |
 | 35 | **Ordine `bce_loss(p, y)`** | TODO 4.3 / 10 M3 cap.03 + cap.04 | **Chiusura:** cap.05 TODO 8 (`my_bce` riscritta da zero con ordine corretto) + uso corretto in R3/R4/PIPE/mini-progetto. | M3 cap.05 TODO 8 | 🟢 |
-| 36 | **Chain rule backward BCE+sigmoid → `dL/dz = p - y`** | Sessione cap.04 / TODO 6–7 / Quiz V7 / C3 | Rinforzo R1–R6 cap.05 superato. **Chiusura:** quiz ingresso cap.06 **Q3** (27/07/2026) — cancellazione mostrata passo per passo a freddo. Residuo minore: sul batch manca il fattore **`/N`** e il reshape `(N,1)` (verifica ai mini 2.1.A e 3.1.B). | M3 cap.06 Q3 | 🟢 |
+| 36 | **Chain rule backward BCE+sigmoid → `dL/dz = p - y`** | Sessione cap.04 / TODO 6–7 / Quiz V7 / C3 | Rinforzo R1–R6 cap.05 + Q3 cap.06. Residuo `/N`+reshape: **chiuso** quiz ingresso cap.07 **Q5** (03/08/2026) — `((P-y)/N).reshape(-1,1)`. | M3 cap.07 Q5 | 🟢 |
 | 37 | **`derivata_relu` in z=0** — convenzione corso | Bridge R04 Q4 (16/06/2026) | `z=0 → 0.5` invece di **0**; regola: `1 se z>0`, `0 se z≤0` (PyTorch idem). Cap.05 TODO 9: funzione corretta `(z>0).astype(float)` ma il caso `z=0` non è stato verificato esplicitamente. Rinforzo 🔁 in cap.06 sez.2.4 + bridge R05 es.4. **Chiusura:** rinforzo cap.06 (28/07) — previsione 2 uni, `z=0`→0. | M3 cap.06 🔁 #37 | 🟢 |
 | 38 | **`dL/dp` vs `dL/dz`** — non confondere le due | Bridge R04 Q6 (16/06/2026) | Risposto **Sì** a `dL/dp = p-y`. Cap.05 R4 svolto correttamente. **Chiusura:** quiz ingresso cap.06 **Q3** (27/07/2026) — `dL/dp` scritta con il denominatore `p(1-p)` e tenuta distinta da `p-y`. Il blocco 🔁 in cap.06 resta come consolidamento. | M3 cap.06 Q3 | 🟢 |
 | 39 | **Catena `dL/dW1`** — percorso H→Z1→W1, non W2 | Quiz verifica V7 cap.05 (23/07/2026) | Scritto `… dz/dW2 · dW2/dh · dH/dW1`; W2 è ramo parallelo. **Chiusura:** quiz ingresso cap.06 **Q2** (27/07/2026) — 5 anelli nell'ordine corretto, W2 non inserito (9.5/10, unico neo `*` invece di `/` nell'ultimo fattore). Rinforzo 🔁 "due affluenti" efficace. | M3 cap.06 Q2 | 🟢 |
 | 41 | **Shape 1D vs colonna 2D: `b1` è `(h,)` e `P` è `(N,)`** | Quiz ingresso Q5 cap.06 (27/07/2026) | `b1` scritto `(8,1)` invece di `(8,)`. **Chiusura:** mini 1.1.A (28/07). | M3 cap.06 mini 1.1.A | 🟢 |
-| 42 | **Clip BCE su `p`, non su `z`** | Cap.06 TODO 17 (31/07/2026) | Clip messo su logit / `z_safe` NameError; corretto al 3° feedback. Rinforzo 🔁 #42 in cap.07 + quiz ingresso. | M3 cap.07 🔁 #42 | 🔴 |
-| 43 | **Scaler: `(X - mean) / std` con parentesi** | Cap.06 TODO 16/18 (31/07/2026) | `X - mean / std` per precedenza operatori. Rinforzo 🔁 #43 in cap.07. | M3 cap.07 🔁 #43 | 🔴 |
+| 42 | **Clip BCE su `p`, non su `z`** | Cap.06 TODO 17 (31/07/2026) | Clip su logit al primo tentativo. **Chiusura:** rinforzo 🔁 #42 cap.07 (03/08/2026) — 42.A/B ok a freddo. | M3 cap.07 🔁 #42 | 🟢 |
+| 43 | **Scaler: `(X - mean) / std` con parentesi** | Cap.06 TODO 16/18 (31/07/2026) | `X - mean / std` per precedenza. **Chiusura:** rinforzo 🔁 #43 cap.07 (03/08/2026) — 43.A/B ok; guardia `std==0 → 1.0`. | M3 cap.07 🔁 #43 | 🟢 |
 | 44 | **Sanity check backward = analitico vs numerico** | Quiz ingresso Q4 cap.07 (03/08/2026) | Risposta generica (“funzioni non rotte / prova del nove”) senza citare confronto grad analitico vs numerico (`h≈1e-6`) prima del train. | Cap.07 sez.2 / recall cap.06 | 🟡 |
 | 40 | **Feynman gradient descent** — manca il ciclo iterativo | Quiz verifica V8 cap.05 (27/07/2026) | Analogia della collina corretta e vincoli lessicali rispettati, ma la risposta descrive **dove guardare**, non il ciclo "senti → fai un passo → risenti → ripeti" né l'effetto della **dimensione del passo**. Rinforzo: quiz ingresso cap.06 Q7 (Feynman backprop) + bridge R05 es.11. **27/07: Q7 saltata per scelta dello studente** → verifica spostata a fine cap.06, dopo la backprop in codice. | M3 fine cap.06 | 🔴 |
 
