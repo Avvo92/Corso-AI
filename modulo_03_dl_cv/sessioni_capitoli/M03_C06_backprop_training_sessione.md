@@ -5,8 +5,8 @@
 | **Modulo** | M03 — Deep Learning & Computer Vision |
 | **File capitolo** | `06_backprop_training.py` |
 | **File diario** | `M03_C06_backprop_training_sessione.md` |
-| **Stato** | 🟢 **Pronto ad aprire** (27/07/2026) — prima il bridge `M03_R05`; rinforzi 🔁 già inseriti nel file |
-| **Voto difficoltà** | — / X/10 (atteso 8–9/10 dopo split, era 9/10 nel vecchio monolitico) |
+| **Stato** | ✅ **Chiuso anticipato** (03/08/2026) — residui → cap.07; file 06 non toccato in chiusura |
+| **Voto difficoltà** | **7**/10 (confermato 03/08/2026) |
 
 ---
 
@@ -517,14 +517,24 @@
 ## Lacune e dubbi ancora aperti
 
 - 🟢 #40 Feynman (chiusa; residuo soft ordine analogia)
-- 🔴 Pattern #27 formula→codice
+- 🔴 Pattern #27 formula→codice → lacune **#42** (clip su z), **#43** (scaler parentesi) aperte in CONTESTO
 - (corollario Q4: spento per campione ≠ spento sempre — ancora da tenere a mente nel mini 2.4/2.5)
+
+---
+
+### 2026-08-03 — Chiusura anticipata capitolo (protocollo Jarvis)
+
+- **Decisione studente:** stop a ~3000 righe; passare a PyTorch; residui come rinforzi sparsi in cap.07.
+- **Completato nel cap.06:** quiz ingresso, teoria+mini, TODO 1–17, PIPE, mini-progetto CSV vs LogReg.
+- **Migrato a `07_pytorch_intro.py`:** quiz V1–V10 (come quiz ingresso), CONFRONTO PRIMA/DOPO, TODO 18 (scaler+commento), TODO 19 (drift+ipotesi), 🔁 #42/#43/#27.
+- **File capitolo 06:** non modificato (Regola H).
+- **Voto difficoltà:** **7**/10 (confermato studente 03/08/2026) — peso soprattutto dal volume del file, non dal singolo concetto.
 
 ---
 
 ## Note per il capitolo successivo (cap.07 PyTorch)
 
-- Verificare che il sanity check numerico delle derivate (TODO 6.1 vecchio) sia stato fatto e funzioni. E' il check piu' importante prima di passare a PyTorch.
-- Verificare che il mini-progetto su CSV M2 abbia raggiunto i target (loss < 0.3, accuracy paragonabile a LogReg).
-- Preparare un notebook Colab con setup `torch + torchvision`, `device = "cuda" if available else "cpu"`, e mostrare che il training loop "vero" (PyTorch) e' lo STESSO concettuale di questo capitolo (forward -> loss -> backward -> update), solo che il backward lo fa autograd automaticamente.
-- Mostrare anche il **confronto tempi**: training loop manuale (NumPy) vs `torch.optim.SGD` -> 10-50x piu' veloce in PyTorch su GPU, "ma con piu' magia nascosta".
+- Bridge **M03_R06** prima di aprire il file (es. 11–14 su loop/clip/scaler/backprop vs GD).
+- Setup Colab GPU + `torch.cuda.is_available()`.
+- Autograd = backward del cap.06; GD/optimizer = update — non confonderli (TODO 14).
+- Confrontare tempi NumPy CPU vs PyTorch GPU solo come ordine di grandezza.

@@ -88,6 +88,39 @@ ys = [___ for x in xs if ___]
 
 ---
 
+### 11. [Training loop] Completa
+
+Ordine corretto delle 4 fasi (numera 1→4):
+`( )` backward `( )` forward+loss `( )` update pesi `( )` (opz.) zero_grad / reset grad
+
+---
+
+### 12. [Clip BCE] Trova l’errore
+
+```python
+z = 2.0
+p = 1 / (1 + np.exp(-z))
+z_safe = np.clip(z, 1e-7, 1 - 1e-7)   # ???
+loss = -np.log(z_safe)
+```
+
+Cosa non va? Cosa clipperesti invece?
+
+---
+
+### 13. [Scaler] Prevedi
+
+`X - mean / std` è uguale a `(X - mean) / std`? Sì/No + perché (precedenza operatori).
+
+---
+
+### 14. [Backprop vs GD] Una riga ciascuno
+
+- Backpropagation fa: …
+- Gradient descent fa: …
+
+---
+
 ## Soluzioni — solo dopo il tentativo
 
 1. `0.6` (`0.6` float sum exact in this case — actually 0.1+0.2+0.3 can be 0.6000000000000001; round gives 0.6 — good teaching moment if student notices).
@@ -100,3 +133,7 @@ ys = [___ for x in xs if ___]
 8. **Falso** — GPU è sul **runtime cloud**; il PC serve solo al browser.
 9. Indica quanto cambierebbe la loss spostando leggermente quel peso — “pendenza” della superficie errore.
 10. `ys = [x**2 for x in xs if x >= 0]` → `[0, 4]`.
+11. Tipico: zero_grad → forward+loss → backward → update (in PyTorch: `optimizer.step()`).
+12. Si clippa **`p`** in `(eps, 1-eps)` prima del `log`, non `z` (logit).
+13. **No** — `/` prima di `-` → `X - (mean/std)`.
+14. Backprop = **calcola** i gradienti; GD = **usa** i gradienti per aggiornare i pesi.

@@ -2691,20 +2691,29 @@ X2 = rng.standard_normal(N) * 100
 X = np.column_stack([X1, X2])
 y = (X1 + X2 > 0).astype(float)
 
+cut = int((len(X)*80)/100)
+
+X_train = X[:cut]
+X_test = X[cut:]
+
+y_train = y[:cut]
+y_test = y[cut:]
+
 rete_cruda = train_rete_2_layer(
-    X,
-    y
+    X_train,
+    y_train
 )
 
-mean = X.mean(axis=0)
-std = X.std(axis=0)
+mean = X_train.mean(axis=0)
+std = X_train.std(axis=0)
 std[std == 0] = 1.0
 
-X_scaled = (X - mean) / std
+X_train_scaled = (X_train - mean) / std
+X_test_scaled = (X_test - mean) / std
 
 rete_scaled = train_rete_2_layer(
-    X_scaled,
-    y
+    X_train_scaled,
+    y_train
 )
 
 grafico_loss_curve(
@@ -2733,8 +2742,25 @@ grafico_loss_curve(
 # Bonus: simula data drift moltiplicando X_test per 1.5 e misurando il
 # degrado dell'accuracy.
 # TUA RISPOSTA + (bonus) verifica:
-# ...
 
+print("\nTODO 19\n")
+
+X_test_scaled_drift = X_test_scaled * 1.5
+
+
+P1, cache = forward_2layer(
+    X_test_scaled_drift,
+    rete_scaled['W1'],
+    rete_scaled['b1'],
+    rete_scaled['W2'],
+    rete_scaled['b2']
+)
+
+loss_drifted = bce_loss(P1, y_test)
+acc_drifted = accuracy_score(P1, y_test, 0.5)
+
+print(loss_drifted)
+print(acc_drifted)
 
 # ==========================================================================
 # 🔄 CONFRONTO PRIMA/DOPO cap.01-06 (chiusura primo blocco del modulo)

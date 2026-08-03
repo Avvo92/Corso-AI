@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 27/07/2026 — **Chiusura M3 cap.05** `05_chain_rule_gd.py` (voto difficoltà **9**/10, media → ~**7.02**); Stato → **06_backprop_training.py**; bridge **M03_R05** popolato (11 esercizi); rinforzi 🔁 #37/#38/#39 inseriti in cap.06.
+> **Ultimo aggiornamento**: 03/08/2026 — **Voto difficoltà M3-06: 7/10** (chiusura anticipata); media resta ~**7.02** (27 cap.); trend M3 8,8,8,8,9,**7** ↓; Stato → **07_pytorch_intro.py**.
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -40,12 +40,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_03_dl_cv/**06_backprop_training.py** — forward con cache, backward step-by-step 2-layer, sanity check numerico vs analitico, training loop, mini-progetto rete su CSV M2 vs LogReg. Parte 4/4 split backprop (chiude il primo blocco M3). |
-| **Ultimo completato** | modulo_03_dl_cv/**05_chain_rule_gd.py** (27/07/2026) — chain rule 2/3/4 livelli, GD 1D/nD, learning rate, piano dei pesi, pipeline `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` (8.5/10); **voto difficoltà** **9**/10 (il più alto del modulo). |
+| **Capitolo in corso** | modulo_03_dl_cv/**07_pytorch_intro.py** — tensori, autograd, `nn.Module`/`Linear`, Dataset/DataLoader, training loop PyTorch, `state_dict`; **primo contatto Colab/GPU**. Residui cap.06 migrati come 🔁. |
+| **Ultimo completato** | modulo_03_dl_cv/**06_backprop_training.py** (03/08/2026, **chiusura anticipata**) — forward+cache, backward 2-layer, sanity check, training loop, PIPE `train_rete_2_layer_completo`, mini-progetto CSV vs LogReg (~8/10); TODO 1–17 svolti; residui → cap.07. **Voto difficoltà** **7**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
-| **Difficoltà media** | ~**7.02** (26 capitoli con voto; archivi M1/M2/Ponte in `archivi/`) — trend M3: 8, 8, 8, 8, **9** ↑ |
-| **Priorità attive** | 🟢 chiuse al quiz ingresso cap.06: #39 catena `dL/dW1` (Q2), #36 e #38 `p-y` / `dL/dp` (Q3); 🟢 **#41 shape 1D vs colonna**; 🟢 **#40** Feynman ciclo+passo (29/07, residuo soft ordine analogia); 🔴 Pattern #27 traduzione formula→codice; 🟡 Pattern #6; 🟡 #21; 🟡 #31 UAT; 🟡 E6 system design (fine M3). |
-| **Sessione corrente** | Sessione 25 |
+| **Difficoltà media** | ~**7.02** (27 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, **7** ↓ |
+| **Priorità attive** | 🔴 Pattern #27 formula→codice (riemerso clip/scaler); 🔴 lacune **#42** clip BCE su z vs p, **#43** precedenza `(X-mean)/std`; 🟡 **#44** sanity check = analitico vs numerico (Q4 cap.07); 🟡 Pattern #6 consegne; 🟡 soft backprop vs GD (TODO 14); 🟡 #31 UAT; 🟡 E6 system design fine M3. |
+| **Sessione corrente** | Sessione 26 |
 
 ---
 
@@ -56,11 +56,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 27/07/2026 |
-| **Cosa è stato fatto** | **Chiusura M3 cap.05** `05_chain_rule_gd.py`: quiz ingresso Q1–Q7, RINFORZO R1–R6 (p-y), sez.1–6 con mini-inline, esercizi 3.A–3.C mappa backward, TODO 1–17, PIPE `addestramento_via_gradiente_numerico`, quiz V1–V8, mini-progetto **`confronto_lr_su_addestramento`** con figura a 4 pannelli (8.5/10). Bridge **M03_R05** popolato (11 esercizi). Rinforzi 🔁 #37/#38/#39 inseriti in `06_backprop_training.py`. |
-| **Errori emersi** | **V7** catena `dL/dW1` passata da W2 (5/10 → lacuna #39); **V8** Feynman GD senza ciclo iterativo né ruolo del passo (7/10 → #40); derivata sigmoid scritta con `/` invece di `*`; `H @ W2` scritto con `*`; He init dimenticata su W2; `range(x)` invece di `range(x.size)`; `==` invece di `=` in assegnazione; commento mini-progetto: "troppo cauto" attribuito a 0.1 invece di 0.01 e plausibilità w/b non argomentata. **Non svolti:** mini 1.2.A, R6 punto B, TODO 17 REAL-WORLD, checkpoint C1–C5. |
-| **Cosa fare nella prossima sessione** | (1) bridge **`M03_R05`** (~15–20 min, il più importante del modulo); (2) aprire **`06_backprop_training.py`**: quiz ingresso Q1–Q8 + **🔁 RINFORZO MIRATO #38/#39** (pre-backward) e **#37** (step ReLU); (3) sez.1–2 forward con cache + backward step-by-step, **fermandosi lì**. Difficoltà attesa: **8–9/10**. |
-| **Stato motivazione** | Alto — ha portato a termine un mini-progetto lungo con grafici a 4 pannelli e ha fatto domande di prospettiva (progetti portfolio, sbocchi come AI Engineer). **Voto difficoltà 9/10**: il capitolo è costato fatica pur essendo andato bene → nel cap.06 spezzare in 2–3 sessioni e non comprimere. |
+| **Data** | 03/08/2026 |
+| **Cosa è stato fatto** | **Chiusura anticipata M3 cap.06** `06_backprop_training.py` (~3000 righe): quiz ingresso, rinforzi #37–#41, sez. teoria + mini, TODO 1–17 (PIPE ~9.5 post-fix, mini-progetto CSV ~8/10, colloquio 14 raffinato, TODO 15–17 con pattern #27 su clip/scaler). Decisione studente: stop qui, residui → cap.07. Creato **`07_pytorch_intro.py`** (non più segnaposto) con 🔁 #42/#43/#27 + CONFRONTO + scaler/drift + quiz ingresso da V. Bridge **M03_R06** arricchito. File cap.06 **non modificato** (H). |
+| **Errori emersi** | Pattern **#27**: parentesi scaler `X-mean/std`, clip BCE messo su `z` invece di `p` (TODO 17, più tentativi); soft: backprop vs GD (TODO 14 punto 4 primo tentativo 6.5); shadowing/`np.default_rng`; commenti confronto/drift incompleti. **Non svolti (migrati):** quiz V1–V10, CONFRONTO PRIMA/DOPO, TODO 18 commento, TODO 19 ipotesi drift. |
+| **Cosa fare nella prossima sessione** | (1) bridge **`M03_R06`** (~15 min); (2) setup Colab GPU + `torch.cuda.is_available()`; (3) aprire **`07_pytorch_intro.py`**: quiz ingresso Q1–Q8 + 🔁 #42/#43/#27 **prima** delle sezioni tensori/autograd. Difficoltà attesa: **7–8/10** (API nuova, concetti già visti). |
+| **Stato motivazione** | Stanco del volume del cap.06 (3000 righe) — scelta sana chiudere e spezzare. **Voto difficoltà 7/10**: contenuti gestibili, peso soprattutto dalla lunghezza del file → conferma strategia cap.07 snello + Colab-first. |
 
 ---
 
@@ -83,7 +83,7 @@
 | 24 | **NUOVO — `iloc[i, "colonna_str"]` non funziona** | 🟡 Da rinforzare | Cap.01 Ponte mini-progetto: ha usato `iloc` con etichetta stringa. `iloc` accetta SOLO indici numerici; `loc` accetta etichette. Rinforzo cap.02 Ponte |
 | 25 | **NUOVO — Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Da rinforzare | Cap.01 Ponte 4.1/5.1: `np.array` è una FUNZIONE (factory), il TIPO è `np.ndarray`. Per type hint stricter: `numpy.typing.NDArray`. Rinforzo cap.02 Ponte |
 | 26 | `h`/`eps` troppo piccolo in derivata/gradiente numerico | 🟡 In miglioramento | Cap.05 TODO 13: `eps=1e-12`, corretto a **`1e-6`** dopo feedback. Ricontrollare nel sanity check del cap.06 |
-| 27 | **NUOVO — Traduzione formula → codice: operatore sbagliato** | 🔴 Attivo | Cap.05: `sigmoid(z) / (1-sigmoid(z))` invece di `*`; `H * W2` invece di `H @ W2`; `sigmoid(z)/1 - sigmoid(z)` senza parentesi; `(2.0 / h)` invece di `(2.0 * h)`; `==` al posto di `=`. Regola: rileggere la formula **simbolo per simbolo** + `assert np.allclose` contro il numerico. Rinforzo naturale nel cap.06 (il sanity check È il tema del capitolo) |
+| 27 | **Traduzione formula → codice: operatore / parentesi** | 🔴 Attivo | Cap.05–06: `*` vs `/`, `*` vs `@`, `==` vs `=`; **cap.06 TODO 16/18:** `X - mean / std` (precedenza → non standardizza); **TODO 17:** clip su `z` invece di `p`. Regola: simbolo per simbolo + parentesi al denominatore + `assert`. Rinforzi 🔁 #42/#43/#27 in cap.07 |
 
 ### Concetti da rinforzare per M2 (⚠️)
 
@@ -99,6 +99,9 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
+| 44 | **Sanity check = grad analitico vs numerico** | 🟡 Attivo | Cap.07 Q4: idea “prova del nove” ok, manca il meccanismo concreto |
+| 43 | **Scaler `(X-mean)/std`**: parentesi obbligatorie | 🔴 Attivo | Cap.06 TODO 16/18: `X - mean / std` → non standardizza. Rinforzo 🔁 #43 in cap.07 |
+| 42 | **Clip BCE su `p`, non su `z`** | 🔴 Attivo | Cap.06 TODO 17: clip su logit; fix al 3° feedback. Rinforzo 🔁 #42 in cap.07 |
 | 41 | **Shape 1D vs colonna**: `b1` è `(h,)` non `(h,1)`; `P` è `(N,)` non `(N,1)` | 🟢 Superato | Mini 1.1.A (28/07): shape stampate dal forward `(10,) (10,8) (10,8) (10,1)` — conferma dal codice |
 | 39 | **Catena `dL/dW1`**: percorso `P→Z2→H→Z1→W1`, NON passare da W2 | 🟢 Superato | Quiz ingresso cap.06 Q2 (27/07/2026): 5 anelli corretti, W2 non inserito |
 | 37 | **`derivata_relu` in z=0** → vale **0** (non 0.5) | 🟢 Superato | Cap.06 rinforzo 🔁 (28/07): previsione 2 uni su array con due zeri; `z > 0` |
@@ -134,13 +137,13 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_03_dl_cv/**06_backprop_training.py** — forward con cache, backward step-by-step (5 step), sanity check numerico vs analitico, training loop, mini-batch SGD (cenno), mini-progetto rete su CSV M2 vs LogReg. **Chiude il primo blocco M3 (cap.01–06)** → include `🔄 CONFRONTO PRIMA/DOPO`. |
-| **Bridge obbligatorio prima** | **`M03_R05_after_C05_before_C06_chain_to_backprop.md`** — popolato 27/07/2026 (**11 esercizi**: chain rule numerica, direzione GD, lr, ReLU@0, `dL/dp` vs `dL/dz`, catena W1, shape, regola shape gradiente, sanity check, NumPy, Feynman). |
-| **Rinforzi già in cap.06 (🔁)** | ✅ **#38** `dL/dp` vs `dL/dz` + ✅ **#39** catena verso W1 (blocco pre-SEZIONE 1, dopo il rinforzo SHAPE); ✅ **#37** `derivata_relu` in z=0 (sez. 2.4, allo step ReLU). Ognuno con 2 micro-esercizi. |
-| **Concetti ⚠️ da monitorare** | Catena verso W1 senza passare da W2 (#39); ReLU@0 = 0 (#37); `dL/dp` ≠ `p-y` (#38); Feynman con ciclo iterativo esplicito (#40); `h=1e-6` nel sanity check. |
-| **Pattern 🔴 da monitorare** | 🔴 **#27 traduzione formula → codice** (`*` vs `@`, `*` vs `/`, `==` vs `=`): il cap.06 è pieno di prodotti matriciali, va usato il sanity check come rete di sicurezza. 🟡 #6 consegne; 🟡 #21 tuple/`round`; 🟡 #26 `h` numerico. |
-| **Ponte mentale da riusare** | Backprop = "passare la colpa indietro lungo la catena di reparti"; gradiente = bussola sulla collina; GD = `w -= lr * grad`; cache del forward = "scontrino che conservi per il reso". |
-| **Note** | Cap.05 chiuso con voto **9**/10 (il più alto del modulo): il cap.06 è atteso allo stesso livello o più, quindi **non comprimere**. Residui **opzionali** in `05_chain_rule_gd.py`: mini 1.2.A, R6 punto B, **TODO 17 REAL-WORLD**, checkpoint C1–C5. Il cap.06 è il più lungo/difficile del modulo: pianificare **2–3 sessioni** (sez.1–2 / sez.3–4 / progetto+confronto). |
+| **Prossimo capitolo** | modulo_03_dl_cv/**07_pytorch_intro.py** — tensori, autograd, `nn.Module`/`Linear`, Dataset/DataLoader, training loop (`zero_grad`→forward→loss→`backward`→`step`), `state_dict`; workflow **Colab GPU**. |
+| **Bridge obbligatorio prima** | **`M03_R06_after_C06_before_C07_backprop_to_pytorch.md`** — arricchito 03/08/2026 (fondamentali Python/NumPy + training loop, clip BCE, scaler, backprop vs GD, Colab). |
+| **Rinforzi già in cap.07 (🔁)** | ✅ **#42** clip BCE su `p`; ✅ **#43** scaler parentesi; ✅ Pattern **#27**; ✅ CONFRONTO PRIMA/DOPO (migrato); ✅ scaler+train (TODO 18); ✅ drift REAL-WORLD (TODO 19); quiz ingresso = temi V1–V8 cap.06. |
+| **Concetti ⚠️ da monitorare** | Autograd ≠ GD; `zero_grad`; device CPU/CUDA; clip su `p`; scaler fit-on-train; backprop vs GD in Feynman. |
+| **Pattern 🔴 da monitorare** | 🔴 **#27** formula→codice + parentesi; 🔴 #42/#43; 🟡 #6 consegne. |
+| **Ponte mentale da riusare** | Autograd = "scontrino completo al posto della cache manuale"; DataLoader = carrello di pratiche; Colab = cantiere in affitto / Cursor = ufficio. |
+| **Note** | Cap.06 chiuso **anticipo** per volume (~3000 righe) su richiesta studente: DoD principale raggiunto (backward+train+mini-progetto); quiz V / CONFRONTO / TODO 18–19 **non** richiesti nel file 06. Cap.07 snello (~quiz+6 sezioni+esercizi), **non** ripetere il monolite. Preparare notebook Colab prima della sessione. |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -787,9 +790,10 @@ completezza del self-check e chiedere correzioni.
 | **M3-02_reti_neurali** | **8** | Confermato studente **21/05/2026**; forward 2-layer + He + R2; mini-progetto 9/10; E6 rinviato; lacuna AUC→prob risolta in sessione |
 | **M3-03_loss** | **8** | Confermato studente **01/06/2026**; split cap.03 LOSS; BCE/clip/soglia + PIPE.1 + `valuta_modello_completo`; pattern BCE chiusi in codice; residui vanishing gradient (C3), V5–V7 opzionali |
 | **M3-04_derivate_gradiente** | **8** | Confermato C5 auto-rating **16/06/2026**; derivata/gradiente numerico, sigmoid' max 0.25, ReLU step, BCE→`p-y`, PIPE `derivate_check`, mini-progetto attivazioni; blocco iniziale parziali C4 poi 9/10; TODO 16 opzionale; V8 Feynman post-fix ok |
-| **M3-05_chain_rule_gd** | **9** | +1 ↑ vs M3-04 — primo 9/10 del modulo. Confermato studente **27/07/2026**. Chiusura **27/07/2026**; chain rule 2/3/4 livelli, mappa backward 3.A–3.C, GD 1D/nD, lr sweep, PIPE `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` 8.5/10; V7 5/10 (catena W1), V8 7/10 (Feynman); C1–C5 non compilati. Media da ricalcolare al voto |
+| **M3-05_chain_rule_gd** | **9** | +1 ↑ vs M3-04 — primo 9/10 del modulo. Confermato studente **27/07/2026**. Chiusura **27/07/2026**; chain rule 2/3/4 livelli, mappa backward 3.A–3.C, GD 1D/nD, lr sweep, PIPE `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` 8.5/10; V7 5/10 (catena W1), V8 7/10 (Feynman); C1–C5 non compilati |
+| **M3-06_backprop_training** | **7** | -2 ↓ vs M3-05. Confermato studente **03/08/2026**. Chiusura **anticipata** (file ~3000 righe): DoD core OK; residui → cap.07. Difficoltà percepita più da **volume** che da concetti isolati. Pattern #27 attivo (#42/#43). |
 
-**Media attuale**: ~**7.02** (26 capitoli con voto, incluso M3-05 = **9**; dettaglio M1/M2/Ponte negli archivi). Prima volta sopra quota 7: la curva M3 sta salendo (8, 8, 8, 8, **9**) — nel cap.06 (atteso 8-9) andare più lenti e spezzare in più sessioni.
+**Media attuale**: ~**7.02** (27 capitoli con voto, incluso M3-06 = **7**). Trend M3: 8, 8, 8, 8, 9, **7** ↓ — dopo il picco del 05, il 06 “pesa” per lunghezza; cap.07 snello + Colab.
 
 ---
 
@@ -970,6 +974,17 @@ completezza del self-check e chiedere correzioni.
 | Vettore `theta` (parametri appiattiti) | Trucco didattico: impacchettare `W1,b1,W2,b2` in un array 1D per usare `gradiente_numerico`; **non** è così che si fa in produzione | M3-05 | 1/3 | 🔄 |
 | lr sweep | Mini hyperparameter tuning: provi una lista di lr e confronti loss/accuracy finali | M3-05 | 1/3 | 🔄 |
 
+### Modulo 3 — Cap.06 Backprop + Training
+
+| Termine | Definizione breve | Cap. | Contatore | Stato |
+|---------|-------------------|-----|-----------|-------|
+| Cache (forward) | Valori intermedi (Z1, H, Z2, P) salvati per il backward analitico | M3-06 | 2/3 | 🔄 |
+| Backward 2-layer | Catena `dZ2→…→grad_W1` step-by-step (analitico) | M3-06 | 1/3 | 🔄 |
+| Sanity check grad | Confronto grad analitico vs numerico (`h≈1e-6`) prima del train | M3-06 | 1/3 | 🔄 |
+| Training loop | Ripeti: forward → loss → backward → update GD | M3-06 | 2/3 | 🔄 |
+| He init (tutti i layer) | `W ~ N(0, sqrt(2/n_in))` su **W1 e W2** | M3-06 | 1/3 | 🔄 |
+| Autograd (teaser) | PyTorch traccia operazioni e calcola gradienti al posto tuo (cap.07) | M3-06→07 | 0/3 | 🔄 |
+
 ---
 
 ## Domande Fatte Durante i Capitoli
@@ -1060,7 +1075,7 @@ completezza del self-check e chiedere correzioni.
 | 24 | **`iloc[i, "col_str"]` (etichetta) vs `loc`/parentesi quadre** | 🟡 Nuovo (Ponte cap.01) | Nel mini-progetto ha usato `pratiche.iloc[i, "pratica_id"]` → TypeError. `iloc` accetta solo INDICI numerici (riga, colonna come int), `loc` accetta etichette. Alternativa: `pratiche.iloc[i]["pratica_id"]`. Rinforzo cap.02 Ponte. |
 | 25 | **Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Nuovo (Ponte cap.01) | Nelle funzioni `norma` e `coseno` ha scritto `def norma(v: np.array)`. `np.array` è la FACTORY function, il tipo è `np.ndarray`. Per type hint moderni: `from numpy.typing import NDArray; def norma(v: NDArray) -> float`. Rinforzo cap.02 Ponte. |
 | 26 | **`h`/`eps` troppo piccolo in derivata/gradiente numerico** | 🟡 In miglioramento (M3 cap.04→05) | Ha usato `eps=1e-24` (C4) e `h=1e-16` (TODO 12) → risultati instabili. Cap.05 TODO 13: ancora `eps=1e-12`, corretto a **`1e-6`** dopo feedback. Ricontrollare nel sanity check cap.06. |
-| 27 | **Traduzione formula → codice: operatore sbagliato** | 🔴 Nuovo (M3 cap.05) | `sigmoid(z) / (1-sigmoid(z))` invece di `*`; `H * W2` invece di `H @ W2`; `sigmoid(z)/1 - sigmoid(z)` senza parentesi; `(2.0 / h)` invece di `(2.0 * h)`; `grad.flat[i] == ...` invece di `=`. **Riemerso cap.06 (27/07, rinforzo #38):** `(0.8-1) / 0.8*(1-0.8)` senza parentesi al denominatore (in Python vale `-0.05`, non `-1.25`) e `p(1-p)` con moltiplicazione implicita (`TypeError: not callable`). Il concetto è corretto, si perde nella trascrizione. Antidoto: rileggere **simbolo per simbolo** + parentesi esplicite al denominatore + `assert np.allclose` contro il numerico. |
+| 27 | **Traduzione formula → codice: operatore sbagliato** | 🔴 Attivo (M3 cap.05→06) | Cap.05: `*` vs `/`, `*` vs `@`, `==` vs `=`. **Cap.06:** parentesi `dL/dp`; `p(1-p)` TypeError; **TODO 16/18** `X - mean / std`; **TODO 17** clip su `z` non su `p`. Antidoto: simbolo per simbolo + parentesi + assert. Rinforzi cap.07 #42/#43/#27. |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠️ Da consolidare | 🟢 Superato
 
@@ -1126,6 +1141,8 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠�
 | "Catena di trasformatori in serie" | Se il primo raddoppia (×2) e il secondo triplica (×3), l'intera catena moltiplica per 6 → la chain rule è **moltiplicare le sensibilità** | Middleware in pipeline: ogni strato trasforma l'output del precedente | M3-05 | Backprop cap.06, layer profondi, vanishing gradient |
 | "Scendere la collina al buio, a passetti" | Tasti il terreno con il piede, fai un passo verso il basso, ripeti. Passi troppo lunghi → inciampi (diverge); troppo corti → ci metti una vita | Tuning iterativo di una config guardando la metrica dopo ogni modifica | M3-05 | Gradient descent, learning rate, training loop cap.06 |
 | "Ramo parallelo vs tappa della catena" | Andando verso `W1` non passi da `W2`: `W2` è un **altro parametro** (ramo che si stacca), compare solo come valore in `dZ2/dH` | Due branch da uno stesso commit: non passi per l'uno per arrivare all'altro | M3-05 | Backprop 2-layer cap.06, lacuna #39 |
+| "Scontrino / tape recorder" | Cache forward = pezzi di scontrino per il reso; autograd = scontrino intero automatico | Log di audit di una richiesta HTTP | M3-06→07 | Autograd PyTorch |
+| "Backprop calcola, GD cammina" | Backprop = quanto muovere ogni manopola; GD = fare il passetto `w - lr*grad` | GPS calcola rotta vs guidatore che sterza | M3-06 | Colloquio TODO 14 |
 
 ### Come usare questa sezione
 Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente:
@@ -1199,7 +1216,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - **Residuo opzionale:** TODO 16 REAL-WORLD (10 layer sigmoid).
 - Diario: `sessioni_capitoli/M03_C04_derivate_gradiente_sessione.md`.
 
-### Cap.05 M3 — Chain rule e Gradient Descent (completato; voto difficoltà: ⏳ da confermare)
+### Cap.05 M3 — Chain rule e Gradient Descent (completato; voto difficoltà: **9**/10)
 
 - **Chain rule** a 2, 3 e 4 livelli: decomposizione in `h1..h4`, prodotto delle derivate locali, verifica con `derivata_numerica` e `assert np.isclose` su ogni esempio.
 - **`chain_rule_2step`** + sigmoid composta `sigmoid(a·x+b)` (TODO 1) verificata in 3 punti.
@@ -1215,6 +1232,15 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - **Punti deboli:** V7 catena `dL/dW1` (5/10, lacuna #39), V8 Feynman senza ciclo iterativo (7/10, #40), Pattern #27 (formula→codice).
 - **Non svolti (opzionali):** mini 1.2.A, R6 punto B, **TODO 17 REAL-WORLD**, checkpoint **C1–C5**.
 - Diario: `sessioni_capitoli/M03_C05_chain_rule_gd_sessione.md`.
+
+### Cap.06 M3 — Backprop + Training (chiusura anticipata 03/08/2026; voto difficoltà: **7**/10)
+
+- **Forward con cache** + **backward analitico 2-layer** step-by-step; sanity check numerico vs analitico.
+- **Training loop** completo; PIPE **`train_rete_2_layer_completo`** (~9.5 post-fix); mini-progetto rete su CSV M2 vs LogReg (~8/10).
+- TODO 1–17 valutati (diario `M03_C06_*`); colloquio TODO 14: backprop vs GD consolidato post-fix.
+- Lacune #37–#41 chiuse in corso capitolo; Pattern **#27** ancora 🔴 (#42 clip, #43 scaler).
+- **Chiusura anticipata** (volume ~3000 righe): quiz V, CONFRONTO PRIMA/DOPO, TODO 18/19 → 🔁 in `07_pytorch_intro.py`.
+- Diario: `sessioni_capitoli/M03_C06_backprop_training_sessione.md`.
 
 ---
 
@@ -1245,6 +1271,8 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - [ ] **Derivata/gradiente numerico:** `h` o `eps` = **`1e-6`** (non `1e-16` / `1e-24` — float instabili)?
 - [ ] **Gradiente/derivata:** ho verificato con `np.allclose` o `assert` contro il valore atteso?
 - [ ] **Formula tradotta in codice:** ho riletto **simbolo per simbolo**? `s(z)*(1-s(z))` è una **moltiplicazione**; `H @ W2` è un **prodotto matriciale**, non `H * W2` (Pattern #27)
+- [ ] **Scaler:** ho scritto `(X - mean) / std` con **parentesi**? (non `X - mean / std`)
+- [ ] **BCE:** il `clip` bilaterale è su **`p`**, non su `z`?
 - [ ] **Assegnazione vs confronto:** dentro un ciclo ho scritto `grad.flat[i] = ...` e non `== ...`?
 - [ ] **Inizializzazione He:** l'ho applicata a **tutti** i layer (`W1` *e* `W2`), ognuno con il proprio `sqrt(2/n_in)`?
 - [ ] **Matplotlib:** ho scritto `plt.show()` **con le parentesi**? E ho salvato con `savefig` **prima** di `show()`?
@@ -1316,12 +1344,14 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | Forward 2-layer + shape | 21/05 (cap.02 M3) | ✅ cap.03 PIPE.1 | ✅ cap.05 TODO 11 + TODO 16 | cap.06 sez.1 | 🟡 Praticato, shape ancora da automatizzare |
 | Init He | 21/05 (cap.02 M3) | ✅ cap.05 TODO 16 (dimenticata su `W2`, corretta) | cap.06 training loop | — | 🟡 Da consolidare su **tutti** i layer |
 | `bce_loss` + clip bilaterale | 01/06 (cap.03 M3) | ✅ cap.04 | ✅ cap.05 TODO 8 (riscritta da zero, ok) | cap.06 | 🟢 Consolidato |
-| `derivata_sigmoid` / `derivata_relu` | 16/06 (cap.04 M3) | ⚠️ cap.05 TODO 9 (sigmoid con `/` invece di `*`; ReLU ok ma `z=0` fragile) | cap.06 blocco 🔁 #37 | — | 🔴 Rinforzo attivo |
-| `gradiente_numerico` (`h=1e-6`) | 16/06 (cap.04 M3) | ✅ cap.05 TODO 10 (riscritto da zero, ok) | cap.06 sanity check | — | 🟡 Praticato |
-| Semplificazione `p-y` (`dL/dz`) | 16/06 (cap.04 M3) | ✅ cap.05 R1–R5 + TODO 7 | cap.06 step 1 backward | — | 🟡 → quasi 🟢 |
-| Chain rule (prodotto derivate locali) | 27/07 (cap.05 M3) | cap.06 backward step-by-step | bridge R06 | — | 🟡 Ok sui casi matematici, fragile sulla rete (V7) |
-| Gradient descent + learning rate | 27/07 (cap.05 M3) | cap.06 training loop | cap.07 optimizer PyTorch | — | 🟡 Praticato con 4 lr a confronto |
-| Catena `dL/dW1` (5 anelli) | 27/07 (cap.05 M3) | cap.06 blocco 🔁 #39 + quiz Q2 | bridge R06 | — | 🔴 Rinforzo attivo |
+| `derivata_sigmoid` / `derivata_relu` | 16/06 (cap.04 M3) | ⚠️ cap.05 `/` vs `*`; cap.06 TODO 17 clip sbagliato poi fix | cap.07 🔁 #42/#27 | — | 🟡 Consolidare clip su p |
+| `gradiente_numerico` (`h=1e-6`) | 16/06 (cap.04 M3) | ✅ cap.05 TODO 10; ✅ sanity cap.06 | — | — | 🟢 |
+| Semplificazione `p-y` (`dL/dz`) | 16/06 (cap.04 M3) | ✅ cap.05; ✅ cap.06 Q3 | — | — | 🟢 |
+| Chain rule (prodotto derivate locali) | 27/07 (cap.05 M3) | ✅ cap.06 backward | bridge R06 | — | 🟢 |
+| Gradient descent + learning rate | 27/07 (cap.05 M3) | ✅ cap.06 training loop | cap.07 optimizer | — | 🟢 |
+| Catena `dL/dW1` (5 anelli) | 27/07 (cap.05 M3) | ✅ cap.06 🔁 #39 + Q2 | bridge R06 | — | 🟢 |
+| Training loop + cache | 03/08 (cap.06 M3) | quiz ingresso cap.07 | autograd sez.2 | — | 🟡 Da verificare a freddo (V non fatti) |
+| Scaler parentesi / clip p | 31/07 (cap.06) | 🔴 #42/#43 | cap.07 🔁 | — | 🔴 Rinforzo attivo |
 
 > **Regola per l'agente**: questa tabella va estesa a ogni nuovo capitolo M2+.
 > I concetti M1 con stato OK/Consolidato restano come riferimento ma non richiedono piu ripasso attivo.
@@ -1385,7 +1415,10 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 37 | **`derivata_relu` in z=0** — convenzione corso | Bridge R04 Q4 (16/06/2026) | `z=0 → 0.5` invece di **0**; regola: `1 se z>0`, `0 se z≤0` (PyTorch idem). Cap.05 TODO 9: funzione corretta `(z>0).astype(float)` ma il caso `z=0` non è stato verificato esplicitamente. Rinforzo 🔁 in cap.06 sez.2.4 + bridge R05 es.4. **Chiusura:** rinforzo cap.06 (28/07) — previsione 2 uni, `z=0`→0. | M3 cap.06 🔁 #37 | 🟢 |
 | 38 | **`dL/dp` vs `dL/dz`** — non confondere le due | Bridge R04 Q6 (16/06/2026) | Risposto **Sì** a `dL/dp = p-y`. Cap.05 R4 svolto correttamente. **Chiusura:** quiz ingresso cap.06 **Q3** (27/07/2026) — `dL/dp` scritta con il denominatore `p(1-p)` e tenuta distinta da `p-y`. Il blocco 🔁 in cap.06 resta come consolidamento. | M3 cap.06 Q3 | 🟢 |
 | 39 | **Catena `dL/dW1`** — percorso H→Z1→W1, non W2 | Quiz verifica V7 cap.05 (23/07/2026) | Scritto `… dz/dW2 · dW2/dh · dH/dW1`; W2 è ramo parallelo. **Chiusura:** quiz ingresso cap.06 **Q2** (27/07/2026) — 5 anelli nell'ordine corretto, W2 non inserito (9.5/10, unico neo `*` invece di `/` nell'ultimo fattore). Rinforzo 🔁 "due affluenti" efficace. | M3 cap.06 Q2 | 🟢 |
-| 41 | **Shape 1D vs colonna 2D: `b1` è `(h,)` e `P` è `(N,)`** | Quiz ingresso Q5 cap.06 (27/07/2026) | `b1` scritto `(8,1)` invece di `(8,)` (→ ValueError in `X@W1+b1`) e `P` scritto `(10,1)` invece di `(10,)` (→ `P-y` diventa `(10,10)` per broadcasting **silenzioso**). Incoerenza interna: `b2 (1,)` scritto giusto. Riemersione della famiglia della vecchia lacuna #23. Regola: "uno per neurone / per campione" = 1D; "tabella campioni × qualcosa" = 2D. **Chiusura:** mini 1.1.A (28/07) — shape stampate dal `forward_2layer` tutte corrette. | M3 cap.06 mini 1.1.A | 🟢 |
+| 41 | **Shape 1D vs colonna 2D: `b1` è `(h,)` e `P` è `(N,)`** | Quiz ingresso Q5 cap.06 (27/07/2026) | `b1` scritto `(8,1)` invece di `(8,)`. **Chiusura:** mini 1.1.A (28/07). | M3 cap.06 mini 1.1.A | 🟢 |
+| 42 | **Clip BCE su `p`, non su `z`** | Cap.06 TODO 17 (31/07/2026) | Clip messo su logit / `z_safe` NameError; corretto al 3° feedback. Rinforzo 🔁 #42 in cap.07 + quiz ingresso. | M3 cap.07 🔁 #42 | 🔴 |
+| 43 | **Scaler: `(X - mean) / std` con parentesi** | Cap.06 TODO 16/18 (31/07/2026) | `X - mean / std` per precedenza operatori. Rinforzo 🔁 #43 in cap.07. | M3 cap.07 🔁 #43 | 🔴 |
+| 44 | **Sanity check backward = analitico vs numerico** | Quiz ingresso Q4 cap.07 (03/08/2026) | Risposta generica (“funzioni non rotte / prova del nove”) senza citare confronto grad analitico vs numerico (`h≈1e-6`) prima del train. | Cap.07 sez.2 / recall cap.06 | 🟡 |
 | 40 | **Feynman gradient descent** — manca il ciclo iterativo | Quiz verifica V8 cap.05 (27/07/2026) | Analogia della collina corretta e vincoli lessicali rispettati, ma la risposta descrive **dove guardare**, non il ciclo "senti → fai un passo → risenti → ripeti" né l'effetto della **dimensione del passo**. Rinforzo: quiz ingresso cap.06 Q7 (Feynman backprop) + bridge R05 es.11. **27/07: Q7 saltata per scelta dello studente** → verifica spostata a fine cap.06, dopo la backprop in codice. | M3 fine cap.06 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
@@ -1575,8 +1608,9 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M3 cap.02 — Reti neurali | ✅ Completato (21/05/2026) | `rete_2_layer`, init He, demo collasso R2, forward CSV M2, mini-progetto `rete_2_layer_vs_logreg` (acc/AUC rete random vs LR); checkpoint C1–C4; **E6 REAL-WORLD** rinviato; voto **8**/10 |
 | M3 cap.03 — LOSS (BCE) | ✅ Completato (01/06/2026) | `bce_loss`, clip bilaterale, soglia 0.5, PIPE.1 `valuta_rete_random`, mini-progetto `valuta_modello_completo`, checkpoint C1–C5; voto **8**/10; bridge R03 popolato |
 | M3 cap.04 — Derivate e gradiente | ✅ Completato (16/06/2026) | `derivata_numerica`, `gradiente_numerico`, sigmoid'/ReLU, BCE→`p-y`, PIPE `derivate_check`, mini-progetto attivazioni; checkpoint C1–C5; voto **8**/10; bridge **R04** popolato; TODO 16 opzionale |
-| M3 cap.05 — Chain rule + GD | ✅ Completato (27/07/2026) | Chain rule multilivello, mappa backward 3.A–3.C, `gradient_descent_1d/nd` + early stop, lr sweep, PIPE `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` (figura 4 pannelli `05_06_confronto_lr.png`, 8.5/10); voto ⏳; bridge **R05** popolato; residui opzionali: mini 1.2.A, R6-B, TODO 17, C1–C5. **Nessuna sezione 🏗️ prodotto in questo capitolo** (capitolo di fondamenta matematiche) |
-| M3 — DL & CV (portfolio CNN cap.07) | 🟡 Pianificato | Deliverable cap.07 deciso (30/04/2026): classificatore "busta paga vs altro" su 200 buste paga reali anonimizzate + ~200 immagini "altro" da dataset pubblici. Vincoli privacy/GDPR documentati nella sezione "Computer Vision nel Prodotto". |
+| M3 cap.05 — Chain rule + GD | ✅ Completato (27/07/2026) | Chain rule multilivello, mappa backward 3.A–3.C, `gradient_descent_1d/nd` + early stop, lr sweep, PIPE `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` (figura 4 pannelli `05_06_confronto_lr.png`, 8.5/10); voto **9**/10; bridge **R05** popolato; residui opzionali: mini 1.2.A, R6-B, TODO 17, C1–C5. **Nessuna sezione 🏗️ prodotto in questo capitolo** (capitolo di fondamenta matematiche) |
+| M3 cap.06 — Backprop + Training | ✅ Chiusura anticipata (03/08/2026) | PIPE `train_rete_2_layer_completo` + mini-progetto rete CSV M2 vs LogReg (~8/10). Quiz V / CONFRONTO / TODO 18–19 migrati a cap.07. Voto **7**/10. **Sezione 🏗️ prodotto:** rete addestrata su feature tabellari M2 (ponte verso ramo visivo) |
+| M3 — DL & CV (portfolio CNN cap.10) | 🟡 Pianificato | Deliverable deciso (30/04/2026): classificatore "busta paga vs altro" … Cap.07 = primo PyTorch/Colab sul path verso CNN. |
 | M4 — NLP | ⬜ Da fare | |
 | M5 — LLM | ⬜ Da fare | |
 | M6 — RAG | ⬜ Da fare | |
@@ -2099,6 +2133,8 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 03/08/2026 | **Voto difficoltà M3-06: 7/10** confermato; media ~**7.02** (27 cap.); trend M3 8,8,8,8,9,**7** ↓. | Risposta studente post-chiusura | Stato Attuale, Ultima Sessione, Valutazioni, competenze, progetto, diario, README, Changelog |
+| 03/08/2026 | **Chiusura anticipata M3 cap.06** (`06_backprop_training.py`): Stato → `07_pytorch_intro.py`; Priorità #42/#43 + Pattern #27; Valutazioni M3-06 (voto poi 7/10); creato `07_pytorch_intro.py` con 🔁 residui; bridge M03_R06 arricchito; Sessione 26. File cap.06 non modificato (H). | Richiesta studente: stop a ~3000 righe, residui come rinforzi in PyTorch | Stato, sessioni, priorità, valutazioni, glossario, pattern, lacune, competenze, bridge, cap.07, changelog |
 | 28/07/2026 | **Revisione di allineamento al mercato di `roadmap_ai.md`** (verifica web su roadmap AI Engineer 2026, framework agenti, fine-tuning, tooling di valutazione, dati occupazionali). **Aggiunte:** M6-10 `context_engineering` (budget contesto, compaction, memoria vs retrieval, progressive disclosure, routing) — la lacuna piu' grave; M5-06 `multi_provider_litellm`; M5-09 `contesto_lungo_vs_rag` + prompt caching. **Modifiche:** M5 10→12 cap. e `01_api_openai`→`01_api_llm` (no lock-in); M6 10→11 cap., +pgvector (04), +reranking (07), +DeepEval (08), +Langfuse (09); M7 agentic RAG spostato 08→**05** (e' il default 2026), +sicurezza MCP (08), memoria vs RAG esplicito (04); M8 +DPO/GRPO/RFT nel decision framework (01), +Unsloth (05); M9-04 architettura eval a due strati (offline in CI + osservabilita' in produzione). **Sezione mercato riscritta**: rimossi dati 2024-25 e salari USA, inseriti PwC 2026 (+69% offerte, +42% premio salariale), LinkedIn Italia (24ª/27 UE, 0,43% vs 0,90%, saldo migratorio negativo, assunzioni -30% vs 2019), forbici RAL italiane (junior 22-32k / mid 45-65k / senior 70-100k+), norma **UNI 11621-8:2026** (12 profili AI). Corretta l'affermazione "20/20 skill, zero lacune" (non piu' vera → 22/22 dopo la revisione). Timeline 6 → **6-9 mesi**. Aggiunta nota di calibrazione su **M3**: "capire, non padroneggiare" — e' il tratto con il ritorno di mercato piu' basso, non rallentare oltre ~1 settimana per sotto-capitolo. **Confermati validi**: impianto generale, LangGraph, MCP (ora Linux Foundation/AAIF), LoRA-QLoRA (~62% dei progetti), RAGAS+LangSmith, Chroma come scelta didattica, principio "concetti prima, framework dopo", portfolio > certificazioni. | Richiesta dello studente: verificare se il corso regge rispetto a cio' che si trova online oggi | `roadmap_ai.md` (intestazione, timeline, M3, M5, M6, M7, M8, M9, colloqui, mercato), Changelog |
 | 27/07/2026 | **Voto difficoltà M3-05: 9/10** confermato dallo studente; media ricalcolata ~**7.02** (26 capitoli); trend M3 8,8,8,8,**9** ↑; nota operativa: spezzare il cap.06 in 2–3 sessioni. | Risposta studente in chiusura capitolo | Stato Attuale, Ultima Sessione, Prossimo Cap, Valutazioni, diario cap.05, README modulo, Changelog |
 | 27/07/2026 | **Chiusura M3 cap.05** (`05_chain_rule_gd.py`): Stato → `06_backprop_training.py`; Ultimo completato + Ultima Sessione; Priorità Attive (lacune 🔴 #37/#38/#39/#40 + Pattern #27); Prossimo Cap; Valutazioni **M3-05** voto ⏳ da confermare; Glossario nuova sezione cap.05 (11 termini) + contatori aggiornati (`p-y` 2/3); Domande cap.05 (10 entry); Pattern **#27** traduzione formula→codice (🔴) e #26 aggiornato; Ponti Mentali (catena trasformatori, collina al buio, ramo parallelo); Competenze cap.05; Ripasso Programmato **nuova tabella Concetti M3**; Lacune #33/#34/#35 → 🟢, #36 → verifica finale cap.06, **#40** nuova; Checklist (5 nuovi controlli); Progetto incrementale riga cap.05; bridge **M03_R05** popolato (11 esercizi); rinforzi 🔁 #38/#39 e #37 inseriti in `06_backprop_training.py`; Sessione **25**. File capitolo **non modificato** (protocollo H). | Chiusura formale cap.05 M3 su richiesta studente | Stato, sessioni, priorità, valutazioni, glossario, domande, pattern, ponti, competenze, ripasso, lacune, checklist, progetto, bridge, cap.06, changelog |
