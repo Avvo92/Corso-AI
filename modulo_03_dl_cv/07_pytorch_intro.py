@@ -96,6 +96,7 @@ from __future__ import annotations
 #   fare le sezioni 1-6 su Google Colab.
 # ---------------------------------------------------------------------------
 import numpy as np
+from torch.nn import BCELoss
 
 try:
     import torch
@@ -709,19 +710,52 @@ print("3.3 He applicata a mano: std ≈", round(lin.weight.std().item(), 3))
 # Mini 3.1 — Istanzia Rete2Layer(d=7, h=8) e stampa i parametri
 #            (nome + shape) con model.named_parameters().
 # TUO CODICE:
-# ...
+
+class My_Rete_2_layer(nn.Module):
+    
+    def __init__(self, d: int, h: int) -> None:
+        super().__init__()
+        self.fc1 = nn.Linear(d, h)
+        self.fc2 = nn.Linear(h, 1)
+        
+    def forward(self, x: "torch.Tensor") -> "torch.Tensor":
+        h = torch.relu(self.fc1(x))
+        z = self.fc2(h)
+        return torch.sigmoid(z).squeeze(-1)
+    
+d = 7
+h = 8
+    
+modello_prova = My_Rete_2_layer(d=d, h=h)
+
+for name, parameter in modello_prova.named_parameters():
+    print(name, parameter.shape)        
 
 # Mini 3.2 — (nuovo) Conta i parametri totali del modello con
 #            sum(p.numel() for p in model.parameters()).
 #            Verifica a mano: d*h + h + h*1 + 1. Torna?
 # TUO CODICE:
-# ...
+
+total_parameters = sum(p.numel() for p in modello_prova.parameters())
+total_manual = d * h + h + h * 1 + 1
+
+assert np.isclose(total_manual, total_parameters),"Ops, qualcosa è andato storto!!"
 
 # Mini 3.3 — (nuovo) Passa un batch torch.randn(10, 7) al modello e stampa
 #            la shape dell'output. Perche' NON e' (10, 1)?
 # TUO CODICE:
-# ...
 
+N = 10
+
+rand_batch = torch.randn(N, d)
+
+print(rand_batch.shape)
+
+out_modello_prova = modello_prova(rand_batch)
+
+print(out_modello_prova.shape)
+
+# la shape è (10, ) e non (10, 1) perchè abbiamo usato il metodo sqeeze(-1) che funzione come .ravel() per numpy.
 
 # ==========================================================================
 # SEZIONE 4 — Dataset e DataLoader
@@ -812,13 +846,34 @@ print("4.2 dataset custom: len =", len(ds_custom),
 # Mini 4.1 — Da X_np (N,d) e y_np (N,) crea TensorDataset + DataLoader
 #            batch_size=32, shuffle=True. Stampa la shape del primo batch.
 # TUO CODICE:
-# ...
+
+N = 200
+d = 7
+h = 8
+
+rng = np.random.default_rng(0)
+X_np = rng.standard_normal(size=(N, d), dtype=np.float32)
+y_np = (X_np[:, 0] - X_np[:, 1] > 0).astype(np.float32)
+
+X_trc = torch.tensor(X_np)
+y_trc = torch.tensor(y_np)
+
+trc_dataset = TensorDataset(X_trc, y_trc)
+trc_loader = DataLoader(trc_dataset, batch_size=32, shuffle=True)
+
+primo_x_trc, primo_y_trc = next(iter(trc_loader))
+
+print(f"Primo Batch X.shape: {primo_x_trc.shape}")
+print(f"Primo Batch y.shape: {primo_y_trc.shape}")
 
 # Mini 4.2 — (nuovo) Con N=200 e batch_size=64, quanti step per epoca?
 #            Rispondi PRIMA a mente, poi verifica con len(loader).
 # TUA RISPOSTA:
-# ...
+# 200 / 64 = 3.125 -> 4
 
+trc_loader = DataLoader(trc_dataset, batch_size=64, shuffle=True)
+
+print(len(trc_loader))
 
 # ==========================================================================
 # SEZIONE 5 — Training loop standard PyTorch
@@ -896,18 +951,49 @@ print(f"5.2 accuracy sul train: {acc:.3f}")
 # 5.4 — 🔁 RINFORZO training loop (da V1 cap.06): completa a parole
 #   zero_grad → forward → ? → backward → ?
 # TUA RISPOSTA:
-# ...
+# loss
 
 # Mini 5.1 — Scrivi un loop di 5 epoche su TensorDataset finto (N=64, d=4)
 #            con BCELoss + SGD. Stampa loss ogni epoca.
 # TUO CODICE:
-# ...
+
+N, d, h = 64, 4, 8
+
+X_trc = torch.randn(N, d, dtype=torch.float32)
+y_trc = torch.tensor(X_trc[:, 0] - X_trc[:, 1] > 0, dtype=torch.float32)
+
+data = TensorDataset(X_trc, y_trc)
+loader = DataLoader(data, batch_size=32, shuffle=True)
+
+modello = Rete2Layer(d=d, h=h)
+criterio = nn.BCELoss()
+ottimizzatore = torch.optim.SGD(modello.parameters(), lr=0.1)
+
+media_epoche = []
+
+for epoca in range(5):
+    modello.train()
+    somma_loss, n_batch = 0.0, 0
+    
+    for xb, yb in loader:
+        ottimizzatore.zero_grad()
+        p_pred = modello(xb)
+        loss_batch = criterio(p_pred, yb)
+        loss_batch.backward()
+        ottimizzatore.step()
+        somma_loss += loss_batch.item()
+        n_batch += 1
+    media_batch = somma_loss / n_batch
+    media_epoche.append((epoca, float(media_batch)))
+    
+for a in media_epoche:
+    print(f"Epoca n°{a[0]} -> Loss: {a[1]:4f}")
+    
 
 # Mini 5.2 — (nuovo) Commenta la riga `ottimizzatore.step()` (mettila come
 #            commento) e rilancia: cosa fa la loss? Perche'?
 # TUA RISPOSTA:
-# ...
-
+# La loss non scende perche l'ottimizzatore non effettua il gradient descent sulla base del backward.
 
 # ==========================================================================
 # SEZIONE 6 — Salvare e caricare i pesi (state_dict)

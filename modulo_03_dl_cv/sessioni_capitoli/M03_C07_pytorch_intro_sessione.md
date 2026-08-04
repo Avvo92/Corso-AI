@@ -243,6 +243,81 @@
 - **Correzione / suggerimento:** Ecco perché esiste `optimizer.zero_grad()` a ogni step.
 - **Pattern errore / ID contesto:** —
 
+### 2026-08-04 — Sez.3 Mini 3.1 (`07_pytorch_intro.py` ~709–728)
+
+- **Esercizio / blocco:** Mini 3.1 — istanzia rete 2-layer + `named_parameters()` (nome + shape); studente ha ricreato la classe per pratica
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Architettura corretta (`fc1` d→h, `fc2` h→1, ReLU, sigmoid+squeeze); `super().__init__()` ok; loop su `named_parameters()` giusto. Ricreare `My_Rete_2_layer` invece di riusare `Rete2Layer` = ottima pratica.
+- **Errori / lacune:** La consegna chiede **nome + shape**; stampi l’intero `parameter` (pesante). Hint: `"torch.tensor"` → meglio `"torch.Tensor"` (il tipo è `Tensor`).
+- **Correzione / suggerimento:** `print(name, tuple(parameter.shape))`
+- **Pattern errore / ID contesto:** soft lettura consegna (#6) su “shape”
+- **Fix / rivalutazione (04/08/2026):** `parameter.shape` + hint `torch.Tensor` → **10/10**
+
+### 2026-08-04 — Sez.3 Mini 3.2 (`07_pytorch_intro.py` ~733–741)
+
+- **Esercizio / blocco:** Mini 3.2 — conta parametri `numel()` vs formula `d*h + h + h*1 + 1`
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** `sum(p.numel() for p in ...)` corretto; formula manuale corretta (73 con d=7,h=8); `d`/`h` definiti; `assert` chiude il check.
+- **Errori / lacune:** nessuno (nit: per interi basta `==`; `np.isclose` va comunque)
+- **Correzione / suggerimento:** —
+- **Pattern errore / ID contesto:** —
+
+### 2026-08-04 — Sez.3 Mini 3.3 (`07_pytorch_intro.py` ~742–757)
+
+- **Esercizio / blocco:** Mini 3.3 — batch (10,7) → shape output; perché non (10,1)
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**
+- **Punti di forza:** `torch.randn(10, 7)`, forward del modello, shape `(10,)`; motiva correttamente `squeeze(-1)` sul logit `(10,1)`.
+- **Errori / lacune:** Soft: `squeeze(-1)` ≠ `ravel()` in generale — toglie solo l’ultima dim se è 1; `ravel` appiattisce tutto. Qui l’effetto coincide. Typo `sqeeze`.
+- **Correzione / suggerimento:** —
+- **Pattern errore / ID contesto:** —
+
+### 2026-08-04 — Sez.4 Mini 4.1 (`07_pytorch_intro.py` ~845–866)
+
+- **Esercizio / blocco:** Mini 4.1 — TensorDataset + DataLoader batch 32, shape primo batch
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** float32, `TensorDataset`, `DataLoader(..., shuffle=True)`, `next(iter(...))`; shape attese `(32, 7)` e `(32,)`.
+- **Errori / lacune:** nessuno (`torch.tensor` ok al posto di `from_numpy`; `h` inutilizzato non scala)
+- **Correzione / suggerimento:** —
+- **Pattern errore / ID contesto:** —
+
+### 2026-08-04 — Sez.4 Mini 4.2 (`07_pytorch_intro.py` ~868–875)
+
+- **Esercizio / blocco:** Mini 4.2 — step per epoca con N=200, batch_size=64
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** Ragionamento corretto `ceil(200/64)=4` (3×64 + resto 8); verifica con `len(loader)`.
+- **Errori / lacune:** nessuno
+- **Correzione / suggerimento:** —
+- **Pattern errore / ID contesto:** —
+
+### 2026-08-04 — Sez.5 Rinforzo 5.4 training loop (`07_pytorch_intro.py` ~949–953)
+
+- **Esercizio / blocco:** 5.4 — completa `zero_grad → forward → ? → backward → ?`
+- **Valutazione (primo tentativo — "voto esame"):** **5/10**
+- **Punti di forza:** Il primo `?` è corretto: **loss**.
+- **Errori / lacune:** Manca il secondo pezzo: dopo `backward` → **`step`** / `optimizer.step()` (update dei pesi). Risposta incompleta rispetto alla consegna a due slot.
+- **Correzione / suggerimento:** `zero_grad → forward → loss → backward → step`
+- **Pattern errore / ID contesto:** soft #6 lettura consegna (due `?`)
+
+### 2026-08-04 — Sez.5 Mini 5.1 (`07_pytorch_intro.py` ~955–990)
+
+- **Esercizio / blocco:** Mini 5.1 — 5 epoche, TensorDataset finto, BCELoss + SGD, print loss
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**
+- **Punti di forza:** Dataset/loader ok; ordine loop corretto (`zero_grad`→forward→loss→`backward`→`step`); 5 epoche; stampa loss per epoca.
+- **Errori / lacune:** `somma_loss += loss_batch` senza `.item()` → tieni vivo il grafo (memory leak, avviso sez. 5.3). Usa `loss_batch.item()`. Soft: `{a[1]:4f}` → meglio `{a[1]:.4f}`; `list(media_epoche)` ridondante.
+- **Correzione / suggerimento:** `somma_loss += loss_batch.item()`
+- **Pattern errore / ID contesto:** —
+- **Fix / rivalutazione (04/08/2026):** `.item()` applicato → **10/10** (nit residuo: `{a[1]:.4f}` al posto di `:4f`)
+
+### 2026-08-04 — Sez.5 Mini 5.2 (`07_pytorch_intro.py` ~992–997)
+
+- **Esercizio / blocco:** Mini 5.2 — senza `optimizer.step()`, cosa fa la loss e perché
+- **Valutazione (primo tentativo — "voto esame"):** **5/10**
+- **Punti di forza:** Sai cos’è lo `step` (GD: `w -= lr * grad`) e che i gradienti arrivano dalla loss/backward.
+- **Errori / lacune:** Non rispondi all’esperimento: **senza `step` i pesi non si aggiornano → la loss resta quasi piatta** (non scende tra epoche). Forward+backward girano comunque; manca solo l’update.
+- **Correzione / suggerimento:** Frase tipo: “La loss non migliora perché calcolo i gradienti ma non applico l’update.”
+- **Pattern errore / ID contesto:** soft #6 (consegna: osserva il comportamento della loss)
+- **Fix / rivalutazione (04/08/2026):** “loss non scende perché manca lo step/GD” → **10/10**
+
 ### 2026-08-03 — Revisione capitolo (richiesta studente)
 
 - **Motivo:** confusione sul passaggio NumPy → PyTorch.
