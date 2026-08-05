@@ -23,9 +23,18 @@ Il file è organizzato con le informazioni più critiche in cima. Leggi **almeno
 3. **🔴 Priorità Attive** — errori, lacune e concetti da monitorare ORA
 4. **📌 Prossimo Capitolo** — cosa preparare
 
-Poi leggi anche: Regole Didattiche, Pattern di Errore (completi), Glossario.
+Poi leggi anche: **📚 Libri di riferimento** (se M3+), Regole Didattiche, Pattern di Errore (completi), Glossario.
 
 Per la struttura dettagliata dei moduli e la roadmap completa, consulta anche `roadmap_ai.md`.
+
+## Libri di riferimento (integrazione organica — dal M3 cap.07)
+
+Gianluca possiede PDF in `books/` (non in Git). **Prima di preparare/revisionare capitoli M3+**:
+
+1. Leggi `CONTESTO_CORSO.md` → sezione **📚 Libri di riferimento**
+2. Leggi `docs/libri_corso/README.md` e `docs/libri_corso/MAPPATURA_LIBRI_MODULI.md`
+
+**In capitolo:** prima scheda in `docs/libri_corso/schede/` (estrazione mirata dal PDF), poi blocchi `# 📚 LETTURA PARALLELA` + max 1 `# 📚 [LIBRO]` adattato. **In chat:** citare `[PYTORCH cap. X]` e cosa è stato preso/scartato. **Mai** copiare pagine dal PDF. Capitoli chiusi: solo citazioni in chat (protocollo H).
 
 ## Protocollo INIZIO SESSIONE (obbligatorio ad ogni NUOVA chat)
 

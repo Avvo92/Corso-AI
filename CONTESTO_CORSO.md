@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 03/08/2026 — **Voto difficoltà M3-06: 7/10** (chiusura anticipata); media resta ~**7.02** (27 cap.); trend M3 8,8,8,8,9,**7** ↓; Stato → **07_pytorch_intro.py**.
+> **Ultimo aggiornamento**: 05/08/2026 — Protocollo **schede libri** attivo; 📚 Sez. 1–6 in `07_pytorch_intro.py`; schede `M03_C07_*`. (Voto M3-06: 7/10; media ~7.02.)
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -146,7 +146,27 @@
 | **Ponte mentale da riusare** | Autograd = "scontrino completo al posto della cache manuale"; DataLoader = carrello di pratiche; Colab = cantiere in affitto / Cursor = ufficio. |
 | **Note** | Cap.06 chiuso **anticipo** per volume (~3000 righe) su richiesta studente: DoD principale raggiunto (backward+train+mini-progetto); quiz V / CONFRONTO / TODO 18–19 **non** richiesti nel file 06. Cap.07 snello (~quiz+6 sezioni+esercizi), **non** ripetere il monolite. Preparare notebook Colab prima della sessione. |
 
-> **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con le Regole Didattiche e il Profilo qui sotto prima di produrre qualsiasi contenuto.
+> **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con **Libri di riferimento** (se capitolo M3+), Regole Didattiche e Profilo qui sotto prima di produrre qualsiasi contenuto.
+
+---
+
+## 📚 Libri di riferimento — Integrazione organica (05/08/2026)
+
+> PDF acquistati da Gianluca in `books/` — **in Git** (sync multi-PC, 05/08/2026). Repo GitHub **privato** obbligatorio (copyright).
+> Indice e protocollo: [`docs/libri_corso/README.md`](docs/libri_corso/README.md) · mappa capitoli: [`MAPPATURA_LIBRI_MODULI.md`](docs/libri_corso/MAPPATURA_LIBRI_MODULI.md).
+
+| Codice | Libro | Moduli corso |
+|--------|-------|--------------|
+| **PYTORCH** | Deep Learning with PyTorch (2ª ed.) | M3 cap.07–10 |
+| **GERON** | Hands-On Machine Learning (3ª ed.) | M2 ripasso, M3 DL/CNN |
+| **ALAMMAR** | Hands-On Large Language Models | M4–M6 |
+| **HUYEN-AIE** | AI Engineering (Chip Huyen) | M5–M7, M9 |
+| **NLP-TRANS** | NLP with Transformers | M4 |
+| **STATS** / **MML** / **LINALG** | Statistica / math ML | On demand (Ponte già fatto) |
+
+**Regola mentor (M3 cap.07+):** corso prima, libro dopo. **Prima di creare/arricchire una sezione:** leggere PDF mirato → scheda in `docs/libri_corso/schede/` → iniettare `# 📚 LETTURA PARALLELA` + eventuale `# 📚 [LIBRO]` adattato. In chat: citare `[CODICE cap. X]` e dire cosa è stato preso/scartato. Capitoli **chiusi** (M3 cap.01–06): solo citazioni in chat (protocollo H).
+
+**Retrofit cap.07 (05/08/2026):** 📚 su Sez. 1–6; schede `M03_C07_sez6_state_dict.md` + `M03_C07_sez2_5_puntatori.md`; esercizio 📚 [LIBRO] checkpoint dict in Sez. 6. PDF PyTorch locale = **1ª edizione** (2020).
 
 ---
 
@@ -673,6 +693,7 @@ completezza del self-check e chiedere correzioni.
     - **Workflow**: lo studente esegue il file bridge **dopo** aver chiuso il capitolo corrente e **prima** di iniziare il successivo; il mentor corregge su richiesta e registra lacune ricorrenti come da protocollo.
     - **Creazione**: quando si **imposta un nuovo modulo** (M4, M5, …), il mentor prepara **tutti** i file bridge del modulo in anticipo **oppure** ne crea uno **ogni volta** che viene completato un capitolo — ma il gap tra capitoli **non deve restare vuoto**: prima che Gianluca apra `cap.K+1`, il file `..._after_C0K_before_C0(K+1)...` deve esistere.
     - **Moduli precedenti**: la regola è **canonica dal M3**; per M1–M2 è facoltativo integrare ripassi analoghi retroattivamente (non obbligatorio).
+41. **Integrazione libri di riferimento (dal M3 cap.07)**: Gianluca possiede PDF in `books/` (vedi sezione **📚 Libri di riferimento**). Il mentor **DEVE** consultare `docs/libri_corso/MAPPATURA_LIBRI_MODULI.md` quando prepara/revisiona un capitolo M3+. Nei file capitolo: inserire blocchi `# 📚 LETTURA PARALLELA` (citazione codice libro + cap./sezione + domanda guida opzionale per lo studente); al massimo 1 esercizio `# 📚 [LIBRO]` per capitolo, **adattato** al dominio corso/prodotto (mai copiare testo o esercizi verbatim dal PDF). In chat: citare libri per seconda voce su lacune. **Non** modificare capitoli già chiusi solo per aggiungere 📚 (protocollo H); retrofit solo su capitolo **in corso**. Repo notebook ufficiali (Géron, Alammar, Huyen) come complemento Colab.
 
 ---
 
@@ -2134,7 +2155,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
-| 03/08/2026 | **Voto difficoltà M3-06: 7/10** confermato; media ~**7.02** (27 cap.); trend M3 8,8,8,8,9,**7** ↓. | Risposta studente post-chiusura | Stato Attuale, Ultima Sessione, Valutazioni, competenze, progetto, diario, README, Changelog |
+| 05/08/2026 | **Libri organici + protocollo schede**: `books/` gitignore; `docs/libri_corso/`; Regola 41; schede `M03_C07_*`; 📚 Sez. 1–6 + esercizio 📚 [LIBRO] state_dict in `07_pytorch_intro.py`. PDF PyTorch = 1ª ed. | Richiesta studente: mentor usa i libri per costruire capitoli | Libri, schede, cap.07, .gitignore, mentor rule, Changelog |
 | 03/08/2026 | **Chiusura anticipata M3 cap.06** (`06_backprop_training.py`): Stato → `07_pytorch_intro.py`; Priorità #42/#43 + Pattern #27; Valutazioni M3-06 (voto poi 7/10); creato `07_pytorch_intro.py` con 🔁 residui; bridge M03_R06 arricchito; Sessione 26. File cap.06 non modificato (H). | Richiesta studente: stop a ~3000 righe, residui come rinforzi in PyTorch | Stato, sessioni, priorità, valutazioni, glossario, pattern, lacune, competenze, bridge, cap.07, changelog |
 | 28/07/2026 | **Revisione di allineamento al mercato di `roadmap_ai.md`** (verifica web su roadmap AI Engineer 2026, framework agenti, fine-tuning, tooling di valutazione, dati occupazionali). **Aggiunte:** M6-10 `context_engineering` (budget contesto, compaction, memoria vs retrieval, progressive disclosure, routing) — la lacuna piu' grave; M5-06 `multi_provider_litellm`; M5-09 `contesto_lungo_vs_rag` + prompt caching. **Modifiche:** M5 10→12 cap. e `01_api_openai`→`01_api_llm` (no lock-in); M6 10→11 cap., +pgvector (04), +reranking (07), +DeepEval (08), +Langfuse (09); M7 agentic RAG spostato 08→**05** (e' il default 2026), +sicurezza MCP (08), memoria vs RAG esplicito (04); M8 +DPO/GRPO/RFT nel decision framework (01), +Unsloth (05); M9-04 architettura eval a due strati (offline in CI + osservabilita' in produzione). **Sezione mercato riscritta**: rimossi dati 2024-25 e salari USA, inseriti PwC 2026 (+69% offerte, +42% premio salariale), LinkedIn Italia (24ª/27 UE, 0,43% vs 0,90%, saldo migratorio negativo, assunzioni -30% vs 2019), forbici RAL italiane (junior 22-32k / mid 45-65k / senior 70-100k+), norma **UNI 11621-8:2026** (12 profili AI). Corretta l'affermazione "20/20 skill, zero lacune" (non piu' vera → 22/22 dopo la revisione). Timeline 6 → **6-9 mesi**. Aggiunta nota di calibrazione su **M3**: "capire, non padroneggiare" — e' il tratto con il ritorno di mercato piu' basso, non rallentare oltre ~1 settimana per sotto-capitolo. **Confermati validi**: impianto generale, LangGraph, MCP (ora Linux Foundation/AAIF), LoRA-QLoRA (~62% dei progetti), RAGAS+LangSmith, Chroma come scelta didattica, principio "concetti prima, framework dopo", portfolio > certificazioni. | Richiesta dello studente: verificare se il corso regge rispetto a cio' che si trova online oggi | `roadmap_ai.md` (intestazione, timeline, M3, M5, M6, M7, M8, M9, colloqui, mercato), Changelog |
 | 27/07/2026 | **Voto difficoltà M3-05: 9/10** confermato dallo studente; media ricalcolata ~**7.02** (26 capitoli); trend M3 8,8,8,8,**9** ↑; nota operativa: spezzare il cap.06 in 2–3 sessioni. | Risposta studente in chiusura capitolo | Stato Attuale, Ultima Sessione, Prossimo Cap, Valutazioni, diario cap.05, README modulo, Changelog |

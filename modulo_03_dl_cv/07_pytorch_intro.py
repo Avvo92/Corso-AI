@@ -33,6 +33,7 @@ Ogni sezione segue sempre lo stesso schema, per non perdere la bussola:
     [4] COSA CAMBIA       le 2-3 differenze che contano davvero
     [5] TRANELLI          gli errori che fanno TUTTI la prima volta
     [6] MINI-ESERCIZIO    2-4 righe da scrivere tu
+    [7] LETTURA PARALLELA (📚)  sezione PDF consigliata — opzionale, dopo il mini
 
 Regola d'oro del capitolo: **PyTorch non introduce concetti nuovi di
 matematica**. Introduce solo un modo piu' comodo (e piu' veloce) di scrivere
@@ -364,6 +365,16 @@ def dizionario():
 # Tutto il resto e' NumPy con un altro nome.
 
 
+# 📚 LETTURA PARALLELA — [PYTORCH] cap. 3–4 + [GERON] cap. 12 (intro tensori)
+# Dopo aver letto il dizionario sopra, apri i PDF e confronta le tabelle
+# NumPy↔torch con quelle del libro. Il libro PyTorch spiega anche `device`
+# e la differenza float32/float64 con piu' esempi.
+# Domanda guida: quali 2 voci del dizionario trovi anche nel libro con un
+# nome leggermente diverso? (es. axis → dim)
+# TUA RISPOSTA (opzionale, 1-3 righe):
+#
+
+
 # --------------------------------------------------------------------------
 # Da qui in poi serve torch: se non e' disponibile in locale, fermiamoci
 # con un messaggio chiaro invece di far esplodere il file.
@@ -613,6 +624,14 @@ print(w_tch.grad.item())
 # TUA RISPOSTA:
 # Perchè .grad accumula (somma) i gradienti effettuati in ogni ciclo.
 
+# 📚 LETTURA PARALLELA — [PYTORCH] 1ª ed. cap. 5 "The mechanics of learning"
+# Scheda: docs/libri_corso/schede/M03_C07_sez2_5_puntatori.md
+# Dopo i mini: sfoglia il cap.5 e collega "autograd" a "non derivare a mano".
+# Domanda guida: in 1 frase, cosa sostituisce autograd rispetto al backward
+# del tuo cap.06? (pista: cache + derivate locali)
+# TUA RISPOSTA (opzionale):
+#
+
 # ==========================================================================
 # SEZIONE 3 — nn.Module, nn.Linear, attivazioni
 # ==========================================================================
@@ -757,6 +776,12 @@ print(out_modello_prova.shape)
 
 # la shape è (10, ) e non (10, 1) perchè abbiamo usato il metodo sqeeze(-1) che funzione come .ravel() per numpy.
 
+# 📚 LETTURA PARALLELA — [PYTORCH] 1ª ed. cap. 6 "Using a neural network to fit the data"
+# Confronta nn.Linear / nn.Module con il tuo layer Dense del Ponte.
+# Domanda guida: perche' `named_parameters()` stampa chiavi tipo `fc1.weight`?
+# TUA RISPOSTA (opzionale):
+#
+
 # ==========================================================================
 # SEZIONE 4 — Dataset e DataLoader
 # ==========================================================================
@@ -874,6 +899,12 @@ print(f"Primo Batch y.shape: {primo_y_trc.shape}")
 trc_loader = DataLoader(trc_dataset, batch_size=64, shuffle=True)
 
 print(len(trc_loader))
+
+# 📚 LETTURA PARALLELA — [PYTORCH] 1ª ed. overview cap. 1 + uso DataLoader nei cap. 7–8
+# Idea chiave: batch + shuffle = carrello di pratiche (la nostra analogia).
+# Domanda guida: se shuffle=False, cosa rischi nel training? (1 frase)
+# TUA RISPOSTA (opzionale):
+#
 
 # ==========================================================================
 # SEZIONE 5 — Training loop standard PyTorch
@@ -995,6 +1026,13 @@ for a in media_epoche:
 # TUA RISPOSTA:
 # La loss non scende perche l'ottimizzatore non effettua il gradient descent sulla base del backward.
 
+# 📚 LETTURA PARALLELA — [PYTORCH] 1ª ed. cap. 5–6 + inizio §8.4 (training loop)
+# Confronta la tabella NumPy↔PyTorch di questa sezione con il loop del libro.
+# Domanda guida: perche' il libro (e noi) usiamo loss.item() e non loss grezzo
+# nella somma delle epoche?
+# TUA RISPOSTA (opzionale):
+#
+
 # ==========================================================================
 # SEZIONE 6 — Salvare e caricare i pesi (state_dict)
 # ==========================================================================
@@ -1006,9 +1044,16 @@ for a in media_epoche:
 #
 # Concretamente: e' un dizionario {nome_parametro: tensore}.
 #
+# Contrasti utili dai libri (scheda M03_C07_sez6_state_dict.md):
+#   [PYTORCH] §8.4.2 — salvi SOLO i pesi; la classe Net/Rete2Layer la tieni tu.
+#   [GERON] cap. 10  — Keras model.save() salva anche architettura+optimizer;
+#                      in PyTorch di solito NO → ricostruisci tu le "mura".
+#
 # ---------- [2] PERCHE' TI SERVE ORA -------------------------------------
 # Perche' addestri su Colab (che si spegne) e usi il modello in locale.
 # Senza salvataggio, chiudere la scheda = buttare il training.
+# [PYTORCH] §8.4.3: se i pesi nascono su GPU, in locale usa map_location="cpu"
+# (il tuo caso: AMD senza CUDA).
 
 print("\n=== SEZIONE 6 — state_dict ===")
 
@@ -1032,6 +1077,16 @@ print("6.2 il modello ricaricato dà le stesse predizioni?", uguali)
 # ⚠️ La classe Rete2Layer deve essere definita PRIMA di load_state_dict:
 #    i pesi senza l'architettura sono numeri senza contesto.
 #    (`map_location="cpu"` serve quando i pesi sono stati salvati da GPU.)
+# ⚠️ Preferisci state_dict (non pickle del modello intero): piu' flessibile
+#    ([PYTORCH] §13.6.6).
+
+# 📚 LETTURA PARALLELA — [PYTORCH] 1ª ed. §8.4.2 + fine §8.4.3 (map_location)
+# Scheda: docs/libri_corso/schede/M03_C07_sez6_state_dict.md
+# Opzionale contrasto: [GERON] cap. 10 "Saving and Restoring a Model" (Keras).
+# Domanda guida: in 2 frasi — (a) cosa c'e' nel file .pt? (b) perche' map_location
+# e' critico sul TUO PC dopo un training su Colab?
+# TUA RISPOSTA (opzionale):
+#
 
 # Mini 6.1 — Salva e ricarica i pesi di un nn.Linear(3,1) su file temporaneo.
 #            Verifica allclose sui weight.
@@ -1041,6 +1096,20 @@ print("6.2 il modello ricaricato dà le stesse predizioni?", uguali)
 # Mini 6.2 — (nuovo) Cosa succede se ricarichi lo state_dict in un modello
 #            con h diverso (es. h=16)? Prova e leggi il messaggio d'errore.
 # TUA RISPOSTA:
+# ...
+
+# 📚 [LIBRO] — Ispirato a [PYTORCH] §13.6.6 (checkpoint dict), adattato al cap.07
+# Obiettivo: invece di salvare solo lo state_dict "nudo", salva un DIZIONARIO:
+#   {
+#     "model_state": modello_train.state_dict(),
+#     "nota": "demo cap.07 — rete 2-layer",
+#     "d": d_demo,
+#     "h": 8,
+#   }
+# poi ricarica con torch.load(..., map_location="cpu")["model_state"] in un
+# nuovo Rete2Layer(d=..., h=...) e verifica allclose sulle predizioni.
+# (NON serve ancora optimizer_state: quello e' per riprendere il training.)
+# TUO CODICE:
 # ...
 
 

@@ -18,6 +18,10 @@ env/
 Thumbs.db
 desktop.ini
 
+# Artefatti PyTorch di demo / checkpoint locali
+*.pt
+*.pth
+
 # Applicativo — corpus PDF sensibili (GDPR)
 dati/replica/
 dati/validator/
