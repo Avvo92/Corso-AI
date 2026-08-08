@@ -1091,12 +1091,46 @@ print("6.2 il modello ricaricato dà le stesse predizioni?", uguali)
 # Mini 6.1 — Salva e ricarica i pesi di un nn.Linear(3,1) su file temporaneo.
 #            Verifica allclose sui weight.
 # TUO CODICE:
-# ...
+
+print("\nMini-esercizio 6.1\n")
+
+torch.manual_seed(0)
+modello = nn.Linear(3, 1)
+g = torch.Generator().manual_seed(0)
+x_demo = torch.randn(5, 3, generator=g)
+out = modello(x_demo)
+
+print(out)
+
+path_weigths = "pesi_mini_esercizio_1.pt"
+
+torch.save(modello.state_dict(), path_weigths)
+
+modello_reloaded = nn.Linear(3, 1)
+
+modello_reloaded.load_state_dict(
+    torch.load(path_weigths, map_location = "cpu")
+)
+
+out_2 = modello_reloaded(x_demo)
+
+print(out_2)
+print(modello.state_dict)
+
+assert torch.allclose(modello.weight.T, modello_reloaded.weight.T), "Ops, qualcosa non funziona, i pesi dei due modelli non coincidono!!"
 
 # Mini 6.2 — (nuovo) Cosa succede se ricarichi lo state_dict in un modello
 #            con h diverso (es. h=16)? Prova e leggi il messaggio d'errore.
-# TUA RISPOSTA:
-# ...
+# TUA RISPOSTA: 
+# RuntimeError: Error(s) in loading state_dict for Linear:
+# size mismatch for weight: copying a param with shape torch.Size([1, 3]) from checkpoint, the shape in current model is torch.Size([1, 4]).
+
+print("\nMini-esercizio 6.2\n")
+
+modello_errato = nn.Linear(4, 1)
+modello_errato.load_state_dict(
+    torch.load(path_weigths, map_location="cpu")
+)
 
 # 📚 [LIBRO] — Ispirato a [PYTORCH] §13.6.6 (checkpoint dict), adattato al cap.07
 # Obiettivo: invece di salvare solo lo state_dict "nudo", salva un DIZIONARIO:
@@ -1110,8 +1144,40 @@ print("6.2 il modello ricaricato dà le stesse predizioni?", uguali)
 # nuovo Rete2Layer(d=..., h=...) e verifica allclose sulle predizioni.
 # (NON serve ancora optimizer_state: quello e' per riprendere il training.)
 # TUO CODICE:
-# ...
 
+print("\nMini-esercizio 13.6.6\n")
+
+N, d, h = 10, 5, 8
+
+torch.manual_seed(0)
+
+modello = Rete2Layer(d, h)
+x_prova = torch.randn(N, d)
+out = modello(x_prova)
+out_dict = {
+    "model_state": modello.state_dict(),
+    "nota": "demo cap.07 — rete 2-layer",
+    "d": d,
+    "h": h,
+}
+
+import pprint as p
+p.pprint(out_dict)
+
+percorso = "pesi_es_13.6.6.pt"
+torch.save(out_dict, percorso)
+
+modello_reloaded = Rete2Layer(d, h)
+modello_reloaded.load_state_dict(
+    torch.load(percorso, map_location="cpu")['model_state']
+)
+
+out_reload = modello_reloaded(x_prova)
+
+assert torch.allclose(out, out_reload), "Ops, qualcosa è andato storto, gli out dei due modelli non coincidono!"
+
+print(out[:5])
+print(out_reload[:5])
 
 # ==========================================================================
 # 🔁 CONFRONTO PRIMA/DOPO (migrato da cap.06 — NON svolto li')

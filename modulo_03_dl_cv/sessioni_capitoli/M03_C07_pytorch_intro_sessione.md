@@ -318,6 +318,35 @@
 - **Pattern errore / ID contesto:** soft #6 (consegna: osserva il comportamento della loss)
 - **Fix / rivalutazione (04/08/2026):** “loss non scende perché manca lo step/GD” → **10/10**
 
+### 2026-08-07 — Sez.6 Mini 6.1 (`07_pytorch_intro.py` ~1091–1119)
+
+- **Esercizio / blocco:** Mini 6.1 — salva/ricarica `nn.Linear(3,1)` + `allclose` sui weight
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Ciclo corretto `state_dict` → `torch.save` → nuovo `Linear` → `load_state_dict` + `map_location="cpu"`; seed sui pesi; assert end-to-end su `out` vs `out_2` (logica solida).
+- **Errori / lacune:** Consegna chiede `allclose` sui **weight** (e idealmente `bias`), non solo sugli output; file fisso `.pt` invece di temporaneo; typo `path_weigths`.
+- **Correzione / suggerimento:** Aggiungere `assert torch.allclose(modello.weight, modello_reloaded.weight)` (e sul `bias`); opz. `tempfile`.
+- **Pattern errore / ID contesto:** soft #6 (verifica chiesta vs verifica fatta)
+- **Rivalutazione post-fix (2026-08-07):** assert su `weight` (con `.T` ridondante ma corretto) → **9.5/10**. Residui opzionali: `bias`, file temporaneo, typo `path_weigths`.
+
+### 2026-08-07 — Sez.6 Mini 6.2 (`07_pytorch_intro.py` ~1121–1132)
+
+- **Esercizio / blocco:** Mini 6.2 — ricaricare `state_dict` in architettura diversa; leggere RuntimeError
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Esperimento fatto (non solo teorizzato); messaggio d’errore corretto e citato (`size mismatch for weight`); concetto chiaro — i pesi richiedono stessa shape dell’architettura.
+- **Errori / lacune:** Consegna chiede `h` diverso (es. `h=16` su `Rete2Layer`); hai usato `Linear(4,1)` vs `Linear(3,1)` (mismatch su `in_features`). Stesso fenomeno, scenario non letterale.
+- **Correzione / suggerimento:** Opz. ripetere con `Rete2Layer(d=..., h=8)` → load su `h=16` per allinearti all’esempio del capitolo.
+- **Pattern errore / ID contesto:** soft #6 (lettera consegna vs spirito)
+
+### 2026-08-07 — Sez.6 [LIBRO] checkpoint dict §13.6.6 (`07_pytorch_intro.py` ~1134–1180)
+
+- **Esercizio / blocco:** Salvare dict con `model_state` + metadati; ricaricare via `["model_state"]`; allclose predizioni
+- **Valutazione (primo tentativo — "voto esame"):** **5.5/10**
+- **Punti di forza:** Costruisci correttamente `out_dict` (`model_state`, `nota`, `d`, `h`); `Rete2Layer` coerente; seed; assert allclose su output.
+- **Errori / lacune:** Salvi ancora lo **state_dict nudo** (`torch.save(modello.state_dict(), ...)`) invece di `torch.save(out_dict, ...)`; al load non usi `torch.load(...)["model_state"]`. Il dict stampato non entra nel file — obiettivo esercizio non raggiunto.
+- **Correzione / suggerimento:** `torch.save(out_dict, percorso)` → `ckpt = torch.load(..., map_location="cpu")` → `load_state_dict(ckpt["model_state"])` (opz. ricostruisci con `ckpt["d"]`, `ckpt["h"]`).
+- **Pattern errore / ID contesto:** #6 consegne (dict costruito ma non salvato/usato)
+- **Rivalutazione post-fix (2026-08-07):** `torch.save(out_dict, ...)` + `load(...,)['model_state']` + allclose → **9.5/10**. Opzionale residuo: ricostruire `Rete2Layer` da `ckpt["d"]`/`ckpt["h"]`.
+
 ### 2026-08-03 — Revisione capitolo (richiesta studente)
 
 - **Motivo:** confusione sul passaggio NumPy → PyTorch.
