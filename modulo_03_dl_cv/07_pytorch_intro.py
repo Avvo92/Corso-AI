@@ -988,6 +988,9 @@ print(f"5.2 accuracy sul train: {acc:.3f}")
 #            con BCELoss + SGD. Stampa loss ogni epoca.
 # TUO CODICE:
 
+def aaa():
+    return
+
 N, d, h = 64, 4, 8
 
 X_trc = torch.randn(N, d, dtype=torch.float32)
@@ -1185,14 +1188,20 @@ print(out_reload[:5])
 #
 # Scrivi in commento 8-10 righe:
 #   - cosa NON capivi al cap.01 M3 (neurone)
+# Non capivo bene il discorso delle shape.
 #   - cosa sembrava magia al cap.02-03
+# arrivare a una metrica di errore come la BCE solo attraverso dei passaggi numerici
 #   - cosa spaventava a derivate / chain / backprop
+# il concetto stesso di derivata per definire la responsabilità dell'errore per ogni paramentro.
 #   - cosa hai "afferrato" ORA
+# il ciclo completo di addestamento di una rete tramite backprop, chain rule e gradient descent.
 #   - cosa ti aspetti da PyTorch: API pulita, sotto il cofano = cap.06
+# da pytorch mi attendo lo stesso funzionamento, ma una sintassi pulita e tutto realizzato senza scrivere i pezzetti che girano sotto il cofano.
+
 #
 # BONUS: accuracy di un neurone manuale a pesi inventati vs rete addestrata
 #         (anche solo a parole se non hai i pesi del cap.06 sotto mano).
-#
+# accuracy di circa 0.5 in una rete a pesi random, mentre circa 1 con una rete addestrata.
 # TUO COMMENTO:
 # ...
 
@@ -1205,6 +1214,9 @@ print(out_reload[:5])
 #   - raw vs scaled: cosa cambia su loss iniziale / convergenza?
 #   - fit dello scaler SOLO sul train (mai sul test intero prima dello split)
 #
+# La loss iniziale è molto più alta e il modello converge meno rispetto ad uno scalato
+# Ovviamente lo scaling va fatto usando solo i dati del training per evitare leakage.
+#
 # Promemoria dal cap.06 (e da M2): lo scaler si "impara" (mean, std) sul TRAIN
 # e si APPLICA al test. Se calcoli mean/std su tutto, il test "sbircia" il
 # train → data leakage, e la metrica ti mente.
@@ -1215,6 +1227,97 @@ print(out_reload[:5])
 # TUO COMMENTO + CODICE:
 # ...
 
+import os
+import pandas as pd
+
+path_file = os.path.join(os.path.dirname(__file__), "dati", "pratiche.csv")
+df = pd.read_csv(path_file)
+X = torch.tensor(df.drop(columns=['pratica_id', 'y_alterato']).to_numpy(dtype="float32"))
+y = torch.tensor(df['y_alterato'].to_numpy(dtype="float32"))
+
+cut = int((len(X) * 80) / 100)
+
+X_train = X[:cut]
+X_test = X[cut:]
+y_train = y[:cut]
+y_test = y[cut:]
+
+mean = X_train.mean(axis=0)
+std = X_train.std(axis=0)
+
+X_train_scaled = (X_train - mean) / std
+X_test_scaled = (X_test - mean) / std
+
+data = TensorDataset(X_train, y_train)
+load = DataLoader(data, shuffle=True, batch_size = int(len(X_train) / 6))
+
+data_scaled = TensorDataset(X_train_scaled, y_train)
+load_scaled = DataLoader(data_scaled, shuffle=True, batch_size = int(len(X_train) / 6))
+
+
+class My_Rete_2Layer(nn.Module):
+
+    def __init__(self, d: int, h: int) -> None:
+        super().__init__()
+        self.fc1 = nn.Linear(d, h)
+        self.fc2 = nn.Linear(h, 1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        h = torch.relu(self.fc1(x))
+        z = self.fc2(h)
+        return torch.sigmoid(z).squeeze(-1)
+
+d = X_train.shape[1]
+h = 8
+
+torch.manual_seed(0)
+
+modello = My_Rete_2Layer(d = d, h = h)
+criterio = nn.BCELoss()
+ottimizzatore = torch.optim.SGD(modello.parameters(), lr=0.1)
+
+loss_media_per_epoca = []
+
+for epoca in range(20):
+    modello.train()
+    somma_losses, n_in_batch = 0.0, 0
+    for xb, yb in load:
+        ottimizzatore.zero_grad()
+        y_pred = modello(xb)
+        loss = criterio(y_pred, yb)
+        loss.backward()
+        ottimizzatore.step()
+        somma_losses += loss.item()
+        n_in_batch += 1
+    loss_media_per_epoca.append((epoca, float(somma_losses / n_in_batch)))
+
+torch.manual_seed(0)
+
+modell_scaled = My_Rete_2Layer(d = d, h = h)
+criterio_scaled = nn.BCELoss()
+ottimizzatore_scaled = torch.optim.SGD(modell_scaled.parameters(), lr=0.1)
+
+loss_media_per_epoca_scaled = []
+
+for epoca in range(20):
+    modell_scaled.train()
+    somma_losses, n_in_batch = 0.0, 0
+    for xb, yb in load_scaled:
+        ottimizzatore_scaled.zero_grad()
+        y_pred = modell_scaled(xb)
+        loss = criterio_scaled(y_pred, yb)
+        loss.backward()
+        ottimizzatore_scaled.step()
+        somma_losses += loss.item()
+        n_in_batch += 1
+    loss_media_per_epoca_scaled.append((epoca, float(somma_losses / n_in_batch)))
+
+
+print(f"Loss Iniziale Dataset Normale: {loss_media_per_epoca[0][1]:.5f}")    
+print(f"Loss Iniziale Dataset Scalato: {loss_media_per_epoca_scaled[0][1]:.5f}")
+
+print(f"Loss Finale DataSet Normale: {loss_media_per_epoca[-1][1]:.5f}")
+print(f"Loss Finale DataSet Scalato: {loss_media_per_epoca_scaled[-1][1]:.5f}")
 
 # ==========================================================================
 # 🔁 DRIFT REAL-WORLD (spirito TODO 19 cap.06)

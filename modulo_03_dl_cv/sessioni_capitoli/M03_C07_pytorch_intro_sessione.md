@@ -347,6 +347,25 @@
 - **Pattern errore / ID contesto:** #6 consegne (dict costruito ma non salvato/usato)
 - **Rivalutazione post-fix (2026-08-07):** `torch.save(out_dict, ...)` + `load(...,)['model_state']` + allclose → **9.5/10**. Opzionale residuo: ricostruire `Rete2Layer` da `ckpt["d"]`/`ckpt["h"]`.
 
+### 2026-08-11 — CONFRONTO PRIMA/DOPO migrato da cap.06 (`07_pytorch_intro.py` ~1186–1204)
+
+- **Esercizio / blocco:** Commento 8–10 righe: neurone → magia loss → derivate/backprop → cosa hai afferrato → aspettative PyTorch + bonus accuracy
+- **Valutazione (primo tentativo — "voto esame"):** **7.5/10**
+- **Punti di forza:** Tutti i punti toccati; filo coerente (shape → BCE numerica → derivata/responsabilità → ciclo train completo → API PyTorch = cap.06 sotto il cofano); bonus accuracy random ~0.5 vs addestrata ~1 corretto a grandi linee.
+- **Errori / lacune:** Troppo sintetico vs “8–10 righe” richieste; typo `paramentro`/`addestamento`; su PyTorch manca ½ frase sul fatto che `backward`/`optim.step` nascondono chain rule ma non la sostituiscono concettualmente; bonus: “~1” solo su casi facili/perfetti — meglio “molto sopra 0.5 / alta se il problema è lineare-separabile”.
+- **Correzione / suggerimento:** Espandi ogni bullet a 1–2 frasi concrete (es. shape `(N,)` vs `(N,1)`; BCE vs accuracy; GD = update dopo i gradienti).
+- **Pattern errore / ID contesto:** soft #6 (lunghezza/completezza consegna)
+
+### 2026-08-11 — SCALER + TRAIN spirito TODO 18 (`07_pytorch_intro.py` ~1208–1314)
+
+- **Esercizio / blocco:** Commento raw vs scaled + fit scaler solo train; 2 modelli uguali, 20 epoche, confronta loss finale
+- **Valutazione (primo tentativo — "voto esame"):** **5/10**
+- **Punti di forza:** Scaler corretto (mean/std solo su `X_train`, applicato al test); idea raw vs scaled; loop training strutturato; drop ID/target ok.
+- **Errori / lacune:** (1) **Stesso** `modello`/`ottimizzatore` per entrambi i run — dopo 20 epoche raw continui sul modello già allenato, poi solo **5** epoche scaled → confronto non valido. Serve **due** reti (stesso seed/init). (2) Consegna: **20** epoche per entrambi. (3) Commento ~2 righe, non 5–8. (4) `somma_losses += loss` senza `.item()`. (5) “Loss iniziale” con indice `[1]` invece di `[0]`. (6) Type hint `d = int` → `d: int`.
+- **Correzione / suggerimento:** `torch.manual_seed(0); modello_raw=...` poi `torch.manual_seed(0); modello_scaled=...` (due optimizer); entrambi `range(20)`; commento più lungo su loss iniziale/convergenza.
+- **Pattern errore / ID contesto:** #6 consegne; soft leak confronto sperimentale (modello condiviso)
+- **Rivalutazione post-fix (2026-08-11):** due modelli + seed×2 + 20 epoche + `.item()` + type hint → **8.5/10**. Residui: print “iniziale” usa `[1][0]` (indice epoca, non loss) → deve essere `[0][1]`; commento ancora ~2 righe (servono 5–8).
+
 ### 2026-08-03 — Revisione capitolo (richiesta studente)
 
 - **Motivo:** confusione sul passaggio NumPy → PyTorch.
