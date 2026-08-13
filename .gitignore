@@ -26,3 +26,10 @@ desktop.ini
 dati/replica/
 dati/validator/
 data/replica/
+
+# Dataset buste paga reali (GDPR) — mai committare, anche se la cartella non esiste ancora
+data/buste_*/
+dati/buste_*/
+
+# Download Fashion-MNIST locale (torchvision) — non versionare i binari
+modulo_03_dl_cv/dati/fashion_mnist/

@@ -5,8 +5,8 @@
 | **Modulo** | M03 — Deep Learning & Computer Vision |
 | **File capitolo** | `07_pytorch_intro.py` |
 | **File diario** | `M03_C07_pytorch_intro_sessione.md` |
-| **Stato** | aperto (03/08/2026) — creato in chiusura anticipata cap.06 |
-| **Voto difficoltà** | — |
+| **Stato** | chiuso anticipata (13/08/2026) — residui → cap.08 / bridge R07 |
+| **Voto difficoltà** | **7**/10 |
 
 ---
 
@@ -366,6 +366,81 @@
 - **Pattern errore / ID contesto:** #6 consegne; soft leak confronto sperimentale (modello condiviso)
 - **Rivalutazione post-fix (2026-08-11):** due modelli + seed×2 + 20 epoche + `.item()` + type hint → **8.5/10**. Residui: print “iniziale” usa `[1][0]` (indice epoca, non loss) → deve essere `[0][1]`; commento ancora ~2 righe (servono 5–8).
 
+### 2026-08-13 — DRIFT REAL-WORLD spirito TODO 19 (`07_pytorch_intro.py` ~1325–1351)
+
+- **Esercizio / blocco:** 3 ipotesi drift produzione + simula `X_test * 1.5` + confronta accuracy (+ spiegazione se resta alta)
+- **Valutazione (primo tentativo — "voto esame"):** **6.5/10**
+- **Punti di forza:** Tre ipotesi solide (scanner/qualità OCR, shift popolazione clienti, cambio abitudini); simula `* 1.5`; ricarica pesi scaled; misura un degrado.
+- **Errori / lacune:** (1) Consegna chiede **accuracy**, hai usato solo **BCE/loss**. (2) Confronti loss su test driftato vs **ultima loss di train** → non è lo stesso set/regime. Serve acc (o loss) **prima** su `X_test_scaled` e **dopo** su `*1.5`. (3) Manca la spiegazione “se resta alta, perché `*1.5` può non bastare sul toy”. (4) Typo: puà/consueguenza/clieni.
+- **Correzione / suggerimento:** `(pred >= 0.5) == y` mean su test pulito vs driftato; commento su scala relativa / linearità del toy.
+- **Pattern errore / ID contesto:** soft #6 (metrica chiesta vs metrica usata)
+
+### 2026-08-13 — TODO 1 [COLLOQUIO] (`07_pytorch_intro.py` ~1370–1381)
+
+- **Esercizio / blocco:** (1) autograd 2 frasi (2) Dataset vs DataLoader (3) perché zero_grad
+- **Valutazione (primo tentativo — "voto esame"):** **6/10**
+- **Punti di forza:** Idea giusta su zero_grad (accumulo); Dataset≈dati, DataLoader≈come li servi a batch.
+- **Errori / lacune:** (1) Autograd troppo corto/impreciso: non è “il gradiente”, è il motore che **costruisce il grafo** e calcola i gradienti con `backward` (chain rule automatica). Serve **2 frasi**. (2) DataLoader non è solo “organizzazione interna”: **batch**, shuffle, iterazione per step. (3) Accumulo è **per step/batch**, non “ogni epoca”; senza zero_grad sommi i `.grad` tra batch dello stesso (o di più) step → update sbagliato.
+- **Correzione / suggerimento:** Autograd = traccia operazioni → `backward` riempie `.grad`; Dataset = `__getitem__`/campione; DataLoader = mini-batch + shuffle; zero_grad prima di ogni nuovo step.
+- **Pattern errore / ID contesto:** soft colloquio (precisione lessicale)
+
+### 2026-08-13 — TODO 2 [REFACTORING] rete 2-layer PyTorch (`07_pytorch_intro.py` ~1384–1402)
+
+- **Esercizio / blocco:** `nn.Module` ReLU+sigmoid, BCE, SGD; confronto mentale NumPy; bonus BCEWithLogitsLoss + stabilità (#42)
+- **Valutazione (primo tentativo — "voto esame"):** **4.5/10**
+- **Punti di forza:** Scheletro architettura ok: `Linear(d,h)` → ReLU → `Linear(h,1)` → sigmoid + `squeeze(-1)` (coerente con BCE su probabilità).
+- **Errori / lacune:** (1) Manca `super().__init__()` in `__init__` → `nn.Module` non registrato bene (bug tipico). (2) Consegna chiede anche **BCE + SGD** (training loop) — assente. (3) Nessun confronto mentale con `train_rete_2_layer` NumPy. (4) Bonus BCEWithLogitsLoss (logit in uscita, no sigmoid nel forward) + 1 riga stabilità/#42 — assente.
+- **Correzione / suggerimento:** `super().__init__()`; poi mini-loop come sez.5; bonus: `return z.squeeze(-1)` + `BCEWithLogitsLoss` (sigmoid+BCE fusi, più stabili numericamente / clip).
+- **Pattern errore / ID contesto:** #6 consegna incompleta; soft nn.Module init
+- **Rivalutazione post-fix (2026-08-13):** `super().__init__()` + loop SGD + y binario + spiegazione stabilità ok → **7/10**. Bloccante: `nn.BCEwithlogits()` non esiste → `nn.BCEWithLogitsLoss()`. Residui: `append(..., loss)` senza `.item()`; percorso “BCE+sigmoid” della consegna base non mostrato (solo bonus logit); confronto mentale esplicito con NumPy cap.06 ancora debole.
+- **Rivalutazione 2 (2026-08-13):** nome loss corretto → ma **regressione**: `loss = criterio(...).item()` **prima** di `backward` → `float` non ha `.backward()` (crash). Ordine: `loss = criterio(...); loss.backward(); append(..., loss.item())`. Voto aggiornato **6/10** (peggio del 7 per il bug sul grafo).
+- **Rivalutazione 3 (2026-08-13):** ordine loop corretto (`loss` Tensor → `backward` → `.item()` → `step`) → **9/10**. Residui soft: niente percorso esplicito sigmoid+`BCELoss`; confronto mentale NumPy cap.06 solo implicito (manca 1 frase forward/cache vs autograd).
+
+### 2026-08-13 — TODO 3 [DEBUG] (`07_pytorch_intro.py` ~1427–1438)
+
+- **Esercizio / blocco:** Scegli 2 bug tipici A–D e spiega la fix
+- **Valutazione (primo tentativo — "voto esame"):** **6.5/10**
+- **Punti di forza:** Hai scelto A e B; su A l’idea `zero_grad` è corretta; su B capisci che tensore e modello devono stare sullo stesso device.
+- **Errori / lacune:** (A) Non basta “prima del ciclo”: va **a ogni step/batch**, non solo all’inizio. (B) Fix tipica: `device = "cuda" if torch.cuda.is_available() else "cpu"` poi `modello.to(device)` e `xb = xb.to(device)` (stesso device); in test spesso tutto su CPU con `map_location="cpu"` — la frase “cuda in training e cpu o cuda su entrambi in test” è confusa. Soft typo “il fase”.
+- **Correzione / suggerimento:** A: `optimizer.zero_grad()` ogni iterazione del batch. B: un solo `device` condiviso; errore tipico = `X.cuda()` ma modello ancora su CPU.
+- **Pattern errore / ID contesto:** soft precisione colloquio/debug
+
+### 2026-08-13 — TODO 4 [RETRIEVAL] backward 5 step (`07_pytorch_intro.py` ~1437–1445)
+
+- **Esercizio / blocco:** 5 step backward 2-layer a parole (dZ2→…→grad_W1); completare “in PyTorch li fa ______”
+- **Valutazione (primo tentativo — "voto esame"):** **5.5/10**
+- **Punti di forza:** Idea chain rule verso `grad_W1` presente (`dL/dp … dZ1/dW1`).
+- **Errori / lacune:** Non sono i **5 step** operativi del cap.06 (dZ2 → grad_W2/b2 → dH → dZ1 via ReLU → grad_W1/b1): è una sola formula compressa. Fill-in sbagliato: non `auto_grad()` → **`loss.backward()`** / motore **autograd**. Manca ReLU (maschera) e i gradienti del layer 2.
+- **Correzione / suggerimento:** Elenca 5 bullet: (1) dZ2 (2) dW2/db2 (3) dH (4) dZ1=dH⊙ReLU' (5) dW1/db1; PyTorch: `loss.backward()`.
+- **Pattern errore / ID contesto:** retrieval compresso; soft naming API
+
+### 2026-08-13 — Quiz verifica V1–V3 (`07_pytorch_intro.py` ~1495–1507)
+
+- **Esercizio / blocco:** V1 requires_grad; V2 Linear X@W.T+b; V3 ordine loop
+- **Valutazione (primo tentativo — "voto esame"):** **8/10** (V1 6, V2 10, V3 10)
+- **Punti di forza:** V2 corretto (convenzione weight); V3 ordine giusto `zero_grad → forward+loss → backward → step`.
+- **Errori / lacune:** V1 troppo corto: non è solo “richiedere il gradiente”, è dire a PyTorch di **tracciare le operazioni** su quel tensore per poter fare `.backward()` / riempire `.grad`.
+- **Correzione / suggerimento:** V1 modello: “`requires_grad=True` → tensore sorvegliato: autograd costruisce il grafo e calcola i gradienti al backward.”
+- **Pattern errore / ID contesto:** —
+
+### 2026-08-13 — Quiz verifica V4 (`07_pytorch_intro.py` ~1508–1511)
+
+- **Esercizio / blocco:** Errore concettuale “Autograd sostituisce il gradient descent”
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**
+- **Punti di forza:** Distingue calcolo gradienti (autograd/backward) vs update pesi (`optimizer.step()`).
+- **Errori / lacune:** Soft: `step()` non “sostituisce” il GD — **è** l’implementazione del GD (o Adam, ecc.). Autograd non sostituisce nulla del GD: fornisce i `.grad` che il GD usa.
+- **Correzione / suggerimento:** “Autograd calcola i gradienti; GD/Adam aggiornano i pesi.”
+- **Pattern errore / ID contesto:** soft backprop vs GD (già visto)
+
+### 2026-08-13 — Quiz verifica V5–V6 (`07_pytorch_intro.py` ~1512–1519)
+
+- **Esercizio / blocco:** V5 `map_location="cpu"`; V6 Feynman DataLoader
+- **Valutazione (primo tentativo — "voto esame"):** **6.5/10** (V5 5.5, V6 7)
+- **Punti di forza:** V5 idea “dove caricare”; V6 analogia magazziniere/efficienza nella direzione giusta.
+- **Errori / lacune:** V5 troppo generica: il punto del corso è **pesi salvati su GPU (Colab) → caricati su CPU (il tuo PC senza CUDA)**. V6 manca il pezzo operativo da Feynman: **pacchetti/batch**, eventuale mescola, te li porta uno alla volta (carrello/paginatore).
+- **Correzione / suggerimento:** V5: remap device al load. V6: “prende N esempi dallo scaffale, li mette sul carrello, te li porta a pacchetti.”
+- **Pattern errore / ID contesto:** soft #6 completezza risposta
+
 ### 2026-08-03 — Revisione capitolo (richiesta studente)
 
 - **Motivo:** confusione sul passaggio NumPy → PyTorch.
@@ -381,12 +456,16 @@
 - 🟢 **#44** sanity check = analitico vs numerico (chiusa Micro 44.A)
 - 🟢 **#42** clip BCE su `p` (chiusa)
 - 🟢 **#43** scaler parentesi (chiusa)
-- 🔴 Pattern #27 formula→codice — **riemerso** Micro 27.A: `(1-y)` invece di `(1-p)`
+- 🔴 Pattern #27 formula→codice — **riemerso** Micro 27.A: `(1-y)` invece di `(1-p)` → migrato cap.08/R07
+- 🟡 **#45** retrieval 5-step + `loss.backward()` (TODO 4 = 5.5/10) → R07 es.11 + quiz ingresso 08
+- 🟡 **#46** map_location + DataLoader Feynman (V5/V6) → R07 es.14 + quiz ingresso 08
+- ⚠️ TODO 5 INTERLEAVING / TODO 6 REAL-WORLD / 🏗️ progetto M3-07 — **non svolti** → cap.08
 - 🟢 soft backprop vs GD: chiuso a Q8 post-feedback (primo tentativo ancora 6.5)
 
 ---
 
 ## Note per il capitolo successivo (mentor)
 
-- Dopo cap.07 → bridge R07 + `08_cnn_computer_vision.py`
-- Privacy/GDPR buste paga resta bloccante dal cap.08/09 in poi
+- Bridge **M03_R07** (es. 11–15) prima di scrivere/studiare cap.08
+- Scrivere `08_cnn_computer_vision.py` da segnaposto (Fashion-MNIST, Colab); no buste paga
+- Privacy/GDPR buste paga resta bloccante dal cap.09 in poi

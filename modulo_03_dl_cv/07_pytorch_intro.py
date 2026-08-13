@@ -1293,24 +1293,27 @@ for epoca in range(20):
 
 torch.manual_seed(0)
 
-modell_scaled = My_Rete_2Layer(d = d, h = h)
+modello_scaled = My_Rete_2Layer(d = d, h = h)
 criterio_scaled = nn.BCELoss()
-ottimizzatore_scaled = torch.optim.SGD(modell_scaled.parameters(), lr=0.1)
+ottimizzatore_scaled = torch.optim.SGD(modello_scaled.parameters(), lr=0.1)
 
 loss_media_per_epoca_scaled = []
 
 for epoca in range(20):
-    modell_scaled.train()
+    modello_scaled.train()
     somma_losses, n_in_batch = 0.0, 0
     for xb, yb in load_scaled:
         ottimizzatore_scaled.zero_grad()
-        y_pred = modell_scaled(xb)
+        y_pred = modello_scaled(xb)
         loss = criterio_scaled(y_pred, yb)
         loss.backward()
         ottimizzatore_scaled.step()
         somma_losses += loss.item()
         n_in_batch += 1
     loss_media_per_epoca_scaled.append((epoca, float(somma_losses / n_in_batch)))
+
+percorso = "pesi_todo_18_modello_scaled.pt"
+torch.save(modello_scaled.state_dict(), percorso)
 
 
 print(f"Loss Iniziale Dataset Normale: {loss_media_per_epoca[0][1]:.5f}")    
@@ -1330,8 +1333,36 @@ print(f"Loss Finale DataSet Scalato: {loss_media_per_epoca_scaled[-1][1]:.5f}")
 # sempre un drift "duro").
 #
 # TUE IPOTESI + CODICE:
-# ...
+# Ipotesi 1: Cambiando il modello dello scanner, la qualità delle scansioni puà cambiare e di conseguenza influenzare l'estrazione dei dati.
+# Ipotesi 2: Nel tempo, la popolazione dei clienti può variare, andando a influenzare i dati prodotti e di consueguenza il modello può non essere attrezzato a predire i loro nuovi comportamenti.
+# Ipotesi 3: Nel tempo, anche se  i clieni possono rimanere gli stessi, le loro abitudini possono cambiare, provocando un drift di abitudini rispetto ai soliti dati, andando così a rendere il modello meno efficace.
 
+X_test = X_test_scaled * 1.5
+
+modello_reloaded = My_Rete_2Layer(d, h)
+modello_reloaded.load_state_dict(
+    torch.load(percorso, map_location="cpu")
+)
+
+criterio = nn.BCELoss()
+y_pred_scaled = modello_scaled(X_test_scaled)
+y_pred_reload = modello_reloaded(X_test)
+
+loss = criterio(y_pred_scaled, y_test).item()
+y_hat = (y_pred_scaled >= .5).float()
+acc = (y_hat == y_test).float().mean()
+
+loss_dopo_drift = criterio(y_pred_reload, y_test).item()
+y_hat_reload = (y_pred_reload >= .5).float()
+acc_dopo_drift = (y_hat_reload == y_test).float().mean().item()
+
+assert loss_dopo_drift > loss, "La Loss deve essere più alta dopo il Drift!"
+assert acc_dopo_drift < acc, "L'accuracy deve essere più alta dopo il Drift!!"
+
+print(f"Loss Modello Scalato: {loss:.5f}")
+print(f"Accuracy Modello Scalato: {acc}")
+print(f"Loss dopo Drift: {loss_dopo_drift:.5f}")
+print(f"Accuracy dopo Drift: {acc_dopo_drift}")
 
 # ==========================================================================
 # ESERCIZI
@@ -1344,7 +1375,10 @@ print(f"Loss Finale DataSet Scalato: {loss_media_per_epoca_scaled[-1][1]:.5f}")
 # (2) Differenza Dataset vs DataLoader.
 # (3) Perche' zero_grad() a ogni step?
 # TUA RISPOSTA:
-# ...
+
+# 1) Il gradiente trovato automaticamente da torch. 
+# 2) DataSet sarebbe l'insieme di tutti i dati, mentre il loader è l'organizzazione interna di quei dati.
+# 3) Perchè altrimenti i gradienti si sommerebbero ad ogni epoca e dopo poche epoche avremmo divergenza invece che convergenza dell metriche.
 
 # --------------------------------------------------------------------------
 # TODO 2 — 🔧 [REFACTORING] (20 min)
@@ -1355,7 +1389,41 @@ print(f"Loss Finale DataSet Scalato: {loss_media_per_epoca_scaled[-1][1]:.5f}")
 # Bonus: fallo con BCEWithLogitsLoss (modello che restituisce logit) e
 #        spiega in 1 riga perche' e' piu' stabile (collegamento #42).
 # TUO CODICE:
-# ...
+
+class Rete_todo_2(nn.Module):
+
+    def __init__(self, d: int, h:int) -> None:
+        super().__init__()
+        self.fc1 = nn.Linear(d, h)
+        self.fc2 = nn.Linear(h, 1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        h = torch.relu(self.fc1(x))
+        z = self.fc2(h)
+        return z.squeeze(-1)
+
+X = torch.randn(20, 5)
+y = (X[:, 0] - X[:, 1] > 0).float()
+
+modello = Rete_todo_2(5, 8)
+criterio = nn.BCEWithLogitsLoss()
+ottimizzatore = torch.optim.SGD(modello.parameters(), lr=0.1)
+
+loss_per_epoca = []
+
+for e in range(10):
+    ottimizzatore.zero_grad()
+    z_pred = modello(X)
+    loss = criterio(z_pred, y)
+    loss.backward()
+    loss_per_epoca.append((e, loss.item()))
+    ottimizzatore.step()
+
+# Con BCELoss + sigmoid a mano, se p va a 0 o 1 rischi log(0) → serviva il clip.
+# BCEWithLogitsLoss calcola tutto in forma numericamente più sicura sui logit, senza passare da probabilità estreme esplicite.
+
+
+
 
 # --------------------------------------------------------------------------
 # TODO 3 — 🔍 [DEBUG] (15 min)

@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 05/08/2026 — Protocollo **schede libri** attivo; 📚 Sez. 1–6 in `07_pytorch_intro.py`; schede `M03_C07_*`. (Voto M3-06: 7/10; media ~7.02.)
+> **Ultimo aggiornamento**: 13/08/2026 — Creato **`08_cnn_computer_vision.py`** (Fashion-MNIST, 🔁 residui cap.07, scheda `M03_C08_cnn`); bridge R07 prima di studiare. Media ~7.02 (28 cap).
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -40,12 +40,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_03_dl_cv/**07_pytorch_intro.py** — tensori, autograd, `nn.Module`/`Linear`, Dataset/DataLoader, training loop PyTorch, `state_dict`; **primo contatto Colab/GPU**. Residui cap.06 migrati come 🔁. |
-| **Ultimo completato** | modulo_03_dl_cv/**06_backprop_training.py** (03/08/2026, **chiusura anticipata**) — forward+cache, backward 2-layer, sanity check, training loop, PIPE `train_rete_2_layer_completo`, mini-progetto CSV vs LogReg (~8/10); TODO 1–17 svolti; residui → cap.07. **Voto difficoltà** **7**/10. |
+| **Capitolo in corso** | modulo_03_dl_cv/**08_cnn_computer_vision.py** — **file pronto** (13/08/2026): Fashion-MNIST, Conv/Pool/CNN, feature maps, Colab; 🔁 #27/#45/#46 + TODO 5–6 + 🏗️. Studiare dopo bridge **M03_R07**. |
+| **Ultimo completato** | modulo_03_dl_cv/**07_pytorch_intro.py** (13/08/2026, **chiusura anticipata**) — tensori/autograd/`nn.Module`/DataLoader/training loop/`state_dict`/Colab; #42/#43/#44 🟢; TODO 2 **9**/10; scaler+train **8.5**; quiz V1–V6 fatti. **Voto difficoltà** **7**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
-| **Difficoltà media** | ~**7.02** (27 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, **7** ↓ |
-| **Priorità attive** | 🔴 Pattern #27 formula→codice (altri casi `*`/`@`); 🟢 **#42** clip BCE; 🟢 **#43** scaler parentesi; 🟢 **#44** sanity check analitico vs numerico (Micro 44.A); 🟡 Pattern #6; 🟢 soft backprop vs GD; 🟡 #31 UAT; 🟡 E6 system design fine M3. |
-| **Sessione corrente** | Sessione 26 |
+| **Difficoltà media** | ~**7.02** (28 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, **7** = |
+| **Priorità attive** | 🔴 Pattern #27 (Micro 27.A `1-y` vs `1-p`); 🟡 Pattern #6; 🟡 **#45** retrieval 5-step backward a parole + `loss.backward()`; 🟡 map_location/DataLoader Feynman (V5/V6); 🟡 progetto M3-07 rinviato; 🟡 E6 system design fine M3; 🟢 #42/#43/#44. |
+| **Sessione corrente** | Sessione 27 |
 
 ---
 
@@ -56,11 +56,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 03/08/2026 |
-| **Cosa è stato fatto** | **Chiusura anticipata M3 cap.06** `06_backprop_training.py` (~3000 righe): quiz ingresso, rinforzi #37–#41, sez. teoria + mini, TODO 1–17 (PIPE ~9.5 post-fix, mini-progetto CSV ~8/10, colloquio 14 raffinato, TODO 15–17 con pattern #27 su clip/scaler). Decisione studente: stop qui, residui → cap.07. Creato **`07_pytorch_intro.py`** (non più segnaposto) con 🔁 #42/#43/#27 + CONFRONTO + scaler/drift + quiz ingresso da V. Bridge **M03_R06** arricchito. File cap.06 **non modificato** (H). |
-| **Errori emersi** | Pattern **#27**: parentesi scaler `X-mean/std`, clip BCE messo su `z` invece di `p` (TODO 17, più tentativi); soft: backprop vs GD (TODO 14 punto 4 primo tentativo 6.5); shadowing/`np.default_rng`; commenti confronto/drift incompleti. **Non svolti (migrati):** quiz V1–V10, CONFRONTO PRIMA/DOPO, TODO 18 commento, TODO 19 ipotesi drift. |
-| **Cosa fare nella prossima sessione** | (1) bridge **`M03_R06`** (~15 min); (2) setup Colab GPU + `torch.cuda.is_available()`; (3) aprire **`07_pytorch_intro.py`**: quiz ingresso Q1–Q8 + 🔁 #42/#43/#27 **prima** delle sezioni tensori/autograd. Difficoltà attesa: **7–8/10** (API nuova, concetti già visti). |
-| **Stato motivazione** | Stanco del volume del cap.06 (3000 righe) — scelta sana chiudere e spezzare. **Voto difficoltà 7/10**: contenuti gestibili, peso soprattutto dalla lunghezza del file → conferma strategia cap.07 snello + Colab-first. |
+| **Data** | 13/08/2026 |
+| **Cosa è stato fatto** | **Chiusura anticipata M3 cap.07** su richiesta studente (voto **7**/10, opzione A). Completati in sessione/periodo: sez.1–6 + mini, checkpoint dict, TODO 2 `BCEWithLogitsLoss`, scaler+train a due modelli, ipotesi drift, quiz V1–V6, colloquio TODO 1. File cap.07 **non modificato** (H). Rinforzi residui → cap.08 + bridge **M03_R07**. |
+| **Errori emersi** | #27 Micro 27.A; `.item()` prima di `backward` (TODO 2, poi fix); confronto sperimentale stesso modello (scaler); drift misurato male al primo shot; TODO 4 retrieval compresso; V5/V6 corte. |
+| **Cosa fare nella prossima sessione** | (1) bridge **`M03_R07`** (~15–20 min, es. 11–15); (2) aprire **`08_cnn_computer_vision.py`**: quiz ingresso + 🔁 #27/#45/#46; (3) Sez. 1–5 su Colab (Fashion-MNIST); (4) esercizi + 🏗️ debito tabellare TODO 5. |
+| **Stato motivazione** | Pipeline lunga percepita ma gestibile; chiusura anticipata consapevole (come cap.06). Voto 7/10 allineato al 06. |
 
 ---
 
@@ -83,7 +83,7 @@
 | 24 | **NUOVO — `iloc[i, "colonna_str"]` non funziona** | 🟡 Da rinforzare | Cap.01 Ponte mini-progetto: ha usato `iloc` con etichetta stringa. `iloc` accetta SOLO indici numerici; `loc` accetta etichette. Rinforzo cap.02 Ponte |
 | 25 | **NUOVO — Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Da rinforzare | Cap.01 Ponte 4.1/5.1: `np.array` è una FUNZIONE (factory), il TIPO è `np.ndarray`. Per type hint stricter: `numpy.typing.NDArray`. Rinforzo cap.02 Ponte |
 | 26 | `h`/`eps` troppo piccolo in derivata/gradiente numerico | 🟡 In miglioramento | Cap.05 TODO 13: `eps=1e-12`, corretto a **`1e-6`** dopo feedback. Ricontrollare nel sanity check del cap.06 |
-| 27 | **Traduzione formula → codice: operatore / parentesi** | 🔴 Attivo | Cap.05–06: `*` vs `/`, `*` vs `@`, `==` vs `=`; **cap.06 TODO 16/18:** `X - mean / std` (precedenza → non standardizza); **TODO 17:** clip su `z` invece di `p`. Regola: simbolo per simbolo + parentesi al denominatore + `assert`. Rinforzi 🔁 #42/#43/#27 in cap.07 |
+| 27 | **Traduzione formula → codice: operatore / parentesi** | 🔴 Attivo | Cap.05–06 + **cap.07 Micro 27.A**: `(1-y)` al posto di `(1-p)` in `p(1-p)`. #42/#43 chiusi; residuo simboli sbagliati. Regola: simbolo per simbolo + parentesi + `assert`. Rinforzo → cap.08 / bridge R07 |
 
 ### Concetti da rinforzare per M2 (⚠️)
 
@@ -99,7 +99,9 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 44 | **Sanity check = grad analitico vs numerico** | 🟢 Superato | Cap.07 Micro 44.A (03/08/2026): confronto analitico (sbagliabile) vs numerico (lento ma fidato); se coincidono → si addestra |
+| 45 | **Retrieval 5-step backward + `loss.backward()`** | 🟡 Da rinforzare | Cap.07 TODO 4 (13/08): formula compressa; fill-in `auto_grad()` invece di `loss.backward()` / autograd. Target: quiz ingresso cap.08 + bridge R07 |
+| 46 | **`map_location` GPU→CPU + DataLoader=batch** | 🟡 Da rinforzare | Cap.07 V5/V6 (13/08): risposte corte. Target: quiz ingresso cap.08 |
+| 44 | **Sanity check = grad analitico vs numerico** | 🟢 Superato | Cap.07 Micro 44.A (03/08/2026): confronto analitico vs numerico; se coincidono → si addestra |
 | 43 | **Scaler `(X-mean)/std`**: parentesi obbligatorie | 🟢 Superato | Cap.07 🔁 #43 (03/08/2026): 43.A precedenza `/` vs `-`; 43.B `std==0 → 1.0` |
 | 42 | **Clip BCE su `p`, non su `z`** | 🟢 Superato | Cap.07 🔁 #42 (03/08/2026): 42.A clip su `p` + BCE; 42.B Falso con motivazione log(0)/nan |
 | 41 | **Shape 1D vs colonna**: `b1` è `(h,)` non `(h,1)`; `P` è `(N,)` non `(N,1)` | 🟢 Superato | Mini 1.1.A (28/07): shape stampate dal forward `(10,) (10,8) (10,8) (10,1)` — conferma dal codice |
@@ -137,14 +139,14 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo capitolo** | modulo_03_dl_cv/**07_pytorch_intro.py** — tensori, autograd, `nn.Module`/`Linear`, Dataset/DataLoader, training loop (`zero_grad`→forward→loss→`backward`→`step`), `state_dict`; workflow **Colab GPU**. |
-| **Bridge obbligatorio prima** | **`M03_R06_after_C06_before_C07_backprop_to_pytorch.md`** — arricchito 03/08/2026 (fondamentali Python/NumPy + training loop, clip BCE, scaler, backprop vs GD, Colab). |
-| **Rinforzi già in cap.07 (🔁)** | ✅ **#42** clip BCE su `p` (+ ponte `BCEWithLogitsLoss`); ✅ **#43** scaler parentesi; ✅ Pattern **#27** (+ promemoria anti-#27); ✅ **#44** sanity check analitico vs numerico (blocco eseguibile con assert); ✅ CONFRONTO PRIMA/DOPO; ✅ scaler+train (TODO 18); ✅ drift (TODO 19); quiz ingresso = temi V1–V8 cap.06. |
-| **Revisione cap.07 (03/08/2026)** | File riscritto **più esplicativo** su richiesta studente (confusione NumPy→PyTorch): schema fisso per sezione (analogia → NumPy → PyTorch → cosa cambia → tranelli → mini), **dizionario di traduzione NumPy↔torch**, tranelli dtype float64/32, `from_numpy` vs `tensor`, device, accumulo `.grad`, convenzione `weight (out,in)`, vocabolario batch/step/epoca, tabella training loop cap.06↔cap.07, `state_dict`. Aggiunti mini 1.3/1.4, 2.3, 3.2/3.3, 4.2, 5.2, 6.2. `try/except` allargato a `Exception` (OSError DLL Windows) + stop pulito se torch assente. Risposte studente **conservate**. |
-| **Concetti ⚠️ da monitorare** | Autograd ≠ GD; `zero_grad`; device CPU/CUDA; clip su `p`; scaler fit-on-train; backprop vs GD in Feynman. |
-| **Pattern 🔴 da monitorare** | 🔴 **#27** formula→codice + parentesi; 🔴 #42/#43; 🟡 #6 consegne. |
-| **Ponte mentale da riusare** | Autograd = "scontrino completo al posto della cache manuale"; DataLoader = carrello di pratiche; Colab = cantiere in affitto / Cursor = ufficio. |
-| **Note** | Cap.06 chiuso **anticipo** per volume (~3000 righe) su richiesta studente: DoD principale raggiunto (backward+train+mini-progetto); quiz V / CONFRONTO / TODO 18–19 **non** richiesti nel file 06. Cap.07 snello (~quiz+6 sezioni+esercizi), **non** ripetere il monolite. Preparare notebook Colab prima della sessione. |
+| **Capitolo pronto da studiare** | modulo_03_dl_cv/**08_cnn_computer_vision.py** (~780 righe) — Fashion-MNIST, `(N,C,H,W)`, `Conv2d`/`MaxPool`, `PiccolaCNN`, feature maps, Colab. |
+| **Bridge obbligatorio prima** | **`M03_R07_after_C07_before_C08_pytorch_to_cnn.md`** (es. 1–15; residui #27/#45/#46). |
+| **Rinforzi già in cap.08 (🔁)** | ✅ **#27** Micro 27.A; ✅ **#45** 5-step + `backward`; ✅ **#46** map_location/DataLoader; ✅ TODO 5 Dataset CSV; ✅ TODO 6 REAL-WORLD; ✅ 🏗️ debito M3-07 + nota prodotto → cap.09. |
+| **Libri** | Scheda `docs/libri_corso/schede/M03_C08_cnn.md` — [PYTORCH] 1ª ed. **cap. 7–8**, [GERON] cap. 14. |
+| **Concetti ⚠️ da monitorare** | Shape NCHW vs HWC plot; shape post-pool → Linear; CrossEntropy logits; Pattern #27; `zero_grad` ogni batch. |
+| **Pattern 🔴 da monitorare** | 🔴 **#27**; 🟡 #6 consegne. |
+| **Ponte mentale da riusare** | Conv = filtro Photoshop / CSS locale; Pool = thumbnail max; DataLoader = carrello. |
+| **Note** | `.gitignore` ha `data/buste_*/` e `dati/buste_*/`. Niente buste in questo cap. Training su Colab. |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con **Libri di riferimento** (se capitolo M3+), Regole Didattiche e Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -814,8 +816,9 @@ completezza del self-check e chiedere correzioni.
 | **M3-04_derivate_gradiente** | **8** | Confermato C5 auto-rating **16/06/2026**; derivata/gradiente numerico, sigmoid' max 0.25, ReLU step, BCE→`p-y`, PIPE `derivate_check`, mini-progetto attivazioni; blocco iniziale parziali C4 poi 9/10; TODO 16 opzionale; V8 Feynman post-fix ok |
 | **M3-05_chain_rule_gd** | **9** | +1 ↑ vs M3-04 — primo 9/10 del modulo. Confermato studente **27/07/2026**. Chiusura **27/07/2026**; chain rule 2/3/4 livelli, mappa backward 3.A–3.C, GD 1D/nD, lr sweep, PIPE `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` 8.5/10; V7 5/10 (catena W1), V8 7/10 (Feynman); C1–C5 non compilati |
 | **M3-06_backprop_training** | **7** | -2 ↓ vs M3-05. Confermato studente **03/08/2026**. Chiusura **anticipata** (file ~3000 righe): DoD core OK; residui → cap.07. Difficoltà percepita più da **volume** che da concetti isolati. Pattern #27 attivo (#42/#43). |
+| **M3-07_pytorch_intro** | **7** | = vs M3-06. Confermato studente **13/08/2026**. Chiusura **anticipata** (opzione A): DoD core OK; TODO 4–6 + 🏗️ → cap.08/R07. Pattern #27 Micro 27.A ancora 🔴; #42/#43/#44 🟢. |
 
-**Media attuale**: ~**7.02** (27 capitoli con voto, incluso M3-06 = **7**). Trend M3: 8, 8, 8, 8, 9, **7** ↓ — dopo il picco del 05, il 06 “pesa” per lunghezza; cap.07 snello + Colab.
+**Media attuale**: ~**7.02** (28 capitoli con voto, incluso M3-07 = **7**). Trend M3: 8, 8, 8, 8, 9, 7, **7** = — stabilizzazione dopo il picco del 05.
 
 ---
 
@@ -1005,7 +1008,22 @@ completezza del self-check e chiedere correzioni.
 | Sanity check grad | Confronto grad analitico vs numerico (`h≈1e-6`) prima del train | M3-06 | 1/3 | 🔄 |
 | Training loop | Ripeti: forward → loss → backward → update GD | M3-06 | 2/3 | 🔄 |
 | He init (tutti i layer) | `W ~ N(0, sqrt(2/n_in))` su **W1 e W2** | M3-06 | 1/3 | 🔄 |
-| Autograd (teaser) | PyTorch traccia operazioni e calcola gradienti al posto tuo (cap.07) | M3-06→07 | 0/3 | 🔄 |
+| Autograd (teaser) | PyTorch traccia operazioni e calcola gradienti al posto tuo (cap.07) | M3-06→07 | 2/3 | 🔄 |
+
+### Modulo 3 — Cap.07 PyTorch intro
+
+| Termine | Definizione breve | Cap. | Contatore | Stato |
+|---------|-------------------|-----|-----------|-------|
+| Tensore | Array multi-dim su CPU/GPU; cugino di `ndarray` con autograd/device | M3-07 | 2/3 | 🔄 |
+| `requires_grad` | Dice a PyTorch di tracciare le ops su quel tensore per `.backward()` / `.grad` | M3-07 | 1/3 | 🔄 |
+| Autograd | Motore che costruisce il grafo e calcola i gradienti (`loss.backward()`) | M3-07 | 2/3 | 🔄 |
+| `nn.Module` / `nn.Linear` | Blocco con `forward` e parametri; Linear = `X @ W.T + b` (weight out×in) | M3-07 | 2/3 | 🔄 |
+| DataLoader | “Carrello”: batch + shuffle dal Dataset verso il training loop | M3-07 | 1/3 | 🔄 |
+| `zero_grad` | Azzera `.grad` **ogni** step/batch (altrimenti i gradienti si sommano) | M3-07 | 1/3 | 🔄 |
+| `state_dict` | Dict dei pesi (e opz. optimizer) da salvare/caricare | M3-07 | 2/3 | 🔄 |
+| `map_location` | Remap device al `load` (es. pesi Colab CUDA → CPU locale) | M3-07 | 0/3 | 🔄 |
+| `BCEWithLogitsLoss` | BCE stabile su **logits** (no sigmoid a mano prima della loss) | M3-07 | 1/3 | 🔄 |
+| `.item()` | Scalare Python da tensore 0-dim; per **log**, non prima di `backward` sulla loss | M3-07 | 1/3 | 🔄 |
 
 ---
 
@@ -1078,6 +1096,16 @@ completezza del self-check e chiedere correzioni.
 | 1 | Perché `z = np.log(p/(1-p))` nel rinforzo #38? | È la **sigmoid invertita** (funzione **logit** / log-odds). Serve a ricavare lo `z` che produce esattamente `p=0.8`, così le due derivate numeriche si misurano **nello stesso punto di lavoro**. Nella rete vera `Z2` arriva dal forward, non serve invertire |
 | 2 | Dying ReLU e init random: un neurone spento all'inizio resta morto? | Solo se `Z1≤0` su (quasi) **tutti** i batch → gradiente 0 → pesi fermi. Su un campione/batch singolo può riaccendersi dopo. He init riduce il rischio. |
 
+### Cap.07 M3 — PyTorch intro
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | `.item()` prima di `backward`? | No: stacca lo scalare **dopo** aver fatto `backward` (o usa `loss.item()` solo per logging). Se fai `.item()` sulla loss prima del backward, perdi il grafo |
+| 2 | Confronto due modelli (scaler sì/no) | Due istanze + **stesso seed** due volte; non riusare lo stesso oggetto già trainato |
+| 3 | Drift: cosa confrontare | Stessi pesi, `X_test` pulito vs `X_test` alterato (es. `*1.5`); non ri-addestrare |
+| 4 | Fill-in “chi fa i 5 step in PyTorch?” | `loss.backward()` / **autograd** (non `auto_grad()`) |
+| 5 | `map_location="cpu"` | Pesi salvati su GPU (Colab) → caricabili sul PC senza CUDA |
+
 ---
 
 ## Pattern di Errore Ricorrenti — Solo Attivi
@@ -1097,7 +1125,7 @@ completezza del self-check e chiedere correzioni.
 | 24 | **`iloc[i, "col_str"]` (etichetta) vs `loc`/parentesi quadre** | 🟡 Nuovo (Ponte cap.01) | Nel mini-progetto ha usato `pratiche.iloc[i, "pratica_id"]` → TypeError. `iloc` accetta solo INDICI numerici (riga, colonna come int), `loc` accetta etichette. Alternativa: `pratiche.iloc[i]["pratica_id"]`. Rinforzo cap.02 Ponte. |
 | 25 | **Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Nuovo (Ponte cap.01) | Nelle funzioni `norma` e `coseno` ha scritto `def norma(v: np.array)`. `np.array` è la FACTORY function, il tipo è `np.ndarray`. Per type hint moderni: `from numpy.typing import NDArray; def norma(v: NDArray) -> float`. Rinforzo cap.02 Ponte. |
 | 26 | **`h`/`eps` troppo piccolo in derivata/gradiente numerico** | 🟡 In miglioramento (M3 cap.04→05) | Ha usato `eps=1e-24` (C4) e `h=1e-16` (TODO 12) → risultati instabili. Cap.05 TODO 13: ancora `eps=1e-12`, corretto a **`1e-6`** dopo feedback. Ricontrollare nel sanity check cap.06. |
-| 27 | **Traduzione formula → codice: operatore sbagliato** | 🔴 Attivo (M3 cap.05→06) | Cap.05: `*` vs `/`, `*` vs `@`, `==` vs `=`. **Cap.06:** parentesi `dL/dp`; `p(1-p)` TypeError; **TODO 16/18** `X - mean / std`; **TODO 17** clip su `z` non su `p`. Antidoto: simbolo per simbolo + parentesi + assert. Rinforzi cap.07 #42/#43/#27. |
+| 27 | **Traduzione formula → codice: operatore sbagliato** | 🔴 Attivo (M3 cap.05→07) | Cap.05–06: `*`/`/`/`@`/`=`; parentesi scaler; clip su `z`. **Cap.07 Micro 27.A:** `(1-y)` invece di `(1-p)` in `p(1-p)`. #42/#43 🟢. Antidoto: simbolo per simbolo + assert. Rinforzo → cap.08 / R07. |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠️ Da consolidare | 🟢 Superato
 
@@ -1264,6 +1292,14 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - **Chiusura anticipata** (volume ~3000 righe): quiz V, CONFRONTO PRIMA/DOPO, TODO 18/19 → 🔁 in `07_pytorch_intro.py`.
 - Diario: `sessioni_capitoli/M03_C06_backprop_training_sessione.md`.
 
+### Cap.07 M3 — PyTorch intro (chiusura anticipata 13/08/2026; voto difficoltà: **7**/10)
+
+- **Tensori / autograd / `nn.Module` / DataLoader / training loop / `state_dict`** + workflow Colab (GPU) vs locale (DLL/`OSError` → stop pulito).
+- 🔁 **#42/#43/#44** chiusi 🟢; Micro **27.A** ancora 🔴 (`1-y` vs `1-p`).
+- TODO 2 `BCEWithLogitsLoss` **9**/10 post-fix (bug `.item()` prima di backward); scaler+train **8.5**; ipotesi drift ok; quiz V1–V6 fatti (V5/V6 soft).
+- **Chiusura anticipata (opzione A):** TODO 4 retrieval **5.5**/10 (migrare); TODO 5–6 + 🏗️ progetto **vuoti** → cap.08 / bridge R07.
+- Diario: `sessioni_capitoli/M03_C07_pytorch_intro_sessione.md`.
+
 ---
 
 ## Checklist di Auto-Revisione (prima di consegnare il codice)
@@ -1297,6 +1333,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - [ ] **BCE:** il `clip` bilaterale è su **`p`**, non su `z`?
 - [ ] **Assegnazione vs confronto:** dentro un ciclo ho scritto `grad.flat[i] = ...` e non `== ...`?
 - [ ] **Inizializzazione He:** l'ho applicata a **tutti** i layer (`W1` *e* `W2`), ognuno con il proprio `sqrt(2/n_in)`?
+- [ ] **PyTorch loop:** `optimizer.zero_grad()` **ogni** batch (non solo all’inizio del file)?
+- [ ] **PyTorch loss:** non chiamo `.item()` sulla loss **prima** di `backward` (solo per log dopo)?
+- [ ] **Device:** modello e batch sullo **stesso** device; al load da Colab uso `map_location="cpu"` in locale?
 - [ ] **Matplotlib:** ho scritto `plt.show()` **con le parentesi**? E ho salvato con `savefig` **prima** di `show()`?
 - [ ] **Confronto con None:** ho usato `is None` e non `== None`?
 - [ ] **In un file con molti esercizi in sequenza**, il modello che passo a `predict` o ai coefficienti è lo stesso su cui ho fatto l’ultimo `.fit` coerente con X/y?
@@ -1372,8 +1411,11 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | Chain rule (prodotto derivate locali) | 27/07 (cap.05 M3) | ✅ cap.06 backward | bridge R06 | — | 🟢 |
 | Gradient descent + learning rate | 27/07 (cap.05 M3) | ✅ cap.06 training loop | cap.07 optimizer | — | 🟢 |
 | Catena `dL/dW1` (5 anelli) | 27/07 (cap.05 M3) | ✅ cap.06 🔁 #39 + Q2 | bridge R06 | — | 🟢 |
-| Training loop + cache | 03/08 (cap.06 M3) | quiz ingresso cap.07 | autograd sez.2 | — | 🟡 Da verificare a freddo (V non fatti) |
-| Scaler parentesi / clip p | 31/07 (cap.06) | 🔴 #42/#43 | cap.07 🔁 | — | 🔴 Rinforzo attivo |
+| Training loop + cache | 03/08 (cap.06 M3) | quiz ingresso cap.07 | autograd sez.2 + V3 | — | 🟢 Loop PyTorch ok; residuo soft 5-step a parole (#45) |
+| Scaler parentesi / clip p | 31/07 (cap.06) | ✅ #42/#43 cap.07 | — | — | 🟢 |
+| Autograd / `requires_grad` / `backward` | 13/08 (cap.07) | bridge R07 / quiz ingresso 08 | — | — | 🟡 #45 naming `backward` |
+| DataLoader + `map_location` | 13/08 (cap.07) | quiz ingresso 08 (#46) | — | — | 🟡 |
+| `state_dict` / checkpoint | 13/08 (cap.07) | cap.08 save CNN | — | — | 🟡 |
 
 > **Regola per l'agente**: questa tabella va estesa a ogni nuovo capitolo M2+.
 > I concetti M1 con stato OK/Consolidato restano come riferimento ma non richiedono piu ripasso attivo.
@@ -1440,7 +1482,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 41 | **Shape 1D vs colonna 2D: `b1` è `(h,)` e `P` è `(N,)`** | Quiz ingresso Q5 cap.06 (27/07/2026) | `b1` scritto `(8,1)` invece di `(8,)`. **Chiusura:** mini 1.1.A (28/07). | M3 cap.06 mini 1.1.A | 🟢 |
 | 42 | **Clip BCE su `p`, non su `z`** | Cap.06 TODO 17 (31/07/2026) | Clip su logit al primo tentativo. **Chiusura:** rinforzo 🔁 #42 cap.07 (03/08/2026) — 42.A/B ok a freddo. | M3 cap.07 🔁 #42 | 🟢 |
 | 43 | **Scaler: `(X - mean) / std` con parentesi** | Cap.06 TODO 16/18 (31/07/2026) | `X - mean / std` per precedenza. **Chiusura:** rinforzo 🔁 #43 cap.07 (03/08/2026) — 43.A/B ok; guardia `std==0 → 1.0`. | M3 cap.07 🔁 #43 | 🟢 |
-| 44 | **Sanity check backward = analitico vs numerico** | Quiz ingresso Q4 cap.07 (03/08/2026) | Risposta generica (“funzioni non rotte / prova del nove”) senza citare confronto grad analitico vs numerico (`h≈1e-6`) prima del train. | Cap.07 sez.2 / recall cap.06 | 🟡 |
+| 44 | **Sanity check backward = analitico vs numerico** | Quiz ingresso Q4 cap.07 (03/08/2026) | Risposta generica al primo shot. **Chiusura:** Micro 44.A (03/08) — analitico vs numerico ok. | M3 cap.07 Micro 44.A | 🟢 |
+| 45 | **Retrieval 5-step backward + fill-in `loss.backward()`** | Cap.07 TODO 4 (13/08/2026) | Formula compressa; fill-in `auto_grad()` invece di `loss.backward()` / autograd; manca ReLU/layer2. | Cap.08 quiz ingresso + bridge R07 | 🟡 |
+| 46 | **`map_location` GPU→CPU + DataLoader=batch (Feynman)** | Cap.07 V5/V6 (13/08/2026) | V5 generica; V6 senza “pacchetti/batch”. | Cap.08 quiz ingresso | 🟡 |
 | 40 | **Feynman gradient descent** — manca il ciclo iterativo | Quiz verifica V8 cap.05 (27/07/2026) | Analogia della collina corretta e vincoli lessicali rispettati, ma la risposta descrive **dove guardare**, non il ciclo "senti → fai un passo → risenti → ripeti" né l'effetto della **dimensione del passo**. Rinforzo: quiz ingresso cap.06 Q7 (Feynman backprop) + bridge R05 es.11. **27/07: Q7 saltata per scelta dello studente** → verifica spostata a fine cap.06, dopo la backprop in codice. | M3 fine cap.06 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
@@ -1632,7 +1676,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M3 cap.04 — Derivate e gradiente | ✅ Completato (16/06/2026) | `derivata_numerica`, `gradiente_numerico`, sigmoid'/ReLU, BCE→`p-y`, PIPE `derivate_check`, mini-progetto attivazioni; checkpoint C1–C5; voto **8**/10; bridge **R04** popolato; TODO 16 opzionale |
 | M3 cap.05 — Chain rule + GD | ✅ Completato (27/07/2026) | Chain rule multilivello, mappa backward 3.A–3.C, `gradient_descent_1d/nd` + early stop, lr sweep, PIPE `addestramento_via_gradiente_numerico`, mini-progetto `confronto_lr_su_addestramento` (figura 4 pannelli `05_06_confronto_lr.png`, 8.5/10); voto **9**/10; bridge **R05** popolato; residui opzionali: mini 1.2.A, R6-B, TODO 17, C1–C5. **Nessuna sezione 🏗️ prodotto in questo capitolo** (capitolo di fondamenta matematiche) |
 | M3 cap.06 — Backprop + Training | ✅ Chiusura anticipata (03/08/2026) | PIPE `train_rete_2_layer_completo` + mini-progetto rete CSV M2 vs LogReg (~8/10). Quiz V / CONFRONTO / TODO 18–19 migrati a cap.07. Voto **7**/10. **Sezione 🏗️ prodotto:** rete addestrata su feature tabellari M2 (ponte verso ramo visivo) |
-| M3 — DL & CV (portfolio CNN cap.10) | 🟡 Pianificato | Deliverable deciso (30/04/2026): classificatore "busta paga vs altro" … Cap.07 = primo PyTorch/Colab sul path verso CNN. |
+| M3 cap.07 — PyTorch intro | ⚠️ Chiusura anticipata (13/08/2026) | DoD PyTorch core OK. **🏗️ progetto M3-07 rinviato** → da fare in cap.08 (o assorbito) insieme a TODO 5–6. Voto **7**/10. Path Colab consolidato. |
+| M3 — DL & CV (portfolio CNN cap.10) | 🟡 Pianificato | Deliverable deciso (30/04/2026): classificatore "busta paga vs altro" … Cap.08 = CNN su Fashion-MNIST (no buste); buste dal cap.09. |
 | M4 — NLP | ⬜ Da fare | |
 | M5 — LLM | ⬜ Da fare | |
 | M6 — RAG | ⬜ Da fare | |
@@ -2155,6 +2200,8 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 13/08/2026 | **Creato M3 cap.08** `08_cnn_computer_vision.py` (Fashion-MNIST, CNN, 🔁 #27/#45/#46, TODO 5–6, 🏗️); scheda `M03_C08_cnn.md`; `.gitignore` buste; mappa libri 1ª ed. cap.7–8; CONTESTO/README/diario C08. | Richiesta studente: creare capitolo 8 | cap.08, scheda, gitignore, mappa, contesto, README |
+| 13/08/2026 | **Chiusura anticipata M3 cap.07** (`07_pytorch_intro.py`): voto **7**/10 (opzione A); Stato → `08_cnn_computer_vision.py` (segnaposto); Priorità #27/#45/#46; Valutazioni M3-07; lacune #44→🟢, #45/#46 nuove; glossario cap.07; competenze; progetto 🏗️ ⚠️; bridge **M03_R07** arricchito; diario C07 chiuso + scaffold C08; Sessione **27**. File cap.07 non modificato (H). | Richiesta studente: “7, A” | Stato, sessioni, priorità, valutazioni, glossario, pattern, lacune, competenze, ripasso, checklist, progetto, bridge, cap.08, changelog |
 | 05/08/2026 | **Libri organici + protocollo schede**: `books/` gitignore; `docs/libri_corso/`; Regola 41; schede `M03_C07_*`; 📚 Sez. 1–6 + esercizio 📚 [LIBRO] state_dict in `07_pytorch_intro.py`. PDF PyTorch = 1ª ed. | Richiesta studente: mentor usa i libri per costruire capitoli | Libri, schede, cap.07, .gitignore, mentor rule, Changelog |
 | 03/08/2026 | **Chiusura anticipata M3 cap.06** (`06_backprop_training.py`): Stato → `07_pytorch_intro.py`; Priorità #42/#43 + Pattern #27; Valutazioni M3-06 (voto poi 7/10); creato `07_pytorch_intro.py` con 🔁 residui; bridge M03_R06 arricchito; Sessione 26. File cap.06 non modificato (H). | Richiesta studente: stop a ~3000 righe, residui come rinforzi in PyTorch | Stato, sessioni, priorità, valutazioni, glossario, pattern, lacune, competenze, bridge, cap.07, changelog |
 | 28/07/2026 | **Revisione di allineamento al mercato di `roadmap_ai.md`** (verifica web su roadmap AI Engineer 2026, framework agenti, fine-tuning, tooling di valutazione, dati occupazionali). **Aggiunte:** M6-10 `context_engineering` (budget contesto, compaction, memoria vs retrieval, progressive disclosure, routing) — la lacuna piu' grave; M5-06 `multi_provider_litellm`; M5-09 `contesto_lungo_vs_rag` + prompt caching. **Modifiche:** M5 10→12 cap. e `01_api_openai`→`01_api_llm` (no lock-in); M6 10→11 cap., +pgvector (04), +reranking (07), +DeepEval (08), +Langfuse (09); M7 agentic RAG spostato 08→**05** (e' il default 2026), +sicurezza MCP (08), memoria vs RAG esplicito (04); M8 +DPO/GRPO/RFT nel decision framework (01), +Unsloth (05); M9-04 architettura eval a due strati (offline in CI + osservabilita' in produzione). **Sezione mercato riscritta**: rimossi dati 2024-25 e salari USA, inseriti PwC 2026 (+69% offerte, +42% premio salariale), LinkedIn Italia (24ª/27 UE, 0,43% vs 0,90%, saldo migratorio negativo, assunzioni -30% vs 2019), forbici RAL italiane (junior 22-32k / mid 45-65k / senior 70-100k+), norma **UNI 11621-8:2026** (12 profili AI). Corretta l'affermazione "20/20 skill, zero lacune" (non piu' vera → 22/22 dopo la revisione). Timeline 6 → **6-9 mesi**. Aggiunta nota di calibrazione su **M3**: "capire, non padroneggiare" — e' il tratto con il ritorno di mercato piu' basso, non rallentare oltre ~1 settimana per sotto-capitolo. **Confermati validi**: impianto generale, LangGraph, MCP (ora Linux Foundation/AAIF), LoRA-QLoRA (~62% dei progetti), RAGAS+LangSmith, Chroma come scelta didattica, principio "concetti prima, framework dopo", portfolio > certificazioni. | Richiesta dello studente: verificare se il corso regge rispetto a cio' che si trova online oggi | `roadmap_ai.md` (intestazione, timeline, M3, M5, M6, M7, M8, M9, colloqui, mercato), Changelog |

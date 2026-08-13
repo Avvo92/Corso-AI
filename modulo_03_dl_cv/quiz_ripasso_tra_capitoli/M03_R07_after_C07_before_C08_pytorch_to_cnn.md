@@ -2,6 +2,8 @@
 
 **Focus:** file path su Windows, `torch` vs `numpy` mental model, batch, Pandas lettura CSV leggera, device (`cpu`/`cuda`) a parole.
 
+**Aggiornato 13/08/2026 (chiusura anticipata cap.07):** esercizi 11–15 = residui #27 / #45 / #46 / `zero_grad` / progetto tabellare.
+
 ---
 
 ### 1. Vero / Falso
@@ -91,6 +93,45 @@ Differenza tra **dataset** (cosa contiene) e **DataLoader** (cosa fa nel trainin
 
 ---
 
+### 11. 🔁 Retrieval — 5 step backward (#45)
+
+Elenca in **5 bullet** (a parole, senza codice lungo) la catena del backward 2-layer del cap.06:
+`dZ2 → … → grad_W1`. Poi completa: “In PyTorch questi step li fa ______.”
+
+---
+
+### 12. Trova l’errore (Pattern #27 Micro 27.A)
+
+Nella derivata della sigmoid usiamo spesso `p * (1 - p)`.
+Quale delle due è corretta e perché l’altra è un bug tipico?
+
+- A) `p * (1 - y)`
+- B) `p * (1 - p)`
+
+---
+
+### 13. Vero / Falso + fix
+
+“Basta chiamare `optimizer.zero_grad()` una sola volta all’inizio del training, prima del `for epoch`.”
+
+---
+
+### 14. Completa (device)
+
+Hai salvato un checkpoint su Colab con GPU. Sul PC di casa (AMD, no CUDA) carichi con:
+
+`torch.load(path, map_location=______)`
+
+Cosa metti al posto dei blank e perché (una frase)?
+
+---
+
+### 15. Mini-progetto mentale (🏗️ M3-07 rinviato)
+
+In 4 bullet: come useresti Dataset + DataLoader + `nn.Linear` (o un piccolo `nn.Module`) su un CSV di feature tabellari (stile M2) per classificazione binaria — senza scrivere tutto il codice, solo la pipeline.
+
+---
+
 ## Soluzioni — solo dopo il tentativo
 
 1. **Falso** — `requires_grad` riguarda **autograd**, non il device; GPU è `.to("cuda")` ecc.
@@ -103,3 +144,8 @@ Differenza tra **dataset** (cosa contiene) e **DataLoader** (cosa fa nel trainin
 8. `int(hp["epochs"])`.
 9. Dataset espone campioni; DataLoader **batch**, shuffle, worker parallel — feed al loop di training.
 10. `x[0]` oppure `x[0, ...]` → shape `(3,28,28)`.
+11. Bullet tipici: (1) dZ2≈(P−y)/N (2) dW2/db2 (3) dH (4) dZ1 = dH ⊙ ReLU′ (5) dW1/db1. Fill-in: **`loss.backward()`** / **autograd** (non `auto_grad()`).
+12. **B** — la derivata di sigmoid dipende da `p`, non dall’etichetta `y`. A è Pattern #27 (simbolo sbagliato).
+13. **Falso** — `zero_grad()` **ogni** step/batch, altrimenti i `.grad` si accumulano.
+14. `"cpu"` (o `torch.device("cpu")`) — rimappa i tensori salvati su CUDA verso CPU locale.
+15. Pipeline: leggere CSV → tensori float/label → Dataset `__getitem__` → DataLoader batch → Module Linear/MLP → BCEWithLogits → loop zero_grad/forward/loss/backward/step → eval accuracy.

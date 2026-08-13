@@ -7,7 +7,7 @@
 
 ## M3 — Deep Learning & Computer Vision
 
-### `07_pytorch_intro.py` (in corso)
+### `07_pytorch_intro.py` (chiuso anticipata 13/08/2026)
 
 > PDF locale = **PYTORCH 1ª ed.** (Stevens et al. 2020). Schede: `schede/M03_C07_*`.
 
@@ -24,12 +24,15 @@
 
 ---
 
-### `08_cnn_computer_vision.py`
+### `08_cnn_computer_vision.py` (scritto 13/08/2026)
 
-| Concetto | [PYTORCH] | [GERON] |
-|----------|-----------|---------|
-| Conv2D, pooling, feature maps | cap. 10–11 | cap. 14 |
-| Primo training (Fashion-MNIST) | cap. 11 | cap. 14 es. |
+> Scheda: `schede/M03_C08_cnn.md`. **1ª ed. PYTORCH** = cap. **7–8** (non 10–11 della 2ª ed.).
+
+| Concetto | [PYTORCH] 1ª ed. | [GERON] |
+|----------|------------------|---------|
+| Dataset CV, tensore C×H×W, limite FC | Cap. 7 *birds/airplanes* | Cap. 14 intro |
+| Conv2d, pooling, feature maps | Cap. 8 §8.1–8.2 | Cap. 14 Convolutional Layers |
+| Primo training (Fashion-MNIST) | Cap. 8 adattato (noi: Fashion vs CIFAR) | Cap. 14 es. |
 
 ---
 
