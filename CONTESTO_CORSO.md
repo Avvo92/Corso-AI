@@ -44,7 +44,7 @@
 | **Ultimo completato** | modulo_03_dl_cv/**07_pytorch_intro.py** (13/08/2026, **chiusura anticipata**) — tensori/autograd/`nn.Module`/DataLoader/training loop/`state_dict`/Colab; #42/#43/#44 🟢; TODO 2 **9**/10; scaler+train **8.5**; quiz V1–V6 fatti. **Voto difficoltà** **7**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
 | **Difficoltà media** | ~**7.02** (28 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, **7** = |
-| **Priorità attive** | 🔴 Pattern #27 (Micro 27.A `1-y` vs `1-p`); 🟡 Pattern #6; 🟡 **#45** retrieval 5-step backward a parole + `loss.backward()`; 🟡 map_location/DataLoader Feynman (V5/V6); 🟡 progetto M3-07 rinviato; 🟡 E6 system design fine M3; 🟢 #42/#43/#44. |
+| **Priorità attive** | 🟡 Pattern #27; 🟡 Pattern #6; 🟢 **#45**; 🟡 **#46**; 🟡 **#47** `.item()` vs `backward`; 🟡 progetto M3-07 rinviato; 🟡 E6 system design; 🟢 #42/#43/#44. |
 | **Sessione corrente** | Sessione 27 |
 
 ---
@@ -83,7 +83,7 @@
 | 24 | **NUOVO — `iloc[i, "colonna_str"]` non funziona** | 🟡 Da rinforzare | Cap.01 Ponte mini-progetto: ha usato `iloc` con etichetta stringa. `iloc` accetta SOLO indici numerici; `loc` accetta etichette. Rinforzo cap.02 Ponte |
 | 25 | **NUOVO — Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Da rinforzare | Cap.01 Ponte 4.1/5.1: `np.array` è una FUNZIONE (factory), il TIPO è `np.ndarray`. Per type hint stricter: `numpy.typing.NDArray`. Rinforzo cap.02 Ponte |
 | 26 | `h`/`eps` troppo piccolo in derivata/gradiente numerico | 🟡 In miglioramento | Cap.05 TODO 13: `eps=1e-12`, corretto a **`1e-6`** dopo feedback. Ricontrollare nel sanity check del cap.06 |
-| 27 | **Traduzione formula → codice: operatore / parentesi** | 🔴 Attivo | Cap.05–06 + **cap.07 Micro 27.A**: `(1-y)` al posto di `(1-p)` in `p(1-p)`. #42/#43 chiusi; residuo simboli sbagliati. Regola: simbolo per simbolo + parentesi + `assert`. Rinforzo → cap.08 / bridge R07 |
+| 27 | **Traduzione formula → codice: operatore / parentesi** | 🟡 In miglioramento | Cap.05–07 Micro 27.A. Quiz 08 Q3 (22/08) **post-fix 9.5**: `? = p` + perché (σ′ da probabilità, non label). Primo shot ancora solo effetto numerico. Regola: simbolo per simbolo + assert. Monitorare in esercizi formula→codice |
 
 ### Concetti da rinforzare per M2 (⚠️)
 
@@ -99,8 +99,8 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 45 | **Retrieval 5-step backward + `loss.backward()`** | 🟡 Da rinforzare | Cap.07 TODO 4 (13/08): formula compressa; fill-in `auto_grad()` invece di `loss.backward()` / autograd. Target: quiz ingresso cap.08 + bridge R07 |
-| 46 | **`map_location` GPU→CPU + DataLoader=batch** | 🟡 Da rinforzare | Cap.07 V5/V6 (13/08): risposte corte. Target: quiz ingresso cap.08 |
+| 45 | **Retrieval 5-step backward + `loss.backward()`** | 🟢 Superato | Bridge R07 Q11: catena ok; fill-in corretto post-feedback. **Quiz ingresso cap.08 Q1 (22/08): `loss.backward()` a freddo 10/10** |
+| 47 | **`.item()` sulla loss prima di `backward`** | 🟡 Nuova | Quiz ingresso 08 Q7 (22/08): risposto “Prima” (2/10). Target: **Dopo** (log); non fare `loss = loss.item()` prima di `backward`. Verificare nel loop CNN |
 | 44 | **Sanity check = grad analitico vs numerico** | 🟢 Superato | Cap.07 Micro 44.A (03/08/2026): confronto analitico vs numerico; se coincidono → si addestra |
 | 43 | **Scaler `(X-mean)/std`**: parentesi obbligatorie | 🟢 Superato | Cap.07 🔁 #43 (03/08/2026): 43.A precedenza `/` vs `-`; 43.B `std==0 → 1.0` |
 | 42 | **Clip BCE su `p`, non su `z`** | 🟢 Superato | Cap.07 🔁 #42 (03/08/2026): 42.A clip su `p` + BCE; 42.B Falso con motivazione log(0)/nan |
@@ -1125,7 +1125,7 @@ completezza del self-check e chiedere correzioni.
 | 24 | **`iloc[i, "col_str"]` (etichetta) vs `loc`/parentesi quadre** | 🟡 Nuovo (Ponte cap.01) | Nel mini-progetto ha usato `pratiche.iloc[i, "pratica_id"]` → TypeError. `iloc` accetta solo INDICI numerici (riga, colonna come int), `loc` accetta etichette. Alternativa: `pratiche.iloc[i]["pratica_id"]`. Rinforzo cap.02 Ponte. |
 | 25 | **Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Nuovo (Ponte cap.01) | Nelle funzioni `norma` e `coseno` ha scritto `def norma(v: np.array)`. `np.array` è la FACTORY function, il tipo è `np.ndarray`. Per type hint moderni: `from numpy.typing import NDArray; def norma(v: NDArray) -> float`. Rinforzo cap.02 Ponte. |
 | 26 | **`h`/`eps` troppo piccolo in derivata/gradiente numerico** | 🟡 In miglioramento (M3 cap.04→05) | Ha usato `eps=1e-24` (C4) e `h=1e-16` (TODO 12) → risultati instabili. Cap.05 TODO 13: ancora `eps=1e-12`, corretto a **`1e-6`** dopo feedback. Ricontrollare nel sanity check cap.06. |
-| 27 | **Traduzione formula → codice: operatore sbagliato** | 🔴 Attivo (M3 cap.05→07) | Cap.05–06: `*`/`/`/`@`/`=`; parentesi scaler; clip su `z`. **Cap.07 Micro 27.A:** `(1-y)` invece di `(1-p)` in `p(1-p)`. #42/#43 🟢. Antidoto: simbolo per simbolo + assert. Rinforzo → cap.08 / R07. |
+| 27 | **Traduzione formula → codice: operatore sbagliato** | 🟡 In miglioramento (M3) | Cap.05–07 Micro 27.A `(1-y)` vs `(1-p)`. Quiz 08 Q3 post-fix: perché ok (σ′ da p). Antidoto: simbolo per simbolo + assert. |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠️ Da consolidare | 🟢 Superato
 
@@ -1483,8 +1483,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 42 | **Clip BCE su `p`, non su `z`** | Cap.06 TODO 17 (31/07/2026) | Clip su logit al primo tentativo. **Chiusura:** rinforzo 🔁 #42 cap.07 (03/08/2026) — 42.A/B ok a freddo. | M3 cap.07 🔁 #42 | 🟢 |
 | 43 | **Scaler: `(X - mean) / std` con parentesi** | Cap.06 TODO 16/18 (31/07/2026) | `X - mean / std` per precedenza. **Chiusura:** rinforzo 🔁 #43 cap.07 (03/08/2026) — 43.A/B ok; guardia `std==0 → 1.0`. | M3 cap.07 🔁 #43 | 🟢 |
 | 44 | **Sanity check backward = analitico vs numerico** | Quiz ingresso Q4 cap.07 (03/08/2026) | Risposta generica al primo shot. **Chiusura:** Micro 44.A (03/08) — analitico vs numerico ok. | M3 cap.07 Micro 44.A | 🟢 |
-| 45 | **Retrieval 5-step backward + fill-in `loss.backward()`** | Cap.07 TODO 4 (13/08/2026) | Formula compressa; fill-in `auto_grad()` invece di `loss.backward()` / autograd; manca ReLU/layer2. | Cap.08 quiz ingresso + bridge R07 | 🟡 |
-| 46 | **`map_location` GPU→CPU + DataLoader=batch (Feynman)** | Cap.07 V5/V6 (13/08/2026) | V5 generica; V6 senza “pacchetti/batch”. | Cap.08 quiz ingresso | 🟡 |
+| 45 | **Retrieval 5-step backward + fill-in `loss.backward()`** | Cap.07 TODO 4 (13/08/2026) | Formula compressa; fill-in `auto_grad()` invece di `loss.backward()` / autograd; manca ReLU/layer2. | Cap.08 quiz ingresso + bridge R07 | 🟢 Quiz ingresso 08 Q1 (22/08): ordine + `loss.backward()` a freddo |
+| 46 | **`map_location` GPU→CPU + DataLoader=batch (Feynman)** | Cap.07 V5/V6 (13/08/2026) | V5 generica; V6 senza “pacchetti/batch”. | Cap.08 quiz ingresso | 🟡 R07 Q14 map_location ok (8.5); DataLoader residuo soft |
+| 47 | **`.item()` vs `backward` sulla loss** | Quiz ingresso 08 Q7 (22/08/2026) | Risposto “Prima” invece di **Dopo** (log); rischio `loss = loss.item()` che spezza il grafo. | Loop CNN / mini training | 🟡 |
 | 40 | **Feynman gradient descent** — manca il ciclo iterativo | Quiz verifica V8 cap.05 (27/07/2026) | Analogia della collina corretta e vincoli lessicali rispettati, ma la risposta descrive **dove guardare**, non il ciclo "senti → fai un passo → risenti → ripeti" né l'effetto della **dimensione del passo**. Rinforzo: quiz ingresso cap.06 Q7 (Feynman backprop) + bridge R05 es.11. **27/07: Q7 saltata per scelta dello studente** → verifica spostata a fine cap.06, dopo la backprop in codice. | M3 fine cap.06 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato

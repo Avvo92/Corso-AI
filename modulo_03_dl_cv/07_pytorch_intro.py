@@ -1422,9 +1422,6 @@ for e in range(10):
 # Con BCELoss + sigmoid a mano, se p va a 0 o 1 rischi log(0) → serviva il clip.
 # BCEWithLogitsLoss calcola tutto in forma numericamente più sicura sui logit, senza passare da probabilità estreme esplicite.
 
-
-
-
 # --------------------------------------------------------------------------
 # TODO 3 — 🔍 [DEBUG] (15 min)
 # --------------------------------------------------------------------------
@@ -1434,33 +1431,129 @@ for e in range(10):
 #   C) BCELoss con target float vs Long per CrossEntropy (famiglie diverse)
 #   D) X in float64 da NumPy dentro nn.Linear float32
 # TUA RISPOSTA:
-# ...
+# A) usare prima di partire con il ciclo .zero_grad() sull'ottimizzatore.
+# B) Usare cuda sui tensori e modello il fase training, e cpu o cuda su entrambi su test
 
 # --------------------------------------------------------------------------
 # TODO 4 — 🧠 [RETRIEVAL] (10 min)
 # --------------------------------------------------------------------------
 # Senza guardare il cap.06: riscrivi a parole i 5 step del backward 2-layer
-# (dZ2 → … → grad_W1). Poi: "in PyTorch questi step li fa ______".
+# (dZ2 → … → grad_W1). Poi: "in PyTorch questi step li fa auto_grad()".
 # TUA RISPOSTA:
-# ...
+
+# dL / dp * dp / dZ2 * dZ2 / dH * dH / dZ1 * dZ1 / dW1 -> grad_W1
 
 # --------------------------------------------------------------------------
 # TODO 5 — 🔀 [INTERLEAVING] (20 min)
 # --------------------------------------------------------------------------
-# Carica (o simula) un CSV stile M2: X (N,d), y (N,).
-# Custom Dataset __getitem__ → DataLoader → 1 epoca di training.
-# Riusa PraticheDataset della sez. 4.2 come modello di partenza.
+# Obiettivo: collegare M2 (CSV tabellare) + Sez. 4 (Dataset/DataLoader) +
+# Sez. 5 (training loop) in un mini-pipeline end-to-end. Non serve un modello
+# perfetto: basta dimostrare che il filo funziona per 1 epoca.
+#
+# Dati (scegli UNA strada):
+#   A) carica `modulo_02_ml/dati/case.csv` con Pandas, costruisci X (N,d) e
+#      y (N,) come nel M2 (feature numeriche + target binario 0/1);
+#   B) oppure simula: X = np.random.randn(200, 7).astype(np.float32),
+#      y = (X[:, 0] > 0).astype(np.float32)  # etichetta finta ok per lo smoke test
+#
+# Cosa scrivere (checklist — tutti i punti):
+#   1) class MioDataset(Dataset) ispirata a PraticheDataset (Sez. 4.2):
+#        __init__(X, y), __len__, __getitem__ → (x_float32, y_float32)
+#   2) DataLoader(train, batch_size=32, shuffle=True)
+#   3) modello minimo: nn.Sequential(
+#        nn.Linear(d, 16), nn.ReLU(), nn.Linear(16, 1)
+#      )   # d = numero colonne di X
+#   4) loss = nn.BCEWithLogitsLoss()   # logits grezzi, niente sigmoid a mano
+#   5) UNA epoca: per ogni batch
+#        zero_grad → forward → loss → backward → step
+#      (ricorda: .item() solo per stampare la loss, DOPO backward)
+#   6) stampa a fine epoca: loss media e, se vuoi, accuracy con soglia 0.5
+#      su sigmoid(logits) oppure (logits > 0)
+#
+# Vincoli:
+#   - non usare TensorDataset: voglio vedere il Dataset custom;
+#   - float32 sui tensori X (tranello dtype del cap.07);
+#   - se usi CSV reale: niente data leakage qui (per 1 epoca smoke test va
+#     bene anche senza split; lo split serio è nel 🏗️ PROGETTO sotto).
+#
+# Output atteso: codice eseguibile + 1-2 print (loss / acc).
 # TUO CODICE:
-# ...
+
+path = os.path.join(os.path.dirname(__file__), "dati", "pratiche.csv")
+df = pd.read_csv(path)
+X = torch.tensor(df.drop(columns=['pratica_id', 'y_alterato']).to_numpy(dtype="float32"))
+y = torch.tensor(df['y_alterato'].to_numpy(dtype="float32"))
+
+class MioDataset(Dataset):
+    def __init__(self, X: torch.Tensor, y: torch.Tensor) -> None:
+        super().__init__()
+        self.X = X
+        self.y = y
+
+    def __len__(self) -> int:
+        return len(self.X)
+
+    def __getitem__(self, idx) -> tuple[torch.Tensor, torch.Tensor]:
+        return self.X[idx], self.y[idx]
+
+ds = MioDataset(X, y)
+loader = DataLoader(ds, shuffle=True, batch_size= 32)
+
+d = X.shape[1]
+
+min_model = nn.Sequential(
+    nn.Linear(d, 16), 
+    nn.ReLU(), 
+    nn.Linear(16, 1)
+)
+crit = nn.BCEWithLogitsLoss()
+ottimizzatore = torch.optim.SGD(min_model.parameters(), lr=0.1)
+
+result = []
+
+for e in range(1):
+    somma_loss, n_in_batch = 0.0, 0
+    for xb, yb in loader:
+        ottimizzatore.zero_grad()
+        z = min_model(xb).squeeze(-1)
+        loss = crit(z, yb)
+        somma_loss += loss.item()
+        n_in_batch += 1
+        loss.backward()
+        ottimizzatore.step()
+    result.append((e, (somma_loss / n_in_batch)))
+
+print(result)
 
 # --------------------------------------------------------------------------
-# TODO 6 — 🌊 [REAL-WORLD] (15 min)
+# TODO 6 — 🌊 [REAL-WORLD] (15 min) — solo testo, niente codice obbligatorio
 # --------------------------------------------------------------------------
-# Scenario Validator: feature tabellari + futura feature visiva CNN.
-# In 8-10 righe: dove metteresti StandardScaler? Dove andrebbe il
-# ramo PyTorch/CNN? Cosa non mischieresti nel medesimo tensore grezzo?
+# Scenario (prodotto Validator, a parole):
+#   Oggi classifichi pratiche con FEATURE TABELLARI (importi, date, ratio…).
+#   Tra poco aggiungerai un RAMO VISIVO: CNN su immagine del documento
+#   (busta paga vs altro) che produce uno score/feature extra.
+#   Devi progettare la pipeline senza mischiare mele e pere.
+#
+# Rispondi in 8–12 righe, toccando TUTTI questi punti:
+#   1) StandardScaler (o equivalente):
+#        - dove lo metti nella pipeline? (prima del modello tabellare)
+#        - fit solo su train o anche su test? perché?
+#        - lo applichi anche ai pixel dell'immagine? sì/no e perché
+#   2) Ramo PyTorch / futura CNN:
+#        - a che punto della pipeline entra? (dopo OCR/preprocess immagine?
+#          in parallelo al modello tabellare?)
+#        - l'output della CNN cos'è per te: probabilità, logit, o una feature
+#          numerica da concatenare alle colonne tabellari?
+#   3) Cosa NON metteresti nello stesso tensore "grezzo":
+#        es. pixel 0–255 e importi in euro nella stessa matrice (N, d) senza
+#        trattamenti diversi — spiega il rischio in 2 frasi
+#   4) Una regola operativa anti-leakage / anti-bug device:
+#        (es. scaler fit-on-train; pesi CNN salvati su Colab → map_location
+#        in locale; batch tabellari e batch immagini non forzano lo stesso
+#        preprocess)
+#
+# Non c'è una sola architettura giusta: valuto chiarezza del ragionamento.
 # TUA RISPOSTA:
-# ...
 
 
 # ==========================================================================
@@ -1496,28 +1589,28 @@ for e in range(10):
 #
 # V1) requires_grad=True serve a …?
 # TUA RISPOSTA:
-# ...
+# richiedere il gradiente per quel parametro.
 
 # V2) V/F: "nn.Linear fa X @ W.T + b (convenzione PyTorch sui weight)."
 #     (Se non sei sicuro, verifica con .weight.shape)
 # TUA RISPOSTA:
-# ...
+# Vero
 
 # V3) Ordine corretto: (a) backward (b) zero_grad (c) step (d) forward+loss
 # TUA RISPOSTA:
-# ...
+# b, d, a, c
 
 # V4) Trova l'errore concettuale: "Autograd sostituisce il gradient descent".
 # TUA RISPOSTA:
-# ...
+# auto grad è la backprop di torch. ottimizzatore.step() sostituisce il gradient descent
 
 # V5) A cosa serve map_location="cpu" in torch.load?
 # TUA RISPOSTA:
-# ...
+# a definire dove caricare il modello
 
 # V6) 💬 Feynman: spiega DataLoader a un collega web (senza jargon inutile).
 # TUA RISPOSTA:
-# ...
+# il loader svolge la stessa funzione del magazziniere che lavora in magazzino: organizzare e prendere il materiale in modo efficiente.
 
 
 # ==========================================================================

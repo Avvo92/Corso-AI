@@ -10,7 +10,7 @@
 
 “Un tensore PyTorch `x` con `requires_grad=True` è sempre sulla GPU.”
 
----
+Falso
 
 ### 2. Completa (concettuale)
 
@@ -28,7 +28,8 @@ print(str(root))
 
 È preferibile a concatenare stringhe con `\` a mano — perché (una frase)?
 
----
+perchè la notazione del file sistem è diversa a seconda del sistema operativo, quindi meglio usare un linguaggio che ogni sistema operativo possa ricostruire secondo la sua sintassi
+
 
 ### 4. Prevedi (numpy vs tensor idea)
 
@@ -39,14 +40,18 @@ b = a * 2
 b[0] = 99
 print(a[0])
 ```
-
+1.0
 ---
 
 ### 5. Pandas — leggere CSV
 
 Scrivi **due righe**: import `pandas`, poi leggi `"train.csv"` in DataFrame `df`.
+```python
+import pandas as pd
+path = "train.csv"
+df = pd.read_csv(path)
+```
 
----
 
 ### 6. Trova l’errore logico
 
@@ -61,6 +66,8 @@ loss.backward()
 
 Training tipico confronta output con target corretto; qui il target è casuale ogni volta — che problema didattico c’è?
 
+il problema è che dato confrontiamo le risposte del modello con valori randomici, ad ogni ciclo avremo nuovi valori random per il confronto, rendendo di fatto impossibile la discesa del gradiente.
+
 ---
 
 ### 7. Device check pattern
@@ -72,18 +79,27 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ```
 
 Perché su **Mac/AMD locale** spesso `cuda.is_available()` è False anche se il codice è “corretto”?
-
+perchè la gpu non è utilizzabile per l'addestramento in quanto cuda ritorna True solo per gpu nvidia
 ---
 
 ### 8. Dict di hyperparameter
 
 Crea `hp = {"lr": 1e-3, "epochs": 5}` e recupera `epochs` con tipo **int** sicuro.
 
----
+```python
+hp = {
+    "lr" : 1e-3,
+    "epochs": 5
+}
+
+epochs = int(hp['epochs'])
+```
 
 ### 9. Spiega con parole tue
 
 Differenza tra **dataset** (cosa contiene) e **DataLoader** (cosa fa nel training loop).
+
+un dataset è la collezione di dati da usare per l'addestramento (X, y), il loader invece organizzara e restituisce quei dati secondo il modo che non gli specifichiamo, ad esempio numero di batch in cui dividere il set e se mescolarlo.
 
 ---
 
@@ -91,12 +107,26 @@ Differenza tra **dataset** (cosa contiene) e **DataLoader** (cosa fa nel trainin
 
 `x.shape == (32, 3, 28, 28)` è batch di immagini (N,C,H,W). Come selezioni **solo il primo esempio** del batch mantenendo dimensioni utili per visualizzare shape `(3,28,28)`?
 
+```python
+X_first = X[0]
+```
+
 ---
 
 ### 11. 🔁 Retrieval — 5 step backward (#45)
 
 Elenca in **5 bullet** (a parole, senza codice lungo) la catena del backward 2-layer del cap.06:
-`dZ2 → … → grad_W1`. Poi completa: “In PyTorch questi step li fa ______.”
+`dZ2 → … → grad_W1`. Poi completa: “In PyTorch questi step li fa loss.backward().”
+
+troviamo la dL/dZ2 nel caso della bce tramite semplificazione miracolosa p - y.
+
+il prodotto matriciale della derivata dZ2 e H trasposto ci restituisce il gradiente del W2, e la somma della derivata dZ2 sull'asse 0 il gradiente del b2.
+
+dH la otteniamo da dZ2 prodotto matriciale con W2 trasposto
+
+otteniamo poi dZ1 moltiplicando dH per la derivata_relu di Z1
+
+infine ottiniamo il gradiente di W1 facendo un prodotto matriciale tra X.T e dZ1, e ottieniamo il gradiente del b1 facendo dZ1.sum(axis=0)
 
 ---
 
@@ -108,11 +138,15 @@ Quale delle due è corretta e perché l’altra è un bug tipico?
 - A) `p * (1 - y)`
 - B) `p * (1 - p)`
 
+la risposta corretta è la B, nell altro caso avremo il valore di P o zero in base al target della riga presa in esame
+
 ---
 
 ### 13. Vero / Falso + fix
 
 “Basta chiamare `optimizer.zero_grad()` una sola volta all’inizio del training, prima del `for epoch`.”
+
+Falso, va chiamato all'inizio di ogni ciclo del for epochs. Altrimenti nell'optimizer.step() utilizzeremmo di volta la somma del gradiente del ciclo in corso più i gradienti dei cicli precedenti. 
 
 ---
 
@@ -120,10 +154,10 @@ Quale delle due è corretta e perché l’altra è un bug tipico?
 
 Hai salvato un checkpoint su Colab con GPU. Sul PC di casa (AMD, no CUDA) carichi con:
 
-`torch.load(path, map_location=______)`
+`torch.load(path, map_location="cpu")`
 
 Cosa metti al posto dei blank e perché (una frase)?
-
+perchè sul mio pc non non c'è cuda in quanto la scheda video è amd e non nvidia
 ---
 
 ### 15. Mini-progetto mentale (🏗️ M3-07 rinviato)
@@ -131,6 +165,8 @@ Cosa metti al posto dei blank e perché (una frase)?
 In 4 bullet: come useresti Dataset + DataLoader + `nn.Linear` (o un piccolo `nn.Module`) su un CSV di feature tabellari (stile M2) per classificazione binaria — senza scrivere tutto il codice, solo la pipeline.
 
 ---
+
+
 
 ## Soluzioni — solo dopo il tentativo
 

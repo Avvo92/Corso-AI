@@ -130,35 +130,48 @@ except Exception:
 # Q1) Completa l'ordine del training step PyTorch:
 #     ____ → forward+loss → ____ → optimizer.step()
 # TUA RISPOSTA:
-#
+# optimizer.zero_grad() → forward+loss → loss.backward() → optimizer.step()
 
 # Q2) 🔁 #45 — Elenca in 5 bullet (a parole) il backward 2-layer del cap.06
-#     (dZ2 → … → grad_W1). Poi completa: "In PyTorch li fa ______."
+#     (dZ2 → … → grad_W1). Poi completa: "In PyTorch li fa loss.backward()."
 # TUA RISPOSTA:
-#
+
+# troviamo la dL/dZ2 nel caso della bce tramite semplificazione miracolosa p - y.
+
+# il prodotto matriciale della derivata dZ2 e H trasposto ci restituisce il gradiente del W2, e la somma della derivata dZ2 sull'asse 0 il gradiente del b2.
+
+# dH la otteniamo da dZ2 prodotto matriciale con W2 trasposto
+
+# otteniamo poi dZ1 moltiplicando dH per la derivata_relu di Z1
+
+# infine ottiniamo il gradiente di W1 facendo un prodotto matriciale tra X.T e dZ1, e ottieniamo il gradiente del b1 facendo dZ1.sum(axis=0)
+
 
 # Q3) 🔁 Pattern #27 — Nella derivata della sigmoid usiamo p*(1-?).
 #     Il ? è p oppure y? Perché l'altro è un bug tipico?
 # TUA RISPOSTA:
 #
+# la risposta corretta è "p", l'altro è un bug tipico che restituirebbe come risultato dell'espressione p * 1 0 p * 0. Il simbolo è sbagliato, perchè la derivata di sigmoid dipende dalla probibilità, e non dall'etichetta y.
 
 # Q4) Vero/Falso: basta zero_grad() una sola volta prima del for epoch.
 #     Se Falso, quando va chiamato?
 # TUA RISPOSTA:
-#
+# Falso. Va chiamato all'inizio di ogni epoch perchè altrimenti di ciclo in ciclo i grad si sommerebbero, e sballerebbero il lavoro dell'optimizer.step()
 
 # Q5) 🔁 #46 — Hai salvato pesi su Colab (GPU). Sul PC AMD carichi con
 #     torch.load(..., map_location=???). Cosa metti e perché?
 # TUA RISPOSTA:
-#
+#torch.load("percorso_pesi.pt", map_location="cpu"). Uso la cpu perchè cuda non è disponibile con gpu amd
 
 # Q6) 💬 Feynman (max 4 frasi): cos'è un DataLoader rispetto a un Dataset?
 # TUA RISPOSTA:
-#
+# Dataset: scaffale, su cui c'è tutta la collezione della merce.
+# DataLoader: magazziniere, che prende quello che gli chiedo come glielo chiedo
+
 
 # Q7) `.item()` sulla loss: prima o dopo `backward` se ti serve il grafo?
 # TUA RISPOSTA:
-#
+# Dopo
 
 # Q8) `requires_grad=True` su un tensore serve a… (1-2 frasi, non solo
 #     "chiedere il gradiente")

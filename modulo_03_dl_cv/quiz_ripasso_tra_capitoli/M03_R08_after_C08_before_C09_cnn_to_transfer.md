@@ -8,7 +8,7 @@
 
 Un’immagine RGB 64×64 pixel come array NumPy in formato **height, width, channels** ha shape?
 
----
+(64, 64, 3)
 
 ### 2. Vero / Falso
 

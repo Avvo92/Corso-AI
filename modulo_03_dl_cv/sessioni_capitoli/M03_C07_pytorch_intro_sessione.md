@@ -449,6 +449,126 @@
 - **Infrastruttura:** `try/except Exception` (l'import torch in locale dà `OSError WinError 126`, non `ImportError`) + stop pulito con messaggio "usa Colab"; risposte studente conservate.
 - **Verifica:** file eseguito in locale → rinforzi NumPy ok, sanity check `assert` passa, stop pulito (exit 0).
 
+### 2026-08-14 — TODO 5 INTERLEAVING Dataset+loop (`07_pytorch_intro.py` ~1482–1526)
+
+- **Esercizio / blocco:** CSV → MioDataset → DataLoader → Sequential → 1 epoca BCEWithLogits
+- **Valutazione (primo tentativo — "voto esame"):** **7/10** (Dataset ok dopo fix `Dataset`/`__getitem__`; loop inizialmente su `X,y` interi invece di `xb,yb`)
+- **Fix applicato (post-feedback):** `z = min_model(xb).squeeze(-1)` + `crit(z, yb)` — pipeline coerente.
+- **Stato attuale (rivalutazione post-fix):** **9/10** — filo end-to-end corretto; soft: accuracy opzionale non stampata; media loss per n. batch (ok smoke test).
+- **Pattern errore / ID contesto:** confusione iniziale Dataset vs `nn.Module`; uso batch vs full tensor
+
+### 2026-08-22 — Bridge M03_R07 Q2 completa `.grad` (hint richiesto)
+
+- **Esercizio / blocco:** dopo `loss.backward()`, dove stanno i gradienti?
+- **Nota:** studente non ricordava → hint/soluzione data in chat (non voto esame a freddo).
+- **Risposta attesa:** attributo **`.grad`** su ogni parametro (es. `param.grad` / `model.weight.grad`).
+- **Pattern:** retrieval API PyTorch (collegato soft a #45 naming backward)
+
+### 2026-08-22 — Bridge M03_R07 Q3 pathlib vs `\`
+
+- **Esercizio / blocco:** perché preferire `Path(...) / "dati"` a concatenare `\` a mano
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Idea corretta: separatori/path diversi tra OS; meglio qualcosa di portabile.
+- **Errori / lacune:** Soft lessico: `pathlib` non è “un linguaggio”, è il modulo/classe Python che normalizza i path. Concetto operativo ok.
+- **Correzione / suggerimento:** “`Path` gestisce i separatori al posto tuo (Windows/Linux/Mac).”
+
+### 2026-08-22 — Bridge M03_R07 Q4 prevedi `a[0]` dopo `b=a*2; b[0]=99`
+
+- **Esercizio / blocco:** output di `print(a[0])`
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** Risposta **1.0** corretta: `b = a * 2` crea un **nuovo** array; modificare `b` non tocca `a`.
+- **Errori / lacune:** nessuno
+- **Correzione / suggerimento:** (nota per dopo) attenzione a viste/slice NumPy e `from_numpy`/`tensor` che possono condividere memoria — qui la moltiplicazione copia.
+
+### 2026-08-22 — Bridge M03_R07 Q5 Pandas read_csv
+
+- **Esercizio / blocco:** due righe import + `read_csv("train.csv")` → `df`
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**
+- **Punti di forza:** `import pandas as pd` + `pd.read_csv(...)` + DataFrame in `df` — corretto.
+- **Errori / lacune:** Soft: la consegna chiedeva **due** righe; hai usato tre (path intermedio). Equivalente e anzi più pulito.
+- **Correzione / suggerimento:** forma minima: `df = pd.read_csv("train.csv")` subito dopo l’import.
+
+### 2026-08-22 — Bridge M03_R07 Q6 target random ogni volta
+
+- **Esercizio / blocco:** problema didattico del snippet con `y` random a ogni forward
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**
+- **Punti di forza:** Capisce che il target non è stabile e che il confronto non misura un apprendimento reale.
+- **Errori / lacune:** Soft: non è che il GD sia “impossibile” (i gradienti esistono e i pesi si muovono); è che **non c’è supervisione vera** — la loss non misura progresso verso un pattern fisso/utile.
+- **Correzione / suggerimento:** “Target casuale ≠ etichette reali; stai inseguendo un bersaglio che cambia ogni volta.”
+- **Fix applicato (chat):** raffinato — “il gradiente funziona, ma la loss non scende in modo sensato perché il target cambia.”
+
+### 2026-08-22 — Bridge M03_R07 Q7 cuda False su Mac/AMD
+
+- **Esercizio / blocco:** perché `cuda.is_available()` è False in locale Mac/AMD
+- **Valutazione (primo tentativo — "voto esame"):** **6.5/10**
+- **Punti di forza:** Idea giusta: in locale quella GPU non serve (per CUDA) all’addestramento PyTorch tipico.
+- **Errori / lacune:** Manca il pezzo chiave: **CUDA = stack NVIDIA**. AMD/Mac non espongono CUDA a PyTorch come una GPU NVIDIA; il codice è ok, il hardware/runtime no → cade su `"cpu"` (o Colab NVIDIA).
+- **Correzione / suggerimento:** “False non = bug nel codice; = niente CUDA disponibile su questa macchina.”
+- **Pattern errore / ID contesto:** soft #46 device / Colab
+
+### 2026-08-22 — Bridge M03_R07 Q8 dict hyperparameter
+
+- **Esercizio / blocco:** `hp` + `epochs` con `int` sicuro
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**
+- **Punti di forza:** Dict corretto; `int(hp['epochs'])` è esattamente l’idioma atteso (cast esplicito → tipo int sicuro anche se il valore arrivasse come stringa/`float` da config).
+- **Errori / lacune:** Nessuno sostanziale. Soft stile: spazio `"lr" :` e indentazione del blocco nel markdown.
+- **Correzione / suggerimento:** Opzionale: `hp.get("epochs", 5)` se vuoi default; qui la consegna non lo chiedeva.
+
+### 2026-08-22 — Bridge M03_R07 Q9 Dataset vs DataLoader (Feynman)
+
+- **Esercizio / blocco:** differenza Dataset (cosa contiene) vs DataLoader (cosa fa nel loop)
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**
+- **Punti di forza:** DataLoader: idea giusta — organizza, batch size, shuffle, fornisce i pezzi al training.
+- **Errori / lacune:** Dataset **non** è “l’intero batch”: è la collezione di **campioni** (es. riga `X[i], y[i]` / `__getitem__`). Il **batch** lo costruisce il DataLoader. Soft: “modo che non gli specifichiamo” → in realtà **glielo specifichi** (`batch_size`, `shuffle`, …).
+- **Correzione / suggerimento:** Dataset = scaffale di esempi; DataLoader = carrello che prende N pezzi, eventualmente mescola, e li porta al loop.
+- **Pattern errore / ID contesto:** residuo soft **#46** (DataLoader/batch Feynman)
+- **Fix applicato / rivalutazione (post-feedback, richiesta esplicita):** **8.5/10** — Dataset ora correttamente “collezione” (non più “intero batch”). Resta soft: “modo che **non** gli specifichiamo” → glielo **specifichi** (`batch_size`, `shuffle`); e DataLoader **costruisce i batch** per il loop, non solo “organizza il set”.
+
+### 2026-08-22 — Bridge M03_R07 Q10 slicing primo esempio batch
+
+- **Esercizio / blocco:** `x.shape (32,3,28,28)` → primo esempio shape `(3,28,28)`
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**
+- **Punti di forza:** `X[0]` toglie la dimensione batch N → `(3,28,28)` come richiesto (equivalente a `x[0]` / `x[0, ...]`).
+- **Errori / lacune:** Soft naming: nella consegna il tensore si chiama `x` minuscolo; non cambia il concetto.
+- **Correzione / suggerimento:** Evitare `X[0:1]` se vuoi shape `(3,28,28)` — quello lascia N=1 → `(1,3,28,28)`.
+
+### 2026-08-22 — Bridge M03_R07 Q11 retrieval 5-step backward (#45)
+
+- **Esercizio / blocco:** catena `dZ2 → … → grad_W1` + fill-in PyTorch
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Ordine corretto e completo: `dZ2≈p−y` → `dW2/db2` → `dH` → `dZ1` via ReLU′ → `dW1/db1`. Recupero forte rispetto a TODO 4 compresso.
+- **Errori / lacune:** (1) **Manca il fill-in** “In PyTorch questi step li fa ______.” → atteso **`loss.backward()`** / **autograd** (era il bug tipico `auto_grad()`). (2) Soft: spesso `dZ2` è `(p−y)/N` se la loss è media sul batch.
+- **Correzione / suggerimento:** Completare il blank prima di chiudere #45.
+- **Pattern errore / ID contesto:** #45 — catena 🟢 in miglioramento; fill-in ancora da verificare
+- **Fix fill-in (post-feedback):** scritto “`.autograd()`” → **non corretto**. Atteso: **`loss.backward()`** (oppure “**autograd**” come motore, non un metodo `.autograd()`). Stesso pattern di TODO 4 (`auto_grad`). Catena resta ok; #45 resta 🟡 finché non fissa `backward`.
+- **Rivalutazione (post-fix, richiesta esplicita):** **9.5/10** — fill-in ora **`loss.backward()`** corretto. Soft residuo: `(p−y)/N` se loss = mean. **#45** → 🟡 in miglioramento (chiusura a freddo al quiz ingresso cap.08).
+
+### 2026-08-22 — Bridge M03_R07 Q12 Pattern #27 Micro 27.A
+
+- **Esercizio / blocco:** `p*(1-p)` vs `p*(1-y)` — quale corretta e perché
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Scelta **B** corretta; descrive bene il comportamento numerico di A (`y=1→0`, `y=0→p`).
+- **Errori / lacune:** Manca il perché concettuale: la derivata della sigmoid dipende da **`p`**, non dall’etichetta **`y`**. A è il bug tipico #27 (simbolo sbagliato in formula→codice).
+- **Correzione / suggerimento:** “A mescola probabilità e label; B è σ′(z)=p(1−p).”
+- **Pattern errore / ID contesto:** #27 — micro ok sulla scelta; resta 🔴 sul perché “simbolo sbagliato”
+
+### 2026-08-22 — Bridge M03_R07 Q13 zero_grad V/F
+
+- **Esercizio / blocco:** `zero_grad` una volta prima del `for epoch`?
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** **Falso** corretto; motivo giusto = i `.grad` **si accumulano** e `step()` userebbe la somma.
+- **Errori / lacune:** Soft frequenza: non solo “ogni epoch”, ma **ogni batch/step** (prima di ogni `backward`), altrimenti anche i batch nella stessa epoch si sommano.
+- **Correzione / suggerimento:** Loop tipico: `zero_grad` → forward → loss → `backward` → `step` (ripeti per ogni batch).
+
+### 2026-08-22 — Bridge M03_R07 Q14 map_location (#46)
+
+- **Esercizio / blocco:** `torch.load(..., map_location=?)` Colab GPU → PC AMD
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Blank `"cpu"` (nel codice) + motivo hardware: AMD ≠ NVIDIA/CUDA — direzione corretta.
+- **Errori / lacune:** Soft precisione: non solo “non c’è CUDA”, ma **i tensori del checkpoint sono stati salvati su device CUDA**; `map_location` li **rimappa** su CPU altrimenti il load prova a ricrearli su una GPU CUDA assente.
+- **Correzione / suggerimento:** Una frase modello: “Metto `\"cpu\"` per rimappare i pesi da CUDA (Colab) alla CPU di casa.”
+- **Pattern errore / ID contesto:** #46 — in miglioramento su map_location
+
 ---
 
 ## Lacune e dubbi ancora aperti (ereditati)
@@ -457,9 +577,10 @@
 - 🟢 **#42** clip BCE su `p` (chiusa)
 - 🟢 **#43** scaler parentesi (chiusa)
 - 🔴 Pattern #27 formula→codice — **riemerso** Micro 27.A: `(1-y)` invece di `(1-p)` → migrato cap.08/R07
-- 🟡 **#45** retrieval 5-step + `loss.backward()` (TODO 4 = 5.5/10) → R07 es.11 + quiz ingresso 08
-- 🟡 **#46** map_location + DataLoader Feynman (V5/V6) → R07 es.14 + quiz ingresso 08
-- ⚠️ TODO 5 INTERLEAVING / TODO 6 REAL-WORLD / 🏗️ progetto M3-07 — **non svolti** → cap.08
+- 🟡 **#45** retrieval 5-step + `loss.backward()` — R07 Q11 post-fix ok (9.5); primo fill-in era `.autograd()` → verificare a freddo quiz ingresso 08
+- 🟡 **#46** map_location + DataLoader — R07 Q14 map_location ok (8.5); DataLoader soft da Q9 → quiz ingresso 08
+- ✅ TODO 5 INTERLEAVING chiuso (14/08/2026, post-fix 9/10)
+- ⚠️ TODO 6 REAL-WORLD / 🏗️ progetto M3-07 — ancora aperti
 - 🟢 soft backprop vs GD: chiuso a Q8 post-feedback (primo tentativo ancora 6.5)
 
 ---
