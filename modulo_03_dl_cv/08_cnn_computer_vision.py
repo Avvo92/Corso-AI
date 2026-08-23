@@ -115,12 +115,12 @@ except Exception:
 #       import torch
 #       print(torch.__version__, torch.cuda.is_available())
 # 3) Copia le sezioni in celle; scarica Fashion-MNIST (automatico).
+#    Nota: in cella Colab non c'è __file__ — il file usa Path.cwd()
+#    come fallback (cartella /content/dati/fashion_mnist).
 # 4) Dopo il train: torch.save(model.state_dict(), "cnn_fashion.pt")
 # 5) In locale: load con map_location="cpu"
 #
 # Analogia: Colab = cantiere GPU in affitto; Cursor = ufficio progetto.
-
-
 # ==========================================================================
 # QUIZ D'INGRESSO (Q1 - Q8) — cerniera cap.07
 # ==========================================================================
@@ -176,7 +176,7 @@ except Exception:
 # Q8) `requires_grad=True` su un tensore serve a… (1-2 frasi, non solo
 #     "chiedere il gradiente")
 # TUA RISPOSTA:
-#
+# Accende il diario delle operazioni per quel tensore, permettendo ad autograd di calcolare il gradiente.
 
 
 # ==========================================================================
@@ -189,13 +189,13 @@ except Exception:
 # Analogia: il "quanto è sicuro il modello" (p) non è la "risposta corretta" (y).
 #
 # Micro 27.A — completa:
-#   ds_dp_ok = p * (1 - ___)     # <- p
+#   ds_dp_ok = p * (1 - p)     # <- p
 #   # bug tipico: p * (1 - y)
 #
 # Micro 27.B — una riga: perché y=1 e p=0.9 darebbe un fattore diverso
 #   se usassi (1-y) invece di (1-p)?
 # TUA RISPOSTA 27.A/B:
-#
+# Perchè (1 - 1) != (1 - 0.9)
 
 
 # ==========================================================================
@@ -210,6 +210,15 @@ except Exception:
 # Micro 45.A — riscrivi i 5 bullet + fill-in qui sotto.
 # TUA RISPOSTA:
 #
+# Nel caso di bce, dZ2 tramite semplificazione miracolosa p-y.
+
+# grad_W2 tramite prodotto matriciale di H.T @ dZ2 e grad_b2 facendo dZ2.sum(axis=0)
+
+# dH tramite prodotto matriciale di dZ2 @ W2.T
+
+# dZ1 tramite prodotto di dH * derivata_relu(Z1)
+
+# grad_W1 tramite prodotto matriciale di X.T @ dZ1 e grad_b1 facendo dZ1.sum(axis=0)
 
 
 # ==========================================================================
@@ -223,11 +232,11 @@ except Exception:
 # li mette sul carrello (batch), eventualmente mescola, te li porta a pacchetti.
 #
 # Micro 46.A — completa:
-#   ckpt = torch.load("modello.pt", map_location=___)
+#   ckpt = torch.load("modello.pt", map_location="cpu")
 # Micro 46.B — in 2 frasi: Dataset vs DataLoader (operativo, non poetico).
 # TUA RISPOSTA:
-#
-
+# Dataset è la collezione di dati a nostra disposizione.
+# DataLoader è il "carrello" che li prende, li suddivide in batch composti da N esempi, li mescola, e li rende di fatto disponibili per l'addestramento.
 
 # ==========================================================================
 # SEZIONE 1 — Immagini come tensori (N, C, H, W)
@@ -257,7 +266,13 @@ except Exception:
 #   - label è int (Long) per CrossEntropyLoss
 
 if TORCH_OK and VISION_OK:
-    DATA_DIR = Path(__file__).resolve().parent / "dati" / "fashion_mnist"
+    # Su .py locale: cartella del capitolo. Su Colab (cella notebook):
+    # __file__ non esiste → usa la cwd (di solito /content).
+    try:
+        _base_dir = Path(__file__).resolve().parent
+    except NameError:
+        _base_dir = Path.cwd()
+    DATA_DIR = _base_dir / "dati" / "fashion_mnist"
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     transform_base = transforms.Compose([
@@ -292,12 +307,24 @@ else:
 #   plt.imshow(img.squeeze(), cmap="gray"); plt.title(str(label)); plt.show()
 # TUA SOLUZIONE:
 
+immagine_10 = ds_demo[10][0]
+etichetta_10 = ds_demo[10][1]
+
+print(immagine_10.shape)
+print(etichetta_10)
+
+plt.imshow(immagine_10.squeeze(),
+           cmap="gray")
+plt.title(str(etichetta_10))
+plt.show()
+
 
 # --- MINI-ESERCIZIO 1.2 ---
 # Completa a parole: perché Matplotlib vuole spesso squeeze/permute
 # rispetto a un tensore (1, 28, 28)?
 # TUA RISPOSTA:
 #
+# tensore 1×28×28 = un canale grigio; squeeze lo rende 28×28 per imshow.
 
 
 # ==========================================================================
@@ -347,13 +374,23 @@ if TORCH_OK:
 # Calcola a mano H_out, W_out per:
 #   H=W=28, kernel=3, padding=0, stride=1
 # TUA RISPOSTA (numeri):
-#
+
+# H_out = ((28 + 2*0 - 3) / 1) + 1 = 26
+# W_out = ((28 + 2*0 - 3) / 1) + 1 = 26
 
 # --- MINI-ESERCIZIO 2.2 ---
 # Scrivi UNA riga: crea nn.Conv2d(1 → 16 filtri, kernel 5, padding 2)
 # e applica a torch.randn(2, 1, 28, 28); stampa shape uscita.
 # TUA SOLUZIONE:
 
+my_conv_demo = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=5, padding=2)
+
+x_demo = torch.randn(2, 1, 28, 28)
+
+with torch.no_grad():
+    out = my_conv_demo(x_demo)
+
+print(out.shape)
 
 # ==========================================================================
 # SEZIONE 3 — Pooling + feature maps
@@ -382,9 +419,17 @@ if TORCH_OK:
     print("[Sez.3] dopo MaxPool2d(2):", tuple(z.shape))  # (1, 8, 14, 14)
 
 # --- MINI-ESERCIZIO 3.1 ---
-# Partendo da (N, 16, 28, 28), dopo Conv padding che mantiene size +
-# MaxPool2d(2) + di nuovo Conv+Pool: shape finale (N, ?, ?, ?)?
-# Assumi out_channels secondo Conv = 32.
+# Parti dalla shape: (N, 16, 28, 28)
+#   (pensa: batch N, 16 feature map, griglia 28×28)
+#
+# Applica IN ORDINE:
+#   A) MaxPool2d(2)              → dimezza H e W; i canali restano 16
+#   B) Conv2d con out_channels=32 e padding che mantiene H e W
+#                                → C diventa 32; H e W uguali a dopo A
+#   C) MaxPool2d(2)              → dimezza di nuovo H e W; C resta 32
+#
+# Qual è la shape finale?  (N, ?, ?, ?)
+# Trucco: aggiorna a mente solo C, H, W a ogni step A → B → C.
 # TUA RISPOSTA:
 #
 

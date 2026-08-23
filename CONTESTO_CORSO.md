@@ -44,7 +44,7 @@
 | **Ultimo completato** | modulo_03_dl_cv/**07_pytorch_intro.py** (13/08/2026, **chiusura anticipata**) — tensori/autograd/`nn.Module`/DataLoader/training loop/`state_dict`/Colab; #42/#43/#44 🟢; TODO 2 **9**/10; scaler+train **8.5**; quiz V1–V6 fatti. **Voto difficoltà** **7**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
 | **Difficoltà media** | ~**7.02** (28 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, **7** = |
-| **Priorità attive** | 🟡 Pattern #27; 🟡 Pattern #6; 🟢 **#45**; 🟡 **#46**; 🟡 **#47** `.item()` vs `backward`; 🟡 progetto M3-07 rinviato; 🟡 E6 system design; 🟢 #42/#43/#44. |
+| **Priorità attive** | 🟡 Pattern #27; 🟡 Pattern #6; 🟢 **#45**; 🟢 **#46**; 🟡 **#47** `.item()` vs `backward`; 🟡 progetto M3-07 rinviato; 🟡 E6 system design; 🟢 #42/#43/#44. |
 | **Sessione corrente** | Sessione 27 |
 
 ---
@@ -100,6 +100,7 @@
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
 | 45 | **Retrieval 5-step backward + `loss.backward()`** | 🟢 Superato | Bridge R07 Q11: catena ok; fill-in corretto post-feedback. **Quiz ingresso cap.08 Q1 (22/08): `loss.backward()` a freddo 10/10** |
+| 46 | **`map_location` GPU→CPU + DataLoader=batch** | 🟢 Superato | Q5/Q6 + Micro 46.B (23/08) **9.5/10** operativo |
 | 47 | **`.item()` sulla loss prima di `backward`** | 🟡 Nuova | Quiz ingresso 08 Q7 (22/08): risposto “Prima” (2/10). Target: **Dopo** (log); non fare `loss = loss.item()` prima di `backward`. Verificare nel loop CNN |
 | 44 | **Sanity check = grad analitico vs numerico** | 🟢 Superato | Cap.07 Micro 44.A (03/08/2026): confronto analitico vs numerico; se coincidono → si addestra |
 | 43 | **Scaler `(X-mean)/std`**: parentesi obbligatorie | 🟢 Superato | Cap.07 🔁 #43 (03/08/2026): 43.A precedenza `/` vs `-`; 43.B `std==0 → 1.0` |
@@ -1484,7 +1485,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 43 | **Scaler: `(X - mean) / std` con parentesi** | Cap.06 TODO 16/18 (31/07/2026) | `X - mean / std` per precedenza. **Chiusura:** rinforzo 🔁 #43 cap.07 (03/08/2026) — 43.A/B ok; guardia `std==0 → 1.0`. | M3 cap.07 🔁 #43 | 🟢 |
 | 44 | **Sanity check backward = analitico vs numerico** | Quiz ingresso Q4 cap.07 (03/08/2026) | Risposta generica al primo shot. **Chiusura:** Micro 44.A (03/08) — analitico vs numerico ok. | M3 cap.07 Micro 44.A | 🟢 |
 | 45 | **Retrieval 5-step backward + fill-in `loss.backward()`** | Cap.07 TODO 4 (13/08/2026) | Formula compressa; fill-in `auto_grad()` invece di `loss.backward()` / autograd; manca ReLU/layer2. | Cap.08 quiz ingresso + bridge R07 | 🟢 Quiz ingresso 08 Q1 (22/08): ordine + `loss.backward()` a freddo |
-| 46 | **`map_location` GPU→CPU + DataLoader=batch (Feynman)** | Cap.07 V5/V6 (13/08/2026) | V5 generica; V6 senza “pacchetti/batch”. | Cap.08 quiz ingresso | 🟡 R07 Q14 map_location ok (8.5); DataLoader residuo soft |
+| 46 | **`map_location` GPU→CPU + DataLoader=batch (Feynman)** | Cap.07 V5/V6 (13/08/2026) | V5 generica; V6 senza “pacchetti/batch”. | Cap.08 quiz ingresso | 🟢 Micro 46.B 23/08 + Q5/Q6 |
 | 47 | **`.item()` vs `backward` sulla loss** | Quiz ingresso 08 Q7 (22/08/2026) | Risposto “Prima” invece di **Dopo** (log); rischio `loss = loss.item()` che spezza il grafo. | Loop CNN / mini training | 🟡 |
 | 40 | **Feynman gradient descent** — manca il ciclo iterativo | Quiz verifica V8 cap.05 (27/07/2026) | Analogia della collina corretta e vincoli lessicali rispettati, ma la risposta descrive **dove guardare**, non il ciclo "senti → fai un passo → risenti → ripeti" né l'effetto della **dimensione del passo**. Rinforzo: quiz ingresso cap.06 Q7 (Feynman backprop) + bridge R05 es.11. **27/07: Q7 saltata per scelta dello studente** → verifica spostata a fine cap.06, dopo la backprop in codice. | M3 fine cap.06 | 🔴 |
 
