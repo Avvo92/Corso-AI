@@ -388,9 +388,9 @@ my_conv_demo = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=5, padding=
 x_demo = torch.randn(2, 1, 28, 28)
 
 with torch.no_grad():
-    out = my_conv_demo(x_demo)
+    out_my_conv_demo = my_conv_demo(x_demo)
 
-print(out.shape)
+print(out_my_conv_demo.shape)
 
 # ==========================================================================
 # SEZIONE 3 — Pooling + feature maps
@@ -432,6 +432,19 @@ if TORCH_OK:
 # Trucco: aggiorna a mente solo C, H, W a ogni step A → B → C.
 # TUA RISPOSTA:
 #
+
+my_maxpool_demo = nn.MaxPool2d(2)
+my_conv2d_demo = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=5, padding=2)
+
+partenza = torch.randn(5, 16, 28, 28)
+out_maxpool = my_maxpool_demo(partenza)
+out_conv = 
+
+
+# formula per mantere h e w = 14 -> h_out = ((h * 2p - k) / stride) + 1
+
+
+my_conv2_demo = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, padding=2)
 
 # --- MINI-ESERCIZIO 3.2 ---
 # Vero/Falso: il pooling impara pesi come Conv2d.
