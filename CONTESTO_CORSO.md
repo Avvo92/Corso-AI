@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 13/08/2026 — Creato **`08_cnn_computer_vision.py`** (Fashion-MNIST, 🔁 residui cap.07, scheda `M03_C08_cnn`); bridge R07 prima di studiare. Media ~7.02 (28 cap).
+> **Ultimo aggiornamento**: 25/08/2026 — Canonizzato ripasso React/Node pre-M10 (`docs/ripasso_frontend_react/`). Media ~7.02 (28 cap). Sessione studio M3 cap.08 in corso.
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -44,7 +44,7 @@
 | **Ultimo completato** | modulo_03_dl_cv/**07_pytorch_intro.py** (13/08/2026, **chiusura anticipata**) — tensori/autograd/`nn.Module`/DataLoader/training loop/`state_dict`/Colab; #42/#43/#44 🟢; TODO 2 **9**/10; scaler+train **8.5**; quiz V1–V6 fatti. **Voto difficoltà** **7**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
 | **Difficoltà media** | ~**7.02** (28 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, **7** = |
-| **Priorità attive** | 🟡 Pattern #27; 🟡 Pattern #6; 🟢 **#45**; 🟢 **#46**; 🟡 **#47** `.item()` vs `backward`; 🟡 progetto M3-07 rinviato; 🟡 E6 system design; 🟢 #42/#43/#44. |
+| **Priorità attive** | 🟡 Pattern #27; 🟡 Pattern #6; 🟢 **#45**; 🟢 **#46**; 🟡 **#47** `.item()` vs `backward`; 🟡 progetto M3-07 rinviato; 🟡 E6 system design; 🟢 #42/#43/#44. 📌 **Pre-M10:** ripasso React/Node (parcheggiato — `docs/ripasso_frontend_react/`). |
 | **Sessione corrente** | Sessione 27 |
 
 ---
@@ -176,7 +176,7 @@
 ## Profilo dello Studente
 
 - **Nome**: Gianluca
-- **Background**: Web Developer con esperienza in HTML, CSS, JavaScript, PHP, Laravel. Conoscenza di PHP/Laravel di livello base — i confronti PHP devono essere PARTICOLARMENTE spiegati, non dare per scontato che conosca fgetcsv, trim, explode ecc.
+- **Background**: Web Developer con esperienza in HTML, CSS, JavaScript, PHP, Laravel. Conoscenza di PHP/Laravel di livello base — i confronti PHP devono essere PARTICOLARMENTE spiegati, non dare per scontato che conosca fgetcsv, trim, explode ecc. **React / Node.js**: esperienza pregressa ma **arrugginita** (richiesta esplicita 25/08/2026) — vedi impegno canonico **Ripasso frontend pre-M10**.
 - **Sistema operativo**: Windows 10 (usa Git Bash come terminale in Cursor)
 - **Python installato**: 3.14.3
 - **IDE**: Cursor
@@ -210,6 +210,19 @@ Richiesta dello studente, valida per **tutti i mentor/agent** su questo progetto
 5. Eccezione: durante il **mock interview** da colloquio resta il protocollo freddo/secco già definito altrove, salvo richiesta contraria esplicita nella chat.
 
 **Nota**: Le regole didattiche dei **capitoli** (scala progressiva, quiz, confronto JS/PHP/Python dove previsto) non sono sostituite: si integrano con questo profilo nelle **spiegazioni in chat**.
+
+### Impegno canonico — Ripasso frontend React / Node (pre-M10) — 25/08/2026
+
+> Richiesta dello studente: quando arriverà il momento di costruire le UI delle app (Validator / Replicator), impostare il lavoro in modo **didattico** per ripassare anche il comparto **Node.js** e **React** (arrugginiti).
+
+| Campo | Valore |
+|-------|--------|
+| **Stato** | 📌 **Parcheggiato** — non aprire ora (focus M3→M9 AI) |
+| **Quando attivare** | **Fine M9** oppure **Fase 0 / inizio M10**, **prima** di costruire le schermate React di produzione |
+| **Cosa produrre** | Mini-percorso in `docs/ripasso_frontend_react/` (stesso stile corso: analogia → pezzo piccolo → esercizio → ponte prodotto). Brush-up mirato, non corso React completo da zero. |
+| **Scope minimo suggerito** | (1) Node/npm/script/env (2) React: componenti, props, state, effetti (3) fetch verso FastAPI (4) form + lista esiti Validator (5) upload + anteprima PDF Replicator (6) opz. TypeScript / router |
+| **Allineamento prodotto** | M4–M7 prototipi = **Streamlit**; M10 produzione = **React + FastAPI** (`docs/prodotto/`) |
+| **Vincolo mentor** | Non deragliare i moduli AI per fare React in anticipo. Quando si apre M10 Fase Frontend, **verificare** che questo ripasso sia stato fatto o avviarlo subito. |
 
 ---
 
@@ -697,6 +710,7 @@ completezza del self-check e chiedere correzioni.
     - **Creazione**: quando si **imposta un nuovo modulo** (M4, M5, …), il mentor prepara **tutti** i file bridge del modulo in anticipo **oppure** ne crea uno **ogni volta** che viene completato un capitolo — ma il gap tra capitoli **non deve restare vuoto**: prima che Gianluca apra `cap.K+1`, il file `..._after_C0K_before_C0(K+1)...` deve esistere.
     - **Moduli precedenti**: la regola è **canonica dal M3**; per M1–M2 è facoltativo integrare ripassi analoghi retroattivamente (non obbligatorio).
 41. **Integrazione libri di riferimento (dal M3 cap.07)**: Gianluca possiede PDF in `books/` (vedi sezione **📚 Libri di riferimento**). Il mentor **DEVE** consultare `docs/libri_corso/MAPPATURA_LIBRI_MODULI.md` quando prepara/revisiona un capitolo M3+. Nei file capitolo: inserire blocchi `# 📚 LETTURA PARALLELA` (citazione codice libro + cap./sezione + domanda guida opzionale per lo studente); al massimo 1 esercizio `# 📚 [LIBRO]` per capitolo, **adattato** al dominio corso/prodotto (mai copiare testo o esercizi verbatim dal PDF). In chat: citare libri per seconda voce su lacune. **Non** modificare capitoli già chiusi solo per aggiungere 📚 (protocollo H); retrofit solo su capitolo **in corso**. Repo notebook ufficiali (Géron, Alammar, Huyen) come complemento Colab.
+42. **Teoria prima degli esercizi discorsivi (vincolante — 25/08/2026)**: per ogni esercizio **discorsivo / Feynman / 📚 [LIBRO] / “spiega perché” / V-F con motivazione** che non sia puro retrieval a freddo sul capitolo **precedente**, nel **medesimo file capitolo** deve esistere **prima** (nella teoria o in un blocco dedicato subito sopra la consegna) una spiegazione **chiara ed esaustiva** del concetto chiesto — analogia + meccanismo + esempio + (se serve) anti-pattern. **Vietato** dare per scontato che lo studente “debba già saperlo” se non è stato insegnato in quel capitolo (o esplicitamente ripassato con blocco 🔁). Se in chat emerge il gap (“non me l’avete spiegato”), il mentor **integra subito** la teoria nel capitolo in corso e solo dopo chiede la risposta. Eccezioni: quiz d’ingresso sul capitolo precedente; retrieval esplicito `# 🧠 [RETRIEVAL]` / bridge ripasso.
 
 ---
 
@@ -1791,7 +1805,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 7. **M7**: orchestratore — agente che coordina l'intera pipeline (OCR → parsing → feature → modelli → regole → output → report) + MCP server custom
 8. **M8**: specializzazione — fine-tuning modello sul dominio aziendale specifico (dati reali di Gianluca) per massima precisione
 9. **M9**: produzione — Docker, CI/CD, monitoring metriche modello, testing AI, alert su drift, semantic caching
-10. **M10**: prodotto completo — frontend React + backend FastAPI + tutti i servizi AI integrati + feedback loop revisore → retraining + deploy live
+10. **M10**: prodotto completo — frontend React + backend FastAPI + tutti i servizi AI integrati + feedback loop revisore → retraining + deploy live. **Prerequisito UI**: attivare il ripasso `docs/ripasso_frontend_react/` (impegno Profilo 25/08/2026) prima della Fase Frontend.
 
 ### Definition of Done — Progetto Finale (M10)
 
@@ -2202,6 +2216,8 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 25/08/2026 | **Regola 42**: teoria chiara ed esaustiva **prima** di esercizi discorsivi/Feynman/📚/“spiega perché”; gap → integrare capitolo subito. Espansa Sez.2 FC vs Conv + consegna 📚 [LIBRO] in `08_cnn_computer_vision.py`. | Richiesta studente (esercizi teorici senza spiegazione adeguata) | Regole Didattiche, cap.08, Changelog |
+| 25/08/2026 | **Impegno canonico pre-M10**: ripasso didattico **React / Node.js** (studente arrugginito) in `docs/ripasso_frontend_react/`; attivare fine M9 / inizio M10 prima UI produzione; Streamlit resta per prototipi M4–M7. | Richiesta studente in chat M3 cap.08 | Profilo, Blueprint M10, roadmap, docs/prodotto, AGENTS, stub ripasso, Changelog |
 | 13/08/2026 | **Creato M3 cap.08** `08_cnn_computer_vision.py` (Fashion-MNIST, CNN, 🔁 #27/#45/#46, TODO 5–6, 🏗️); scheda `M03_C08_cnn.md`; `.gitignore` buste; mappa libri 1ª ed. cap.7–8; CONTESTO/README/diario C08. | Richiesta studente: creare capitolo 8 | cap.08, scheda, gitignore, mappa, contesto, README |
 | 13/08/2026 | **Chiusura anticipata M3 cap.07** (`07_pytorch_intro.py`): voto **7**/10 (opzione A); Stato → `08_cnn_computer_vision.py` (segnaposto); Priorità #27/#45/#46; Valutazioni M3-07; lacune #44→🟢, #45/#46 nuove; glossario cap.07; competenze; progetto 🏗️ ⚠️; bridge **M03_R07** arricchito; diario C07 chiuso + scaffold C08; Sessione **27**. File cap.07 non modificato (H). | Richiesta studente: “7, A” | Stato, sessioni, priorità, valutazioni, glossario, pattern, lacune, competenze, ripasso, checklist, progetto, bridge, cap.08, changelog |
 | 05/08/2026 | **Libri organici + protocollo schede**: `books/` gitignore; `docs/libri_corso/`; Regola 41; schede `M03_C07_*`; 📚 Sez. 1–6 + esercizio 📚 [LIBRO] state_dict in `07_pytorch_intro.py`. PDF PyTorch = 1ª ed. | Richiesta studente: mentor usa i libri per costruire capitoli | Libri, schede, cap.07, .gitignore, mentor rule, Changelog |

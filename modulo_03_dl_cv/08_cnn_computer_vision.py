@@ -336,13 +336,36 @@ plt.show()
 # dell'immagine, fai prodotto-somma locale, ottieni un nuovo valore.
 # Stesso timbre su tutta la foto = pesi CONDIVISI (parameter sharing).
 #
-# [2] PERCHÉ NON flatten + Linear su tutti i pixel?
-# Su 28×28=784 input, un dense enorme:
-#   - troppi parametri
-#   - ignora che pixel vicini sono correlati
-#   - uno stesso bordo in alto a sinistra o in basso a destra
-#     diventa "feature diversa" (poca invarianza alla traslazione)
-# La conv risolve proprio questo ([PYTORCH] Cap. 8 §8.1).
+# [2] PERCHÉ NON flatten + Linear su tutti i pixel? (teoria per 📚 e colloquio)
+#
+# Immagine 28×28 → flatten = vettore di 784 numeri. Un nn.Linear(784 → …)
+# tratta ogni pixel come "colonna di CSV" indipendente.
+#
+# Problemi di una rete SOLO dense (fully-connected) sulle immagini:
+#
+#   (A) TROPPI PARAMETRI
+#       Già Linear(784, 256) ≈ 200k pesi; su foto più grandi esplode.
+#       Overfitting facile: "impara a memoria" invece di regole utili.
+#
+#   (B) IGNORA LA GEOMETRIA
+#       Pixel vicini (un bordo, una manica) sono correlati. Il dense non
+#       "sa" che l'indice 10 e l'indice 11 sono vicini sulla griglia: per
+#       lui sono solo due feature diverse, come prezzo e CAP.
+#
+#   (C) POCA INVARIANZA ALLA TRASLAZIONE
+#       Lo stesso pattern "bordo verticale" in alto a sinistra o spostato
+#       di 3 pixel diventa un insieme di pesi diverso da reimparare.
+#       La CNN riusa LO STESSO filtro ovunque (parameter sharing).
+#
+#   (D) COSA FA MEGLIO CONV + POOL
+#       Conv = cerca pattern LOCALI con pochi pesi riusati.
+#       Pool = rimpicciolisce e tollera piccoli spostamenti.
+#       Poi un Linear piccolo classifica le feature (non i pixel grezzi).
+#       Stessa "voglia di imparare" (training), ma rappresentazione migliore.
+#
+# Analogia web: dense = un form gigante con 784 campi scollegati;
+# CNN = componenti CSS riusati su ogni zona della pagina.
+# Riferimento: [PYTORCH] Cap. 8 §8.1; scheda M03_C08_cnn.md
 #
 # [3] CODICE
 #   nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
@@ -431,26 +454,23 @@ if TORCH_OK:
 # Qual è la shape finale?  (N, ?, ?, ?)
 # Trucco: aggiorna a mente solo C, H, W a ogni step A → B → C.
 # TUA RISPOSTA:
-#
+# (5, 32, 7, 7)
 
 my_maxpool_demo = nn.MaxPool2d(2)
-my_conv2d_demo = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=5, padding=2)
+my_conv2d_demo = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, padding=1)
 
-partenza = torch.randn(5, 16, 28, 28)
-out_maxpool = my_maxpool_demo(partenza)
-out_conv = 
+start_batch = torch.randn(5, 16, 28, 28)
+out_maxpool = my_maxpool_demo(start_batch)
+out_conv = my_conv2d_demo(out_maxpool)
+out_maxpool2 = my_maxpool_demo(out_conv)
 
+print(f"Shape finale: {out_maxpool2.shape}")
 
-# formula per mantere h e w = 14 -> h_out = ((h * 2p - k) / stride) + 1
-
-
-my_conv2_demo = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, padding=2)
 
 # --- MINI-ESERCIZIO 3.2 ---
 # Vero/Falso: il pooling impara pesi come Conv2d.
 # TUA RISPOSTA:
-#
-
+# Falso. Il pooling prende il massimo valore all'interno di un timbro di dimensione kernel_size = int, scorrendo sopra tutta la feature map passata dal Conv2d, e restituisce una sorta di thumbnail della stessa.
 
 # ==========================================================================
 # SEZIONE 4 — CNN piccola + training (Fashion-MNIST)
@@ -484,24 +504,38 @@ if TORCH_OK:
         """CNN didattica per Fashion-MNIST (1×28×28 → 10 classi)."""
 
         def __init__(self) -> None:
-            super().__init__()
+            super().__init__()  # collega questa classe al sistema nn.Module di PyTorch
+
+            # Blocco "visione": estrae feature map dall'immagine.
+            # Shape tipica lungo il percorso (N = batch):
+            #   (N, 1, 28, 28)  →  (N, 16, 28, 28)  →  (N, 16, 14, 14)
+            #                →  (N, 32, 14, 14)  →  (N, 32, 7, 7)
             self.features = nn.Sequential(
+                # 16 filtri 3×3; pad=1 → H,W restano 28. C: 1 → 16
                 nn.Conv2d(1, 16, kernel_size=3, padding=1),
+                # spegne i negativi; shape invariata
                 nn.ReLU(),
+                # thumbnail: H,W / 2 → 14×14; C resta 16
                 nn.MaxPool2d(2),
+                # altri 32 filtri; pad=1 → H,W restano 14. C: 16 → 32
                 nn.Conv2d(16, 32, kernel_size=3, padding=1),
                 nn.ReLU(),
+                # di nuovo /2 → 7×7; C resta 32
                 nn.MaxPool2d(2),
             )
+            # Testa di classificazione: vettore 32*7*7=1568 → 10 logits (una per classe)
             self.classifier = nn.Linear(32 * 7 * 7, 10)
 
         def forward(self, x: torch.Tensor) -> torch.Tensor:
-            x = self.features(x)
-            x = torch.flatten(x, 1)  # (N, 32*7*7)
-            return self.classifier(x)
+            # x in ingresso: (N, 1, 28, 28)
+            x = self.features(x)          # → (N, 32, 7, 7) feature map finali
+            x = torch.flatten(x, 1)       # → (N, 1568); dim 0 = batch, non si schiaccia
+            return self.classifier(x)     # → (N, 10) logits grezzi (non probabilità)
 
     def accuracy_logits(logits: torch.Tensor, y: torch.Tensor) -> float:
-        pred = logits.argmax(dim=1)
+        # logits: (N, 10) punteggi; y: (N,) indici classe veri (0..9)
+        pred = logits.argmax(dim=1)  # per ogni riga, indice del logit più alto
+        # media di True/False → accuracy in [0, 1]; .item() → float Python
         return (pred == y).float().mean().item()
 
     def train_cnn_epochs(
@@ -512,28 +546,32 @@ if TORCH_OK:
         epochs: int = 3,
         lr: float = 1e-3,
     ) -> list[dict[str, float]]:
-        """Loop standard cap.07 — multiclasse."""
+        """Loop standard cap.07 — multiclasse (mini-batch SGD/Adam)."""
+        # Adam aggiorna tutti i pesi del modello; lr = ampiezza dei passi
         opt = torch.optim.Adam(model.parameters(), lr=lr)
+        # CrossEntropy: softmax+NLL interni; vuole logits (N,10) e target Long (N,)
         crit = nn.CrossEntropyLoss()
-        history: list[dict[str, float]] = []
-        model.to(device)
+        history: list[dict[str, float]] = []  # metriche per epoch
+        model.to(device)  # pesi su CPU o CUDA (stesso device dei batch)
 
         for ep in range(1, epochs + 1):
-            model.train()
+            model.train()  # attiva dropout/batchnorm in train (qui quasi no-op, ma idioma)
             loss_sum, n_seen = 0.0, 0
-            for xb, yb in loader_train:
-                xb, yb = xb.to(device), yb.to(device)
-                opt.zero_grad()                    # ogni BATCH
-                logits = model(xb)
-                loss = crit(logits, yb)
-                loss.backward()
-                opt.step()
-                loss_sum += loss.item() * xb.size(0)  # .item() DOPO backward, per log
+            for xb, yb in loader_train:  # xb: (B,1,28,28), yb: (B,)
+                xb, yb = xb.to(device), yb.to(device)  # dati sullo stesso device del modello
+                opt.zero_grad()  # azzera .grad accumulati (ogni BATCH)
+                logits = model(xb)  # forward → (B, 10)
+                loss = crit(logits, yb)  # scalare: quanto sbagliamo sul batch
+                loss.backward()  # riempie .grad sui pesi (autograd)
+                opt.step()  # aggiorna i pesi con Adam
+                # log: .item() DOPO backward (float Python); * B per media pesata
+                loss_sum += loss.item() * xb.size(0)
                 n_seen += xb.size(0)
 
-            model.eval()
+            # --- valutazione (niente update pesi) ---
+            model.eval()  # modo inferenza
             correct, n_val = 0, 0
-            with torch.no_grad():
+            with torch.no_grad():  # non costruire grafo → risparmio RAM
                 for xb, yb in loader_val:
                     xb, yb = xb.to(device), yb.to(device)
                     logits = model(xb)
@@ -542,8 +580,8 @@ if TORCH_OK:
 
             row = {
                 "epoch": float(ep),
-                "loss_train": loss_sum / max(n_seen, 1),
-                "acc_val": correct / max(n_val, 1),
+                "loss_train": loss_sum / max(n_seen, 1),  # loss media sull'epoch
+                "acc_val": correct / max(n_val, 1),  # accuracy sul validation set
             }
             history.append(row)
             print(
@@ -556,22 +594,25 @@ if TORCH_OK:
         model: PiccolaCNN, img_chw: torch.Tensor
     ) -> torch.Tensor:
         """img (1,H,W) o (1,1,H,W) → (16, H, W) dopo primo Conv+ReLU."""
+        # assicura batch dim: Conv2d vuole 4D (N,C,H,W)
         if img_chw.dim() == 3:
-            img_chw = img_chw.unsqueeze(0)
+            img_chw = img_chw.unsqueeze(0)  # (1,H,W) → (1,1,H,W) se C già c'è: (C,H,W)→(1,C,H,W)
+        # Sequential: [0]=primo Conv, [1]=prima ReLU (vedi __init__)
         conv0 = model.features[0]
         relu0 = model.features[1]
-        with torch.no_grad():
-            maps = relu0(conv0(img_chw))
-        return maps.squeeze(0)
+        with torch.no_grad():  # solo visualizzazione, niente gradienti
+            maps = relu0(conv0(img_chw))  # (1, 16, 28, 28) tipicamente
+        return maps.squeeze(0)  # togli N → (16, 28, 28) una mappa per filtro
 
 
 # Demo training: SOLO se torch+vision ok. Su Colab usa subset o full.
 # Di default usiamo un SUBSET per non bloccare la macchina (CPU).
 if TORCH_OK and VISION_OK and ds_demo is not None:
+    # GPU se c'è CUDA (Colab), altrimenti CPU (PC AMD)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("[Sez.4] device:", device)
 
-    # Subset piccolo per smoke test locale/Colab rapido
+    # Subset piccolo = smoke test rapido (non tutto Fashion-MNIST)
     n_train_smoke, n_val_smoke = 2000, 500
     ds_train_full = datasets.FashionMNIST(
         root=str(DATA_DIR), train=True, download=False, transform=transform_base
@@ -579,13 +620,15 @@ if TORCH_OK and VISION_OK and ds_demo is not None:
     ds_test_full = datasets.FashionMNIST(
         root=str(DATA_DIR), train=False, download=False, transform=transform_base
     )
+    # prime n immagini come train/val di prova
     ds_train = torch.utils.data.Subset(ds_train_full, range(n_train_smoke))
     ds_val = torch.utils.data.Subset(ds_test_full, range(n_val_smoke))
 
+    # carrelli: shuffle in train, batch fissi in val
     loader_tr = DataLoader(ds_train, batch_size=64, shuffle=True)
     loader_va = DataLoader(ds_val, batch_size=128, shuffle=False)
 
-    torch.manual_seed(42)
+    torch.manual_seed(42)  # riproducibilità (pesi iniziali / shuffle controllato)
     cnn = PiccolaCNN()
     # Decommenta su Colab per allenare (2–3 epoche sul subset bastano come smoke):
     # hist = train_cnn_epochs(cnn, loader_tr, loader_va, device, epochs=2)
@@ -593,7 +636,7 @@ if TORCH_OK and VISION_OK and ds_demo is not None:
         "[Sez.4] PiccolaCNN creata. Per trainare: decommenta "
         "train_cnn_epochs(...) sopra (meglio su Colab GPU)."
     )
-    # Sanity shape
+    # Sanity: un forward finto deve dare (2, 10)
     with torch.no_grad():
         logits0 = cnn(torch.randn(2, 1, 28, 28))
     print("[Sez.4] logits shape attesa (2,10):", tuple(logits0.shape))
@@ -601,9 +644,18 @@ else:
     print("[Sez.4] salta demo CNN (serve torch+vision+dataset).")
 
 # 📚 [LIBRO] — Ispirato a [PYTORCH] Cap.7→8 (adattato Fashion-MNIST)
-# Scrivi in 5–8 frasi (sotto, negli esercizi TODO 1 o qui):
+#
+# PRIMA leggi (o rileggi) in Sez. 2 il blocco
+#   "[2] PERCHÉ NON flatten + Linear su tutti i pixel?"
+# lì trovi parametri, geometria, traslazione, ruolo di Conv+Pool.
+#
+# Poi, CON PAROLE TUE (5–8 frasi, niente copia dal PDF / dalla Sez.2):
 # perché una rete solo Linear su flatten(28*28) generalizza peggio di
-# Conv+Pool, anche a parità di "voglia di imparare". Niente copia dal PDF.
+# Conv+Pool, anche a parità di "voglia di imparare" (stesso training).
+#
+# TUA RISPOSTA (qui sotto o in TODO 1 negli esercizi finali):
+#
+# Una rete di soli layer dense, già solo al primo livello arriva facilmente ad avere decine di migliaia di pesi. Per immagini grandi esplode facilmente. Ignora la geometria perchè non è in grado di riconoscere la correlazione di pixel vicini tra loro, ma tratta ogni singolo pixel come una feature a se stante. Non sopporta la traslazione, se nel immagine lo stesso schema è spostato anche sono di un pixel, la rete lo tratta come un nuovo insieme di pesi da imparare. Conv+pool servono a riconoscere schemi simili, e a trasformare ridimensionando i risultati di ogni livello. 
 
 
 # --- MINI-ESERCIZIO 4.1 ---
@@ -611,11 +663,42 @@ else:
 #   pesi = out_ch * in_ch * k * k ; bias = out_ch
 # TUA RISPOSTA (numero totale):
 #
+# Per i pesi il numero di parametri della Conv2d è = canali_immagine * n_kernel * base_kernel * altezza_kernel -> 1 * 16 * 3 * 3 -> 144; Il N_bias è = N_kernel -> 16; Totale = 160
 
+# --------------------------------------------------------------------------
+# CrossEntropyLoss: target = INDICE di classe (Long), non one-hot
+# --------------------------------------------------------------------------
+#
+# [1] ANALOGIA
+# Hai 10 cassetti (classi 0..9). Per ogni esempio non consegni 10 adesivi
+# "è / non è" (one-hot): consegni il NUMERO del cassetto giusto, es. 7 = Sneaker.
+#
+# [2] COSA VUOLE PyTorch
+#   logits:  (N, C)   float   — punteggi grezzi (C=10 per Fashion-MNIST)
+#   target:  (N,)     long    — un intero per riga: la classe vera (0..C-1)
+#
+# Esempio batch N=3:
+#   y = tensor([3, 0, 7])           # Dress, T-shirt, Sneaker
+#   NON serve: [[0,0,0,1,0,...], ...]  # one-hot float (N, 10)
+#
+# [3] PERCHÉ
+#   - CrossEntropyLoss fa (dentro): softmax sui logits + NLL rispetto alla
+#     classe indicata dall'indice. L'API è pensata così: più compatta e
+#     standard in classificazione multiclasse.
+#   - One-hot float è tipico di altre loss (es. soft-label / BCE multi-label).
+#     Qui le classi sono MUTUALMENTE ESCLUSIVE: un solo indice basta.
+#   - dtype Long = interi 64-bit usati come indici (come un indice di array).
+#
+# [4] CONFRONTO COL CAP.07
+#   BCEWithLogitsLoss (binario): target float 0.0/1.0 shape (N,1) o (N,)
+#   CrossEntropy (multiclasse): target Long shape (N,) con valori 0..C-1
+#
 # --- MINI-ESERCIZIO 4.2 ---
 # Perché CrossEntropyLoss vuole target Long (N,) e non float one-hot?
+# (Rispondi con parole tue, dopo aver letto il blocco sopra.)
 # TUA RISPOSTA:
 #
+# perchè le classi sono esclusive, quindi mi basta solo prendere in considerazione una sola classe per immagine. Gli interi nel Long(N, ) sono usati come indici per sapere quale risultato del vettore output del softmax prendere per la CE. Usare un float one-hot sarebbe ridondante, la CE non ne ha bisogno.
 
 
 # ==========================================================================
@@ -629,17 +712,48 @@ else:
 # Analogia: 16 "evidenziatori" diversi sulla stessa pagina.
 
 # --- MINI-ESERCIZIO 5.1 ---
-# Dopo aver creato `cnn` e un'immagine dal dataset:
-#   maps = feature_maps_primo_conv(cnn, img)
-#   print(maps.shape)  # atteso (16, 28, 28)
-# Se PLOT_OK: subplot 4×4 con maps[i].numpy() e cmap="gray"
+#
+# Obiettivo: "vedere" cosa fa il primo strato convoluzionale su UNA immagine
+# reale di Fashion-MNIST — non i 10 logits finali, ma le attivazioni intermedie
+# (feature maps): una mappa per ciascuno dei 16 filtri del primo Conv (+ ReLU).
+#
+# Prerequisiti (già visti in Sez.4 / demo):
+#   - un modello `PiccolaCNN` (anche appena creato, anche non addestrato);
+#   - un tensore immagine nel formato che la rete si aspetta (canale + H + W).
+# Nel capitolo c'è già un helper che estrae solo il primo Conv+ReLU: usalo
+# se ti è comodo, oppure ottieni lo stesso risultato a mano dal modulo.
+#
+# Cosa verificare:
+#   1) Quante mappe ottieni? Che shape ha il tensore risultante, e perché
+#      H e W restano 28×28 con il padding usato in PiccolaCNN?
+# Ottengo un tensore di shape (16, 28, 28). Restano uguali perchè ((h (o w) + 2p - k) / stride) + 1 = ((28 + 2 - 3) / 1) + 1 = 28
+#   2) Se puoi plottare (PLOT_OK / ambiente con Matplotlib): mostra tutte le
+#      mappe in una griglia di figure, in scala di grigi, così confronti
+#      a colpo d'occhio i diversi "evidenziatori" sullo stesso capo.
+#
+# Nota: a pesi iniziali (random) le mappe possono sembrare rumore; dopo un
+# po' di training spesso emergono bordi/texture. Qui conta il pipeline di
+# estrazione + shape + visualizzazione, non la bellezza artistica.
+#
 # TUA SOLUZIONE:
+#
+img = ds_train[1][0]
+maps = feature_maps_primo_conv(model=PiccolaCNN(), img_chw=img)
+print(maps.shape)
 
+fig, axes = plt.subplots(4, 4, figsize=(14, 10))
+fig.suptitle("Visualizzazione Features Maps + ReLU", fontsize=18, fontweight="bold")
+for i, m in enumerate(maps):
+    m = m.detach().cpu().numpy()
+    ax = axes.flatten()[i]
+    ax.imshow(m, cmap="gray")
+
+plt.show()
 
 # --- MINI-ESERCIZIO 5.2 ---
 # Vero/Falso: le feature maps del primo layer sono già le probabilità delle 10 classi.
 # TUA RISPOSTA:
-#
+# falso, sono la risposta di n_kernel, ognuna delle quali e la mappa delle risposte che ha fornito il kernel specifico ad ogni punto in cui è stato appoggiato sull immagine.
 
 
 # ==========================================================================
@@ -647,36 +761,38 @@ else:
 # ==========================================================================
 #
 # V1) Shape di un batch Fashion-MNIST tipico con batch_size=32?
-# TUA RISPOSTA:
+# TUA RISPOSTA: (32, 1, 28, 28)
 #
 
 # V2) nn.Conv2d(1, 8, 3, padding=1) su (4,1,28,28) → shape uscita?
 # TUA RISPOSTA:
-#
+#(4, 8, ((28 + 2 - 3) / 1) + 1, ((28 + 2 - 3) / 1) + 1) -> (4, 8, 28, 28)
 
 # V3) Trova l'errore concettuale:
 #     "MaxPool2d impara 4 pesi per ogni finestra 2×2."
 # TUA RISPOSTA:
-#
+# Falso. MaxPool2d con finestra 2*2 semplicemente prende la feature map del layer Conv e in pratica prende in esame di quella mappa 4 punti per volta, restituendo per ognuno solo il valore più alto della specifica finestra, iscrivendo il risultato in un nuovo tensore. Questo tensore, supponendo che in input il MaxPool abbia preso un tensore di shape (4, 8, 28, 28), avrà shape (4, 8, 14, 14), ossia avrà ridotto ogni feature map di 4 volte la sua dimensione originale.
 
 # V4) Completa: dopo due MaxPool2d(2) su 28×28, H=W= ___
 # TUA RISPOSTA:
-#
+# 14 -> 7
 
 # V5) Ordine corretto nel loop: (a) step (b) zero_grad (c) backward (d) loss
 # TUA RISPOSTA (lettere in ordine):
-#
+# b, d, c, a
 
 # V6) map_location serve quando… (1 frase operativa)
 # TUA RISPOSTA:
-#
+# la map_location serve nel load di uno state_dict di un modello, nel caso ad esempio in cui i pesi della rete siano caricati da Colab (che usa gpu / cuda nvidia per addestrare), ed ora noi li stiamo portando in locale nel nostro pc che invece fa girare il modello in cpu
 
 # V7) 💬 Feynman: perché una CNN ha senso per immagini mentre una rete
 #     solo fully-connected su pixel flatten fa più fatica? (5–8 frasi,
 #     analogia web/Photoshop ok; puoi citare località + pesi condivisi)
 # TUA RISPOSTA:
-#
-
+# per 4 motivi principali. La rete layer dense non è indicata per shape che riporterebbero numero di pesi enormi, poichè tratta ogni pixel come colonna di un csv(già un Linear(784, 256), crea centinaia di migliaia di pesi).
+# Un layer dense non capisce la geometria. Ogni pixel è per lui una feature a se stante, quindi non vede le correlazioni tra pixel vicini. Una CNN risolve questo problema perchè analizza e filtra pezzi dell'immagine insieme, riconoscendo pattern specifici, e riutilizzando gli stessi pesi di ogni kernel su tutta l'immagine, piuttosto che crearne uno specifico per ogni pixel visto da ogni neurone.
+# Un LayerDense a poca invarianza alla traslazione. Se lo schema che ricerchiamo nell'immagine è spostato anche solo di un pixel, la rete deve addestrare nuovi pesi specifici per poter riconoscerlo. La CNN riconosce i pattern ovunque si trovino proprio grazie alla convoluzione dei kernel.
+# Conv+pool sono più efficiente sulle immagine. Conv riconosce gli schemi, mentre maxpool sintetizza. Usiamo un linear solo in uscita prima di soft max per i logit delle classi.
 
 # ==========================================================================
 # ESERCIZI PRATICI
@@ -688,7 +804,7 @@ else:
 # Spiega a un collega web (senza formule) in max 10 frasi:
 #   convoluzione, pooling, feature map, e perché non flatten+MLP.
 # TUA RISPOSTA:
-#
+# la convoluzione in una CNN consiste nel passare vari filtri su tutta la grandezza dell immagine, alla ricerca di schemi ricorrenti. Ogni filtro, per ogni punto dell'immagine su cui passa da un punteggio riguardo lo schema di cui è alla ricerca e li inserisce una mappa (feature map). Il pooling fa una sintesi di questi punteggi, tenendo solo i punteggi più alti e rilevanti all'interno di piccole finestre(che come nella convoluzione viene passata questa volta su tutta la feature map). flatten+MLP non è una scelta efficente, perchè una rete layer dense ha bisogno di pesi per ogni pixel, e non riesce a riconoscere schemi geometrici perchè vede i pixel singolarmente e non in correllazioni con i loro vicini (a differenza della CNN che usa e riusa gli stessi filtri di pesi su tutta l'immagine). Inolte, se anche lo schema che cerchiamo si sposta di un solo pixel, la rete fully connected deve addestrare un neurone specifico e tutti i suoi pesi solo per poter vedere questo piccolissimo spostamento.
 
 
 # --------------------------------------------------------------------------
@@ -713,6 +829,24 @@ else:
 #
 # TUA SOLUZIONE (classe rifattorizzata):
 
+class CnnBella(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+        )
+        self.classifier = nn.Linear(32 * 7 * 7, 10)
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.features(x)
+        x = torch.flatten(x, 1)
+        return self.classifier(x)
+
+
 
 # --------------------------------------------------------------------------
 # TODO 3 — 🔍 [DEBUG]
@@ -725,7 +859,7 @@ else:
 # dimenticato un MaxPool. Diagnosi in 3 bullet + fix.
 # TUA RISPOSTA:
 #
-
+# il problema può essere un disallineamento dei maxpool oppure shape sbagliata per l'ingresso nel linear finale. Il fix consiste nel verificare se i maxpool siano stati entrambi inseriti e siano corretti, oppure agire sulla shape attesa nell'ingresso del linear
 
 # --------------------------------------------------------------------------
 # TODO 4 — 🧠 [RETRIEVAL]

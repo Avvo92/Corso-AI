@@ -176,7 +176,8 @@ Esempi: [`examples/evasion_report.example.json`](examples/evasion_report.example
 
 ## 8) Architettura (bozza)
 
-- Frontend: React
+- Frontend: React  
+  - **Pre-requisito didattico (25/08/2026):** ripasso Node/React in [`docs/ripasso_frontend_react/README.md`](../../ripasso_frontend_react/README.md) prima di costruire UI M10 (`CONTESTO_CORSO.md` → Impegno canonico).
 - Backend business/API: Laravel o FastAPI (da confermare per fase finale)
 - Servizi AI:
   - OCR + parsing

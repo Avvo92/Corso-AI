@@ -40,6 +40,7 @@ Dopo il gate corso, per task sul **prodotto Validator/Replicator**:
 4. [`docs/prodotto/README.md`](docs/prodotto/README.md) — indice completo prodotto
 5. [`docs/prodotto/CANONE_STRESS_TEST_LAB_VR.md`](docs/prodotto/CANONE_STRESS_TEST_LAB_VR.md) — fonte di verita stress test (Validator solo PDF)
 6. [`docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md`](docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md) — piano, gap, DoD M10
-4. [`docs/prodotto/DOCUMENT_SPECTRUM.md`](docs/prodotto/DOCUMENT_SPECTRUM.md) — 10 tipi, P0/P1/P2
-5. Validator → `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` + `aplicativo/validator/`
-6. Replicator → `docs/prodotto/APPUNTI_APPLICATIVO_REPLICATOR.md` + `aplicativo/replicator/`
+7. [`docs/prodotto/DOCUMENT_SPECTRUM.md`](docs/prodotto/DOCUMENT_SPECTRUM.md) — 10 tipi, P0/P1/P2
+8. Validator → `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` + `aplicativo/validator/`
+9. Replicator → `docs/prodotto/APPUNTI_APPLICATIVO_REPLICATOR.md` + `aplicativo/replicator/`
+10. **Pre-M10 UI React:** [`docs/ripasso_frontend_react/README.md`](docs/ripasso_frontend_react/README.md) — ripasso Node/React (parcheggiato; attivare fine M9 / inizio M10). Dettaglio in `CONTESTO_CORSO.md` → Profilo → Impegno canonico.

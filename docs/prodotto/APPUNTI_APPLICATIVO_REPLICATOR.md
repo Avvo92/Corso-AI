@@ -335,6 +335,8 @@ Quando il template Y richiede campi che **non** arrivano da X, dal testo o dal p
 
 Stesso flusso; **deploy URL separato** dal Validator (secondo pezzo portfolio). In M10 la chat (§7.3) può convivere con dashboard classica (upload, report, diff ROI).
 
+> **Prerequisito didattico (25/08/2026):** prima di costruire queste schermate, attivare il ripasso React/Node in [`docs/ripasso_frontend_react/README.md`](../../ripasso_frontend_react/README.md) (impegno in `CONTESTO_CORSO.md`). Non saltare se lo studente è arrugginito su React.
+
 ### 7.3 Interfaccia conversazionale (chat) e ciclo di miglioramento
 
 > **Decisione prodotto:** l’operatore può usare una **chat** come front-end principale: stesso motore di §4.2, orchestrato da **agente** (M7+). La conversazione guida intenti e correzioni; il **miglioramento duraturo** del modello/layout passa da **feedback strutturato e governance**, non da ogni messaggio in chat senza filtri.

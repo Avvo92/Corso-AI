@@ -231,6 +231,8 @@ Checklist da completare **progressivamente nel corso** (non tutto in un colpo):
 | M8–M9 | Fine-tune (opz.), MLOps | CI, container |
 | M10 | React + FastAPI deploy | Seconda app deploy + integrazione test |
 
+> **UI React (25/08/2026):** prima della Fase Frontend M10, attivare ripasso didattico Node/React in `docs/ripasso_frontend_react/` (vedi `CONTESTO_CORSO.md` → Impegno canonico). Prototipi fino a M7 restano Streamlit.
+
 ---
 
 ## 10) Riferimenti file

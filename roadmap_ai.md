@@ -418,10 +418,11 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | Fase | Settimana | Cosa fai |
 |------|-----------|----------|
 | 0. Setup Git workflow | 0 | Feature branches, conventional commits, template PR — simulazione lavoro in team |
+| **0b. Ripasso React / Node (didattico)** | 0–1 | **Obbligo se non già fatto**: mini-percorso `docs/ripasso_frontend_react/` (brush-up componenti, state, fetch FastAPI, pezzi UI Validator/Replicator). Richiesta studente 25/08/2026 — non saltare se React è arrugginito. |
 | 1. Progettazione | 1 | Architettura, schema DB, user stories, API design |
 | 2. AI Service | 1-2 | RAG pipeline + Agent system + LLM integration |
 | 3. Backend | 2 | FastAPI endpoints, autenticazione, business logic |
-| 4. Frontend | 2-3 | React UI con streaming, chat, dashboard |
+| 4. Frontend | 2-3 | React UI con streaming, chat, dashboard (**dopo** 0b) |
 | 5. Integrazione | 3 | Frontend ↔ Backend ↔ AI service end-to-end |
 | 6. Docker + Deploy | 3-4 | Containerizzazione, CI/CD, deploy live |
 | 7. Polish | 4 | Error handling, loading states, edge cases, testing |
