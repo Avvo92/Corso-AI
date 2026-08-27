@@ -869,6 +869,27 @@ class CnnBella(nn.Module):
 # e calcola loss media con .item() nel posto giusto.
 # TUA SOLUZIONE:
 
+# loader_tr = DataLoader(ds_train, batch_size=64, shuffle=True)
+# model = PiccolaCNN()
+# opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+# crt = nn.CrossEntropyLoss()
+
+# loss_for_epoch : list(tuple[int, float]) = [è]
+
+# for e in range(1):
+#     loss_sum, n_seen = 0.0, 0
+#     for xb, yb in loader_tr:
+#         opt.zero_grad()
+#         logits = model(xb)
+#         loss = crt(logits, yb)
+#         loss.backward()
+#         opt.step()
+#         loss_sum += loss.item() * xb.size(0)
+#         n_seen += xb.size(0)
+#     loss_for_epoch.append((e, loss_sum / max(n_seen, 1)))
+
+
+
 
 # --------------------------------------------------------------------------
 # TODO 5 — 🔀 [INTERLEAVING]  (migrato da cap.07 TODO 5)
@@ -885,6 +906,15 @@ class CnnBella(nn.Module):
 # Collega: stesso Dataset/DataLoader del cap.07, feature del M2, idea CNN dopo.
 # TUA SOLUZIONE:
 
+import pandas as pd
+
+path = Path(__file__).resolve().parent / "dati" / "pratiche.csv"
+df = pd.read_csv(path)
+
+X_np = df.drop(columns=['pratica_id', 'y_alterato']).astype(np.float32)
+y_np = df['y_alterato'].astype(np.float32)
+
+X = torch.from_numpy(X_np)
 
 # --------------------------------------------------------------------------
 # TODO 6 — 🌊 [REAL-WORLD]  (migrato da cap.07 TODO 6)

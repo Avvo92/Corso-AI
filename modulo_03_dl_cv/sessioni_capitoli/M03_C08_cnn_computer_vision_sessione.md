@@ -374,6 +374,15 @@
 - **Errori / lacune:** Manca diagnosi numerica a 3 bullet. `3200 = 32×10×10`, `1568 = 32×7×7`: le mappe sono 10×10 ma il Linear aspetta 7×7 (PiccolaCNN dopo 2 pool su 28). Consegna chiedeva 3 bullet + fix esplicito; risposta troppo generica. Fix solo “cambio Linear” può mascherare un MaxPool mancante: meglio ripristinare i 2 pool (28→14→7) *oppure* riallineare Linear solo se la geometria voluta è davvero 10×10.
 - **Correzione / suggerimento:** Bullet: (1) leggi mat1/mat2 (2) 3200 vs 1568 (3) causa pool/shape (4) fix preferito = 2× MaxPool2d(2).
 
+### 2026-08-27 — TODO 4 retrieval training epoch (`08_cnn_computer_vision.py` ~863–889)
+
+- **Esercizio / blocco:** Un epoch: zero_grad → … → step + loss media con `.item()`
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Ordine corretto; **`loss.item()` dopo `backward`** (allineato a #47); media pesata `* xb.size(0)` / `n_seen` corretta.
+- **Errori / lacune:** `loss_for_epoch = list(tuple[int, float])` non crea una lista — andrebbe `loss_for_epoch: list[tuple[int, float]] = []` (o `= []`). Soft: `model.train()` opzionale; codice tutto in commento `#` (ok se solo bozza nel file capitolo).
+- **Correzione / suggerimento:** Fix init lista; resto del loop è retrieval riuscito.
+- **Lacune:** #47 🟡 → soft miglioramento (uso corretto `.item()` qui).
+
 ---
 
 ## Lacune e dubbi ancora aperti
