@@ -36,12 +36,22 @@
 
 ---
 
-### `09_transfer_learning.py`
+### `09_transfer_learning.py` (scritto 01/09/2026)
 
-| Concetto | [PYTORCH] | [GERON] |
-|----------|-----------|---------|
-| ResNet, freeze layers | cap. 12–13 | cap. 14 |
-| Fine-tuning head | cap. 13 | cap. 14 |
+> Scheda: `schede/M03_C09_transfer_learning.md`.
+> ⚠️ **Correzione**: la riga precedente diceva "PYTORCH cap. 12–13". Verificato sul PDF (1ª ed.):
+> il cap. 13 è *Using segmentation…* (U-Net), fuori scope. Il fine-tuning è **§14.5.3**.
+> Il PDF Géron in `books/` è la **2ª edizione** (Keras/TF2): pagine indicate = pagine PDF.
+
+| Concetto | [PYTORCH] 1ª ed. | [GERON] 2ª ed. |
+|----------|------------------|----------------|
+| ResNet pre-addestrata, preprocessing/normalizzazione ImageNet | **cap. 2 §2.1.3–2.1.5** | cap. 14 *Using Pretrained Models* (p. 508) |
+| Skip connection / perché si può andare profondi | **§8.5.3** | cap. 14 *ResNet* (pp. 500–501) |
+| Definizione transfer learning vs fine-tuning, `requires_grad_(False)`, depth-1 vs depth-2 | **§14.5.3** | cap. 14 *Pretrained Models for Transfer Learning* (pp. 510–512) |
+| Data augmentation: quali sono utili e quali no | **§12.6** | cap. 14 (cenno) |
+| Metriche per classe (precision/recall/F1) su dati sbilanciati | **§12.3** | cap. 3 |
+
+**Blocchi usati in capitolo:** 📚 LETTURA PARALLELA dopo Sez. 1, 2, 4; 📚 [LIBRO] unico = TODO 8 (depth-1 vs depth-2, ispirato a §14.5.3).
 
 **Prodotto:** script anonimizzazione — non coperto dai libri; resta task corso.
 
