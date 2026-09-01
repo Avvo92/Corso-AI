@@ -907,14 +907,52 @@ class CnnBella(nn.Module):
 # TUA SOLUZIONE:
 
 import pandas as pd
+from torch.nn import BCEWithLogitsLoss
 
 path = Path(__file__).resolve().parent / "dati" / "pratiche.csv"
 df = pd.read_csv(path)
 
-X_np = df.drop(columns=['pratica_id', 'y_alterato']).astype(np.float32)
-y_np = df['y_alterato'].astype(np.float32)
+X_np = df.drop(columns=['pratica_id', 'y_alterato']).to_numpy()
+y_np = df['y_alterato'].to_numpy()
 
-X = torch.from_numpy(X_np)
+class TabularDataset(Dataset):
+    def __init__(self, X: np.ndarray, y: np.ndarray) -> None:
+        super().__init__()
+        self.X = X.astype(np.float32)
+        self.y = y.astype(np.float32)
+    def __len__(self) -> int:
+        return len(self.X)
+    def __getitem__(self, idx:int):
+        return torch.from_numpy(self.X[idx]), torch.tensor(self.y[idx:idx + 1])
+
+ds_custom = TabularDataset(X_np, y_np)
+dl = DataLoader(ds_custom, shuffle=True, batch_size = 32)
+
+model = nn.Sequential(
+    nn.Linear(7, 16),
+    nn.ReLU(),
+    nn.Linear(16, 1)
+)
+
+criterio = BCEWithLogitsLoss()
+optimizer = torch.optim.SGD(model.parameters(), lr = 0.1)
+
+mean_loss_by_epoch: list[tuple[int, float]] = []
+
+for e in range(1):
+    total_loss, n_seen = 0.0, 0
+    for xb, yb in dl:
+        optimizer.zero_grad()
+        logits = model(xb)
+        loss = criterio(logits, yb)
+        loss.backward()
+        optimizer.step()
+        total_loss += loss.item() * xb.size(0)
+        n_seen += xb.size(0)
+    mean_loss_by_epoch.append((e, (total_loss / max(n_seen, 1))))
+
+
+
 
 # --------------------------------------------------------------------------
 # TODO 6 — 🌊 [REAL-WORLD]  (migrato da cap.07 TODO 6)
@@ -924,9 +962,11 @@ X = torch.from_numpy(X_np)
 # e ti chiede "allenami una CNN per domani".
 # Non c'è una sola soluzione. Scrivi:
 #   (a) 5 controlli che faresti PRIMA di trainare
-#   (b) cosa rifiuteresti di fare "in fretta" e perché
+    # Innanzi tutto verifico che tutti i file si possano aprire e non siano corrotti. Cerco una strategia per ordinare il csv rispetto ai file se questi sono in ordine sbagliato (esempio join tramite id o nome file). Tengo solo quelli di cui il file corrispondente sia utilizzabile. Verifico che non ci siano label duplicate e item del csv con più di una label, o qualche problema di leakage.  Verifico che il bilanciamento tra le classi sia adatto a trainare in maniera soddisfacente su ognuna di loro. 
+#   (b) cosa rifiuteresti di fare "in fretta" e perché.
+    # di allenare la rete su dati corrotti e poi pasarmi sollo sull'accuracy per valutare il risultato.
 #   (c) metrica che guarderesti oltre all'accuracy se le classi sono sbilanciate
-# TUA RISPOSTA:
+    # ad esempio userei recall, per vedere su quello che sono veramente positive, quante ne prendo?
 #
 
 
@@ -940,6 +980,16 @@ X = torch.from_numpy(X_np)
 # Qual è la shape prima del Linear? Quante feature in ingresso al Linear?
 # TUA RISPOSTA:
 #
+
+# primo conv    -> ((64 + 2*1 - 3) / 1) + 1 -> (8, 16, 64, 64)
+# primo relu    -> shape invariata -> (8, 16, 64, 64)
+# primo maxpool -> 64 / 2 -> (8, 16, 32, 32)
+# secondo conv  -> ((16 + 2*1 - 3) / 1) + 1 -> (8, 32, 32, 32)
+# secondo relu  -> shape invariata -> (8, 32, 32, 32)
+# secondo maxpool -> 16  / 2 -> (8, 32, 16, 16)
+# Flatten -> output.flatten(1) -> (8, 32 * 16 * 16) -> (8, 8.192)
+# Le features in ingresso nel linear sono 8.192.
+
 
 
 # ==========================================================================
@@ -966,11 +1016,11 @@ X = torch.from_numpy(X_np)
 # ==========================================================================
 # CHECKPOINT AUTO-VALUTAZIONE (C1 - C5) — opzionale
 # ==========================================================================
-# C1) So spiegare (N,C,H,W) senza guardare gli appunti?     [ ]
-# C2) So calcolare H_out di una Conv a mano?                 [ ]
-# C3) So perché MaxPool non ha pesi?                         [ ]
-# D4) Ho eseguito almeno 1 epoca CNN su Colab?               [ ]
-# C5) Ho chiuso TODO 5 (debito tabellare) o schedulato?      [ ]
+# C1) So spiegare (N,C,H,W) senza guardare gli appunti?     [v]
+# C2) So calcolare H_out di una Conv a mano?                 [v]
+# C3) So perché MaxPool non ha pesi?                         [v]
+# D4) Ho eseguito almeno 1 epoca CNN su Colab?               [v]
+# C5) Ho chiuso TODO 5 (debito tabellare) o schedulato?      [v]
 
 
 # ==========================================================================

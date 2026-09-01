@@ -5,8 +5,8 @@
 | **Modulo** | M03 — Deep Learning & Computer Vision |
 | **File capitolo** | `08_cnn_computer_vision.py` |
 | **File diario** | `M03_C08_cnn_computer_vision_sessione.md` |
-| **Stato** | aperto (13/08/2026) — file capitolo **scritto**; studio da iniziare dopo bridge R07 |
-| **Voto difficoltà** | — |
+| **Stato** | **CHIUSO** (01/09/2026) — chiusura completa, DoD soddisfatta, 🏗️ B+C fatti |
+| **Voto difficoltà** | **7**/10 (confermato studente 01/09/2026) |
 
 ---
 
@@ -383,14 +383,77 @@
 - **Correzione / suggerimento:** Fix init lista; resto del loop è retrieval riuscito.
 - **Lacune:** #47 🟡 → soft miglioramento (uso corretto `.item()` qui).
 
+### 2026-08-28 — TODO 5 interleaving TabularDataset + BCE (`08_cnn_computer_vision.py` ~893–952)
+
+- **Esercizio / blocco:** CSV tabellare → Dataset custom → DataLoader → Sequential → BCE → 1 epoch
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**
+- **Punti di forza:** `pratiche.csv` ok; `to_numpy` + Dataset completo; y float `(1,)` allineata a logits; Sequential + BCE; loop con `.item()` dopo backward e media pesata/`max(n_seen,1)`.
+- **Errori / lacune:** Nessuno bloccante. Soft: `Linear(7,…)` hardcodato (ok su pratiche); consegna “long” interpretata correttamente come float per BCE.
+- **Correzione / suggerimento:** Nessuna obbligatoria. Interleaving M2/M7-style Dataset chiuso.
+
+### 2026-08-28 — TODO 6 real-world dati sporchi CNN (`08_cnn_computer_vision.py` ~957–970)
+
+- **Esercizio / blocco:** (a) 5 controlli (b) rifiuto “in fretta” (c) metrica ≠ accuracy
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** (a) file apribili, join id/nome, solo usable, label duplicate/conflitti, bilanciamento + cenno leakage; (b) no train su corrotti + no solo accuracy; (c) recall sul “positivo vero” — direzione giusta con sbilanciamento.
+- **Errori / lacune:** Soft: (a) meglio 5 bullet numerati (leakage → esplicita split train/val senza stessi file); (c) scenario prodotti spesso multiclasse → precisare recall/F1 **per classe** o macro-F1, non solo framing binario.
+- **Correzione / suggerimento:** Opzionale: in (b) rifiutare anche “appiccico CSV per ordine riga”.
+
+### 2026-09-01 — TODO 7 shape gymnastics 64×64 (`08_cnn_computer_vision.py` ~972–991)
+
+- **Esercizio / blocco:** Shape prima del Linear + n. feature dopo Conv/Pool×2 + Flatten
+- **Valutazione (primo tentativo — "voto esame"):** **4/10**
+- **Punti di forza:** Formula Conv con pad=1 corretta; idea C↑ e flatten `start_dim=1`; ReLU non cambia shape.
+- **Errori / lacune:** **MaxPool2d(2) dimezza una sola volta** (stride 2 default): 64→**32**, non 64/2/2→16. Catena corretta: `(8,1,64,64)`→`(8,16,64,64)`→`(8,16,32,32)`→`(8,32,32,32)`→`(8,32,16,16)`→ flatten `(8, 32*16*16)` = `(8, **8192**)` → **8192** feature.
+- **Correzione / suggerimento:** Un pool = un `/2` su H e su W; due pool in serie = due dimezzamenti (64→32→16).
+- **Lacune contesto:** soft shape tracking multi-pool (stesso tipo di V4) — ripasso, non nuova 🔴 se fix subito.
+
+### 2026-09-01 — TODO 7 (post-feedback) shape gymnastics
+
+- **Esercizio / blocco:** `08_cnn_computer_vision.py` ~984–992
+- **Valutazione (post-feedback — non ricalcola il voto esame):** **9.5/10**
+- **Punti di forza:** Catena corretta 64→32→16; flatten `32*16*16` → **8192** feature.
+- **Errori / lacune:** Soft: nel commento del 2° pool hai scritto `16/2` ma l’ingresso è **32×32** (`32/2→16`); risultato shape ok. `8.192` = notazione italiana di **8192** (in codice meglio senza punto).
+- **Nota:** voto esame resta **4/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
 
-- Ereditati da cap.07: #27 🟡, #45 🟢, #46 🟢 (Micro 46.B); **#47** 🟡 `.item()` vs backward; progetto 🏗️ ⚠️
+- Ereditati da cap.07: #27 🟡, #45 🟢, #46 🟢 (Micro 46.B); **#47** 🟡 `.item()` vs backward; progetto 🏗️ ✅ **chiuso in cap.08 (TODO 5)**
+- Nuove dal cap.08: 🔴 **#48** `requires_grad`/autograd · 🔴 **#49** il `1` è il canale · 🟡 **#50** `+1` in H_out · 🔴 **#51** catena dimezzamenti Pool · 🔴 **#52** debug numerico matmul · 🟡 **#53** metriche per classe
+- Pattern: **#6 → 🔴** (4 occorrenze) · **#28 NUOVO** (catena shape multi-layer) · #27 resta 🟡
+
+---
+
+## Chiusura capitolo — 2026-09-01
+
+**Voto difficoltà studente:** **7**/10 (terzo 7 consecutivo del modulo; trend M3: 8, 8, 8, 8, 9, 7, 7, 7).
+
+**Statistiche:** 36 valutazioni "primo tentativo", media ~**8.2**; post-feedback ~**9**.
+Per blocco: quiz ingresso 7.7 · rinforzi 🔁 8.5 · mini-esercizi 8.35 · 📚 [LIBRO] 8.5 · quiz verifica 8.7 · TODO 1–7 7.7.
+
+**DoD cap.08 — verifica:**
+1. Shape `(N,C,H,W)` ✅ (V1 10/10) · 2. `nn.Conv2d` ✅ (V2 10/10, Mini 4.1 10/10) · 3. Pooling ✅ (V3 9.5) ·
+4. CNN allenata su Colab ✅ (🏗️ punto C confermato dallo studente) · 5. Feature maps ✅ (Mini 5.1 9.5) ·
+6. Feynman CNN vs FC ✅ (V7 9/10).
+🏗️ punto A: prodotto non toccato (solo Fashion-MNIST, nessuna busta — privacy rispettata).
+🏗️ punto B: debito tabellare M3-07 chiuso via TODO 5 (9.5/10).
+
+**Punti alti:** TODO 5 `TabularDataset` (9.5), TODO 2 `CnnBella` (9.5), Mini 3.1 / 4.1 (10), V1/V2/V5 (10).
+**Punti bassi:** TODO 7 (4/10) e V4 (3/10) → nuovo Pattern **#28**; Q7 `.item()` (2/10); Q8 `requires_grad` (5.5); Mini 1.2 canale (5.5); TODO 3 debug senza numeri (6/10).
+
+**Azioni fatte in chiusura:**
+- `CONTESTO_CORSO.md`: Passi 1–12 (Passo 13 non applicabile — cap.08 non è l'ultimo del modulo).
+- `M03_R08_..._cnn_to_transfer.md`: aggiunti micro **08.A–08.E** con soluzioni (mirati a #48/#49/#50/#51/#52 + Pattern #6).
+- `09_transfer_learning.py`: iniettato blocco **RINFORZI OBBLIGATORI DA CHIUSURA CAP.08** con posizione di ogni 🔁 e i micro-esercizi da scrivere.
+- File `08_cnn_computer_vision.py`: **non modificato** (protocollo H).
 
 ---
 
 ## Note per il capitolo successivo (mentor)
 
-- Dopo cap.08 → bridge R08 + `09_transfer_learning.py` (qui inizia il path buste paga anonimizzate)
+- Dopo cap.08 → bridge **R08** (10 esercizi + micro 08.A–08.E) → **creare** `09_transfer_learning.py` (oggi solo segnaposto + blocco rinforzi).
+- Prerequisiti privacy da verificare **prima** di aprire il cap.09: cartelle `data/buste_originali|anonimizzate|altro` (già in `.gitignore`), script `anonimizza_buste.py` testato su 2–3 buste, dataset "altro" ~200 immagini da fonti pubbliche.
+- Ponte didattico più forte da usare: la lacuna #49 (1 canale vs 3) si risolve da sé spiegando perché ResNet pretende 3 canali — sfruttarlo invece di trattarlo come rinforzo separato.
+- Scheda libro da creare: `docs/libri_corso/schede/M03_C09_transfer.md` ([PYTORCH] cap. 8 finale, [GERON] cap. 14 pretrained models).

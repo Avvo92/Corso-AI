@@ -70,3 +70,80 @@ Qui sotto solo TODO MENTOR. Nessun codice operativo.
 #    - compatibilita' MIME: le buste paga potrebbero essere PDF -> conversione
 #      PDF->JPG nel preprocessing (pdf2image / pymupdf)
 # ============================================================================
+
+
+# ============================================================================
+# RINFORZI OBBLIGATORI DA CHIUSURA CAP.08 (01/09/2026)
+# ----------------------------------------------------------------------------
+# Questi blocchi NON sono opzionali: vanno inseriti nel capitolo 09 quando
+# viene scritto, ognuno nel punto della teoria indicato. Fonte: chiusura
+# cap.08 + tabella "Lacune dai Quiz" e "Pattern di Errore" di CONTESTO_CORSO.md.
+#
+# Voto difficolta' cap.08: 7/10. Media primi tentativi ~8.2 su 36 valutazioni.
+# ----------------------------------------------------------------------------
+#
+# 🔁 #49 — "il 1 di (1,28,28) e' il CANALE" → in SEZIONE 3 (caricare ResNet)
+#     Ponte perfetto: ResNet18 pre-addestrata su ImageNet vuole 3 canali,
+#     le scansioni/buste in grayscale ne hanno 1. Spiegare:
+#       - convenzione (C,H,W) vs (H,W,C) di Matplotlib/PIL
+#       - squeeze() toglie le dimensioni di size 1, permute riordina gli assi
+#       - due soluzioni: transforms.Grayscale(num_output_channels=3)
+#         oppure x.repeat(1, 3, 1, 1) sul batch
+#     Micro 49.A: dato x di shape (4,1,224,224), scrivi la riga che lo porta
+#                 a (4,3,224,224). Micro 49.B: perche' imshow su (3,64,64)
+#                 richiede permute e non squeeze?
+#
+# 🔁 #48 — "chi calcola i gradienti: autograd" → in SEZIONE 2 (freezing)
+#     Il freezing e' il contesto naturale: for p in backbone.parameters():
+#     p.requires_grad = False. Spiegare che il flag governa il TRACCIAMENTO
+#     delle operazioni (grafo), che autograd e' il motore che calcola, e che
+#     l'optimizer si limita a usare i .grad gia' scritti.
+#     Micro 48.A: con requires_grad=False, dopo loss.backward() cosa trovi
+#                 in .grad? Micro 48.B: perche' il freezing fa risparmiare
+#                 tempo e memoria, non solo "blocca i pesi"?
+#
+# 🔁 #51 + Pattern #28 — "catena dei dimezzamenti" → in SEZIONE 2 (anatomia)
+#     Errori cap.08: V4 3/10 (un pool invece di due) e TODO 7 4/10 (due
+#     dimezzamenti per un solo pool). Antidoto in capitolo: TABELLA shape con
+#     UNA RIGA PER LAYER sul percorso ResNet18: 224 → 112 → 56 → 28 → 14 → 7,
+#     con indicato cosa dimezza (conv stride 2 / maxpool / stage).
+#     Micro 51.A: input (8,3,224,224), scrivi la shape dopo ogni stage.
+#     Micro 51.B: perche' avgpool finale + Linear(512, n_classi) non dipende
+#                 dalla dimensione originale dell'immagine?
+#
+# 🔁 #52 — "debug numerico dell'errore matmul" → esercizio 🔍 [DEBUG]
+#     Consegna in formato NUMERATO (vedi Pattern #6): esattamente 3 bullet +
+#     fix. Scenario: si sostituisce model.fc con Linear(256, 2) invece di
+#     Linear(512, 2) → RuntimeError con numeri espliciti. Lo studente deve
+#     decomporre i numeri prima di toccare il codice.
+#
+# 🔁 #47 — ".item() vs backward" → verifica a freddo nel QUIZ D'INGRESSO
+#     Una domanda secca. In cap.08 l'ha sbagliata a freddo (2/10) ma poi usata
+#     correttamente due volte nel codice: se risponde bene → lacuna 🟢.
+#
+# 🔁 #50 — "il + 1 nella formula H_out" → una domanda di calcolo nel quiz
+#     d'ingresso, questa volta CON stride diverso da 1 (es. k=7, stride=2,
+#     pad=3 del primo conv di ResNet18).
+#
+# 🔁 #53 — "metriche per classe / macro-F1" → in SEZIONE 6 (valutazione)
+#     Riusare precision/recall/F1/confusion_matrix del M2 cap.04, ma con
+#     esplicito: metriche PER CLASSE + macro-F1, non solo accuracy globale.
+#     Collegare al prodotto: recall su "busta paga" e' la metrica critica.
+#
+# ⚠️ Pattern #6 (consegne) — 🔴 riattivato con 4 occorrenze nel cap.08.
+#     Regola per la scrittura del capitolo 09: quando una consegna contiene un
+#     NUMERO o un FORMATO ("3 bullet", "5 controlli", "una riga", "dopo due
+#     pool"), metterlo in MAIUSCOLO o come lista numerata vuota da riempire,
+#     cosi' il vincolo non evapora nella lettura.
+#
+# 📌 Regola 42 — teoria prima degli esercizi discorsivi: la domanda Feynman
+#     prevista ("perche' funziona il transfer learning su documenti se
+#     ImageNet ha gatti e cani?") richiede che nel capitolo ci sia PRIMA la
+#     teoria su feature generiche nei primi layer vs feature specifiche negli
+#     ultimi. Non darlo per scontato.
+#
+# 🏗️ PROGETTO — stato al 01/09/2026: il debito tabellare M3-07 e' CHIUSO
+#     (cap.08 TODO 5). Il cap.09 apre il ramo visivo reale del prodotto:
+#     deliverable = state_dict del modello busta-paga-vs-altro, destinato a
+#     diventare la feature `prob_busta_paga_visivo` nel modello M2.
+# ============================================================================
