@@ -984,7 +984,7 @@ for e in range(1):
 # primo conv    -> ((64 + 2*1 - 3) / 1) + 1 -> (8, 16, 64, 64)
 # primo relu    -> shape invariata -> (8, 16, 64, 64)
 # primo maxpool -> 64 / 2 -> (8, 16, 32, 32)
-# secondo conv  -> ((16 + 2*1 - 3) / 1) + 1 -> (8, 32, 32, 32)
+# secondo conv  -> (( + 2*1 - 3) / 1) + 1 -> (8, 32, 32, 32)
 # secondo relu  -> shape invariata -> (8, 32, 32, 32)
 # secondo maxpool -> 16  / 2 -> (8, 32, 16, 16)
 # Flatten -> output.flatten(1) -> (8, 32 * 16 * 16) -> (8, 8.192)

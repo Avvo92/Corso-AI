@@ -197,24 +197,28 @@ if TORCH_OK:
 #     va scritta PRIMA o DOPO `loss.backward()`? E soprattutto: perché
 #     usare `.item()` e non `loss`?
 # TUA RISPOSTA:
-
+# va scritta dopo -> si usa item() per avere solo il valore scalare della loss.
 
 # Q2) 🔁 #50 — Il primo layer di ResNet18 è:
 #         nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
 #     Input (1, 3, 224, 224). Calcola H_out mostrando i passaggi della
 #     formula (non solo il risultato).
 # TUA RISPOSTA:
-
+# input[2] = H_in -> 224
+# H_out = (floor((224 + 2*3 - 7) / 2) + 1) -> 112
 
 # Q3) 🔁 #49 — Hai un tensore `x` di shape (1, 28, 28).
 #     Cosa rappresenta ciascuno dei tre numeri? E se volessi disegnarlo con
 #     `plt.imshow`, cosa devi fare prima?
 # TUA RISPOSTA:
+# La shape del tensore in questione può essere vista come (C, H, W), ossia "canali", "altezza", "larghezza". 
+# tuttavia, dato che plt.imshow() si aspetta un tensore 2D, usiamo x.squeeze() per trasformarlo in shape (28, 28)
 
 
 # Q4) V/F — `nn.MaxPool2d(2)` ha parametri che vengono aggiornati
 #     dall'optimizer durante il training. Motiva in una riga.
 # TUA RISPOSTA:
+# Falso: Il MaxPool2D(2) fa semplicemente un thumbnail della feature map che passiamo in input. Spostandosi lungo la mappa, in una finestra di dim 2*2 prende solo il valore più alto. In pratiche abbassa la risoluzione della feature map di input. Dunque non ha parametri (pesi) da aggiornare.
 
 
 # Q5) Trova l'errore:
@@ -223,12 +227,13 @@ if TORCH_OK:
 #         loss = criterio(logits, y)
 #     Cosa vuole davvero `CrossEntropyLoss` come target (dtype e shape)?
 # TUA RISPOSTA:
+# nn.CrossEntropyLoss() si aspetta come y un Long(N, ), e non un one-hot di float
 
 
 # Q6) Definizione — Cosa contiene esattamente uno `state_dict`? Cita due
 #     cose che NON contiene.
 # TUA RISPOSTA:
-
+# contiene i pesi, i bias e i buffer di un modello. Non contiene lo state dell'optimizer, i gradienti (.grad), lr epoche di training e metriche
 
 # Q7) Prevedi l'output:
 #         x = torch.randn(8, 3, 32, 32)
