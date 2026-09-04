@@ -651,28 +651,100 @@ def anonimizza_immagine(percorso_in, percorso_out, zone=ZONE_DA_MASCHERARE):
 #       `AdaptiveAvgPool2d` risolve.
 
 # --------------------------------------------------------------------------
+# 2.3.b Cosa c'è DENTRO layer1…layer4 (mancava — ora c'è)
+# --------------------------------------------------------------------------
+#
+# Prima del Mini 2.1: senza questa sotto-sezione "2 blocchi residui, stride 2"
+# non ti dice abbastanza. Ecco la composizione che torchvision usa in ResNet18.
+#
+# Un BasicBlock (il mattoncino di ResNet18) è, in sintesi:
+#
+#     y = ReLU( Conv3x3 → BN → ReLU → Conv3x3 → BN  +  shortcut(x) )
+#
+#   - due Conv2d 3×3 (padding=1 → se stride=1, H e W restano uguali)
+#   - BatchNorm dopo ogni conv
+#   - skip connection: se i canali / lo stride cambiano, lo shortcut è una
+#     Conv1x1 (+ BN) che adatta x prima della somma; altrimenti è l'identità
+#
+# Ogni `layerK` è una SEQUENZA di 2 BasicBlock (ResNet18 = [2,2,2,2]):
+#
+#   layer   canali in→out   stride del 1° blocco   stride del 2° blocco   H,W
+#   -----   -------------   ---------------------  --------------------  ----
+#   layer1  64 → 64         1                      1                     uguali
+#   layer2  64 → 128        2  (dimezza H,W)       1                     /2 poi =
+#   layer3  128 → 256       2                      1                     /2 poi =
+#   layer4  256 → 512       2                      1                     /2 poi =
+#
+# Regola operativa (quella che ti serve per contare le shape a mano):
+#
+#   1) Dimezza H,W SOLO il PRIMO blocco di layer2 / layer3 / layer4
+#      (stride=2 sulla prima Conv3x3 di quel blocco).
+#   2) Il secondo blocco dello stesso layer ha sempre stride=1 → H,W fermi.
+#   3) layer1 NON dimezza mai (entrambi i blocchi stride=1).
+#   4) Quando dimezzi, i canali di uscita del layer raddoppiano
+#      (64→128→256→512).
+#
+# Prima di layer1 c'è già la stem:
+#   conv1 (s=2) → 224→112, poi maxpool (s=2) → 112→56, canali=64.
+#   Poi partono i quattro layer come sopra.
+#
+# Quindi, per input (N, 3, 224, 224), dopo maxpool sei a (N, 64, 56, 56) e
+# la tabella di §2.3 è la CONSEGUENZA di questa composizione — non magia.
+
+# --------------------------------------------------------------------------
 # 🧩 Mini-esercizio 2.1 (🔁 #51)
 # --------------------------------------------------------------------------
 # Input (8, 3, 224, 224). Scrivi la shape dopo OGNI stage, UNA RIGA PER
 # STAGE, per: maxpool, layer1, layer2, layer3, layer4, avgpool, flatten.
 # Sono SETTE righe. Non saltarne nessuna.
+#
+# Come farlo (consegna esplicita):
+#   - Parti dalla stem: dopo maxpool H=W=56, C=64  (vedi tabella §2.3).
+#   - Poi applica §2.3.b: layer1 non tocca H/W; layer2/3/4 dimezzano UNA
+#     volta ciascuno e raddoppiano i canali; avgpool → (N,512,1,1);
+#     flatten → (N,512).
+#   - Sostituisci N con 8. Controlla con la tabella §2.3 (è il tuo "solario").
+#
 # TUA RISPOSTA:
-# maxpool  ->
-# layer1   ->
-# layer2   ->
-# layer3   ->
-# layer4   ->
-# avgpool  ->
-# flatten  ->
+# conv1 -> Conv2d(3, 64, k=7, s=2, p=3) -> (8, 64, 112, 112)
+# bn1 -> invariato, scala semplicemente i valori-> (8, 64, 112, 112)
+# relu -> invariato -> (8, 64, 112, 112)
+# maxpool  -> MaxPool(2) -> (8, 64, 56, 56)
+# layer1   -> il primo layer non dimezza in nessuno dei due basic blocks -> (8, 64, 56, 56)
+# layer2   -> il secondo layer ha stride=2 nella conv del primo block -> (8, 128, 28, 28)
+# layer3   -> idem come sopra, stride=2 e raddoppiamo i canali in uscita -> (8, 256, 14, 14)
+# layer4   -> idem come sopra, astraiamo ancora di più -> (8, 512, 7, 7)
+# avgpool  -> AdaptiveAvgPool2d((1,1)) -> (8, 512, 1, 1)
+# flatten  -> torch.flatten(x, 1) -> (8, 512)
+# fc       -> Linear(512, 1000) -> (8, 1000)
 
 
 # --------------------------------------------------------------------------
-# 🧩 Mini-esercizio 2.2 (🔁 #51, variante cattiva)
+# 🧩 Mini-esercizio 2.2 (🔁 #51, variante non banale)
 # --------------------------------------------------------------------------
 # Stessa rete, ma input (8, 3, 96, 96). Quanto vale H dopo `layer4`?
-# Scrivi il calcolo, non solo il numero. (Attenzione: 96 non è divisibile
-# per 2 cinque volte in modo pulito — usa la divisione intera per difetto.)
+# Scrivi il calcolo, non solo il numero.
+#
+# Nota (correzione 04/09/2026): 96 / 2^5 = 3 è divisibile "in modo pulito".
+# Su QUESTO input, cinque dimezzamenti naïf e la formula ResNet danno lo
+# STESSO H finale (= 3). Non fidarti però della scorciatoia in generale:
+# conv1/maxpool usano floor((H+2p-k)/s)+1 — se (H+2p-k) è dispari, a volte
+# il risultato coincide comunque col /2, a volte no (es. prova a mente 200).
+# Qui ti chiedo la TRACCIA con la formula (almeno stem), non solo 96/32.
+#
 # TUA RISPOSTA:
+
+# conv1 -> Conv2d(3, 64, k=7, s=2, p=3) -> (8, 64, 48, 48)
+# bn1 -> invariato, scala semplicemente i valori-> (8, 64, 48, 48)
+# relu -> invariato -> (8, 64, 48, 48)
+# maxpool  -> MaxPool(2) -> (8, 64, 24, 24)
+# layer1   -> il primo layer non dimezza in nessuno dei due basic blocks -> (8, 64, 24, 24)
+# layer2   -> il secondo layer ha stride=2 nella conv del primo block -> (8, 128, 12, 12)
+# layer3   -> idem come sopra, stride=2 e raddoppiamo i canali in uscita -> (8, 256, 6, 6)
+# layer4   -> idem come sopra, astraiamo ancora di più -> (8, 512, 3, 3)
+# avgpool  -> AdaptiveAvgPool2d((1,1)) -> (8, 512, 1, 1)
+# flatten  -> torch.flatten(x, 1) -> (8, 512)
+# fc       -> Linear(512, 1000) -> (8, 1000)
 
 
 # --------------------------------------------------------------------------
@@ -730,6 +802,7 @@ def anonimizza_immagine(percorso_in, percorso_out, zone=ZONE_DA_MASCHERARE):
 # trovi dentro il suo `.grad`? Scegli e motiva in una riga:
 #   (a) un tensore di zeri   (b) None   (c) il gradiente calcolato ma non usato
 # TUA RISPOSTA:
+# (b) Trovo None perchè non viene calcolato, questo fa risparmiare tra l'altro molta vram. Un tensore di 0 presupporrebbe che l'optimizer debba fare le operazioni di aggiornamento moltiplicando il lr per 0, ma non è così
 
 
 # --------------------------------------------------------------------------
@@ -739,6 +812,7 @@ def anonimizza_immagine(percorso_in, percorso_out, zone=ZONE_DA_MASCHERARE):
 # Due righe. (Indizio: cosa deve tenere in RAM il grafo di calcolo per
 # poter fare il backward?)
 # TUA RISPOSTA:
+# Fa risparmiare memoria perchè auto_grad smette di tenere traccia dei calcoli e non iscrive più il grafo di parametri freezzati.
 
 
 # --------------------------------------------------------------------------
@@ -747,7 +821,7 @@ def anonimizza_immagine(percorso_in, percorso_out, zone=ZONE_DA_MASCHERARE):
 # Scrivi la riga che conta quanti parametri ALLENABILI ha un modello.
 # Suggerimento: `p.numel()` e un filtro su `p.requires_grad`.
 # TUO CODICE:
-# n_allenabili =
+# n_allenabili = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 
 # --------------------------------------------------------------------------

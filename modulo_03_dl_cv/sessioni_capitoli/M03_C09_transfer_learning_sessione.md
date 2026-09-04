@@ -156,15 +156,59 @@
 - **Errori / lacune:** manca il secondo motivo: **connessioni locali** (ogni neurone guarda solo una finestrella, non tutti i pixel). "Matrici di parametri" un po' generico — sono kernel 3×3 (o 7×7) con pochi numeri ciascuno.
 - **Correzione / suggerimento:** due righe: (1) stesso filtro scorre ovunque → pochi pesi riusati; (2) ogni connessione è locale, non verso ogni pixel.
 
+### [2026-09-04] — Mini 2.1 (🔁 #51 + Pattern #28) shape ResNet18
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 2.1 (righe ~708–719) — catena shape input `(8,3,224,224)`.
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**.
+- **Punti di forza:** tutte le shape corrette (stem + layer1–4 + avgpool + flatten + fc); ragionamento esplicito su layer1 (nessun dimezzamento) e su layer2–4 (stride=2 sul 1° BasicBlock + canali ×2); bn1 corretto a 64 dopo il tipico typo 62 in chat; ha allargato utilemente lo stem e `fc` oltre le 7 righe minime.
+- **Errori / lacune:** notazione `MaxPool(2)` imprecisa — in ResNet è `MaxPool2d(k=3,s=2,p=1)`; la shape `(8,64,56,56)` è comunque giusta.
+- **Correzione / suggerimento:** scrivere `MaxPool2d(k=3,s=2,p=1)` (o almeno “maxpool stride 2”) così non si confonde con un pool 2×2 “classico” da notebook generici.
+- **Pattern errore / ID contesto:** **#51** / Pattern **#28** 🟡 in miglioramento su caso 224 “pulito”; verifica successiva Mini 2.2 (input 96, floor).
+
+### [2026-09-04] — Mini 2.2 (🔁 #51) shape ResNet18 input 96
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 2.2 (righe ~736–747) — H dopo `layer4` con input `(8,3,96,96)`.
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**.
+- **Punti di forza:** catena completa corretta: 96→48→24→12→6→3; H dopo layer4 = **3**; canali 64→128→256→512 giusti; ha superato da solo l’avviso errato sul file (96/32=3 è pulito) e ha comunque tracciato stem+layer.
+- **Errori / lacune:** ancora `MaxPool(2)` al posto di `MaxPool2d(k=3,s=2,p=1)` — shape ok.
+- **Correzione / suggerimento:** opzionale esplicitare una riga formula stem `floor((96+6-7)/2)+1=48` (ha il risultato, non la sostituzione numerica).
+- **Pattern errore / ID contesto:** **#51** / **#28** 🟡→ quasi chiuso su casi “dimezza pulito”; resta TODO 7 / input non multiplo se previsto.
+
+### [2026-09-04] — Mini 2.3 (🔁 #48 micro 48.A) requires_grad → .grad
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 2.3 (righe ~797–805).
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**.
+- **Punti di forza:** scelta **(b) None** corretta; gradiente **non calcolato** (non “calcolato e ignorato”); contrasto chiaro con (a) zeri e perché `step` non deve moltiplicare lr×0; risparmio VRAM/grafo citato correttamente.
+- **Errori / lacune:** nessuno.
+- **Pattern errore / ID contesto:** lacuna **#48** 🟡 in chiusura su questo micro; resta mini 2.4.
+
+### [2026-09-04] — Mini 2.4 (🔁 #48) freezing → risparmio memoria
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 2.4 (righe ~811–816).
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**.
+- **Punti di forza:** direzione giusta — con `requires_grad=False` autograd **non traccia** quei parametri / non estende il grafo su di loro; collega freezing a meno lavoro di backward.
+- **Errori / lacune:** (1) consegna chiedeva **due righe** — risposta una sola; (2) manca il pezzo dell’indizio: per il backward il grafo deve tenere in RAM le **attivazioni intermedie** del forward (feature maps); freezing evita di conservare quelle necessarie solo per i grad dei pesi congelati → meno VRAM. “Non iscrive il grafo di parametri freezzati” è un po’ impreciso (il forward sul backbone c’è comunque; non si costruisce il ramo di *derivazione* rispetto a quei pesi).
+- **Correzione / suggerimento:** riga 1 = niente tracciamento / niente `.grad` su quei pesi; riga 2 = niente (o meno) salvataggio delle attivazioni intermedie per quel ramo → risparmio memoria.
+- **Pattern errore / ID contesto:** **#48** ancora 🟡 (concetto sì, completezza consegna + meccanismo attivazioni no); Pattern **#6** (due righe).
+
+### [2026-09-04] — Mini 2.5 — conteggio parametri allenabili
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 2.5 (righe ~819–824).
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**.
+- **Punti di forza:** generator expression corretta — `sum` + `p.numel()` + `model.parameters()` + filtro `if p.requires_grad`. Concetto transfer/freezing applicato bene (conta solo i pesi “vivi”).
+- **Errori / lacune:** parentesi in più in coda: `requires_grad))` → `SyntaxError`. Versione giusta: `... if p.requires_grad)`.
+- **Fix suggerito:** togliere una `)` prima di fine riga.
+- **Pattern errore / ID contesto:** nessuno concettuale; solo attenzione alle parentesi (vicino allo spirito di Pattern #23, senza alzare priorità).
+
 ---
 
 ## Lacune e dubbi ancora aperti
 
 Ereditate dal cap.08 (da chiudere qui):
 
-- 🔴 **#48** — chi calcola i gradienti: autograd, non il criterio/optimizer → Sez. 2.4, mini 2.3/2.4
+- 🟡 **#48** — Mini 2.3 OK (`.grad` = None se frozen); resta mini 2.4 / distinzione autograd vs optimizer
 - 🔴 **#49** — il `1` di `(1,28,28)` è il canale → Sez. 3.3, mini 3.1/3.2, Q3
-- 🔴 **#51** + **Pattern #28** — catena dei dimezzamenti → Sez. 2.3, mini 2.1/2.2, TODO 7
+- 🟡 **#51** + **Pattern #28** — Mini 2.1 e 2.2 OK (224 e 96); resta TODO 7 se input “sporco”
 - 🔴 **#52** — debug numerico dell'errore matmul → TODO 3, V2
 - 🟡 **#47** — `.item()` vs `backward` → Q1 (verifica a freddo)
 - 🟡 **#50** — il `+1` nella formula `H_out` → Q2 (con stride 2), V7
