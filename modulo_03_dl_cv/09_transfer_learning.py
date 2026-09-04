@@ -1004,7 +1004,7 @@ def conta_parametri(modello):
 # Hai `x` di shape (4, 1, 224, 224). Scrivi UNA riga che lo porta a
 # (4, 3, 224, 224).
 # TUO CODICE:
-# x =
+# x = x.repeat(1, 3, 1, 1)
 
 
 # --------------------------------------------------------------------------
@@ -1014,6 +1014,9 @@ def conta_parametri(modello):
 # non `squeeze`? Una riga.
 # TUA RISPOSTA:
 
+# squeeze funziona solo se ci sono degli 1 nella shape, andando a eliminare solo quelle. Dato che plt.imshow() si aspetta shape (H, W, C) nel caso di un tensore che rappresenta un immagine con shape inverite, con permute invertiamo e lo prepariamo per il modo in cui se lo aspetta plt.imshow().
+
+
 
 # --------------------------------------------------------------------------
 # 🧩 Mini-esercizio 3.3
@@ -1022,6 +1025,11 @@ def conta_parametri(modello):
 # quanti parametri sono allenabili. Poi rifallo con
 # `congela_backbone=False` e confronta i due numeri.
 # TUO CODICE:
+my_model_not = costruisci_resnet18(num_classi=2, congela_backbone=False)
+my_model_freeze = costruisci_resnet18(num_classi=2, congela_backbone=True)
+
+print(conta_parametri(my_model_not))
+print(conta_parametri(my_model_freeze))
 
 
 # --------------------------------------------------------------------------

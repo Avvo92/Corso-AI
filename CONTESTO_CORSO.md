@@ -44,7 +44,7 @@
 | **Ultimo completato** | modulo_03_dl_cv/**08_cnn_computer_vision.py** (01/09/2026) — Fashion-MNIST, `(N,C,H,W)`, `Conv2d`/`MaxPool`, `PiccolaCNN` **allenata su Colab**, feature maps, CrossEntropy target Long; 🔁 #27/#45/#46 chiusi; TODO 5 **9.5** (debito M3-07 tabellare chiuso); media primi tentativi ~**8.2** (36 valutazioni). **Voto difficoltà 7**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
 | **Difficoltà media** | ~**7.02** (29 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, 7, **7** = |
-| **Priorità attive** | 🔴 Pattern **#6** consegne (4 occorrenze in C08); 🔴 Pattern **#28** catena dimezzamenti Pool; 🔴 **#48** `requires_grad`/autograd; 🔴 **#49** il `1` di `(1,28,28)` è il **canale**; 🔴 **#52** debug numerico matmul; 🟡 #27; 🟡 **#47** `.item()` vs `backward`; 🟡 #50 `+1` in H_out; 🟡 #53 metriche multiclasse; 🟢 #45/#46; 🟡 E6 system design; ✅ progetto M3-07 chiuso. 📌 **Pre-M10:** ripasso React/Node (parcheggiato — `docs/ripasso_frontend_react/`). |
+| **Priorità attive** | 🔴 Pattern **#6** consegne; 🔴 Pattern **#28** catena dimezzamenti Pool; 🔴 **#48** `requires_grad`/autograd; 🟡 **#49** canale vs batch (C09 in miglioramento); 🔴 **#52** debug numerico matmul; 🟡 #27; 🟡 **#47** `.item()` vs `backward`; 🟡 #50 `+1` in H_out; 🟡 #53 metriche multiclasse; 🟢 #45/#46; 🟡 E6 system design; ✅ progetto M3-07 chiuso. 📌 **Pre-M10:** ripasso React/Node (parcheggiato — `docs/ripasso_frontend_react/`). |
 | **Sessione corrente** | Sessione 28 |
 
 ---
@@ -101,7 +101,7 @@
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
 | 48 | **Chi calcola i gradienti: `autograd`, non il criterio/loss** | 🔴 Nuova | Quiz ingresso 08 Q8 (23/08) **5.5/10**: `requires_grad=True` collegato al backward ma attribuito al criterio. Target: attiva il **tracciamento delle ops** → grafo → `.grad` riempito da autograd. Rinforzo cap.09 (freezing backbone = `requires_grad=False`!) |
-| 49 | **Il `1` di `(1,28,28)` è il CANALE, non il batch** | 🔴 Nuova | Mini 1.2 (23/08) **5.5/10**: letto come batch/righe. `squeeze()` toglie dimensioni di size 1. Rinforzo cap.09: ResNet pretende **3 canali**, Fashion-MNIST/scansioni grayscale ne hanno **1** → `repeat`/`Grayscale(num_output_channels=3)` |
+| 49 | **Il `1` di `(1,28,28)` è il CANALE, non il batch** | 🟡 In miglioramento (C09) | Q3/Mini 3.2 ok (`squeeze` vs `permute`); Mini 3.1 primo tentativo 4/10 (`Grayscale` su batch invece di `repeat`). Consolidare: PIL→`Grayscale(3)` vs tensore `(N,1,H,W)`→`repeat(1,3,1,1)` |
 | 50 | **Formula H_out: il `+ 1` finale** | 🟡 Rinforzata in-capitolo | Mini 2.1 (23/08) **6/10** (25 invece di 26). Poi corretta e riusata bene in V2, Mini 5.1, TODO 7. Verificare al quiz d'ingresso cap.09 |
 | 51 | **Due Pool in serie / catena dei dimezzamenti** | 🔴 Nuova | V4 **3/10** (28→14 invece di 7) e TODO 7 **4/10** (64→16 invece di 32). Vedi Pattern **#28**. Rinforzo cap.09: percorso ResNet18 224→112→56→28→14→7 |
 | 52 | **Debug matmul: decomporre i numeri dell'errore** | 🔴 Nuova | TODO 3 **6/10**: zona giusta, ma nessuna decomposizione `3200 = 32·10·10` vs `1568 = 32·7·7`. Target: leggere `mat1`/`mat2`, scomporre in `C·H·W`, dedurre il pool mancante. Rinforzo cap.09 (calcolo `in_features` del nuovo head) |

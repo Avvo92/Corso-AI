@@ -200,6 +200,38 @@
 - **Fix suggerito:** togliere una `)` prima di fine riga.
 - **Pattern errore / ID contesto:** nessuno concettuale; solo attenzione alle parentesi (vicino allo spirito di Pattern #23, senza alzare priorità).
 
+### [2026-09-04] — Mini 3.1 (🔁 #49) batch 1→3 canali
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 3.1 (righe ~1002–1007).
+- **Valutazione (primo tentativo — "voto esame"):** **4/10**.
+- **Punti di forza:** ha collegato il problema ai 3 canali / `Grayscale` della teoria (soluzione 1).
+- **Errori / lacune:** (1) `x` è già un **tensore batch** `(4,1,224,224)` → serve soluzione (2) `x.repeat(1,3,1,1)`, non `Grayscale` (lato PIL / transform); (2) API sbagliata: `Grayscale(x, num_output_channels=3)` — il costruttore non prende l’immagine; (3) anche corretto, `t(x)` su batch NCHW non è il pattern del mini.
+- **Fix suggerito:** `x = x.repeat(1, 3, 1, 1)`.
+- **Pattern errore / ID contesto:** lacuna **#49** ancora aperta (sa che servono 3 canali, confonde dove applicare PIL vs tensore).
+
+### [2026-09-04] — Mini 3.1 — Fix applicato (post-feedback)
+
+- **Esercizio / blocco:** stesso Mini 3.1; risposta aggiornata a `x = x.repeat(1, 3, 1, 1)`.
+- **Valutazione fix:** corretto (voto esame del primo tentativo resta **4/10**).
+- **Punti di forza:** shape `(4,1,224,224)→(4,3,224,224)`; fattori `1,3,1,1` giusti sull’asse canali.
+- **Lacuna #49:** in miglioramento su questo micro (tensore batch); resta da consolidare il discrimine PIL/`Grayscale` vs `repeat` in Sez. 3 / mini successivi.
+
+### [2026-09-04] — Mini 3.2 (🔁 #49) permute vs squeeze per imshow
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 3.2 (righe ~1009–1017).
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**.
+- **Punti di forza:** `squeeze` solo su assi di taglia 1 → su `(3,64,64)` non fa nulla; `imshow` vuole `(H,W,C)`; `permute` riordina gli assi. Collegamento chiaro al problema canali/#49.
+- **Errori / lacune:** consegna chiedeva **una riga** (risposta lunga — Pattern #6 soft); “shape invertite” un po’ vago — meglio dire `permute(1,2,0)`: C,H,W → H,W,C (non un invert generico).
+- **Pattern errore / ID contesto:** lacuna **#49** 🟡 in chiusura su questo micro; Pattern **#6** soft (formato “una riga”).
+
+### [2026-09-04] — Mini 3.3 — parametri allenabili freeze vs non-freeze
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 3.3 (righe ~1021–1032).
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**.
+- **Punti di forza:** due modelli con `congela_backbone=True/False`; `conta_parametri` su entrambi; confronto diretto. Ordine invertito rispetto al testo (False prima) ma equivalente e chiaro.
+- **Errori / lacune:** nessuno. Attesi: allenabili freeze ≈ **1026**; non-freeze ≈ **totali** (~11.2M).
+- **Pattern errore / ID contesto:** nessun nuovo; conferma pratico del freezing (collegato a #48).
+
 ---
 
 ## Lacune e dubbi ancora aperti
@@ -207,7 +239,7 @@
 Ereditate dal cap.08 (da chiudere qui):
 
 - 🟡 **#48** — Mini 2.3 OK (`.grad` = None se frozen); resta mini 2.4 / distinzione autograd vs optimizer
-- 🔴 **#49** — il `1` di `(1,28,28)` è il canale → Sez. 3.3, mini 3.1/3.2, Q3
+- 🟡 **#49** — Mini 3.2 OK (permute vs squeeze); Mini 3.1 fix `repeat` dopo 4/10; consolidare PIL vs tensore
 - 🟡 **#51** + **Pattern #28** — Mini 2.1 e 2.2 OK (224 e 96); resta TODO 7 se input “sporco”
 - 🔴 **#52** — debug numerico dell'errore matmul → TODO 3, V2
 - 🟡 **#47** — `.item()` vs `backward` → Q1 (verifica a freddo)
