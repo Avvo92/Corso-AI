@@ -1039,6 +1039,7 @@ print(conta_parametri(my_model_freeze))
 # "Congelare il backbone significa che durante il forward le immagini non
 #  passano più per quei layer."
 # TUA RISPOSTA:
+# Falso. Significa bloccare il calcolo dei gradiente di auto_grad per tutti i layer del backbone, richiedendo il grad solo dell'head, così da addestrare il modello solo sull'ultimo layer. Ma nella fase forward tutti i livelli funzionano.
 
 
 # ==========================================================================
@@ -1188,22 +1189,36 @@ def dividi_per_gruppo(elementi, gruppo_di, frazioni=(0.7, 0.15, 0.15), seme=SEME
     elementi : lista di percorsi (o oggetti qualsiasi)
     gruppo_di: funzione elemento -> chiave di gruppo (es. il cliente)
     Ritorna: (train, val, test) come liste di elementi.
+
+    Idea: NON mescoliamo i file. Mescoliamo i GRUPPI (clienti), poi
+    ogni gruppo porta dietro TUTTI i suoi file nel blocco assegnato.
     """
+    # dict: chiave_gruppo -> lista di elementi di quel gruppo
+    # es. {"ACME": [path1, path2], "Beta": [path3], ...}
     per_gruppo = {}
     for elemento in elementi:
+        # gruppo_di(elemento) = es. "ACME" dal nome file
+        # setdefault: se la chiave non c'è, crea lista vuota; poi append
         per_gruppo.setdefault(gruppo_di(elemento), []).append(elemento)
 
+    # lista delle chiavi gruppo, ordinate: ordine stabile PRIMA dello shuffle
+    # (così con lo stesso `seme` ottieni sempre lo stesso split)
     chiavi = sorted(per_gruppo)
-    rng = random.Random(seme)
-    rng.shuffle(chiavi)
+    rng = random.Random(seme)  # RNG locale: non sporca il random globale
+    rng.shuffle(chiavi)        # mescola i CLIENTI, non i singoli file
 
-    n_train = int(len(chiavi) * frazioni[0])
-    n_val = int(len(chiavi) * frazioni[1])
+    # quanti GRUPPI (non file) vanno in train / val
+    # il resto (test) prende ciò che avanza → le frazioni sui gruppi
+    n_train = int(len(chiavi) * frazioni[0])       # es. 70% dei clienti
+    n_val = int(len(chiavi) * frazioni[1])         # es. 15% dei clienti
     blocchi = {
-        "train": chiavi[:n_train],
-        "val": chiavi[n_train:n_train + n_val],
-        "test": chiavi[n_train + n_val:],
+        "train": chiavi[:n_train],                              # primi n_train clienti
+        "val": chiavi[n_train:n_train + n_val],                 # i successivi n_val
+        "test": chiavi[n_train + n_val:],                       # tutti gli altri clienti
     }
+    # Per ogni split: scorri i clienti di quel blocco e "spacchetta"
+    # tutti i loro file in una sola lista piatta.
+    # Double for: for chiave in ...: for e in per_gruppo[chiave]
     return tuple(
         [e for chiave in blocchi[nome] for e in per_gruppo[chiave]]
         for nome in ("train", "val", "test")
@@ -1240,8 +1255,8 @@ def dividi_per_gruppo(elementi, gruppo_di, frazioni=(0.7, 0.15, 0.15), seme=SEME
 #   - perché `RandomRotation` usa `fill=255`
 #   - perché in `transform_eval` c'è `CenterCrop` e non `RandomResizedCrop`
 # TUA RISPOSTA:
-# -
-# -
+# perchè ruotando l'immagine , si creerebbero degli spazi vuoti. Così dichiariamo di volerli riempire con il bianco (in grayscale 255 è bianco)
+# perchè in validation vogliamo stabilità e non varianza sulla base di "ritagli" fortunati.
 
 
 # --------------------------------------------------------------------------
@@ -1251,7 +1266,7 @@ def dividi_per_gruppo(elementi, gruppo_di, frazioni=(0.7, 0.15, 0.15), seme=SEME
 # pipeline di training "perché aumenta i dati". Spiegagli in due righe
 # perché su questo dataset è un errore, collegandoti al caso dei cartelli
 # stradali di Sez. 1.4.
-# TUA RISPOSTA:
+# TUA RISPOSTA: il flip orizzontale funziona con immagini di gatti, cani e molti altri oggetti, ma per i documenti non possiamo aumentare il set creando lo speculare di un doc, perchè avrebbe scritte al contrario e non avrebbe senso. E' lo stesso problema che si avrebbe con i cartelli stradali, in cui la direzione dell'immagine è importante.
 
 
 # --------------------------------------------------------------------------
@@ -1261,6 +1276,9 @@ def dividi_per_gruppo(elementi, gruppo_di, frazioni=(0.7, 0.15, 0.15), seme=SEME
 # con frazioni (0.7, 0.15, 0.15). Quante AZIENDE finiscono in train, val e
 # test? Scrivi i tre numeri e il calcolo (attenzione a `int()`).
 # TUA RISPOSTA:
+# train_n_anziende = int((12 * 70) / 100) -> 8
+# val_n_aziende    = int((12 * 15) / 100) -> 1
+# test_n_aziende   = quel che resta -> 3
 
 
 # ==========================================================================
@@ -1479,6 +1497,7 @@ def pipeline_addestramento(cartella_base, epoche_fase1=4, epoche_fase2=4,
 # Cosa cambierebbe passando semplicemente `modello.parameters()`?
 # Il training funzionerebbe lo stesso? Due righe.
 # TUA RISPOSTA:
+# Si,funzionerebbe lo stesso, ma l'optimizer terrebbe inutilmente lo stato  di tutti i parametri del modello (11M) quando gli unici che non sono freezzati e verrebbero riaggiornati sono quelli dell'head. Si perde memoria, tempo e il codice sarebbe confuso, oltre a esporci a possibili errori futuri.
 
 
 # --------------------------------------------------------------------------
@@ -1487,6 +1506,7 @@ def pipeline_addestramento(cartella_base, epoche_fase1=4, epoche_fase2=4,
 # Perché nella fase 2 il learning rate del `layer4` è 10 volte più piccolo
 # di quello della testa? Una riga.
 # TUA RISPOSTA:
+# perchè i pesi non sono casuali come quelli dell'head che abbiamo appena sostituito, quindi vogliamo indirizzarli ma con cautela per non perdere la conoscenza già contenuta nei pesi.
 
 
 # --------------------------------------------------------------------------
@@ -1496,8 +1516,8 @@ def pipeline_addestramento(cartella_base, epoche_fase1=4, epoche_fase2=4,
 # Sono la stessa cosa? Scrivi ESATTAMENTE 2 bullet, uno per ciascuno,
 # dicendo cosa fa e cosa NON fa.
 # TUA RISPOSTA:
-# - modello.eval():
-# - torch.no_grad():
+# - modello.eval(): fa passare Dropout/Batchnorm in valutazione (smette di aggiornarli)
+# - torch.no_grad(): disattiva il tracciamento del grafo(non serve backward)
 
 
 # ==========================================================================
@@ -1619,10 +1639,9 @@ def esplora_soglie(y_veri, prob_busta, soglie=(0.3, 0.4, 0.5, 0.6, 0.7)):
 #   2) recall della classe busta_paga
 #   3) precision della classe busta_paga
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
-
+# 1) accuracy_globale = (28 + 25) / 60 = 0,8833 
+# 2) recall           = 25 / (25 + 5)  = 0,8333
+# 3) precision        = 25 / (25 + 2)  = 0,9259 
 
 # --------------------------------------------------------------------------
 # 🧩 Mini-esercizio 6.2
@@ -1631,6 +1650,7 @@ def esplora_soglie(y_veri, prob_busta, soglie=(0.3, 0.4, 0.5, 0.6, 0.7)):
 # "ottimo, mettiamolo in produzione". Scrivi UNA obiezione tecnica basata
 # sui numeri (non generica).
 # TUA RISPOSTA:
+# L'accuracy non è una metrica affidabile per decidere l'efficacia del modello. Meglio avere anche il confronto con ad esempio recall.
 
 
 # --------------------------------------------------------------------------
@@ -1639,6 +1659,7 @@ def esplora_soglie(y_veri, prob_busta, soglie=(0.3, 0.4, 0.5, 0.6, 0.7)):
 # Vuoi più recall sulla classe busta_paga. Devi ALZARE o ABBASSARE la
 # soglia rispetto a 0.5? E cosa peggiora in cambio? Due righe.
 # TUA RISPOSTA:
+# la soglia va abbassata. Ma di conseguenza accuracy e precision potrebbero diminuire, perchè si potrebbero generare più falsi positivi.
 
 
 # ==========================================================================
@@ -1652,6 +1673,7 @@ def esplora_soglie(y_veri, prob_busta, soglie=(0.3, 0.4, 0.5, 0.6, 0.7)):
 #         x = torch.randn(8, 3, 224, 224)
 #         print(modello(x).shape)
 # TUA RISPOSTA:
+# (8, 2)
 
 
 # V2) Trova l'errore:
@@ -1659,34 +1681,39 @@ def esplora_soglie(y_veri, prob_busta, soglie=(0.3, 0.4, 0.5, 0.6, 0.7)):
 #         modello.fc = nn.Linear(1000, 2)
 #     Cosa c'è di sbagliato e qual è il numero giusto? Perché proprio quello?
 # TUA RISPOSTA:
+#         modello.fc = nn.Linear(512, 2), perchè nel passaggio tra i vari layer i canali di uscita raddoppiano, partendo da 16 arrivando a 512
 
 
 # V3) V/F con motivazione: "Le trasformazioni di data augmentation vanno
 #     applicate a training, validation e test, altrimenti i dati non sono
 #     omogenei."
 # TUA RISPOSTA:
+# Falso, l'augmentation si fa con crop random per il train e centrato per validation e test
 
 
 # V4) Hai `ds = datasets.ImageFolder("dataset_visivo/train")` con le
 #     sottocartelle `busta_paga/` e `altro/`. Quanto vale
 #     `ds.class_to_idx["busta_paga"]`? Perché?
 # TUA RISPOSTA:
+# 1 perchè all'interno delle sottocartelle imagefolder organizza per ordine alfabetico. 0 altro, 1 buste_paghe
 
 
 # V5) Calcolo: ResNet18 congelata con testa `Linear(512, 2)`.
 #     Quanti parametri sono ALLENABILI? Mostra il conto.
 # TUA RISPOSTA:
+# Solo i parametri della testa sono allenabili, i quali sono 512 per ogni classe (in questo caso 2) + bias. Quindi i parametri sono 512 * 2 + 2 -> 1026.
 
 
 # V6) Completa il codice — congela tutto tranne l'ultimo blocco e la testa:
 #         for p in modello.parameters():
-#             p.requires_grad = ______
+#             p.requires_grad = False
 #         for p in modello.layer4.parameters():
-#             p.requires_grad = ______
+#             p.requires_grad = True
 #         modello.fc = nn.Linear(modello.fc.in_features, 2)
 #     E poi: perché la riga della `fc` va bene anche senza toccare
 #     `requires_grad`?
 # TUA RISPOSTA:
+# perchè di default un nn.Linear ha requires_grad impostato su True
 
 
 # V7) Prevedi l'output (attenzione: input NON quadrato standard):
@@ -1695,12 +1722,25 @@ def esplora_soglie(y_veri, prob_busta, soglie=(0.3, 0.4, 0.5, 0.6, 0.7)):
 #     Quanto vale H dopo `layer4`? E cosa esce da `avgpool`?
 # TUA RISPOSTA:
 
+# H dopo layer4 vale 10 e avgpool esce un tensore di shape (4, 512, 1, 1)
+
+# conv1 -> Conv2d(3, 64, k=7, s=2, p=3) -> (4, 64, 160, 160)
+# bn1 -> invariato, scala semplicemente i valori-> (4, 64, 160, 160)
+# relu -> invariato -> (4, 64, 160, 160)
+# maxpool  -> MaxPool(2) -> (4, 64, 80, 80)
+# layer1   -> il primo layer non dimezza in nessuno dei due basic blocks -> (4, 64, 80, 80)
+# layer2   -> il secondo layer ha stride=2 nella conv del primo block -> (4, 128, 40, 40)
+# layer3   -> idem come sopra, stride=2 e raddoppiamo i canali in uscita -> (4, 256, 20, 20)
+# layer4   -> idem come sopra, astraiamo ancora di più -> (4, 512, 10, 10)
+# avgpool  -> AdaptiveAvgPool2d((1,1)) -> (4, 512, 1, 1)
+
 
 # V8) 💬 Spiega con parole tue (niente codice, 4-6 righe):
 #     perché una rete addestrata su ImageNet — che è piena di gatti, cani e
 #     automobili — aiuta a classificare buste paga? Cosa riusi davvero e
 #     cosa butti via?
 # TUA RISPOSTA:
+# fondamentalmete di resnet18 manteniamo solo i layer profondi e intermedi, che sono addestrati per riconoscere bordi, linee e texture. Sostituiamo e addestriamo invece solo l'ultimo layer, andando a mettere un lineare che riconosce le buste paghe da altro (quindi solo due classi, buste o altro) invece delle normali 1000 classi possibili del resnet18 normale. 
 
 
 # ==========================================================================
@@ -1718,9 +1758,10 @@ def esplora_soglie(y_veri, prob_busta, soglie=(0.3, 0.4, 0.5, 0.6, 0.7)):
 #   - bullet 2: cosa congeli e cosa alleni, concretamente
 #   - bullet 3: una condizione in cui cambieresti idea
 # TUA RISPOSTA:
-# -
-# -
-# -
+# - addestrare una rete da 0 con dataset relativamente piccolo (400 immagini), non è una scelta efficiente. Meglio usare una rete già addestrata sfruttando il backbone già addestrato su linee texture e layout grezzi
+# - Congeliamo il backbone e sostituiamo e addestriamo solo l'head. Poi, facendo finetuning andiamo a scongelare e perfezionare anche il layer4.
+
+# - Qualora dovessi andare a classificare cose per cui resnet non è ottimizzata (es. timbri, firme o cose piccole e molto particolari) oppure se avessi un dataset molto grande (migliaia e migliaia di esempi) allora diventerebbe plausibile un tuning molto aggessivo o addirittura partire da 0.
 
 
 # --------------------------------------------------------------------------
@@ -1741,8 +1782,19 @@ def costruisci_modello_brutto(n):
     return m
 
 # TUO CODICE:
-# def costruisci_modello_bello(...):
-
+def costruisci_modello_bello(nome_arch="resnet18",
+                            pesi=models.ResNet18_Weights.DEFAULT,
+                            num_classi = 2,
+                            congela_backbone=True):
+    
+    factory = getattr(models, nome_arch)
+    m = factory(weights=pesi)
+    if congela_backbone:
+        for p in m.parameters():
+            p.requires_grad = False
+    n_features = m.fc.in_features
+    m.fc = nn.Linear(n_features, num_classi)
+    return m
 
 # --------------------------------------------------------------------------
 # TODO 3 — 🔍 [DEBUG] (🔁 #52)
@@ -1762,16 +1814,20 @@ def costruisci_modello_brutto(n):
 # Consegna in formato FISSO — ESATTAMENTE 3 BULLET, poi il fix.
 # Nei bullet devi DECOMPORRE I NUMERI dell'errore prima di toccare il
 # codice: da dove viene ogni numero che compare nel messaggio.
-#   - bullet 1: cosa sono 32 e 512 in `mat1`, e da quale layer arrivano
+#   - bullet 1: cosa sono 32 e 512 in `mat1`, e da quale layer arrivano 
 #   - bullet 2: cosa sono 256 e 2 in `mat2`, e chi li ha decisi
 #   - bullet 3: quale dei quattro numeri è quello sbagliato, e perché
 # Poi: la riga di fix, scritta in modo che non si rompa passando a resnet50.
 # TUA RISPOSTA:
-# -
-# -
-# -
+# - arrivano dal flatten dopo avgpool, che in resnet18 produce un tensore di shape (n_elem, 512)
+# - sono le feature in ingresso del linear che abbiamo deciso noi e le classi di uscita
+# - Il numero sbagliato è il 256
 # FIX:
-
+#     modello = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+#     n_features = modello.fc.in_features
+#     modello.fc = nn.Linear(n_features, 2)
+#     x = torch.randn(32, 3, 224, 224)
+#     out = modello(x)
 
 # --------------------------------------------------------------------------
 # TODO 4 — 🧠 [RETRIEVAL] (dal M2 cap.04, senza guardare)
@@ -1784,7 +1840,15 @@ def costruisci_modello_brutto(n):
 # Gestisci il caso denominatore zero (non deve esplodere).
 # `y_veri` e `y_pred` sono array NumPy di interi.
 # TUO CODICE:
-
+def metriche_binarie(y_veri, y_pred, classe_positiva=1) -> dict:
+    vero_pos = (y_veri == classe_positiva)
+    pred_pos = (y_pred == classe_positiva)
+    tp = (vero_pos & pred_pos).sum()
+    vero_neg = (y_veri != classe_positiva)
+    pred_neg = (y_pred != classe_positiva)
+    tn = (vero_neg & pred_neg).sum()
+    fp = (vero_neg & pred_pos).sum()
+    fn = (vero_pos & pred_neg).sum()
 
 # --------------------------------------------------------------------------
 # TODO 5 — 🔀 [INTERLEAVING] visivo + tabellare (M3 + M2)

@@ -44,7 +44,7 @@
 | **Ultimo completato** | modulo_03_dl_cv/**08_cnn_computer_vision.py** (01/09/2026) — Fashion-MNIST, `(N,C,H,W)`, `Conv2d`/`MaxPool`, `PiccolaCNN` **allenata su Colab**, feature maps, CrossEntropy target Long; 🔁 #27/#45/#46 chiusi; TODO 5 **9.5** (debito M3-07 tabellare chiuso); media primi tentativi ~**8.2** (36 valutazioni). **Voto difficoltà 7**/10. |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
 | **Difficoltà media** | ~**7.02** (29 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, 7, **7** = |
-| **Priorità attive** | 🔴 Pattern **#6** consegne; 🔴 Pattern **#28** catena dimezzamenti Pool; 🔴 **#48** `requires_grad`/autograd; 🟡 **#49** canale vs batch (C09 in miglioramento); 🔴 **#52** debug numerico matmul; 🟡 #27; 🟡 **#47** `.item()` vs `backward`; 🟡 #50 `+1` in H_out; 🟡 #53 metriche multiclasse; 🟢 #45/#46; 🟡 E6 system design; ✅ progetto M3-07 chiuso. 📌 **Pre-M10:** ripasso React/Node (parcheggiato — `docs/ripasso_frontend_react/`). |
+| **Priorità attive** | 🔴 Pattern **#6** consegne; 🔴 Pattern **#28** catena dimezzamenti Pool; 🟡 **#48** `requires_grad`/autograd (C09 quasi chiusa); 🟡 **#49** canale vs batch; 🔴 **#52** debug numerico matmul; 🟡 #27; 🟡 **#47** `.item()` vs `backward`; 🟡 #50 `+1` in H_out; 🟡 #53 metriche multiclasse; 🟢 #45/#46; 🟡 E6 system design; ✅ progetto M3-07 chiuso. 📌 **Pre-M10:** ripasso React/Node (parcheggiato — `docs/ripasso_frontend_react/`). |
 | **Sessione corrente** | Sessione 28 |
 
 ---
@@ -100,12 +100,12 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 48 | **Chi calcola i gradienti: `autograd`, non il criterio/loss** | 🔴 Nuova | Quiz ingresso 08 Q8 (23/08) **5.5/10**: `requires_grad=True` collegato al backward ma attribuito al criterio. Target: attiva il **tracciamento delle ops** → grafo → `.grad` riempito da autograd. Rinforzo cap.09 (freezing backbone = `requires_grad=False`!) |
+| 48 | **Chi calcola i gradienti: `autograd`, non il criterio/loss** | 🟡 In miglioramento (C09) | Mini 2.3/3.4/5.1 ok su freeze. **Mini 5.3 4/10:** confuso `eval()` (= Dropout/BN inferenza) con freeze; `no_grad()` descritto come “non aggiornare grad” invece di “niente grafo”. Target: tre leve separate — `requires_grad`, `train`/`eval`, `no_grad` |
 | 49 | **Il `1` di `(1,28,28)` è il CANALE, non il batch** | 🟡 In miglioramento (C09) | Q3/Mini 3.2 ok (`squeeze` vs `permute`); Mini 3.1 primo tentativo 4/10 (`Grayscale` su batch invece di `repeat`). Consolidare: PIL→`Grayscale(3)` vs tensore `(N,1,H,W)`→`repeat(1,3,1,1)` |
 | 50 | **Formula H_out: il `+ 1` finale** | 🟡 Rinforzata in-capitolo | Mini 2.1 (23/08) **6/10** (25 invece di 26). Poi corretta e riusata bene in V2, Mini 5.1, TODO 7. Verificare al quiz d'ingresso cap.09 |
 | 51 | **Due Pool in serie / catena dei dimezzamenti** | 🔴 Nuova | V4 **3/10** (28→14 invece di 7) e TODO 7 **4/10** (64→16 invece di 32). Vedi Pattern **#28**. Rinforzo cap.09: percorso ResNet18 224→112→56→28→14→7 |
-| 52 | **Debug matmul: decomporre i numeri dell'errore** | 🔴 Nuova | TODO 3 **6/10**: zona giusta, ma nessuna decomposizione `3200 = 32·10·10` vs `1568 = 32·7·7`. Target: leggere `mat1`/`mat2`, scomporre in `C·H·W`, dedurre il pool mancante. Rinforzo cap.09 (calcolo `in_features` del nuovo head) |
-| 53 | **Metriche con classi sbilanciate: per classe / macro-F1** | 🟡 Nuova | TODO 6c **8.5/10**: recall corretta ma framing binario su scenario multiclasse. Target: precision/recall **per classe** + macro-F1 + confusion matrix. Rinforzo cap.09 sez. valutazione (riuso M2 cap.04) |
+| 52 | **Debug matmul: decomporre i numeri dell'errore** | 🟡 In miglioramento (C09) | TODO 3 **6.5**/10: sa che 256 è sbagliato e 512 viene dal backbone; manca esplicitare **32=batch**; FIX con `512` hardcoded (rompe resnet50). Target: 3 bullet completi + `Linear(modello.fc.in_features, 2)` |
+| 53 | **Metriche con classi sbilanciate: per classe / macro-F1** | 🟡 In miglioramento (C09) | Mini 6.1 **7.5**/10 (scambio recall/precision al primo tiro); Mini 6.2 **5**/10 (obiezione senza numeri); Mini 6.3 **9**/10 (abbassa soglia → +recall, −precision). CM: attenzione righe=vero. Target: obiezioni sempre con FN/TP concreti |
 | 45 | **Retrieval 5-step backward + `loss.backward()`** | 🟢 Superato | Bridge R07 Q11: catena ok; fill-in corretto post-feedback. **Quiz ingresso cap.08 Q1 (22/08): `loss.backward()` a freddo 10/10**; Micro 45.A post-fix 9/10 |
 | 46 | **`map_location` GPU→CPU + DataLoader=batch** | 🟢 Superato | Q5/Q6 + Micro 46.B (23/08) **9.5/10** operativo; confermato V6 cap.08 **9.5/10** |
 | 47 | **`.item()` sulla loss prima di `backward`** | 🟡 Rinforzata in pratica | Quiz ingresso 08 Q7 (22/08): risposto “Prima” (**2/10**). Uso poi **corretto** in TODO 4 e TODO 5 (`.item()` dopo `backward`, media pesata). Verifica a freddo al quiz d'ingresso cap.09 |

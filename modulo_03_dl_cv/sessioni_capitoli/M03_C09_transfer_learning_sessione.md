@@ -232,19 +232,252 @@
 - **Errori / lacune:** nessuno. Attesi: allenabili freeze ≈ **1026**; non-freeze ≈ **totali** (~11.2M).
 - **Pattern errore / ID contesto:** nessun nuovo; conferma pratico del freezing (collegato a #48).
 
+### [2026-09-07] — Mini 3.4 — freeze ≠ skip forward
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 3.4 (righe ~1035–1042).
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**.
+- **Punti di forza:** **Falso** corretto; distinzione chiara forward (tutti i layer) vs niente gradienti sul backbone / solo head allenabile. Chiude il malinteso “congelato = disattivato”.
+- **Errori / lacune:** micro: `auto_grad` → **autograd**; consegna “una riga” un filo lunga (ok nel merito).
+- **Pattern errore / ID contesto:** lacuna **#48** 🟡→ quasi chiusa su freeze/forward (resta completezza Mini 2.4 sulle attivazioni intermedie).
+
+### [2026-09-08] — Mini 4.1 — fill=255 e CenterCrop in eval
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 4.1 (righe ~1251–1259).
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**.
+- **Punti di forza:** (1) angoli vuoti dopo rotazione → fill bianco 255; (2) val = stabilità, non ritagli fortuiti. Concetti giusti.
+- **Errori / lacune:** formato: chiesti **2 bullet** (`- ...`) — due righe senza `-` (Pattern #6 soft). Opzionale: perché bianco e non nero (documento/carta, evitare artefatto scuro).
+- **Pattern errore / ID contesto:** Pattern **#6** soft (formato bullet).
+
+### [2026-09-08] — Mini 4.2 — no RandomHorizontalFlip su documenti
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 4.2 (righe ~1262–1269).
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**.
+- **Punti di forza:** flip ok su foto naturali, sbagliato su documenti (testo specchiato); collegamento esplicito ai cartelli (direzione/significato). Due idee chiare.
+- **Errori / lacune:** nessuno sostanziale; micro: “due righe” un filo fuse in un paragrafo (ok nel merito).
+- **Pattern errore / ID contesto:** nessuno.
+
+### [2026-09-08] — Mini 4.3 — split 12 aziende con int()
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 4.3 (righe ~1272–1281).
+- **Valutazione (primo tentativo — "voto esame"):** **5/10**.
+- **Punti di forza:** train corretto: `int(12*0.7)=int(8.4)=8`. Ha usato `int` nel ragionamento.
+- **Errori / lacune:** (1) val: `int(12*0.15)=int(1.8)=1`, non 2 (ha arrotondato invece di troncare); (2) test **non** è `int(12*0.15)` — è il **resto**: `12-8-1=3`. Risposta corretta: **8, 1, 3**.
+- **Pattern errore / ID contesto:** attenzione a `int()` = truncazione; slice finale = remainder (non terza frazione indipendente).
+
+### [2026-09-08] — Mini 5.1 — optimizer con/senza filtro requires_grad
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 5.1 (righe ~1492–1500).
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**.
+- **Punti di forza:** sì funziona (backbone senza `.grad` → non si aggiorna); costo memoria/stato optimizer sui ~11M; codice confuso; rischi futuri. Copre merito + pratico.
+- **Errori / lacune:** nessuno (micro ortografia “Si,” / “freezzati”).
+- **Pattern errore / ID contesto:** conferma #48 / freezing operativo.
+
+### [2026-09-08] — Mini 5.2 — LR layer4 ≪ LR testa
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 5.2 (righe ~1503–1509).
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**.
+- **Punti di forza:** testa nuova ≈ pesi casuali → LR alto; `layer4` già utile da ImageNet → LR basso / ritocchi cauti. Idea del fine-tuning a due velocità.
+- **Errori / lacune:** “dati importanti” un po’ vago — meglio “feature/pesi pre-addestrati” (catastrophic forgetting soft). Nel merito ok.
+- **Pattern errore / ID contesto:** nessuno.
+
+### [2026-09-08] — Mini 5.3 — eval() vs no_grad()
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 5.3 (righe ~1511–1520).
+- **Valutazione (primo tentativo — "voto esame"):** **4/10**.
+- **Punti di forza:** formato 2 bullet rispettato; ha intuìto che non sono la stessa cosa.
+- **Errori / lacune:** (1) `eval()` **non** congela i parametri — mette Dropout/BatchNorm in modalità inferenza (BN = running stats); NON tocca `requires_grad`. (2) `no_grad()` non “non aggiorna i gradienti”: **non costruisce il grafo** / non calcola `.grad` in quel blocco; l’update pesi è `optimizer.step()`. Né l’uno né l’altro sostituisce il freeze.
+- **Correzione attesa:**
+  - `eval()`: FA cambiare Dropout/BN; NON FA freeze / NON disabilita autograd.
+  - `no_grad()`: FA spegnere il tracking autograd; NON FA cambiare Dropout/BN.
+- **Pattern errore / ID contesto:** nuova confusione **eval ≠ freeze ≠ no_grad** (vicina a #48).
+
+### [2026-09-08] — Mini 5.3 — secondo tentativo (post-feedback)
+
+- **Esercizio / blocco:** stesso Mini 5.3, risposta riscritta dopo correzione.
+- **Valutazione (nuovo tentativo richiesto):** **8/10** (primo tentativo resta **4/10** come voto esame).
+- **Punti di forza:** `eval` → Dropout/BN in modalità valutazione; `no_grad` → niente tracking del grafo / non serve backward. Distinzione centrale recuperata.
+- **Errori / lacune:** la consegna chiedeva anche cosa **NON** fa ciascuno. Manca esplicito: `eval` non congela e non spegne autograd; `no_grad` non cambia Dropout/BN. “Smette di aggiornarli” è ok soprattutto per BN (running stats); su Dropout è più “disattiva il dropout”.
+- **Pattern errore / ID contesto:** #48 in miglioramento su questa distinzione.
+
+### [2026-09-11] — Mini 6.1 (🔁 #53) accuracy / recall / precision
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 6.1 (righe ~1627–1644).
+- **Valutazione (primo tentativo — "voto esame"):** **7.5/10**.
+- **Punti di forza:** (1) accuracy `(28+25)/60 ≈ 0.883` corretta subito; (3) precision `25/(25+2)` nella versione finale; formule con i conti.
+- **Errori / lacune:** al primo tiro sulla (2) `25/(25+2)` chiamato recall (= precision). Fix in chat: `25/(25+5)≈0.833`. File finale: tutte e tre corrette.
+- **Pattern errore / ID contesto:** lacuna **#53** 🟡 — discrimine recall/precision fragile a freddo.
+
+### [2026-09-11] — Mini 6.2 — obiezione accuracy 88% in produzione
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 6.2 (righe ~1646–1653).
+- **Valutazione (primo tentativo — "voto esame"):** **5/10**.
+- **Punti di forza:** intuizione corretta — accuracy da sola non basta; richiama la recall.
+- **Errori / lacune:** consegna: **UNA obiezione tecnica basata sui numeri**, non generica. Manca il dato: **5/30 buste perse** (FN), recall ≈ **0.83**; nel prodotto il costo è non intercettare buste. Pattern **#6** (vincolo “sui numeri”).
+- **Esempio atteso:** “Accuracy 88% ma recall busta = 25/30 ≈ 83%: 5 buste su 30 non vengono viste — in produzione è inaccettabile se l’obiettivo è non perdere buste.”
+- **Pattern errore / ID contesto:** #53 + Pattern #6.
+
+### [2026-09-11] — Mini 6.3 — soglia vs recall busta
+
+- **Esercizio / blocco:** `09_transfer_learning.py` Mini 6.3 (righe ~1656–1662).
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**.
+- **Punti di forza:** **abbassare** la soglia per più recall; in cambio più FP → **precision** giù. Meccanismo corretto.
+- **Errori / lacune:** accuracy “potrebbe” scendere è plausibile ma secondaria; il trade-off da citare per primo è precision (come nel testo Sez. 6). Due righe ok.
+- **Pattern errore / ID contesto:** #53 in chiusura su soglia/recall.
+
+### [2026-09-11] — Quiz verifica V1 — shape output ResNet testa nuova
+
+- **Esercizio / blocco:** `09_transfer_learning.py` V1 (righe ~1671–1676).
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**.
+- **Punti di forza:** batch 8 → 8; `num_classi=2` → logits `(8, 2)`. Niente confusione con 1000 ImageNet o con (N,C,H,W) in uscita.
+- **Errori / lacune:** nessuno.
+- **Pattern errore / ID contesto:** nessuno.
+
+### [2026-09-11] — Quiz verifica V2 — Linear(1000,2) vs 512
+
+- **Esercizio / blocco:** `09_transfer_learning.py` V2 (righe ~1678–1684).
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**.
+- **Punti di forza:** fix corretto `nn.Linear(512, 2)`; ha capito che 1000 è sbagliato come `in_features`.
+- **Errori / lacune:** motivazione imprecisa. Non è “i canali raddoppiano da 16 a 512”. ResNet18: dopo `layer4` hai **512** canali → AdaptiveAvgPool → vettore **512** → la vecchia `fc` era `Linear(512, 1000)`. Il **1000** è `out_features` ImageNet (classi), non l’ingresso della testa. Numero giusto = `modello.fc.in_features` **prima** di sostituire (o 512 per ResNet18). “Da 16” confonde con CNN tiny del cap.08.
+- **Pattern errore / ID contesto:** lacuna **#52** 🟡 — zona giusta, decomposizione del 512 ancora fumosa.
+
+### [2026-09-11] — Quiz verifica V3 — augmentation solo in train
+
+- **Esercizio / blocco:** `09_transfer_learning.py` V3 (righe ~1687–1692).
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**.
+- **Punti di forza:** **Falso** corretto; train = crop random, val/test = centratura. Allineato a Mini 4.1 / Sez. 4.3.
+- **Errori / lacune:** micro: CenterCrop in eval è **preprocessing deterministico**, non “augmentation centrata”. Il punto della frase falsa è: augmentation **casuale** solo in train; val/test stabili per metriche confrontabili (non “omogeneità” via stessa aug random).
+- **Pattern errore / ID contesto:** nessuno grave.
+
+### [2026-09-11] — Quiz verifica V4 — class_to_idx busta_paga
+
+- **Esercizio / blocco:** `09_transfer_learning.py` V4 (righe ~1693–1698).
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**.
+- **Punti di forza:** valore **1** corretto; mapping `altro=0`, `busta_paga=1`.
+- **Errori / lacune:** il “perché” è un filo vago (“secondo indice”). Motivo preciso: `ImageFolder` ordina le classi in **ordine alfabetico** delle cartelle → `altro` prima di `busta_paga`.
+- **Pattern errore / ID contesto:** nessuno.
+
+### [2026-09-11] — Quiz verifica V4 — Fix applicato (post-feedback)
+
+- **Esercizio / blocco:** stesso V4; motivazione aggiornata con ordine alfabetico.
+- **Valutazione fix:** **10/10** sul merito (voto esame primo tentativo resta **9/10**).
+- **Punti di forza:** valore 1 + perché = ordinamento alfabetico ImageFolder; mapping 0/1 esplicito.
+- **Nit:** nel testo “buste_paghe” → nome cartella reale `busta_paga`.
+
+### [2026-09-11] — Quiz verifica V5 — parametri allenabili Linear(512,2)
+
+- **Esercizio / blocco:** `09_transfer_learning.py` V5 (righe ~1700–1704).
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**.
+- **Punti di forza:** solo la testa allenabile; pesi `512×2 = 1024` corretti.
+- **Errori / lacune:** manca il **bias** (`+ 2`) → totale **1026**, non 1024. (`nn.Linear` ha bias=True di default.)
+- **Pattern errore / ID contesto:** nit ricorrente su Linear: weight + bias.
+
+### [2026-09-11] — Quiz verifica V5 — secondo tentativo (post-feedback)
+
+- **Esercizio / blocco:** stesso V5; aggiunta bias nel testo.
+- **Valutazione (nuovo tentativo):** **9/10** (primo resta **8/10**).
+- **Punti di forza:** ora include `+ bias` / `+ 2` nella formula.
+- **Errori / lacune:** aritmetica finale sbagliata: scrive `512*2+2 -> 1024` ma **512×2+2 = 1026**. Concetto ok, risultato ancora 1024 per refuso.
+- **Pattern errore / ID contesto:** Pattern soft — risultato ≠ conto scritto.
+
+### [2026-09-11] — Quiz verifica V5 — Fix applicato (totale 1026)
+
+- **Esercizio / blocco:** stesso V5; conto corretto `512*2+2 -> 1026`.
+- **Valutazione fix:** **10/10** sul merito (voto esame primo tentativo resta **8/10**).
+- **Punti di forza:** pesi + bias; solo testa; numero allineato a Mini 3.3 / commenti capitolo.
+
+### [2026-09-11] — Quiz verifica V6 — freeze + nuova fc
+
+- **Esercizio / blocco:** `09_transfer_learning.py` V6 (righe ~1706–1716).
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**.
+- **Punti di forza:** `nn.Linear` nuovo nasce con `requires_grad=True` — corretto.
+- **Errori / lacune:** manca il pezzo sull’**ordine**: la `fc` è un modulo **creato dopo** il ciclo `requires_grad=False`, quindi non viene congelata. Se la sostituissi **prima** del freeze, la testa nuova finirebbe congelata e non imparerebbe. Default True + timing.
+- **Pattern errore / ID contesto:** #48 soft — default ok, ordine freeze/replace da fissare.
+
+### [2026-09-11] — Quiz verifica V7 — H dopo layer4 su 320×320
+
+- **Esercizio / blocco:** `09_transfer_learning.py` V7 (righe ~1719–1736).
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**.
+- **Punti di forza:** H dopo layer4 = **10**; `avgpool` → `(4, 512, 1, 1)`; catena 320→160→80→80→40→20→10 corretta; AdaptiveAvgPool indipendente da H. Canali 64/128/256/512 ok.
+- **Errori / lacune:** nit notazione `MaxPool(2)` (è `MaxPool2d(k=3,s=2,p=1)`) — risultato 80 comunque giusto. Pattern #28/#51 in buona forma su input non-224.
+- **Pattern errore / ID contesto:** nessuno sostanziale.
+
+### [2026-09-11] — Quiz verifica V8 — Feynman ImageNet → buste
+
+- **Esercizio / blocco:** `09_transfer_learning.py` V8 (righe ~1739–1745).
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**.
+- **Punti di forza:** riusi feature generiche (bordi/linee/texture); butti la testa 1000 classi; nuova `Linear` a 2 classi. Idea del transfer corretta.
+- **Errori / lacune:** (1) “layer **profondi**” per bordi/texture: in gergo sono i layer **bassi/primi**; i profondi sono più specifici (oggetti ImageNet). Stesso fraintendimento già visto in Sez.1. (2) “solo l’ultimo layer” = Fase 1; in Fase 2 si ritocca anche `layer4`. (3) un filo corto rispetto a 4–6 righe; manca il ponte “documenti condividono pattern geometrici con le foto”.
+- **Pattern errore / ID contesto:** terminologia early vs deep layers.
+
+### [2026-09-11] — TODO 1 — colloquio transfer vs scratch
+
+- **Esercizio / blocco:** `09_transfer_learning.py` TODO 1 (righe ~1749–1764).
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**.
+- **Punti di forza:** 3 bullet rispettati; scelta pretrained con pochi dati; freeze + head poi fine-tune `layer4`; condizione di cambio (dominio troppo specifico / feature piccole).
+- **Errori / lacune:** bullet 1 non cita esplicitamente **400** immagini (consegna “in termini di dati”); bullet 3 ok ma un filo vago — alternativa da colloquio: dataset enorme (milioni) → scratch possibile, oppure modality diversa (non RGB naturale).
+- **Pattern errore / ID contesto:** Pattern #6 rispettato (3 bullet).
+
+### [2026-09-11] — TODO 1 — secondo tentativo (post-feedback)
+
+- **Esercizio / blocco:** stesso TODO 1; bullet 1 con **400**; bullet 3 dominio + dataset grande → scratch/aggressive FT.
+- **Valutazione (nuovo tentativo):** **9.5/10** (primo resta **8.5/10**).
+- **Punti di forza:** struttura colloquio completa; freeze→head→layer4; due condizioni di cambio idea sensate.
+- **Nit:** “migliaia e migliaia” ok; da colloquio ancora meglio “centinaia di migliaia / milioni”; “aggessivo” → aggressivo.
+- **Pattern errore / ID contesto:** nessuno.
+
+### [2026-09-11] — TODO 2 — refactoring costruisci_modello_bello
+
+- **Esercizio / blocco:** `09_transfer_learning.py` TODO 2 (righe ~1766–1797).
+- **Valutazione (primo tentativo — "voto esame"):** **6.5/10**.
+- **Punti di forza:** firma con `nome_arch` / `num_classi` / freeze opzionale; `getattr(models, nome_arch)`; `in_features` al posto di 512; eliminato il ramo ridondante `if n==2`; API pesi al posto di `pretrained=True` (idea).
+- **Errori / lacune:**
+  1. `m.fc = (n_features, num_classi)` → manca **`nn.Linear(...)`** (assegna una tupla, non un layer).
+  2. Typo: `weigths` → **`weights`**.
+  3. Default `pesi=models.ResNet18_Weights.DEFAULT` rompe se `nome_arch="resnet50"`: i pesi devono combaciare con l’architettura (o map/enum per nome).
+  4. (minore) spacing `num_classi = 2`.
+- **Quattro problemi della brutta (check):** API deprecata ✅; freeze sempre → parametro ✅; 512 hardcoded → `in_features` ✅; `if n==2` ridondante ✅.
+- **Pattern errore / ID contesto:** attenzione al risultato dell’assegnazione (`nn.Linear` vs tupla).
+
+### [2026-09-11] — TODO 2 — secondo tentativo (post-feedback)
+
+- **Esercizio / blocco:** stesso TODO 2; fix `weights=` + `nn.Linear(...)`.
+- **Valutazione (nuovo tentativo):** **9/10** (primo resta **6.5/10**).
+- **Punti di forza:** funzione coerente; getattr; freeze opzionale; `in_features`; testa corretta.
+- **Residuo:** default `pesi=ResNet18_Weights.DEFAULT` ancora legato a ResNet18 se cambi `nome_arch`. Accettabile per il TODO; da colloquio meglio mappa nome→weights o `weights="DEFAULT"` dove supportato.
+- **Pattern errore / ID contesto:** nessuno bloccante.
+
+### [2026-09-11] — TODO 3 — DEBUG matmul 32x512 vs 256x2 (🔁 #52)
+
+- **Esercizio / blocco:** `09_transfer_learning.py` TODO 3 (righe ~1799–1829).
+- **Valutazione (primo tentativo — "voto esame"):** **6.5/10**.
+- **Punti di forza:** 3 bullet; individua **256** come sbagliato; collega 512 ad avgpool/flatten ResNet18; 2 = num classi.
+- **Errori / lacune:**
+  1. Bullet 1: manca **32 = batch** (`x` ha N=32); dice solo il 512.
+  2. Bullet 3: “è il 256” ok, ma poco sul **perché** (backbone emette 512, non 256).
+  3. **FIX**: `Linear(512, 2)` hardcodato — la consegna chiede che non si rompa su **resnet50** (lì sono **2048**). Serve `nn.Linear(modello.fc.in_features, 2)` **prima** di sovrascrivere (o salvare `in_features` subito dopo il load).
+- **Pattern errore / ID contesto:** lacuna **#52** 🟡 — decomposizione parziale; fix non generale. Pattern **#6** soft (vincolo resnet50).
+
+### [2026-09-11] — TODO 3 — secondo tentativo (FIX in_features)
+
+- **Esercizio / blocco:** stesso TODO 3; FIX con `n_features = modello.fc.in_features` prima del replace.
+- **Valutazione (nuovo tentativo):** **8.5/10** (primo resta **6.5/10**).
+- **Punti di forza:** fix portabile ResNet18/50; ordine load → leggi `in_features` → sostituisci. Chiude il vincolo della consegna sul FIX.
+- **Errori / lacune residui:** bullet 1 ancora senza esplicitare **32 = batch size**; bullet 3 ancora corto sul perché (512 dal backbone vs 256 inventato). Decomposizione numeri non ancora al 100% della consegna.
+- **Pattern errore / ID contesto:** #52 in miglioramento sul fix; decomposizione verbale da rinforzare.
+
 ---
 
 ## Lacune e dubbi ancora aperti
 
 Ereditate dal cap.08 (da chiudere qui):
 
-- 🟡 **#48** — Mini 2.3 OK (`.grad` = None se frozen); resta mini 2.4 / distinzione autograd vs optimizer
+- 🟡 **#48** — freeze/forward OK; Mini 5.3 secondo tentativo 8/10 (`eval`/`no_grad` ok sul FA; manca ancora il NON FA esplicito); residuo Mini 2.4
 - 🟡 **#49** — Mini 3.2 OK (permute vs squeeze); Mini 3.1 fix `repeat` dopo 4/10; consolidare PIL vs tensore
-- 🟡 **#51** + **Pattern #28** — Mini 2.1 e 2.2 OK (224 e 96); resta TODO 7 se input “sporco”
-- 🔴 **#52** — debug numerico dell'errore matmul → TODO 3, V2
+- 🟡 **#51** + **Pattern #28** — Mini 2.1/2.2 OK; V7 **9.5**/10 su 320→10 (catena ok)
+- 🟡 **#52** — TODO 3 fix `in_features` OK (2° tent. 8.5); bullet ancora deboli su 32=batch e “perché 256”
 - 🟡 **#47** — `.item()` vs `backward` → Q1 (verifica a freddo)
 - 🟡 **#50** — il `+1` nella formula `H_out` → Q2 (con stride 2), V7
-- 🟡 **#53** — metriche per classe / macro-F1 → Sez. 6, mini 6.1–6.3
+- 🟡 **#53** — Mini 6.1–6.3 ok sul meccanismo soglia/recall (6.3 **9**/10); residuo: obiezione numerica (6.2) e lettura CM a freddo
 - 🔴 **Pattern #6** — lettura incompleta delle consegne → 7 consegne con vincolo numerico esplicito
 
 ---
