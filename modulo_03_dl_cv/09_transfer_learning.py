@@ -1162,7 +1162,8 @@ def costruisci_trasformazioni(dim=DIM_IMMAGINE):
 #    avere un modello pessimo (o ottimo) senza motivo.
 #    Non indovinare mai: stampa `ds.class_to_idx`.
 
-INDICE_BUSTA = 1   # coerente con ImageFolder: 'altro'=0, 'busta_paga'=1
+INDICE_BUSTA = 1   # prodotto: 'busta_paga'=1; track prova Ants/Bees: 'bees'=1
+#                  # (sempre: stampa class_to_idx — non fidarti a memoria)
 
 # --------------------------------------------------------------------------
 # 4.5 Lo split: perché "casuale" qui è sbagliato
@@ -1849,6 +1850,19 @@ def metriche_binarie(y_veri, y_pred, classe_positiva=1) -> dict:
     tn = (vero_neg & pred_neg).sum()
     fp = (vero_neg & pred_pos).sum()
     fn = (vero_pos & pred_neg).sum()
+    recall = tp / (tp + fn) if (tp + fn) != 0 else 0.0
+    precision = tp / (tp + fp) if (tp + fp) != 0 else 0.0
+    somma = precision + recall
+    f1 = 2 * (precision * recall) / somma if somma != 0 else 0.0
+    return {
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "tn": tn,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1
+    }
 
 # --------------------------------------------------------------------------
 # TODO 5 — 🔀 [INTERLEAVING] visivo + tabellare (M3 + M2)
@@ -1871,6 +1885,17 @@ def metriche_binarie(y_veri, y_pred, classe_positiva=1) -> dict:
 # Come lo eviteresti?
 # TUO CODICE + RISPOSTA:
 
+import pandas as pd
+
+def aggiungi_feature_visiva(df, probabilita) -> pd.DataFrame:
+    if df.shape[0] == len(probabilita):
+        df = df.copy()
+        df['prob_busta_paga_visivo'] = probabilita
+        return df
+    else:
+        raise ValueError("Le lunghezze non coincidono!")
+    
+# ho un problema di leakage, perchè sto usando un cnn addestrata sulle stesse righe del tabellare. bisogna addestrare i due modelli su set diversi (out of fold)
 
 # --------------------------------------------------------------------------
 # TODO 6 — 🌊 [REAL-WORLD] il dataset che ti arriva davvero
@@ -1891,12 +1916,12 @@ def metriche_binarie(y_veri, y_pred, classe_positiva=1) -> dict:
 # Almeno uno dei cinque punti deve riguardare un rischio che NON è la
 # qualità delle immagini.
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
-# 4)
-# 5)
-
+# 1) Faccio un inventario dettagliato il più possibili su come è composto il dataset (azienda, qualità, formato), soprattutto alla luce del fatto che lo split andra fatto per azienda e non semplicemente in percentuale.
+# 2) pulisco i file multipagina tenendo solo l'effettivo cedolino paga.
+# 3) Elimino i cedolini illegibili perchè creerebbero solo rumore .
+# 4) bilancio train validation e test tenendo conto del fatto che una sola azienda copre praticamente un terzo di tutte le pratiche. Dividere in percentuali basandoci solo sul numero delle aziende non avrebbe senso
+# 5) modifico il contenuto della cartella altro in modo da rispecchiare la qualità media della cartella buste
+# 6) Elimino di duplicati
 
 # --------------------------------------------------------------------------
 # TODO 7 — shape gymnastics su ResNet18
@@ -1906,14 +1931,15 @@ def metriche_binarie(y_veri, y_pred, classe_positiva=1) -> dict:
 # Poi rispondi: il `Linear(512, 2)` finale funziona lo stesso con immagini
 # 320x320 invece di 224x224? Perché?
 # TUA RISPOSTA:
-# conv1   ->
-# maxpool ->
-# layer1  ->
-# layer2  ->
-# layer3  ->
-# layer4  ->
-# avgpool ->
+# conv1   -> (4, 64, 160, 160)
+# maxpool -> (4, 64, 80, 80)
+# layer1  -> (4, 64, 80, 80)
+# layer2  -> (4, 128, 40, 40)
+# layer3  -> (4, 256, 20, 20)
+# layer4  -> (4, 512, 10, 10)
+# avgpool -> (4, 512, 1, 1)
 # Il Linear funziona? perché:
+# Perchè avg pool rendere ininfluente h e w
 
 
 # --------------------------------------------------------------------------
@@ -1939,40 +1965,69 @@ def metriche_binarie(y_veri, y_pred, classe_positiva=1) -> dict:
 
 
 # ==========================================================================
-# 🏗️ PROGETTO INCREMENTALE — il ramo visivo del prodotto parte qui
+# 🏗️ PROGETTO INCREMENTALE — ramo visivo (TRACK PROVA attivo)
 # ==========================================================================
 #
-# Nel M2 hai costruito il ramo tabellare (regole + classificatore su
-# feature dei file). Nel cap.08 hai imparato le CNN su dati giocattolo.
-# Da qui esce il primo pezzo VISIVO del prodotto vero.
+# ⚠️ DECISIONE 14/09/2026: per CHIUDERE il capitolo senza dataset buste
+#    reali, usiamo il **TRACK PROVA** (Ants vs Bees). Il TRACK PRODOTTO
+#    (buste anonimizzate → `busta_vs_altro.pt`) resta un debito esplicito
+#    per dopo / cap.10 — stessa pipeline, altri file.
 #
-# Deliverable del capitolo: `busta_vs_altro.pt`, uno state_dict che,
-# data un'immagine di documento, dice quanto è probabile che sia una busta
-# paga. Nel cap.10 questo file diventa una demo Gradio deployata
-# (portfolio piece #2); più avanti, `prob_busta_paga_visivo` diventa una
-# colonna in più per il modello M2.
+# --------------------------------------------------------------------------
+# TRACK PROVA — Ants vs Bees (obbligatorio ORA)
+# --------------------------------------------------------------------------
 #
-# CHECKPOINT (spunta man mano):
+# Dataset ufficiale del tutorial PyTorch transfer learning (~120+120 train,
+# val divisa in val+test dallo script). Zero privacy, zero anonimizzazione.
 #
-#   [ ] C1 — cartelle create, `.gitignore` verificato con `git check-ignore`
-#   [ ] C2 — PDF convertiti in immagini (prima pagina), file corrotti scartati
-#            e ANNOTATI (quanti e perché: serve nel README del progetto)
-#   [ ] C3 — `anonimizza_buste.py` eseguito su tutte le buste; verifica
-#            visiva a campione su 10 immagini fatta con i tuoi occhi
-#   [ ] C4 — dataset "altro" raccolto e reso confrontabile (non tutte
-#            scansioni pulite: mescola qualità e formati)
-#   [ ] C5 — split PER CLIENTE con `dividi_per_gruppo`, e conteggio
-#            scritto: quante immagini e quanti clienti per ogni split
-#   [ ] C6 — training su Colab, due fasi, `busta_vs_altro.pt` scaricato
-#   [ ] C7 — valutazione sul TEST (mai guardato prima) con report per
-#            classe, confusion matrix, e tabella soglie
-#   [ ] C8 — 5 righe di README nel diario: accuracy, recall busta paga,
-#            soglia scelta e perché, e il limite principale del modello
+# Mapping mentale (NON sono documenti — dichiaralo nel README):
+#     ants  ↔  classe 0   (come "altro")
+#     bees  ↔  classe 1   (come "busta_paga" — classe positiva per le metriche)
+#     ImageFolder: ordine alfabetico → ants=0, bees=1
 #
-# ⚠️ C7 è quello che si salta più facilmente: il test set si guarda UNA
-#    volta sola, alla fine. Se lo usi per scegliere la soglia o l'epoca,
-#    hai trasformato il test in un secondo validation e non hai più una
-#    stima onesta.
+# Setup locale (una volta):
+#     python modulo_03_dl_cv/prepara_dataset_proxy_ants_bees.py
+#     → crea modulo_03_dl_cv/dati/proxy_ants_bees/{train,val,test}/{ants,bees}
+#
+# Su Colab:
+#     1) zippa `proxy_ants_bees` e caricalo (o riesegui lo script in Colab)
+#     2) pipeline_addestramento(
+#            cartella_base=".../proxy_ants_bees",
+#            percorso_salvataggio="ants_vs_bees.pt",
+#        )
+#     3) Per le metriche: INDICE_BUSTA nel file vale 1 → qui = bees.
+#        Opzionale: RandomHorizontalFlip è OK su formiche/api (a differenza
+#        dei documenti). Puoi aggiungerlo in `transform_train` solo sul track prova.
+#
+# CHECKPOINT TRACK PROVA (spunta man mano):
+#
+#   [x] P1 — eseguito `prepara_dataset_proxy_ants_bees.py` (o equivalente Colab)
+#   [x] P2 — stampato `class_to_idx` → {'ants': 0, 'bees': 1}
+#   [x] P3 — conteggio train/val/test (Colab: ~244 / 108 / 45)
+#   [x] P4 — training Colab due fasi (F2: train 96.7% / val 90.7%) → `.pt` su Colab
+#   [~] P5 — test acc ~88.9% via `valuta`; mancano ancora report/CM/soglie formali
+#   [ ] P6 — 5 righe README nel diario (proxy ≠ busta)
+#
+# Deliverable track prova: `ants_vs_bees.pt` + numeri P5/P6 nel diario.
+#
+# --------------------------------------------------------------------------
+# TRACK PRODOTTO — buste vs altro (DEBITO — non bloccante per chiudere C09)
+# --------------------------------------------------------------------------
+#
+# Deliverable prodotto (quando avrai tempo): `busta_vs_altro.pt` su immagini
+# anonimizzate. Nel cap.10 la demo Gradio "vera" punta qui; il proxy serve
+# solo a non fermare l'apprendimento del transfer learning.
+#
+#   [ ] C1 — cartelle `data/buste_*` + `.gitignore` verificato
+#   [ ] C2 — PDF → immagini, corrotti annotati
+#   [ ] C3 — anonimizzazione + controllo a campione
+#   [ ] C4 — dataset "altro" vario (non solo scansioni pulite)
+#   [ ] C5 — split PER CLIENTE con `dividi_per_gruppo` + conteggi
+#   [ ] C6 — training due fasi → `busta_vs_altro.pt`
+#   [ ] C7 — test set una sola volta: report + CM + soglie
+#   [ ] C8 — README: accuracy, recall busta, soglia, limite modello
+#
+# ⚠️ Sul track prodotto C7 (test) si guarda UNA volta sola alla fine.
 
 
 # ==========================================================================

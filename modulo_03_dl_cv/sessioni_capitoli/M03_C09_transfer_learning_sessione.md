@@ -5,8 +5,8 @@
 | **Modulo** | M03 — Deep Learning & Computer Vision |
 | **File capitolo** | `09_transfer_learning.py` |
 | **File diario** | `M03_C09_transfer_learning_sessione.md` |
-| **Stato** | in corso (aperto 01/09/2026) |
-| **Voto difficoltà** | — |
+| **Stato** | **chiuso** (14/09/2026) |
+| **Voto difficoltà** | **8**/10 (studente: lunghezza della pipeline) |
 
 ---
 
@@ -22,10 +22,11 @@
 ## Prerequisiti da verificare PRIMA di iniziare
 
 - [ ] Bridge `M03_R08_after_C08_before_C09_cnn_to_transfer.md` completato e corretto
-- [x] `.gitignore` con `data/buste_*/` (verificato 01/09/2026)
-- [ ] Cartelle `data/buste_originali/`, `data/buste_anonimizzate/`, `data/altro/`
-- [ ] Dataset "altro" (~200 immagini) raccolto e vario (non solo scansioni pulite)
-- [ ] Colab con GPU verificata
+- [x] `.gitignore` con `data/buste_*/` (verificato 01/09/2026) + **14/09** `dati/proxy_ants_bees/` e `dati/_cache/`
+- [x] **TRACK PROVA:** script `prepara_dataset_proxy_ants_bees.py` eseguito (14/09) → train 245 / val 108 / test 45
+- [ ] Cartelle `data/buste_originali/` … (**debito prodotto**, non bloccanti ora)
+- [ ] Dataset "altro" (~200) — **debito prodotto**
+- [ ] Colab con GPU verificata (serve per P4 training)
 
 ---
 
@@ -465,24 +466,132 @@
 - **Errori / lacune residui:** bullet 1 ancora senza esplicitare **32 = batch size**; bullet 3 ancora corto sul perché (512 dal backbone vs 256 inventato). Decomposizione numeri non ancora al 100% della consegna.
 - **Pattern errore / ID contesto:** #52 in miglioramento sul fix; decomposizione verbale da rinforzare.
 
+### [2026-09-14] — TODO 4 — retrieval metriche_binarie
+
+- **Esercizio / blocco:** `09_transfer_learning.py` TODO 4 (righe ~1832–1864).
+- **Valutazione (primo tentativo — "voto esame"):** **7.5/10**.
+- **Punti di forza:** maschere allineate + `&` + `.sum()` per tp/tn/fp/fn; formule precision/recall/F1 corrette; dict completo con tutte le chiavi; F1 protetto su `somma==0`; usa `classe_positiva`.
+- **Errori / lacune:** consegna chiede gestione denominatore zero — **manca** su `recall = tp/(tp+fn)` e `precision = tp/(tp+fp)` (ZeroDivisionError / nan se nessun positivo vero o nessuna pred positiva). Pattern #6 soft sul vincolo esplicito della consegna.
+- **Fix atteso:** stesso schema dell’F1, es. `recall = tp/(tp+fn) if (tp+fn) else 0.0` (e analogo per precision).
+- **Pattern errore / ID contesto:** #53 in miglioramento sul codice; edge case denominatore ancora fragile.
+
+### [2026-09-14] — TODO 4 — Fix tentato (denom ancora sbagliato)
+
+- **Esercizio / blocco:** stesso TODO 4; riga tipo `tp/(tp+fn) if tp/(tp+fn) != 0 else 0.0`.
+- **Nota:** non è ancora corretto — la divisione si valuta comunque (crash se denom=0); e `!= 0` controlla il risultato, non il denominatore. Atteso: `if (tp + fn) else 0.0`.
+- **Voto esame:** resta **7.5/10**.
+
+### [2026-09-14] — TODO 4 — Fix applicato (guardie denom)
+
+- **Esercizio / blocco:** stesso TODO 4; `if (tp+fn) != 0` / `if (tp+fp) != 0` + F1 su `somma`.
+- **Valutazione fix:** **10/10** sul merito (voto esame primo tentativo resta **7.5/10**).
+- **Punti di forza:** conteggi, formule e edge case denominatore tutti a posto.
+
+### [2026-09-14] — TODO 5 — interleaving feature visiva + leakage
+
+- **Esercizio / blocco:** `09_transfer_learning.py` TODO 5 (righe ~1865–1897).
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**.
+- **Punti di forza (codice):** check `len`, `copy()`, colonna `prob_busta_paga_visivo`, `return`, `ValueError` chiaro. Concetto: riconosce **leakage**.
+- **Errori / lacune (prosa):** (1) “probabilità di alterazione” — qui è prob. **busta paga**, non alterazione M2; (2) rimedio troppo radicale (“non usare questo dato”): si può usare la feature, ma le probabilità sul train tabellare devono venire da CNN **non allenata su quelle stesse righe** (es. CNN fit solo su train, pred su val/test; o out-of-fold). Senza quello il tabellare “vede” un segnale già calibrato sulle etichette → metriche gonfiate.
+- **Pattern errore / ID contesto:** Data leakage 🟡 — diagnosi ok, riparo incompleto.
+
+### [2026-09-14] — TODO 5 — secondo tentativo (prosa leakage)
+
+- **Esercizio / blocco:** stesso TODO 5; risposta concettuale riscritta.
+- **Valutazione (nuovo tentativo):** **9.5/10** (primo resta **7/10**).
+- **Punti di forza:** leakage + CNN e tabellare non sulle stesse righe; cita **out-of-fold**. Codice invariato e già ok.
+- **Nit:** “set diversi” va inteso come split/OOF sullo stesso progetto, non due dataset sconnessi; in produzione la CNN può predire su documenti nuovi senza problema.
+- **Pattern errore / ID contesto:** Data leakage in chiusura su questo TODO.
+
+### [2026-09-14] — TODO 6 — REAL-WORLD piano dataset sporco
+
+- **Esercizio / blocco:** `09_transfer_learning.py` TODO 6 (righe ~1898–1922).
+- **Valutazione (primo tentativo — "voto esame"):** **5.5/10**.
+- **Punti di forza:** idea multipagina → pagina utile; scartare illeggibili; punto 4 sul gruppo azienda (rischio **non** solo qualità); punto 5 ribilanciare `altro` vs buste (bias “pulito vs sporco”).
+- **Errori / lacune:**
+  1. Formato: chiesti **5 punti + una riga di motivo ciascuno** — motivi assenti/fusi (Pattern #6).
+  2. Punto 1: 173≠200 non implica “etichette senza immagine”; sono semplicemente **meno file** del target.
+  3. Punto 4: “solo nel train” impreciso — regola = **non spezzare** il gruppo (tutti train **o** tutti val/test); 60/173 in un solo split crea anche **sbilanciamento**.
+  4. Non affrontati: **duplicati** (stesso contenuto, nome diverso), gestione foto cellulare (augmentation vs esclusione), ordine operativo (inventario/dedup prima dello split).
+- **Pattern errore / ID contesto:** Pattern **#6**; leakage per gruppo / imbalance.
+
+### [2026-09-14] — TODO 6 — secondo tentativo
+
+- **Esercizio / blocco:** stesso TODO 6; piano riscritto.
+- **Valutazione (nuovo tentativo):** **7.5/10** (primo resta **5.5/10**).
+- **Punti di forza:** (1) inventario prima dello split per azienda; (2–3) multipagina + drop illeggibili; (5) ribilanciare `altro` vs bias qualità; (4) rischio non-qualità = concentrazione aziendale.
+- **Errori / lacune:** ancora **duplicati** assenti; punto 4 confuso (“% aziende non avrebbe senso” — lo split **è** per azienda/gruppo; il problema è il gruppo da 60 file che resta intero e sbilancia); formato motivo ancora fuso nella stessa frase; foto cellulare non esplicitate (augmentation vs policy).
+- **Pattern errore / ID contesto:** Pattern #6 soft; group split.
+
+### [2026-09-14] — TODO 7 — shape gymnastics ResNet 320×320
+
+- **Esercizio / blocco:** `09_transfer_learning.py` TODO 7 (righe ~1924–1941).
+- **Valutazione (primo tentativo — "voto esame"):** **7.5/10**.
+- **Punti di forza:** tutte e 7 le shape corrette (come V7): 160→80→80→40→20→10→1×1; canali ok.
+- **Errori / lacune (perché Linear):** il punto chiave è **`AdaptiveAvgPool2d((1,1))`** → sempre vettore **512**, indipendente da H/W (320 vs 224). Citare il flatten è ok ma secondario. Sbagliato: `Linear(512, 1000)` — la domanda parla di `Linear(512, 2)`; e 1000 non spiega perché 320 funziona.
+- **Pattern errore / ID contesto:** #51/#28 ok sulle shape; residuo sul ruolo di avgpool vs testa.
+
+### [2026-09-14] — Reimpostazione 🏗️ TRACK PROVA (Ants vs Bees)
+
+- **Decisione:** niente dataset buste ~400 per chiudere ora il pipeline transfer.
+- **Fatto:** script `prepara_dataset_proxy_ants_bees.py`; sezione progetto cap.09 riscritta (P1–P6 prova + C1–C8 debito prodotto); `.gitignore` su `dati/proxy_ants_bees/` e `_cache/`; `INDICE_BUSTA=1` vale anche per `bees`.
+- **Next studente:** lanciare lo script → Colab training → `ants_vs_bees.pt`.
+
+### [2026-09-14] — TRACK PROVA Ants vs Bees (valutazione pipeline)
+
+- **Valutazione complessiva track:** **7.5/10**.
+- **Punti di forza (Colab):** training due fasi ok; F2 finale train **0.967** / val **0.907**; test ~**0.889**; `class_to_idx` ants=0 bees=1; load `state_dict` + `valuta` su test funzionanti. P1–P4 sostanzialmente chiusi.
+- **Mancanze checkpoint:** P5 incompleto (niente report per classe / CM / tabella soglie); P6 README 5 righe **non** ancora nel diario; `.pt` non trovato in repo (scaricato? solo su Colab?).
+- **Codice appiccicato in `09_transfer_learning.py` (righe ~2033–2268):** problemi strutturali:
+  1. secondo `from __future__ import annotations` a metà file → rischio SyntaxError se si esegue il capitolo intero;
+  2. ridichiarazione funzioni già presenti sopra (duplicati);
+  3. `percorso_pesi = ROOT/"dati"/"pesi"` passato a `pipeline_addestramento` come **cartella**, poi `torch.load(percorso_pesi/"bees_vs_ants.pt")` — incoerente (serve un path **file** `.pt` nello `save`);
+  4. nel blocco manca `def valuta` (usa quella sopra solo se non isoli il pezzo);
+  5. dopo load: meglio `modello.to(device)` prima di `valuta`;
+  6. eseguire `pipeline_addestramento(...)` a livello modulo nel file capitolo = side effect se qualcuno fa Run sul `.py`.
+- **Raccomandazione:** spostare il notebook Colab in `modulo_03_dl_cv/colab_track_prova_ants_bees.py` (o `.ipynb`) e nel capitolo lasciare solo commenti + checklist spuntata; completare P5–P6.
+
+### [2026-09-14] — TRACK PROVA — rivalutazione `colab_track_prova_ants_bees.py`
+
+- **Valutazione file + track:** **8/10** (prima track 7.5).
+- **Punti di forza:** loop soglie 0.3–0.7 con tp/fp/fn, precision/recall/accuracy e print → **P5 soglie** chiuso sul merito; `valuta` che restituisce `prob_bees`; checklist P1–P4 ancora ok; numeri Colab già noti (val ~90.7%, test ~88.9%).
+- **Bug / lacune nel file:**
+  1. `percorso_pesi = ROOT/"dati"/"pesi"` (cartella) passato a `pipeline_addestramento` come `percorso_salvataggio` — serve un **file** `.pt`; il load usa `percorso_pesi/"bees_vs_ants.pt"` (incoerente).
+  2. **Ordine:** `pipeline_addestramento` chiama `valuta`, ma `def valuta` è **dopo** la chiamata a riga ~296 → a run sequenziale `NameError` (su Colab ok solo se `valuta` era già in una cella sopra).
+  3. Dopo `load_state_dict` manca `modello.to(device)`.
+  4. P5: ancora niente CM / `valuta_per_classe` (opzionale ma nella checklist).
+  5. **P6** README 5 righe nel diario ancora `[ ]`.
+  6. Esecuzione a livello modulo (train al import) — meglio `if __name__ == "__main__":`.
+- **Next:** fix path `.pt`, spostare `valuta` sopra, P6 nel diario, scaricare pesi in `dati/pesi/`.
+
+---
+
+### [2026-09-14] — Chiusura formale capitolo (voto difficoltà)
+
+- **Voto difficoltà studente:** **8**/10 — motivazione: lunghezza di tutta la pipeline (dati → transfer → metriche → Colab).
+- **Esito chiusura:** Fase A–D completate; file capitolo **non** modificato (protocollo H); cap.10 creato con rinforzi #48/#52/#53/#6.
+- **Debiti espliciti:** TODO 8 vuoto; P6 README 5 righe; C1–C8 buste; bug minori path `.pt` in `colab_track_prova_ants_bees.py`.
+
 ---
 
 ## Lacune e dubbi ancora aperti
 
-Ereditate dal cap.08 (da chiudere qui):
+Ereditate / aggiornate in chiusura (passano a C10):
 
 - 🟡 **#48** — freeze/forward OK; Mini 5.3 secondo tentativo 8/10 (`eval`/`no_grad` ok sul FA; manca ancora il NON FA esplicito); residuo Mini 2.4
-- 🟡 **#49** — Mini 3.2 OK (permute vs squeeze); Mini 3.1 fix `repeat` dopo 4/10; consolidare PIL vs tensore
-- 🟡 **#51** + **Pattern #28** — Mini 2.1/2.2 OK; V7 **9.5**/10 su 320→10 (catena ok)
-- 🟡 **#52** — TODO 3 fix `in_features` OK (2° tent. 8.5); bullet ancora deboli su 32=batch e “perché 256”
-- 🟡 **#47** — `.item()` vs `backward` → Q1 (verifica a freddo)
-- 🟡 **#50** — il `+1` nella formula `H_out` → Q2 (con stride 2), V7
-- 🟡 **#53** — Mini 6.1–6.3 ok sul meccanismo soglia/recall (6.3 **9**/10); residuo: obiezione numerica (6.2) e lettura CM a freddo
-- 🔴 **Pattern #6** — lettura incompleta delle consegne → 7 consegne con vincolo numerico esplicito
+- 🟢 **#49** — Mini 3.2 OK; Mini 3.1 fix `repeat` — chiusa in CONTESTO
+- 🟡 **#51** + **Pattern #28** — Mini 2.1/2.2 OK; V7 **9.5**/10 — quasi chiuso
+- 🟡 **#52** — TODO 3 fix `in_features` OK (2° tent. 8.5); bullet ancora deboli su 32=batch
+- 🟡 **#47** — Q1 ordine OK; spiegazione grafo/RAM soft
+- 🟢 **#50** — Q2 con floor — chiusa
+- 🟡 **#53** — TODO 4 denom OK; residuo Mini 6.2 obiezione numerica
+- 🔴 **Pattern #6** — TODO 6 / Mini 6.2
+- 📌 Debito prodotto C1–C8; TODO 8; P6 README
 
 ---
 
 ## Note per il capitolo successivo (mentor)
 
-- Il deliverable di questo capitolo (`busta_vs_altro.pt` + soglia scelta + metriche sul test) è l'input diretto del cap.10 (Gradio + deploy HuggingFace, portfolio piece #2).
-- Se il modello risultasse debole (recall busta paga < 0.85), valutare se il problema è il dataset "altro" troppo omogeneo prima di cambiare architettura.
+- Il deliverable di questo capitolo (`ants_vs_bees.pt` track prova; `busta_vs_altro.pt` = debito) è l'input del cap.10 (Gradio + deploy HuggingFace, portfolio piece #2).
+- **Chiusura 14/09/2026**: voto **8**/10; creato `10_progetto_gradio.py` + micro R09 09.A–E; residui P6/TODO 8 non bloccanti.
+- Se il modello prodotto (quando ci sarà) avesse recall busta < 0.85, valutare dataset "altro" troppo omogeneo prima di cambiare architettura.

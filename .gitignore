@@ -31,5 +31,9 @@ data/replica/
 data/buste_*/
 dati/buste_*/
 
+# Proxy Ants vs Bees (cap.09 track prova) + cache download
+modulo_03_dl_cv/dati/proxy_ants_bees/
+modulo_03_dl_cv/dati/_cache/
+
 # Download Fashion-MNIST locale (torchvision) — non versionare i binari
 modulo_03_dl_cv/dati/fashion_mnist/

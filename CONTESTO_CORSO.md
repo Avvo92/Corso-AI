@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 01/09/2026 — **Chiusura M3 cap.08** (CNN, voto **7**/10) + **creato `09_transfer_learning.py`** (capitolo completo, 1955 righe) e scheda libro `M03_C09_transfer_learning.md`. Media ~7.02 (29 cap). Prossimo: bridge **M03_R08** → prerequisiti privacy → cap.09.
+> **Ultimo aggiornamento**: 14/09/2026 — **Chiusura M3 cap.09** (transfer learning, voto **8**/10) + creato `10_progetto_gradio.py` (finale modulo) + micro bridge **M03_R09**. Media ~**7.05** (30 cap). TRACK PROVA Ants/Bees chiuso sul merito; debito buste C1–C8 esplicito.
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -40,12 +40,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | modulo_03_dl_cv/**09_transfer_learning.py** — ✅ **SCRITTO** il 01/09/2026 (1955 righe: Sez. 0 privacy, 1 transfer learning, 2 anatomia ResNet18 + freezing, 3 testa nuova + canali, 4 augmentation documenti, 5 fine-tuning due fasi, 6 metriche per classe; Q1–Q8, V1–V8, TODO 1–8, 🏗️ C1–C8). Prima di iniziare: bridge **M03_R08** + prerequisiti privacy (cartelle `data/buste_*`, script anonimizzazione, dataset "altro"). Qui entrano le **buste paga anonimizzate** (vincoli privacy 30/04/2026). |
-| **Ultimo completato** | modulo_03_dl_cv/**08_cnn_computer_vision.py** (01/09/2026) — Fashion-MNIST, `(N,C,H,W)`, `Conv2d`/`MaxPool`, `PiccolaCNN` **allenata su Colab**, feature maps, CrossEntropy target Long; 🔁 #27/#45/#46 chiusi; TODO 5 **9.5** (debito M3-07 tabellare chiuso); media primi tentativi ~**8.2** (36 valutazioni). **Voto difficoltà 7**/10. |
-| **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) |
-| **Difficoltà media** | ~**7.02** (29 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, 7, **7** = |
-| **Priorità attive** | 🔴 Pattern **#6** consegne; 🔴 Pattern **#28** catena dimezzamenti Pool; 🟡 **#48** `requires_grad`/autograd (C09 quasi chiusa); 🟡 **#49** canale vs batch; 🔴 **#52** debug numerico matmul; 🟡 #27; 🟡 **#47** `.item()` vs `backward`; 🟡 #50 `+1` in H_out; 🟡 #53 metriche multiclasse; 🟢 #45/#46; 🟡 E6 system design; ✅ progetto M3-07 chiuso. 📌 **Pre-M10:** ripasso React/Node (parcheggiato — `docs/ripasso_frontend_react/`). |
-| **Sessione corrente** | Sessione 28 |
+| **Capitolo in corso** | modulo_03_dl_cv/**10_progetto_gradio.py** — da aprire dopo bridge **M03_R09**. Demo Gradio + HuggingFace Spaces (portfolio #2). Pesi: track prova `ants_vs_bees.pt`; track prodotto `busta_vs_altro.pt` = **debito C1–C8**. |
+| **Ultimo completato** | modulo_03_dl_cv/**09_transfer_learning.py** (14/09/2026) — transfer ResNet18, freeze→head→`layer4`, ImageFolder, metriche/soglie; **TRACK PROVA** Ants vs Bees (Colab F2 val~90.7% / test~88.9%, track **8**/10); TODO 8 e P6 README residuali; C1–C8 buste = debito. **Voto difficoltà 8**/10 (lunghezza pipeline). |
+| **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) — **9/10 chiusi**, resta solo cap.10 |
+| **Difficoltà media** | ~**7.05** (30 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, 7, 7, **8** ↑ |
+| **Priorità attive** | 🔴 Pattern **#6** consegne; 🟡 **#48** `eval`≠`no_grad`≠freeze; 🟡 **#52** decomposizione matmul/`in_features` (fix ok, verbale soft); 🟡 **#53** obiezione numerica (Mini 6.2); 🟡 Pattern **#28**/#51 quasi chiusi su ResNet; 🟢 #49/#50; 🟡 #47 spiegazione grafo; 📌 debito **C1–C8** buste; 📌 **Pre-M10:** ripasso React/Node (parcheggiato). |
+| **Sessione corrente** | Sessione 29 |
 
 ---
 
@@ -56,11 +56,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 01/09/2026 |
-| **Cosa è stato fatto** | **Chiusura completa M3 cap.08** (voto **7**/10). Periodo 22/08 → 01/09: quiz ingresso Q1–Q8, rinforzi 🔁 #27/#45/#46, Sez. 1–5 con mini 1.1–5.2, 📚 [LIBRO] FC vs Conv+Pool, quiz verifica V1–V7, TODO 1–7, 🏗️ punto B (TODO 5 = debito tabellare M3-07 **chiuso**) e punto C (**PiccolaCNN allenata su Colab**). File cap.08 **non modificato** (protocollo H). |
-| **Errori emersi** | **Catena dimezzamenti Pool** (V4 3/10 "due pool" → 14; TODO 7 4/10 due `/2` per pool) → nuovo Pattern **#28**. **Lettura consegna** 4 volte (V4, TODO 3 "3 bullet", TODO 6a "5 controlli", Mini 2.2 "una riga") → #6 a 🔴. TODO 3 senza decomposizione numerica (`3200=32·10·10` vs `1568=32·7·7`). Q7 `.item()` a freddo (2/10, poi uso corretto in TODO 4/5). Q8 gradienti attribuiti al criterio invece che ad **autograd** (5.5). Mini 1.2 il `1` di `(1,28,28)` letto come batch invece che **canale** (5.5). Mini 2.1 `+1` dimenticato in H_out (6/10). |
-| **Cosa fare nella prossima sessione** | (1) bridge **`M03_R08`** (~15–20 min; Q1 shape HWC già fatto 3/10 → rifarlo); (2) **creare** `09_transfer_learning.py` con i rinforzi programmati (#48/#49/#51/#52 + 1→3 canali per ResNet); (3) verificare in preparazione le azioni propedeutiche privacy (cartelle `data/buste_*`, script anonimizzazione, dataset "altro" ~200 immagini). |
-| **Stato motivazione** | Buona: capitolo lungo ma percepito come il più lineare del modulo; molte riscritture spontanee dopo il feedback. Voto 7/10 stabile per il terzo capitolo di fila. |
+| **Data** | 14/09/2026 |
+| **Cosa è stato fatto** | **Chiusura formale M3 cap.09** (voto difficoltà **8**/10). Diagnosi completa da diario; creato `10_progetto_gradio.py` + diario C10 + micro **09.A–E** in bridge R09. Track prova Ants/Bees chiuso sul merito (Colab + soglie); debito buste C1–C8 e P6/TODO 8 documentati. |
+| **Errori emersi** | Residui da portare in C10: #48 eval/no_grad; #52 bullet matmul; #53 obiezione numerica; Pattern #6 (TODO 6); avgpool→512. |
+| **Cosa fare nella prossima sessione** | (1) Bridge **M03_R09** + micro 09.A–E; (2) aprire cap.10 Gradio; (3) portare `.pt` prova su Spaces; (4) opz. P6 README 5 righe nel diario C09. |
+| **Stato motivazione** | Motivato a chiudere il modulo con demo deployabile; ha accettato proxy vs buste per non bloccare l’apprendimento. |
 
 ---
 
@@ -74,7 +74,7 @@
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Riattivato (C08)** | 4 occorrenze in M3 cap.08: V4 ("dopo **due** MaxPool" → risposto come uno solo), TODO 3 ("3 bullet + fix" → paragrafo unico), TODO 6a ("**5** controlli" → prosa continua), Mini 2.2 ("**UNA** riga" → blocco). Antidoto: se la consegna contiene un **numero** o un **formato**, scriverlo come lista numerata prima di rispondere |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08+C09)** | C08: 4 occ. **C09:** Mini 6.2 (5/10), TODO 6 (5.5→7.5). Antidoto: se la consegna contiene un **numero** o un **formato**, scriverlo come lista numerata prima di rispondere |
 | 18 | Confusione Series vs DataFrame | 🟡 In miglioramento | Quiz cap.02 ok; consolidare su nuovi DataFrame |
 | 19 | `if var:` vs `is not None` per numeri opzionali | 🟡 In miglioramento | Rinforzo terminologico cap.02; evitare "null" in risposte |
 | 20 | Anti-pattern valutazione confuso con feature engineering | 🟡 In miglioramento | Rinforzato in cap.02 (blocco dedicato + quiz) |
@@ -84,13 +84,13 @@
 | 25 | **NUOVO — Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Da rinforzare | Cap.01 Ponte 4.1/5.1: `np.array` è una FUNZIONE (factory), il TIPO è `np.ndarray`. Per type hint stricter: `numpy.typing.NDArray`. Rinforzo cap.02 Ponte |
 | 26 | `h`/`eps` troppo piccolo in derivata/gradiente numerico | 🟡 In miglioramento | Cap.05 TODO 13: `eps=1e-12`, corretto a **`1e-6`** dopo feedback. Ricontrollare nel sanity check del cap.06 |
 | 27 | **Traduzione formula → codice: operatore / parentesi** | 🟡 In miglioramento | Cap.05–07 Micro 27.A. Quiz 08 Q3 (22/08) **post-fix 9.5**: `? = p` + perché (σ′ da probabilità, non label). Micro 27.B 8.5. Regola: simbolo per simbolo + assert. Monitorare in esercizi formula→codice |
-| 28 | **Catena di trasformazioni shape: conteggio dei dimezzamenti Pool** | 🔴 **Nuovo (C08)** | Due errori speculari: V4 (3/10) ha applicato **un solo** pool dove la consegna chiedeva due (28→14 invece di 28→7); TODO 7 (4/10) ha applicato **due** dimezzamenti per ogni singolo pool (64→16 invece di 64→32). Il concetto isolato è corretto (`MaxPool2d(2)` → H/2 **e** W/2, una volta). Antidoto: tabella `N,C,H,W` riga per riga, un layer per riga, senza salti |
+| 28 | **Catena di trasformazioni shape: conteggio dei dimezzamenti Pool** | 🟡 Quasi chiuso (C09) | C08: errori speculari. **C09:** Mini 2.1/2.2/V7 **9.5**. Antidoto: tabella `N,C,H,W` riga per riga, un layer per riga |
 
 ### Concetti da rinforzare per M2 (⚠️)
 
 | Concetto | Stato | Note breve |
 |----------|-------|------------|
-| Data leakage | 🟡 In miglioramento | Cap.02: esercizi + split per pratica in teoria; replicare su documenti reali |
+| Data leakage | 🟡 In miglioramento | Cap.02 ok; TODO 5 C09: 1° **7**/10, 2° **9.5**/10 (leakage + OOF/set diversi). Consolidato il riparo operativo |
 | Feature engineering | 🟡 In miglioramento | Cap.02: feature su case; estendere a dominio documentale |
 | loc vs iloc | 🟡 In miglioramento | Cap.02: rinforzo + esercizio `.iloc` vs `.loc` su case |
 | Series vs DataFrame | 🟡 In miglioramento | Quiz cap.02 ok; consolidare su nuovi dataset |
@@ -100,12 +100,12 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 48 | **Chi calcola i gradienti: `autograd`, non il criterio/loss** | 🟡 In miglioramento (C09) | Mini 2.3/3.4/5.1 ok su freeze. **Mini 5.3 4/10:** confuso `eval()` (= Dropout/BN inferenza) con freeze; `no_grad()` descritto come “non aggiornare grad” invece di “niente grafo”. Target: tre leve separate — `requires_grad`, `train`/`eval`, `no_grad` |
-| 49 | **Il `1` di `(1,28,28)` è il CANALE, non il batch** | 🟡 In miglioramento (C09) | Q3/Mini 3.2 ok (`squeeze` vs `permute`); Mini 3.1 primo tentativo 4/10 (`Grayscale` su batch invece di `repeat`). Consolidare: PIL→`Grayscale(3)` vs tensore `(N,1,H,W)`→`repeat(1,3,1,1)` |
-| 50 | **Formula H_out: il `+ 1` finale** | 🟡 Rinforzata in-capitolo | Mini 2.1 (23/08) **6/10** (25 invece di 26). Poi corretta e riusata bene in V2, Mini 5.1, TODO 7. Verificare al quiz d'ingresso cap.09 |
-| 51 | **Due Pool in serie / catena dei dimezzamenti** | 🔴 Nuova | V4 **3/10** (28→14 invece di 7) e TODO 7 **4/10** (64→16 invece di 32). Vedi Pattern **#28**. Rinforzo cap.09: percorso ResNet18 224→112→56→28→14→7 |
-| 52 | **Debug matmul: decomporre i numeri dell'errore** | 🟡 In miglioramento (C09) | TODO 3 **6.5**/10: sa che 256 è sbagliato e 512 viene dal backbone; manca esplicitare **32=batch**; FIX con `512` hardcoded (rompe resnet50). Target: 3 bullet completi + `Linear(modello.fc.in_features, 2)` |
-| 53 | **Metriche con classi sbilanciate: per classe / macro-F1** | 🟡 In miglioramento (C09) | Mini 6.1 **7.5**/10 (scambio recall/precision al primo tiro); Mini 6.2 **5**/10 (obiezione senza numeri); Mini 6.3 **9**/10 (abbassa soglia → +recall, −precision). CM: attenzione righe=vero. Target: obiezioni sempre con FN/TP concreti |
+| 48 | **`eval` ≠ freeze ≠ `no_grad` (tre leve)** | 🟡 In miglioramento (C09→C10) | C09 Mini 5.3: FA ok, NON FA soft. **C10 Q1 7/10:** stesso schema — FA `eval`/BN + FA `no_grad`/grafo ok; manca esplicitare NON FA (eval≠freeze/autograd; no_grad≠BN/Dropout). Verifica su Mini 48.A |
+| 49 | **Il `1` di `(1,28,28)` è il CANALE, non il batch** | 🟢 Superato (C09) | Q3 fix + Mini 3.2 9/10; Mini 3.1 `repeat` dopo 4/10. Consolidato PIL/`Grayscale` vs tensore `repeat` |
+| 50 | **Formula H_out: il `+ 1` finale** | 🟢 Superato (C09) | Q2 con `floor` OK; riusato su ResNet stem |
+| 51 | **Due Pool in serie / catena dei dimezzamenti** | 🟡 Quasi chiuso (C09) | Mini 2.1/2.2 **9.5**; V7 **9.5** su 320→10. Pattern #28 soft residuo (notazione MaxPool) |
+| 52 | **Debug matmul: decomporre i numeri dell'errore** | 🟡 In miglioramento (C09→C10) | TODO 3: 1° **6.5**, 2° **8.5** (`in_features` OK). Manca ancora esplicitare **32=batch** a freddo. Rinforzo Mini 52 in C10 |
+| 53 | **Metriche con classi sbilanciate: per classe / macro-F1** | 🟡 In miglioramento (C09→C10) | TODO 4 merito OK post-fix; **Mini 6.2 5/10** obiezione generica. Target: frase con FN/recall numerici |
 | 45 | **Retrieval 5-step backward + `loss.backward()`** | 🟢 Superato | Bridge R07 Q11: catena ok; fill-in corretto post-feedback. **Quiz ingresso cap.08 Q1 (22/08): `loss.backward()` a freddo 10/10**; Micro 45.A post-fix 9/10 |
 | 46 | **`map_location` GPU→CPU + DataLoader=batch** | 🟢 Superato | Q5/Q6 + Micro 46.B (23/08) **9.5/10** operativo; confermato V6 cap.08 **9.5/10** |
 | 47 | **`.item()` sulla loss prima di `backward`** | 🟡 Rinforzata in pratica | Quiz ingresso 08 Q7 (22/08): risposto “Prima” (**2/10**). Uso poi **corretto** in TODO 4 e TODO 5 (`.item()` dopo `backward`, media pesata). Verifica a freddo al quiz d'ingresso cap.09 |
@@ -147,14 +147,15 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo da creare** | ✅ **GIÀ CREATO** il 01/09/2026: modulo_03_dl_cv/**09_transfer_learning.py** completo. Tutti i rinforzi programmati sono stati iniettati e sono tracciati nel blocco **TRACCIA RINFORZI** in fondo al file (mappa lacuna → posizione), da verificare in chiusura. Prossimo file da creare: `10_progetto_gradio.py` (alla chiusura del cap.09). |
-| **Bridge obbligatorio prima** | **`M03_R08_after_C08_before_C09_cnn_to_transfer.md`** (Q1 shape HWC era 3/10 il 22/08 → ripetere) + micro 08.A–08.E aggiunti in chiusura. |
-| **Rinforzi da mettere in cap.09 (🔁)** | 🔴 **#48** `requires_grad`/autograd (chi calcola i gradienti); 🔴 **#49** il `1` di `(1,28,28)` è il **canale** → ponte perfetto: ResNet vuole **3** canali; 🔴 **#51** catena dimezzamenti (ResNet: 224 → 7 in 5 stage); 🔴 **#52** debug numerico matmul (`in_features` del nuovo head); 🟡 **#47** `.item()` vs `backward` (verifica al quiz d'ingresso); 🟡 **#53** metriche **per classe / macro-F1**, non solo recall binaria; 🟡 #6 consegne con formato numerato esplicito. |
-| **Libri** | ✅ Scheda creata: `docs/libri_corso/schede/M03_C09_transfer_learning.md`. **Correzione alla mappatura**: in [PYTORCH] 1ª ed. il fine-tuning è **§14.5.3** (non "cap. 12–13": il cap.13 è U-Net/segmentazione). Sezioni usate: cap. **2** (ResNet pre-addestrata, normalizzazione ImageNet), **§8.5.3** (profondità), **§12.6** (augmentation), **§12.3** (precision/recall), **§14.5.3** (freezing, depth-1 vs depth-2). [GERON] in `books/` è la **2ª ed.**: cap. 14 (ResNet/skip, pretrained, transfer learning pp. 500–512). |
-| **Concetti ⚠️ da monitorare** | 1 canale vs 3 canali (grayscale → ResNet); resize 28×28 → 224×224; freezing backbone vs fine-tuning; overfitting con ~200 immagini/classe; split **per cliente** (leakage). |
-| **Pattern 🔴 da monitorare** | 🔴 **#6** consegne (4 occorrenze in C08); 🔴 **#28** catena shape multi-layer; 🟡 #27. |
-| **Ponte mentale da riusare** | Conv = timbro/filtro Photoshop riusato; Pool = thumbnail che tiene il contrasto più forte; feature map = evidenziatore sulla pagina; transfer learning = manodopera specializzata di un altro cantiere. |
-| **Note** | `.gitignore` ha `data/buste_*/` e `dati/buste_*/`. **Prerequisiti privacy prima di aprire il capitolo**: cartelle `data/buste_originali|anonimizzate|altro`, script `anonimizza_buste.py` testato, dataset "altro" ~200 immagini. Training su Colab. |
+| **Capitolo da creare** | ✅ **GIÀ CREATO** il 14/09/2026 e **ESTESO** lo stesso giorno (484 → ~1750 righe) su richiesta dello studente: modulo_03_dl_cv/**10_progetto_gradio.py** (finale M3). Diario `M03_C10_progetto_gradio_sessione.md`. Impianto: **due assi di riuso** — modello (contratto di inferenza + checkpoint ricco, Sez. 1-2) e codice (`costruisci_modello`, `transform_eval`, `ClassificatoreVisivo`, Sez. 3 + 9 FastAPI); in mezzo Gradio e deploy Spaces (Sez. 4-8). |
+| **Bridge obbligatorio prima** | **`M03_R09_after_C09_before_C10_transfer_to_gradio.md`** + micro **09.A–E** (chiusura C09). |
+| **Rinforzi da mettere in cap.10 (🔁)** | 🟡 **#48** tre leve eval/no_grad/freeze; 🟡 **#52** matmul 32/512/256 + `in_features`; 🟡 **#53** obiezione numerica; 🔴 **#6** formato (3/5 bullet); AdaptiveAvgPool → 512 fisso; cold start Spaces. |
+| **Libri** | Inferenza/deploy: [PYTORCH] cap.14+ cenno; Gradio = docs ufficiali (non libro). Scheda dedicata opzionale se serve. |
+| **Concetti ⚠️ da monitorare** | `map_location` CPU; preprocess ImageNet identico al train; disclaimer privacy su Examples; path `.pt` nello Space; **`weights_only=True`** (default da torch 2.6 → nel checkpoint solo tipi base, Sez. 2.6); **ordine delle classi** letto dal checkpoint e non riscritto a mano (Sez. 1.3, è il bug silenzioso principe). |
+| **Prerequisito tecnico locale** | ⚠️ `torchvision` **non** installato nel `venv` (il cap.09 girava su Colab): serve per eseguire Sez. 3. Installarlo o limitarsi alla teoria. |
+| **Pattern 🔴 da monitorare** | 🔴 **#6** consegne; 🟡 #28 solo se riemerge su shape. |
+| **Ponte mentale da riusare** | Transfer = manodopera specializzata; Gradio = form upload senza frontend; Spaces = Streamlit Cloud del mondo HF. Nuovi nel cap.10: **contratto = etichetta sulla chiavetta USB**; **il bug che non crasha**; **core unico, due vetrine**; **cold start = prima query dopo il deploy**. |
+| **Note** | Portfolio #2 = URL Spaces. Debito **C1–C8** buste resta aperto fino a `busta_vs_altro.pt`. Fine cap.10 = FINE MODULO (archivio M3, scommentare M4). |
 
 > **Per l'agente**: dopo aver letto queste 4 sezioni (Stato, Ultima Sessione, Priorità Attive, Prossimo Capitolo), hai il 90% del contesto necessario. Prosegui con **Libri di riferimento** (se capitolo M3+), Regole Didattiche e Profilo qui sotto prima di produrre qualsiasi contenuto.
 
@@ -763,7 +764,7 @@ completezza del self-check e chiedere correzioni.
 |--------|-------|------------------------------|---------------------|-------|
 | 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore + anomaly + deploy | scikit-learn, streamlit | 🟢 **Completato** — archivio [`archivi/ARCHIVIO_MODULO_02.md`](archivi/ARCHIVIO_MODULO_02.md) |
 | **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, Dense — codice + Matplotlib | Fondamenta M3 (shape, `X @ W + b`, coseno) | numpy, matplotlib | 🟢 **Completato** 07/05/2026 — vedi `archivi/ARCHIVIO_PONTE_MATEMATICO.md` |
-| 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | 🟡 **In corso — 8/10 capitoli** (ultimo chiuso: cap.08 CNN, 01/09/2026). Restano: 09 transfer learning + buste anonimizzate, 10 Gradio + deploy HF Spaces |
+| 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | 🟡 **In corso — 9/10 capitoli** (ultimo chiuso: cap.09 transfer, 14/09/2026). Resta: **10 Gradio + deploy HF Spaces** |
 | 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | ⬜ Da creare |
 | 5 — LLM Integration & Prompt Engineering | API OpenAI, prompt engineering, structured output, function calling, Pydantic, Ollama, multimodale, sicurezza AI | Interfaccia intelligente: assistente operatore + structured extraction documenti variabili | openai, pydantic-ai, ollama | ⬜ Da creare |
 | 6 — RAG Systems | ChromaDB, LangChain, chunking, hybrid search, RAGAS evaluation, LangSmith observability | Compliance normativa: RAG su norme fiscali versionate con citazioni fonte | langchain, chromadb, ragas, langsmith | ⬜ Da creare |
@@ -840,8 +841,9 @@ completezza del self-check e chiedere correzioni.
 | **M3-06_backprop_training** | **7** | -2 ↓ vs M3-05. Confermato studente **03/08/2026**. Chiusura **anticipata** (file ~3000 righe): DoD core OK; residui → cap.07. Difficoltà percepita più da **volume** che da concetti isolati. Pattern #27 attivo (#42/#43). |
 | **M3-07_pytorch_intro** | **7** | = vs M3-06. Confermato studente **13/08/2026**. Chiusura **anticipata** (opzione A): DoD core OK; TODO 4–6 + 🏗️ → cap.08/R07. Pattern #27 Micro 27.A ancora 🔴; #42/#43/#44 🟢. |
 | **M3-08_cnn_computer_vision** | **7** | = vs M3-07 (terzo 7 di fila). Confermato studente **01/09/2026**. Chiusura **completa**: tutti i blocchi svolti, 🏗️ B (TODO 5, debito tabellare) + C (CNN su Colab) fatti. Media primi tentativi ~**8.2** su 36 valutazioni; post-feedback ~9. Punti bassi: V4 3/10 e TODO 7 4/10 (→ Pattern #28), Q7 2/10, Q8 5.5, Mini 1.2 5.5, TODO 3 6/10. Percepito lineare: cambia l'architettura, il training loop resta quello del 07. |
+| **M3-09_transfer_learning** | **8** | ↑ vs M3-08. Confermato studente **14/09/2026** (“per via della lunghezza di tutta la pipeline”). Transfer ResNet18 + TRACK PROVA Ants/Bees (Colab). Media primi tentativi ~**7.5–8**; track prova **8**/10. Residui: TODO 8 vuoto, P6 README, debito C1–C8 buste. Punti deboli: Mini 5.3 eval/no_grad 4/10, Mini 6.2 5/10, TODO 6 real-world 5.5. |
 
-**Media attuale**: ~**7.02** (29 capitoli con voto, incluso M3-08 = **7**). Trend M3: 8, 8, 8, 8, 9, 7, 7, **7** = — plateau stabile dopo il picco del 05.
+**Media attuale**: ~**7.05** (30 capitoli con voto, incluso M3-09 = **8**). Trend M3: 8, 8, 8, 8, 9, 7, 7, 7, **8** ↑ — ripresa dopo il plateau dei tre 7.
 
 ---
 
@@ -1038,37 +1040,53 @@ completezza del self-check e chiedere correzioni.
 | Termine | Definizione breve | Cap. | Contatore | Stato |
 |---------|-------------------|-----|-----------|-------|
 | Tensore | Array multi-dim su CPU/GPU; cugino di `ndarray` con autograd/device | M3-07 | 3/3 | ✅ |
-| `requires_grad` | Dice a PyTorch di tracciare le ops su quel tensore per `.backward()` / `.grad` | M3-07 | 1/3 | ⚠️ (Q8 cap.08: attribuito al criterio — lacuna #48) |
-| Autograd | Motore che costruisce il grafo e calcola i gradienti (`loss.backward()`) | M3-07 | 2/3 | ⚠️ (non incrementato: Q8 cap.08 sbagliato) |
-| `nn.Module` / `nn.Linear` | Blocco con `forward` e parametri; Linear = `X @ W.T + b` (weight out×in) | M3-07 | 3/3 | ✅ (PiccolaCNN + CnnBella + Sequential) |
+| `requires_grad` | Dice a PyTorch di tracciare le ops su quel tensore per `.backward()` / `.grad` | M3-07 | 2/3 | 🔄 (C09 freeze OK; #48 residuo su eval) |
+| Autograd | Motore che costruisce il grafo e calcola i gradienti (`loss.backward()`) | M3-07 | 2/3 | 🔄 |
+| `nn.Module` / `nn.Linear` | Blocco con `forward` e parametri; Linear = `X @ W.T + b` (weight out×in) | M3-07 | 3/3 | ✅ |
 | DataLoader | “Carrello”: batch + shuffle dal Dataset verso il training loop | M3-07 | 2/3 | 🔄 |
 | `zero_grad` | Azzera `.grad` **ogni** step/batch (altrimenti i gradienti si sommano) | M3-07 | 2/3 | 🔄 |
-| `state_dict` | Dict dei pesi (e opz. optimizer) da salvare/caricare | M3-07 | 2/3 | 🔄 |
-| `map_location` | Remap device al `load` (es. pesi Colab CUDA → CPU locale) | M3-07 | 1/3 | 🔄 |
+| `state_dict` | Dict dei pesi (e opz. optimizer) da salvare/caricare | M3-07 | 3/3 | ✅ (C09 save/load Colab) |
+| `map_location` | Remap device al `load` (es. pesi Colab CUDA → CPU locale) | M3-07 | 2/3 | 🔄 |
 | `BCEWithLogitsLoss` | BCE stabile su **logits** (no sigmoid a mano prima della loss) | M3-07 | 2/3 | 🔄 |
-| `.item()` | Scalare Python da tensore 0-dim; per **log**, non prima di `backward` sulla loss | M3-07 | 1/3 | ⚠️ (Q7 cap.08 sbagliato a freddo, uso corretto in codice — lacuna #47) |
+| `.item()` | Scalare Python da tensore 0-dim; per **log**, non prima di `backward` sulla loss | M3-07 | 2/3 | 🔄 (C09 Q1 ordine OK; grafo/RAM soft) |
 
 ### Modulo 3 — Cap.08 CNN e Computer Vision
 
 | Termine | Definizione breve | Cap. | Contatore | Stato |
 |---------|-------------------|-----|-----------|-------|
-| `(N, C, H, W)` | Convenzione PyTorch: batch, canali, altezza, larghezza. Matplotlib vuole `(H,W)` o `(H,W,C)` → `squeeze`/`permute` | M3-08 | 2/3 | 🔄 (il `1` letto come batch in Mini 1.2 — #49) |
-| Canale (C) | Piani sovrapposti della stessa griglia: grayscale=1, RGB=3, dopo un Conv = **numero di filtri** (non colori) | M3-08 | 1/3 | ⚠️ |
-| `nn.Conv2d` | Layer che fa scorrere `out_channels` kernel appresi sull'immagine: `(in_ch, out_ch, kernel_size, padding)` | M3-08 | 2/3 | 🔄 |
+| `(N, C, H, W)` | Convenzione PyTorch: batch, canali, altezza, larghezza. Matplotlib vuole `(H,W)` o `(H,W,C)` → `squeeze`/`permute` | M3-08 | 3/3 | ✅ |
+| Canale (C) | Piani sovrapposti della stessa griglia: grayscale=1, RGB=3, dopo un Conv = **numero di filtri** (non colori) | M3-08 | 3/3 | ✅ |
+| `nn.Conv2d` | Layer che fa scorrere `out_channels` kernel appresi sull'immagine: `(in_ch, out_ch, kernel_size, padding)` | M3-08 | 3/3 | ✅ |
 | Kernel / filtro | “Timbro” di pesi `k×k` appoggiato su ogni zona: prodotto-somma locale → una cella della mappa | M3-08 | 2/3 | 🔄 |
-| Padding / stride | `padding` aggiunge cornice (pad=1 con k=3 → H,W invariati); `stride` = passo dello scorrimento | M3-08 | 1/3 | 🔄 |
-| Formula `H_out` | `(H + 2*pad - k) / stride + 1` — il **`+ 1`** è la parte che si dimentica (#50) | M3-08 | 2/3 | 🔄 |
+| Padding / stride | `padding` aggiunge cornice (pad=1 con k=3 → H,W invariati); `stride` = passo dello scorrimento | M3-08 | 2/3 | 🔄 |
+| Formula `H_out` | `(H + 2*pad - k) / stride + 1` — il **`+ 1`** è la parte che si dimentica (#50) | M3-08 | 3/3 | ✅ |
 | Parameter sharing | Lo **stesso** filtro riusato su tutta l'immagine: pochi pesi + pattern riconosciuto ovunque | M3-08 | 2/3 | 🔄 |
 | Invarianza alla traslazione | Se il pattern si sposta, la CNN lo trova comunque; una rete dense dovrebbe reimparare altri pesi | M3-08 | 2/3 | 🔄 |
 | Feature map | Uscita di un Conv(+ReLU): una mappa per filtro che dice **dove** quel pattern si è attivato. Non sono probabilità | M3-08 | 2/3 | 🔄 |
-| `nn.MaxPool2d(2)` | Downsampling **fisso** (nessun peso appreso): max in ogni finestra 2×2 → H/2 e W/2, C invariato | M3-08 | 2/3 | ⚠️ (catena di più pool — #51 / Pattern #28) |
+| `nn.MaxPool2d(2)` | Downsampling **fisso** (nessun peso appreso): max in ogni finestra 2×2 → H/2 e W/2, C invariato | M3-08 | 2/3 | 🔄 (#51 soft) |
 | `nn.CrossEntropyLoss` | Multiclasse: fa `log_softmax` + NLL **dentro**. Vuole logits `(N,C)` float e target `(N,)` **Long** | M3-08 | 2/3 | 🔄 |
 | NLL (negative log-likelihood) | “Quanto sei sicuro della classe giusta”, in negativo: `-log(p_classe_vera)` | M3-08 | 1/3 | 🔄 |
 | Logits multiclasse | Punteggi grezzi `(N, 10)` in uscita dal `Linear` finale: **non** probabilità (il softmax è nella loss) | M3-08 | 2/3 | 🔄 |
 | `torch.flatten(x, 1)` | Tiene la dim 0 (batch) e schiaccia da C in poi: `(N,32,7,7)` → `(N,1568)` | M3-08 | 2/3 | 🔄 |
-| `argmax(dim=1)` | Per ogni riga del batch, indice del logit più alto = classe predetta | M3-08 | 1/3 | 🔄 |
-| `model.train()` / `model.eval()` | Modalità del modulo (dropout/batchnorm); `eval()` + `torch.no_grad()` in valutazione | M3-08 | 1/3 | 🔄 |
-| Fashion-MNIST | 60k+10k immagini 28×28 grayscale, 10 classi di abbigliamento; dataset pubblico low-stakes | M3-08 | 1/3 | 🔄 |
+| `argmax(dim=1)` | Per ogni riga del batch, indice del logit più alto = classe predetta | M3-08 | 2/3 | 🔄 |
+| `model.train()` / `model.eval()` | Modalità del modulo (dropout/batchnorm); `eval()` + `torch.no_grad()` in valutazione | M3-08 | 1/3 | ⚠️ (#48 confusione con freeze) |
+| Fashion-MNIST | 60k+10k immagini 28×28 grayscale, 10 classi di abbigliamento; dataset pubblico low-stakes | M3-08 | 2/3 | 🔄 |
+
+### Cap.09 M3 — Transfer learning
+
+| Termine | Definizione breve | Introdotto in | Volte usato senza aiuto | Stato |
+|---------|-------------------|---------------|-------------------------|-------|
+| Transfer learning | Riusare backbone pre-addestrato (es. ImageNet) e adattare la testa / ultimi layer al tuo task | M3-09 | 2/3 | 🔄 |
+| Fine-tuning | Sbloccare e riallenare anche parte del backbone (qui `layer4`) con LR basso | M3-09 | 2/3 | 🔄 |
+| Freezing / `requires_grad=False` | Bloccare l’update dei pesi; forward resta attivo | M3-09 | 2/3 | 🔄 (#48 soft su eval) |
+| ImageNet | Dataset ~1.2M img / 1000 classi (ILSVRC); fonte dei pesi DEFAULT e di mean/std Normalize | M3-09 | 2/3 | 🔄 |
+| `fc.in_features` | Dimensione ingresso della testa Linear (512 ResNet18; 2048 ResNet50) — non hardcodare | M3-09 | 2/3 | 🔄 (#52) |
+| ImageFolder | Dataset da cartelle = classi; `class_to_idx` alfabetico | M3-09 | 2/3 | 🔄 |
+| Split per gruppo | Non spezzare lo stesso cliente/azienda tra train e val/test (anti-leakage) | M3-09 | 1/3 | 🔄 |
+| Depth-1 vs depth-2 | Solo testa vs testa+ultimo blocco conv ([PYTORCH] §14.5.3) | M3-09 | 0/3 | ⚠️ (TODO 8 non svolto) |
+| Precision / Recall / F1 | TP/(TP+FP), TP/(TP+FN), media armonica; guardie denom=0 | M3-09 | 2/3 | 🔄 (#53) |
+| Soglia di decisione | Taglio su probabilità classe positiva: ↑ soglia → ↑ precision, ↓ recall (tipico) | M3-09 | 2/3 | 🔄 |
+| AdaptiveAvgPool2d((1,1)) | Collassa H×W → 1×1 per canale → vettore fisso (512) indipendente dalla risoluzione | M3-09 | 1/3 | 🔄 |
 
 ---
 
@@ -1176,6 +1194,21 @@ completezza del self-check e chiedere correzioni.
 | 19 | Le metriche (accuracy/precision/recall) valgono in multiclasse? | Sì, ma **per classe** + medie (macro/weighted): con classi sbilanciate l'accuracy globale inganna (lacuna #53) |
 | 20 | Strategie se CSV e nomi file sono disallineati | Join per nome file/id normalizzato, scarto dei non appaiati, verifica label duplicate/conflitti, split senza mescolare la stessa fonte |
 
+### Cap.09 M3 — Transfer learning
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | Cos'è ImageNet? | ~1.2M immagini / 1000 classi (ILSVRC); pesi ResNet + mean/std Normalize; classi sbilanciate verso animali |
+| 2 | Come sappiamo che i primi layer imparano bordi/texture? | Pesi `conv1` visualizzabili; feature maps; esperimenti di freezing (Yosinski); limiti: neuroni polisemantici, texture bias |
+| 3 | Conv2d è 2D anche con 3 canali? | Sì: “2D” = scorre su H×W; i canali entrano nel kernel `(out,in,k,k)` e collassano insieme |
+| 4 | Shape `(1,28,28)`: manca un asse? | No: C=1 grayscale; stessi 3 assi di RGB; `squeeze` toglieva l’asse taglia-1 per il plot |
+| 5 | TODO 7 cap.08: shape ok ma traccia formula? | Sì rischio: infilare **canali** in `H_out` — in formula entrano solo H_in, pad, k, stride |
+| 6 | `.numel()` | Numero totale di elementi del tensore (utile per contare parametri) |
+| 7 | `fc` = ? | Fully connected = `nn.Linear` in coda a ResNet |
+| 8 | CenterCrop vs RandomResizedCrop | Eval deterministico vs train random |
+| 9 | `eval` vs `no_grad` vs freeze | Tre leve separate (#48) |
+| 10 | TRACK PROVA Ants/Bees | Proxy didattico; bees=1 come busta; debito C1–C8 buste dichiarato |
+
 ---
 
 ## Pattern di Errore Ricorrenti — Solo Attivi
@@ -1185,7 +1218,7 @@ completezza del self-check e chiedere correzioni.
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Riattivato (M3 cap.08)** | Persistito nel M1. Riemerso M3 cap.06 (27/07): conteggio anelli non dato. **M3 cap.08 (26/08–01/09): 4 occorrenze** — V4 “dopo **due** MaxPool”, TODO 3 “**3 bullet** + fix”, TODO 6a “**5** controlli”, Mini 2.2 “**UNA** riga”. Sintomo: il **numero** o il **formato** richiesto nella consegna evapora. Antidoto operativo: trascrivere la consegna come lista numerata vuota e riempirla |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08+C09)** | C08: 4 occorrenze. **C09:** Mini 2.4 “due righe”, Mini 6.2 “UNA obiezione sui numeri” (5/10), TODO 6 “5 punti + motivo” (5.5→7.5). Antidoto: lista numerata vuota prima di scrivere |
 | 18 | **Confusione Series vs DataFrame** | 🟡 In miglioramento | Rinforzato cap.01-02; quiz cap.02 ok |
 | 19 | **`if var:` vs `is not None` per numeri opzionali** | 🟡 In miglioramento | Emerso cap 12 — rinforzo terminologico cap.02 |
 | 20 | **Anti-pattern valutazione vs feature engineering** | 🟡 In miglioramento | Quiz cap.01 + rinforzo cap.02 |
@@ -1196,7 +1229,7 @@ completezza del self-check e chiedere correzioni.
 | 25 | **Type hint NumPy `v: np.array` invece di `v: np.ndarray`** | 🟡 Nuovo (Ponte cap.01) | Nelle funzioni `norma` e `coseno` ha scritto `def norma(v: np.array)`. `np.array` è la FACTORY function, il tipo è `np.ndarray`. Per type hint moderni: `from numpy.typing import NDArray; def norma(v: NDArray) -> float`. Rinforzo cap.02 Ponte. |
 | 26 | **`h`/`eps` troppo piccolo in derivata/gradiente numerico** | 🟡 In miglioramento (M3 cap.04→05) | Ha usato `eps=1e-24` (C4) e `h=1e-16` (TODO 12) → risultati instabili. Cap.05 TODO 13: ancora `eps=1e-12`, corretto a **`1e-6`** dopo feedback. Ricontrollare nel sanity check cap.06. |
 | 27 | **Traduzione formula → codice: operatore sbagliato** | 🟡 In miglioramento (M3) | Cap.05–07 Micro 27.A `(1-y)` vs `(1-p)`. Quiz 08 Q3 post-fix: perché ok (σ′ da p). Antidoto: simbolo per simbolo + assert. |
-| 28 | **Catena shape: conteggio dei dimezzamenti nei Pool** | 🔴 Nuovo (M3 cap.08) | V4 (3/10): applicato **un** pool dove la consegna chiedeva **due** (28→14 invece di 7). TODO 7 (4/10): **due** dimezzamenti per **un** pool (64→16 invece di 32). Il singolo layer lo sa; si rompe la catena. Antidoto: tabella `N,C,H,W` con **una riga per layer**, mai due passi in una riga. Rinforzo cap.09 su ResNet18 (224→112→56→28→14→7) |
+| 28 | **Catena shape: conteggio dei dimezzamenti nei Pool** | 🟡 Quasi chiuso (C09) | C08: V4 3/10, TODO 7 4/10. **C09:** Mini 2.1/2.2 **9.5**, V7 **9.5** (320→10). Residuo: notazione `MaxPool(2)` vs `MaxPool2d(k=3,s=2,p=1)`. Antidoto invariato: una riga per layer |
 
 Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠️ Da consolidare | 🟢 Superato
 
@@ -1268,6 +1301,13 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠�
 | "MaxPool = thumbnail che tiene il contrasto più forte" | In ogni finestra 2×2 sopravvive solo il massimo: griglia più piccola, tolleranza ai piccoli spostamenti, nessun peso appreso | Generare una miniatura di un'immagine caricata | M3-08 | Downsampling ResNet, campo ricettivo, pooling globale |
 | "Feature map = evidenziatore sulla pagina" | Ogni filtro produce una mappa che dice **dove** il suo pattern si è accesso: 16 filtri = 16 evidenziatori diversi sullo stesso capo | 16 layer di annotazione sopra lo stesso screenshot | M3-08 | Interpretabilità CNN (cap.09/10), Grad-CAM, debug modelli visivi |
 | "Target CrossEntropy = numero del cassetto, non 10 adesivi" | Con classi mutuamente esclusive basta l'**indice** della classe vera (Long); one-hot è ridondante | Passare un ID invece dell'intero record | M3-08 | Classificazione multiclasse M4/M5, token id nei modelli linguistici |
+| "Transfer learning = manodopera specializzata di un altro cantiere" | Backbone già addestrato su ImageNet; cambi la testa e ritocchi gli ultimi piani | Assumere un senior e riqualificarlo sul tuo dominio | M3-09 | Fine-tuning M8, LoRA “stanza in più” |
+| "Tre leve: freeze / eval / no_grad" | Chiavi motore / spegni prova random / non filmare il viaggio | Flag indipendenti in un deploy | M3-09 | Inferenza Spaces (cap.10), serving produzione |
+| "AdaptiveAvgPool = imbuto a 1×1" | Qualunque H×W → vettore fisso di C canali | Thumbnail che collassa tutto in un pixel per piano | M3-09 | Teste classificazione indipendenti dalla risoluzione |
+| "Contratto di inferenza = etichetta sulla chiavetta USB" | Il `.pt` è la ricetta scritta in numeri; il contratto (arch, classi ordinate, size, mean/std, soglia, versione) è l'etichetta senza la quale nessuno rifà la torta | Dump `.sql` nudo vs dump + schema + encoding + versione DB | M3-10 | Model card, `/info` FastAPI, versioning modelli MLOps (M9) |
+| "Il bug che non crasha" | 5 voci su 6 del contratto, se sbagliate, non danno eccezione: il sistema risponde con sicurezza la cosa sbagliata (classi invertite, mean/std diversi) | Encoding sbagliato che non dà errore ma mostra caratteri storti | M3-10 | Validazione input produzione, monitoring predizioni (M9) |
+| "Core unico, due vetrine" | `ClassificatoreVisivo` non sa chi la chiama: Gradio disegna barre, FastAPI serializza JSON, la logica è la stessa | Service Laravel riusato da un controller web e da un comando artisan | M3-10 | API prodotto M10, riuso fra prototipo e produzione |
+| "Cold start = prima query dopo il deploy" | Lento perché paghi setup (container, import torch, 45 MB di pesi, primi buffer), non perché il modello "si scaldi" | Connessione DB e warm-up del pool alla prima richiesta | M3-10 | Latenza serving, misura p50/p95, ottimizzazione boot |
 
 ### Come usare questa sezione
 Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente:
@@ -1390,6 +1430,17 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - **Da consolidare**: catena dei dimezzamenti su più Pool (Pattern #28), debug numerico dell'errore matmul, `requires_grad`/autograd a parole, canale vs batch in `(1,28,28)`, metriche per classe in multiclasse.
 - Diario: `sessioni_capitoli/M03_C08_cnn_computer_vision_sessione.md` (36 valutazioni + 20 domande).
 
+### Cap.09 M3 — Transfer learning (completato 14/09/2026; voto difficoltà: **8**/10)
+
+- **Transfer learning**: ResNet18 ImageNet → testa binaria; analogia “manodopera specializzata”; early vs deep layers (residuo lessicale soft su V8).
+- **Freezing / fine-tuning a due fasi**: head-only poi `layer4` con LR differenziati; Adam param groups.
+- **`fc.in_features`**: portabilità ResNet18/50 (TODO 3 fix 8.5); decomposizione verbale matmul ancora soft (#52).
+- **Dati**: `ImageFolder`, `class_to_idx` alfabetico, split per gruppo, augmentation documenti (niente flip) vs foto naturali OK.
+- **Metriche**: precision/recall/F1 con guardie denom; soglie; Mini 6.2 obiezione numerica ancora debole (#53).
+- **🏗️ TRACK PROVA**: Ants vs Bees (`prepara_dataset_proxy_ants_bees.py`); Colab F2 val~90.7% / test~88.9%; track **8**/10. **Debito prodotto C1–C8** buste esplicito.
+- **Residui non bloccanti**: TODO 8 depth-1/2 vuoto; P6 README 5 righe; bug minori path `.pt` nel file Colab.
+- Diario: `sessioni_capitoli/M03_C09_transfer_learning_sessione.md`.
+
 ---
 
 ## Checklist di Auto-Revisione (prima di consegnare il codice)
@@ -1432,6 +1483,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - [ ] **Immagini:** il primo `1` di `(1, 28, 28)` è il **canale** (`C`), non il batch né le righe?
 - [ ] **Consegna con un numero o un formato** ("3 bullet", "5 controlli", "UNA riga", "dopo **due** pool"): l'ho rispettato alla lettera? (Pattern #6)
 - [ ] **Metriche con classi sbilanciate:** ho guardato precision/recall **per classe** o macro-F1, non solo l'accuracy globale?
+- [ ] **Obiezione “sui numeri”:** se chiedo una critica all’accuracy, cito FN/recall/precision concreti (non solo “non basta”)?
+- [ ] **Tre leve inferenza:** `eval()` (Dropout/BN) ≠ `no_grad()` (grafo) ≠ freeze (`requires_grad`)?
+- [ ] **`in_features`:** uso `modello.fc.in_features` (o equivalente) invece di hardcodare 512?
 - [ ] **Matplotlib:** ho scritto `plt.show()` **con le parentesi**? E ho salvato con `savefig` **prima** di `show()`?
 - [ ] **Confronto con None:** ho usato `is None` e non `== None`?
 - [ ] **In un file con molti esercizi in sequenza**, il modello che passo a `predict` o ai coefficienti è lo stesso su cui ho fatto l’ultimo `.fit` coerente con X/y?
@@ -1509,13 +1563,15 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | Catena `dL/dW1` (5 anelli) | 27/07 (cap.05 M3) | ✅ cap.06 🔁 #39 + Q2 | bridge R06 | — | 🟢 |
 | Training loop + cache | 03/08 (cap.06 M3) | quiz ingresso cap.07 | autograd sez.2 + V3 | — | 🟢 Loop PyTorch ok; residuo soft 5-step a parole (#45) |
 | Scaler parentesi / clip p | 31/07 (cap.06) | ✅ #42/#43 cap.07 | — | — | 🟢 |
-| Autograd / `requires_grad` / `backward` | 13/08 (cap.07) | ✅ quiz ingresso 08 Q1/Q2 (backward 10/10) | ❌ Q8 cap.08 (5.5): gradienti attribuiti al criterio | quiz ingresso cap.09 + freezing backbone | ⚠️ Lacuna **#48** — `requires_grad` come “tracciamento ops”, non “chiedere il gradiente” |
+| Autograd / `requires_grad` / `backward` | 13/08 (cap.07) | ✅ quiz ingresso 08 Q1/Q2 (backward 10/10) | ⚠️ Mini 5.3 C09 eval≠no_grad | quiz ingresso + Mini 48 cap.10 | ⚠️ Lacuna **#48** |
 | DataLoader + `map_location` | 13/08 (cap.07) | ✅ quiz ingresso 08 Q5/Q6 (#46) | ✅ V6 cap.08 9.5 + TODO 5 DataLoader su Dataset custom | — | 🟢 |
-| `state_dict` / checkpoint | 13/08 (cap.07) | ✅ cap.08 save CNN su Colab | cap.09 salvataggio modello fine-tuned | — | 🟡 |
-| Shape `(N,C,H,W)` + formula `H_out` | 25/08 (cap.08) | ✅ V1/V2 10/10 | ⚠️ Mini 2.1 senza `+1` (#50) | quiz ingresso cap.09 | 🟡 |
-| Catena Conv/Pool → `in_features` del Linear | 25/08 (cap.08) | ❌ V4 3/10, TODO 7 4/10 (Pattern #28) | corretti post-feedback | 🔁 cap.09 su ResNet18 (224→7) | 🔴 Rinforzo attivo |
-| `CrossEntropyLoss` + target Long | 26/08 (cap.08) | ✅ Mini 4.2 post-fix 9.5 | cap.09 (binario: BCE vs CE a 2 classi) | — | 🟡 |
-| Feature maps / interpretabilità | 26/08 (cap.08) | ✅ Mini 5.1 9.5 + 5.2 9.5 | cap.09/10 (cosa guarda il modello sulle buste) | — | 🟡 |
+| `state_dict` / checkpoint | 13/08 (cap.07) | ✅ cap.08 save CNN su Colab | ✅ C09 save/load ants_vs_bees | cap.10 load Spaces | 🟢 |
+| Shape `(N,C,H,W)` + formula `H_out` | 25/08 (cap.08) | ✅ V1/V2 10/10 | ✅ C09 Q2 + ResNet stem | — | 🟢 |
+| Catena Conv/Pool → `in_features` del Linear | 25/08 (cap.08) | ❌ V4 3/10, TODO 7 4/10 (Pattern #28) | ✅ C09 Mini 2.1/2.2/V7 9.5 | Mini 52 cap.10 (verbale) | 🟡 |
+| `CrossEntropyLoss` + target Long | 26/08 (cap.08) | ✅ Mini 4.2 post-fix 9.5 | ✅ C09 CE a 2 classi | — | 🟢 |
+| Feature maps / interpretabilità | 26/08 (cap.08) | ✅ Mini 5.1 9.5 + 5.2 9.5 | C09 filtri/conv1 in chat | cap.10 demo | 🟡 |
+| Transfer learning due fasi | 14/09 (cap.09) | ✅ pipeline Colab F1→F2 | — | cap.10 cold start / load | 🟡 |
+| Metriche + soglia classe positiva | 14/09 (cap.09) | ✅ TODO 4 + loop soglie track | ⚠️ Mini 6.2 5/10 | Mini 53 cap.10 | 🟡 |
 
 > **Regola per l'agente**: questa tabella va estesa a ogni nuovo capitolo M2+.
 > I concetti M1 con stato OK/Consolidato restano come riferimento ma non richiedono piu ripasso attivo.
@@ -1586,12 +1642,12 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 45 | **Retrieval 5-step backward + fill-in `loss.backward()`** | Cap.07 TODO 4 (13/08/2026) | Formula compressa; fill-in `auto_grad()` invece di `loss.backward()` / autograd; manca ReLU/layer2. | Cap.08 quiz ingresso + bridge R07 | 🟢 Quiz ingresso 08 Q1 (22/08): ordine + `loss.backward()` a freddo |
 | 46 | **`map_location` GPU→CPU + DataLoader=batch (Feynman)** | Cap.07 V5/V6 (13/08/2026) | V5 generica; V6 senza “pacchetti/batch”. | Cap.08 quiz ingresso | 🟢 Micro 46.B 23/08 + Q5/Q6 |
 | 47 | **`.item()` vs `backward` sulla loss** | Quiz ingresso 08 Q7 (22/08/2026) | Risposto “Prima” invece di **Dopo** (log); rischio `loss = loss.item()` che spezza il grafo. | Uso corretto in cap.08 TODO 4 e TODO 5; cap.09 Q1: ordine **dopo** ✅ a freddo (5.5/10) ma manca spiegazione grafo/RAM | 🟡 |
-| 48 | **`requires_grad` / chi calcola i gradienti** | Quiz ingresso 08 Q8 (23/08/2026) | Risposta 5.5/10: flag collegato al backward ma calcolo attribuito al **criterio/loss**. Il calcolo lo fa **autograd**; il flag serve a **tracciare le operazioni** e costruire il grafo, così al `backward` viene riempito `.grad`. | Cap.09 🔁 — collegamento naturale: **freezing del backbone** = `requires_grad=False` sui parametri pre-addestrati | 🔴 |
+| 48 | **`requires_grad` / `eval` / `no_grad` (tre leve)** | Quiz 08 Q8 + C09 Mini 5.3 | Freezing/forward OK in C09; Mini 5.3 primo **4**/10 poi **8**/10 (`eval`≠freeze≠`no_grad`). | Cap.10 Mini 48 + Sez.3 | 🟡 |
 | 49 | **Il `1` di `(1,28,28)` è il canale, non il batch** | Mini 1.2 cap.08 (23/08/2026) | Letto come batch / numero di righe. `squeeze()` toglie le dimensioni di size 1 (qui **C**), non le righe; `permute` serve per `(C,H,W)`→`(H,W,C)` su RGB. | cap.09 Q3: primo tentativo 5/10 (`unsqueeze`); fix `squeeze` → 9/10; lacuna **🟢** su Q3 | 🟢 |
 | 50 | **Formula `H_out`: il `+ 1` finale** | Mini 2.1 cap.08 (23/08/2026) | 6/10: `(28+0-3)/1 = 25` senza `+1` → risposta 25 invece di **26**. Poi corretta e riusata bene in V2, Mini 5.1, TODO 7. | cap.09 Q2: primo tentativo 8/10; fix con `floor` → 9/10; lacuna **🟢** su questo esercizio | 🟢 |
-| 51 | **Catena dei dimezzamenti su più Pool** | V4 (3/10) + TODO 7 (4/10) cap.08 (26/08–01/09) | V4: applicato un solo pool dove la consegna diceva **due** (28→14 invece di 7). TODO 7: **due** dimezzamenti per un solo pool (64→16 invece di 32). Vedi Pattern **#28**. | Cap.09 🔁 — tabella shape ResNet18: 224→112→56→28→14→7 + micro con 3 pool | 🔴 |
-| 52 | **Debug matmul: decomporre i numeri dell'errore** | TODO 3 cap.08 (26/08/2026) | 6/10: zona giusta (flatten vs `Linear`) ma nessuna diagnosi numerica e formato “3 bullet + fix” non rispettato. `3200 = 32·10·10` (mappe 10×10) vs `1568 = 32·7·7` (attese 7×7) → manca un pool. | Cap.09 🔁 — DEBUG dedicato sul calcolo di `in_features` del nuovo classifier head | 🔴 |
-| 53 | **Metriche con classi sbilanciate: per classe / macro-F1** | TODO 6c cap.08 (28/08/2026) | 8.5/10: recall corretta come direzione, ma framing binario su uno scenario multiclasse (“foto prodotti”). Serve precision/recall **per classe** + macro-F1 + confusion matrix. | Cap.09 sez. valutazione (riuso metriche M2 cap.04 su busta-vs-altro) | 🟡 |
+| 51 | **Catena dei dimezzamenti su più Pool** | V4 (3/10) + TODO 7 (4/10) cap.08 (26/08–01/09) | Errori speculari conteggio pool in C08. | C09 Mini 2.1/2.2/V7 **9.5** — quasi chiuso | 🟡 |
+| 52 | **Debug matmul: decomporre i numeri dell'errore** | TODO 3 C08 + C09 | C09: 1° **6.5**, 2° **8.5** (`in_features` OK); 32=batch ancora soft a freddo | Cap.10 Mini 52 | 🟡 |
+| 53 | **Metriche / obiezione numerica** | TODO 6c C08 + Mini 6.2 C09 | Mini 6.2 **5/10** generica; TODO 4 guardie denom OK post-fix | Cap.10 Mini 53 | 🟡 |
 | 40 | **Feynman gradient descent** — manca il ciclo iterativo | Quiz verifica V8 cap.05 (27/07/2026) | Analogia della collina corretta e vincoli lessicali rispettati, ma la risposta descrive **dove guardare**, non il ciclo "senti → fai un passo → risenti → ripeti" né l'effetto della **dimensione del passo**. Rinforzo: quiz ingresso cap.06 Q7 (Feynman backprop) + bridge R05 es.11. **27/07: Q7 saltata per scelta dello studente** → verifica spostata a fine cap.06, dopo la backprop in codice. | M3 fine cap.06 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
@@ -1633,6 +1689,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 5 domande derivata/gradiente/vanishing/p-y | M3-04 | Mid — ML/DL fondamentali | Derivata vs pendenza, sigmoid 0.25, vanishing, chain rule p-y | ⚠️ 7/10 — definizione derivata da rafforzare |
 | Chain rule + GD + learning rate (V1–V8) | M3-05 | Mid — DL fondamentali | Definizione chain rule, formula update GD, sintomi lr, debug segno `+`/`-`, previsione output GD, 5 derivate per `dL/dW1`, Feynman | ⚠️ ~8.3/10 medio — **V7 5/10** (catena W1) e **V8 7/10** (Feynman senza ciclo) da riprovare a freddo |
 | Spiega Conv / Pool / feature map e perché non flatten+MLP | M3-08 | Mid — DL & Computer Vision | Convoluzione a parole senza formule, ruolo del pooling, cos'è una feature map, critica alla rete fully-connected su pixel | ✅ Risolto (**8/10** primo tentativo — “feature map” non nominata; **9.5** post-fix). Da riprovare a freddo con l'analogia web |
+| Transfer learning vs scratch + due fasi | M3-09 | Mid — DL & Computer Vision | Perché pretrained con pochi dati; freeze→head→layer4; quando cambiare idea | ✅ TODO 1 **8.5**/10 (2° **9.5**) |
 | Rimuovi duplicati da lista | 04 | Junior — classico | Iterazione, `not in`, costruzione lista di appoggio | ✅ Risolto (logica corretta, mancava incapsulamento in funzione) |
 | Inverti lista senza .reverse() | 04 | Junior — classico | Cicli, `.insert(0)`, `range()` con passo negativo | ✅ Risolto (con errori: `== l` superfluo, seconda versione usa [::-1] vietato) |
 | Elemento più frequente | 04 | Junior/Mid — frequente | `max()` con lambda, `.count()` | ✅ Risolto perfettamente al primo tentativo |
@@ -1650,7 +1707,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 07 — NumPy | Normalizzazione di un array, distanza euclidea, operazioni su matrici | ✅ |
 | 09 — Pandas | Pulizia dati con valori mancanti, group by + aggregazione, pivot table | ✅ |
 | M2 — ML | Train/test split manuale, calcolo accuratezza, feature scaling, "spiega overfitting" | 🟡 (metriche classificazione es.3 cap.04 ok; completare con validazione cap.05) |
-| M3 — DL & CV | Spiegare backpropagation a parole, costruire un modello semplice, leggere una loss curve | 🟡 (cap.08: Conv/Pool/feature map + CNN vs FC ok; restano loss curve e diagnosi overfitting → cap.09/10) |
+| M3 — DL & CV | Spiegare backpropagation a parole, costruire un modello semplice, leggere una loss curve | 🟡 (cap.09: transfer + metriche + Colab OK; restano Gradio deploy + loss curve overfitting in demo C10) |
 | M4 — NLP | "Cos'è un embedding?", "Come funziona un Transformer?", similarità coseno a mano | ⬜ |
 | M5 — LLM | "Progetta un chatbot con function calling", prompt engineering sotto pressione, "cos'è il prompt injection?" | ⬜ |
 | M6 — RAG | "Progetta un RAG per 10M documenti", "che chunking strategy useresti?", "come valuti la qualità del RAG?" | ⬜ |
@@ -1786,7 +1843,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M3 cap.06 — Backprop + Training | ✅ Chiusura anticipata (03/08/2026) | PIPE `train_rete_2_layer_completo` + mini-progetto rete CSV M2 vs LogReg (~8/10). Quiz V / CONFRONTO / TODO 18–19 migrati a cap.07. Voto **7**/10. **Sezione 🏗️ prodotto:** rete addestrata su feature tabellari M2 (ponte verso ramo visivo) |
 | M3 cap.07 — PyTorch intro | ✅ Debito chiuso (01/09/2026) | Chiusura anticipata 13/08; DoD PyTorch core OK. **🏗️ progetto M3-07 recuperato nel cap.08** via TODO 5 (`TabularDataset` + `DataLoader` + `BCEWithLogitsLoss`, 9.5/10). Voto **7**/10. |
 | M3 cap.08 — CNN e Computer Vision | ✅ Completato (01/09/2026) | 🏗️ **A**: prodotto non toccato (solo Fashion-MNIST, nessuna busta — privacy). 🏗️ **B**: debito tabellare M3-07 chiuso con TODO 5. 🏗️ **C**: `PiccolaCNN` allenata su **Colab** (subset/full Fashion-MNIST). Deliverable didattici: CNN funzionante, griglia feature maps, `CnnBella` rifattorizzata. Voto **7**/10. **Da fare al cap.09**: state_dict del modello visivo destinato al prodotto (`prob_busta_paga_visivo`). |
-| M3 — DL & CV (portfolio CNN cap.10) | 🟡 Pianificato | Deliverable deciso (30/04/2026): classificatore "busta paga vs altro" … Cap.08 = CNN su Fashion-MNIST (no buste); buste dal cap.09. |
+| M3 cap.09 — Transfer learning | ✅ Completato (14/09/2026) | 🏗️ **TRACK PROVA** Ants vs Bees: dataset proxy + Colab due fasi → `.pt` (val~90.7%, test~88.9%); track **8**/10. **TRACK PRODOTTO** C1–C8 buste = **debito** (nessun `busta_vs_altro.pt` ancora). Voto difficoltà **8**/10. Input per cap.10: pesi prova + (quando pronto) pesi prodotto. |
+| M3 — DL & CV (portfolio CNN cap.10) | 🟡 In corso (cap.10) | Demo Gradio + HF Spaces su track prova; URL portfolio #2 a fine C10. Feature `prob_busta_paga_visivo` quando chiudi C1–C8. |
 | M4 — NLP | ⬜ Da fare | |
 | M5 — LLM | ⬜ Da fare | |
 | M6 — RAG | ⬜ Da fare | |
@@ -2309,7 +2367,9 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
-| 01/09/2026 | **Creato M3 cap.09** `09_transfer_learning.py` (1955 righe): Sez. 0 **privacy/anonimizzazione** (bloccante, con `anonimizza_immagine` su pixel rasterizzati), Sez. 1 transfer learning + feature generiche/specifiche (Regola 42 per la Feynman V8) + quando NON funziona (flip/cartelli stradali), Sez. 2 anatomia ResNet18 con **tabella una-riga-per-layer** 224→112→56→28→14→7 + skip connection + freezing/autograd, Sez. 3 `torchvision.models` + `fc.in_features` + **1 canale vs 3**, Sez. 4 augmentation per documenti (tabella sì/no, niente flip) + `ImageFolder` + `dividi_per_gruppo` (split per cliente), Sez. 5 fine-tuning **due fasi** (head-only → unfreeze `layer4`, lr differenziati) con pipeline Colab, Sez. 6 metriche **per classe** + macro-F1 + `esplora_soglie`. Q1–Q8, V1–V8 (V8 Feynman), TODO 1–8 (COLLOQUIO, REFACTORING, DEBUG matmul, RETRIEVAL, INTERLEAVING visivo+tabellare, REAL-WORLD, shape, 📚 [LIBRO] depth-1 vs depth-2), 🏗️ C1–C8, soluzioni complete, blocco **TRACCIA RINFORZI** per l'audit di chiusura. Creata scheda `M03_C09_transfer_learning.md` con **correzione della mappatura libri** (PYTORCH §14.5.3, non cap.12–13; Géron in repo è 2ª ed.). Aggiornati README M3 e `MAPPATURA_LIBRI_MODULI.md`; creato diario `M03_C09_transfer_learning_sessione.md`. | Richiesta studente: "crea tutto il file del capitolo 9" | cap.09, scheda, mappa libri, CONTESTO (Stato, Prossimo Cap), README M3, diario |
+| 14/09/2026 | **Espansione M3 cap.10** (`10_progetto_gradio.py`: da 484 righe di sole consegne a ~1750 righe in stile cap.09). Riscritto attorno a **due assi di riuso**. *Asse 1 — modello:* Sez. 1 **contratto di inferenza** a 6 voci (architettura, classi ordinate, dimensione input, mean/std, soglia, versione) con tabella del danno per voce e il punto didattico centrale — **5 voci su 6, se sbagliate, non danno eccezione** (caso principe: ordine classi invertito, Sez. 1.3); Sez. 2 **checkpoint ricco** con `salva_checkpoint`/`carica_checkpoint` (codice eseguibile), tre strade di salvataggio e perché non il pickle dell'oggetto, `strict` + lettura di Missing/Unexpected keys, **Sez. 2.6 `weights_only`** (scritta da un errore reale: da torch 2.6 il default è `True`, quindi nel checkpoint solo tipi base → `str(torch.__version__)`). *Asse 2 — codice:* Sez. 3 `costruisci_modello` con `getattr` + pesi `"DEFAULT"` come stringa + `fc.in_features` letto dal modello (**chiude il residuo TODO 2 del cap.09**), `transform_eval` con parametri **derivati dal contratto**, classe **`ClassificatoreVisivo`** (caricamento pigro, una sola istanza, nessun `print`, zero dipendenze da Gradio) + Sez. 3.4 le tre leve "in situ"; Sez. 9 **stessa classe da FastAPI** (`/classifica`, `/info` che espone il contratto, `versione_modello` in risposta) con ponte a `prob_busta_paga_visivo` e ripasso della regola anti-leakage. *Gradio/deploy:* Sez. 4 anatomia (`Interface` vs `Blocks`, componenti tipizzati e perché `type="pil"`, `gr.Label` con dizionario, `Examples` e privacy, `launch()`), Sez. 5 `predict` end-to-end (`convert("RGB")` come gemello di `repeat` su tensore — chiude #49 dall'altro lato, `Normalize` e i numeri ImageNet, `unsqueeze(0)`, softmax vs argmax, soglia≠argmax), Sez. 6 **`app.py` in 4 blocchi** con il test "se togli Gradio quante righe riscrivi?", Sez. 7 Spaces (front-matter YAML, requirements pinnati, torch CPU, git-lfs vs `hf_hub_download`, **cold start** per la Feynman V7, 4 errori tipici build/runtime), Sez. 8 smoke test in 8 punti, **model card come contratto in forma umana**, p50/p95, privacy demo pubblica. Rinforzi 🔁 **#48/#52/#53/Pattern #6/avgpool**; Q1–Q8, V1–V8 (2 Feynman), TODO 1–8, 🏗️ G1–G8 + P1–P5 debito buste, 🔄 CONFRONTO PRIMA/DOPO, soluzioni e rubriche complete. Verificato: compila, importabile senza side effect, logica testata (softmax somma 1, RGBA→RGB, `eval()` attivo, soglia applicata, guardie file mancante e checkpoint povero). | Richiesta studente: "troppo snello, più prodigo di spiegazioni, importante per creare **reti di facile riutilizzo**" (entrambi gli assi: packaging/contratto **e** riuso del codice) | cap.10, README M3, diario C10 (ripulito), Ponti Mentali, Changelog |
+| 14/09/2026 | **Chiusura M3 cap.09** (`09_transfer_learning.py`, voto **8**/10): Stato → `10_progetto_gradio.py`; media ~**7.05** (30 cap); Valutazioni **M3-09**; Glossario sezione cap.09; Domande C09; Pattern #6 attivo C09, #28→🟡; lacune #49/#50 🟢, #48/#52/#53 🟡→C10; Competenze C09; Progetto TRACK PROVA ✅ + debito C1–C8; creato `10_progetto_gradio.py` + diario C10 + micro **09.A–E** in R09; Sessione **29**. File cap.09 **non modificato** (H). | Jarvis chiusura capitolo 9 | Stato, sessioni, priorità, valutazioni, glossario, pattern, lacune, competenze, ripasso, checklist, progetto, cap.10, bridge, changelog |
+| 01/09/2026 | **Creato M3 cap.09** `09_transfer_learning.py` (1955 righe): Sez. 0 **privacy/anonimizzazione** (bloccante, con `anonimizza_immagine` su pixel rasterizzati), Sez. 1 transfer learning + feature generiche/specifiche (Regola 42 per la Feynman V8) + quando NON funziona (flip/cartelli stradali), Sez. 2 anatomia ResNet18 con **tabella una-riga-per-layer** 224→112→56→28→14→7 + skip connection + freezing/autograd, Sez. 3 `torchvision.models` + `fc.in_features` + **1 canale vs 3**, Sez. 4 augmentation per documenti (tabella sì/no, niente flip) + `ImageFolder` + `dividi_per_gruppo` (split per cliente), Sez. 5 fine-tuning **due fasi** (head-only → unfreeze `layer4`, lr differenziati) con pipeline Colab, Sez. 6 metriche **per classe** + macro-F1 + `esplora_soglie`. Q1–Q8, V1–V8 (V8 Feynman), TODO 1–8 (COLLOQUIO, REFACTORING, DEBUG matmul, RETRIEVAL, INTERLEAVING visivo+tabellare, REAL-WORLD, shape, 📚 [LIBRO] depth-1 vs depth-2), 🏗️ C1–C8, soluzioni compl |ete, blocco **TRACCIA RINFORZI** per l'audit di chiusura. Creata scheda `M03_C09_transfer_learning.md` con **correzione della mappatura libri** (PYTORCH §14.5.3, non cap.12–13; Géron in repo è 2ª ed.). Aggiornati README M3 e `MAPPATURA_LIBRI_MODULI.md`; creato diario `M03_C09_transfer_learning_sessione.md`. | Richiesta studente: "crea tutto il file del capitolo 9" | cap.09, scheda, mappa libri, CONTESTO (Stato, Prossimo Cap), README M3, diario |
 | 01/09/2026 | **Chiusura completa M3 cap.08** (`08_cnn_computer_vision.py`, voto **7**/10): Stato → `09_transfer_learning.py` da creare; Ultima Sessione; Prossimo Capitolo riscritto (rinforzi cap.09 + prerequisiti privacy); media ~**7.02** (29 cap); Valutazioni **M3-08**; Glossario **nuova sezione cap.08** (17 termini) + contatori cap.07 (Tensore e `nn.Module` → ✅ 3/3; DataLoader/`zero_grad`/`BCEWithLogitsLoss` → 2/3; `map_location` → 1/3; `.item()` e Autograd ⚠️ non incrementati); Domande cap.08 (20 entry); Pattern **#6 → 🔴** (4 occorrenze) e **#28 NUOVO** (catena dimezzamenti Pool); Ponti Mentali (timbro/filtro, thumbnail max, evidenziatore, cassetto CE); Competenze cap.08; Colloquio (Conv/Pool/feature map ✅ 8/10); Ripasso Programmato (4 nuovi concetti M3 + verifica autograd/DataLoader); Checklist (7 nuovi controlli); Lacune **#48–#53** nuove, #47 🟡, #45/#46 🟢; Progetto: 🏗️ M3-07 **chiuso** + riga cap.08 ✅ (CNN su Colab); bridge **M03_R08** arricchito con micro 08.A–08.E; blocco rinforzi iniettato in `09_transfer_learning.py`; diario C08 chiuso; Sessione **28**. File cap.08 **non modificato** (protocollo H). | Handshake “jarvis chiusura capitolo 8 modulo 03” | Stato, sessioni, priorità, prossimo cap, valutazioni, glossario, domande, pattern, ponti, competenze, colloquio, ripasso, checklist, lacune, progetto, bridge R08, cap.09, diario, changelog |
 | 25/08/2026 | **Regola 42**: teoria chiara ed esaustiva **prima** di esercizi discorsivi/Feynman/📚/“spiega perché”; gap → integrare capitolo subito. Espansa Sez.2 FC vs Conv + consegna 📚 [LIBRO] in `08_cnn_computer_vision.py`. | Richiesta studente (esercizi teorici senza spiegazione adeguata) | Regole Didattiche, cap.08, Changelog |
 | 25/08/2026 | **Impegno canonico pre-M10**: ripasso didattico **React / Node.js** (studente arrugginito) in `docs/ripasso_frontend_react/`; attivare fine M9 / inizio M10 prima UI produzione; Streamlit resta per prototipi M4–M7. | Richiesta studente in chat M3 cap.08 | Profilo, Blueprint M10, roadmap, docs/prodotto, AGENTS, stub ripasso, Changelog |

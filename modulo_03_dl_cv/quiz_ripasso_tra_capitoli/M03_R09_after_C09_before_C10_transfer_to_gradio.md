@@ -91,3 +91,52 @@ Scrivi firma concettuale: perché uno script accetta `--epochs 10` da terminale 
 8. `callable(m)`.
 9. Parti da feature già apprese su dataset grande → adatti solo **pochi strati** / testa sul tuo dominio.
 10. Cambi hyperparam senza editare codice; utile esperimenti e script riutilizzabili.
+
+---
+
+## Micro 09.A – 09.E — rinforzi dalla chiusura del cap.09
+
+> Aggiunti il 14/09/2026. Mirati a #48, #52, #53, Pattern #6, AdaptiveAvgPool.
+> Corti: 1–2 minuti ciascuno, a freddo, prima di aprire `10_progetto_gradio.py`.
+
+### 09.A — tre leve (#48)
+
+Metti V/F:
+1. `model.eval()` congela i pesi (`requires_grad=False`).
+2. `torch.no_grad()` evita di costruire il grafo di autograd.
+3. Con backbone freezato il `forward` sul backbone **non** viene eseguito.
+
+### 09.B — matmul (#52)
+
+Errore: `(32×512) and (256×2)`. In **tre** bullet: cosa è 32, cosa è 512, perché 256 è sbagliato e come lo sistemi in modo portabile (resnet18/50).
+
+### 09.C — obiezione numerica (#53 + Pattern #6)
+
+30 bees vere, 25 TP, 5 FN, accuracy 0.89. Scrivi **UNA** frase di obiezione che cita un numero (FN o recall), non “l’accuracy non basta” generico.
+
+### 09.D — AdaptiveAvgPool
+
+Shape dopo `AdaptiveAvgPool2d((1,1))` su `(8, 512, 10, 10)`? Perché `Linear(512, 2)` non dipende da 10×10?
+
+### 09.E — formato consegna (Pattern #6)
+
+Consegna: “3 bullet + una riga di motivo ciascuno”. Scrivi uno scheletro vuoto corretto (solo struttura, senza contenuto).
+
+---
+
+## Soluzioni micro 09.A–E
+
+**09.A:** 1 Falso · 2 Vero · 3 Falso (freeze ≠ skip forward).
+
+**09.B:** 32 = batch; 512 = feature dopo avgpool ResNet18; 256 = `in_features` inventato → `nn.Linear(modello.fc.in_features, 2)` prima di sostituire.
+
+**09.C:** es. “Accuracy 89% ma 5/30 bees perse (recall ≈ 83%): in produzione non accettabile se l’obiettivo è non perdere la classe positiva.”
+
+**09.D:** `(8, 512, 1, 1)` → flatten `(8, 512)`; H×W collassati dal pool adattivo.
+
+**09.E:**
+```
+- motivo:
+- motivo:
+- motivo:
+```

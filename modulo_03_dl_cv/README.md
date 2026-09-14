@@ -1,8 +1,7 @@
 # Modulo 3 — Deep Learning & Computer Vision
 
-> **Stato**: ⬜ DA CREARE (pianificato).
-> I file `.py` di questo modulo sono al momento **solo segnaposto con TODO MENTOR**: vanno completati uno alla volta, **alla chiusura del capitolo precedente**, come da protocollo del corso.
-> Vedi `CONTESTO_CORSO.md` → sezione "Computer Vision nel Prodotto" per la decisione 30/04/2026 sul deliverable cap.07.
+> **Stato**: 🟡 **In corso — 9/10 capitoli** (ultimo chiuso: cap.09 transfer, 14/09/2026, voto **8**/10). Resta cap.10 Gradio + HF Spaces.
+> Vedi `CONTESTO_CORSO.md` → Stato Attuale / Computer Vision nel Prodotto.
 
 ## Obiettivo del modulo
 
@@ -28,8 +27,8 @@ Classificatore visivo **busta paga vs non-busta paga** + demo Gradio deployata. 
 | 06 | `06_backprop_training.py` ✅ **chiusura anticipata** (03/08/2026, voto **7**/10) | Forward+cache, backward 2-layer, sanity, training loop, PIPE + mini-progetto CSV vs LogReg. Quiz V / CONFRONTO / TODO 18–19 migrati come 🔁 in cap.07 (file ~3000 righe). | 8–9/10 atteso → **7** percepito | CPU locale |
 | 07 | `07_pytorch_intro.py` ✅ **chiusura anticipata** (13/08/2026, voto **7**/10) | Tensori, autograd, `nn.Module`, Dataset/DataLoader, training loop, `state_dict`, Colab. #42/#43/#44 🟢. Residui TODO 4–6 + 🏗️ + #27/#45/#46 → cap.08 / bridge R07. | 7–8/10 atteso → **7** | Colab |
 | 08 | `08_cnn_computer_vision.py` ✅ **completato** (01/09/2026, voto **7**/10) | CNN: `(N,C,H,W)`, Conv2d, MaxPool, `PiccolaCNN` allenata su Fashion-MNIST (Colab), feature maps, CrossEntropy target Long. 🔁 #27/#45/#46 chiusi; debito tabellare M3-07 chiuso (TODO 5, 9.5/10). Niente buste paga. Nuovi rinforzi → cap.09: #48/#49/#51/#52. | 8/10 atteso → **7** | Colab |
-| 09 | `09_transfer_learning.py` 🟡 **scritto** (01/09/2026), da svolgere | Sez. 0 privacy/anonimizzazione (bloccante) → transfer learning, anatomia ResNet18 + freezing, testa nuova e canali 1→3, augmentation per documenti, fine-tuning in due fasi su Colab, metriche per classe + soglie. Rinforzi 🔁 #47/#48/#49/#50/#51/#52/#53 tracciati in fondo al file. **Prerequisiti privacy da verificare prima di iniziare**: cartelle `data/buste_*`, dataset "altro" ~200 immagini. | 7/10 atteso | Colab |
-| 10 | `10_progetto_gradio.py` *(segnaposto)* | Fine-tuning ResNet su busta-paga-vs-altro + demo Gradio + deploy HuggingFace Spaces. **Portfolio piece #2**. | 7/10 | Colab + HF Spaces |
+| 09 | `09_transfer_learning.py` ✅ **completato** (14/09/2026, voto **8**/10) | Transfer ResNet18, freeze→head→`layer4`, ImageFolder, metriche/soglie. **TRACK PROVA** Ants vs Bees (Colab); debito prodotto C1–C8 buste. | 7 atteso → **8** | Colab |
+| 10 | `10_progetto_gradio.py` 🟡 **scritto ed esteso** (14/09/2026), da svolgere | **Due assi di riuso**: (1) modello — contratto di inferenza a 6 voci, checkpoint ricco (`salva_checkpoint`/`carica_checkpoint`), `weights_only`, model card; (2) codice — `costruisci_modello` generica, `transform_eval` derivata dal contratto, classe `ClassificatoreVisivo` riusata da Gradio **e** da FastAPI (ponte `prob_busta_paga_visivo`). In mezzo: anatomia Gradio, `predict` end-to-end, `app.py` in 4 blocchi, deploy HF Spaces (portfolio #2), smoke test e latenza p50/p95. Rinforzi 🔁 #48/#52/#53/#6/avgpool. Track prova `.pt` ora; buste quando C1–C8. 🔄 CONFRONTO PRIMA/DOPO fine modulo. | 7/10 | CPU + HF Spaces |
 
 **Tempo stimato**: 3-4 settimane (dopo lo split: andare graduali sui 4 mini-capitoli matematici 03-06).
 
