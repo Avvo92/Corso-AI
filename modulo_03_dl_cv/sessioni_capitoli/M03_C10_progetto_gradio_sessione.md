@@ -65,9 +65,37 @@ debito C1-C8 buste → `busta_vs_altro.pt`.
 
 ## Domande durante lo studio
 
-### 2026-09-14 — Cos’è Dropout?
-- Chiaro dopo spiegazione: spegnimento casuale neuroni in **training** (anti-overfitting); in **`eval()`** non spegne nessuno.
-- Collegato a #48: `eval()` tocca Dropout **e** BatchNorm; distinto da freeze e da `no_grad()`.
+### 2026-09-15 — Domanda: non ricordo i 4 passi preprocess ResNet (Q5)
+- Ricostruita la pipeline: Resize → CenterCrop → ToTensor → Normalize(ImageNet).
+- Nota: `convert("RGB")` sta *prima* (gestione canali), non è uno dei 4 del tensore “ImageNet-ready”.
+
+### 2026-09-15 — Quiz ingresso Q5 (`10_progetto_gradio.py`, preprocess) — **post-feedback**
+- **Voto contenuto: 10/10** — ordine corretto: `Resize(256)` → `CenterCrop(224)` → `ToTensor()` → `Normalize(mean, std)`.
+- **Nota esame:** non è retrieval a freddo (aveva chiesto ripasso subito prima). Per il diario: assimilazione dopo spiegazione OK; verifica a freddo possibile su Mini 5.x / Sez. 5.
+- **Bonus non richiesto:** poteva citare mean/std ImageNet; non necessario per la consegna.
+- **Lacune:** nessuna nuova; Q5 chiusa sul merito assistito.
+
+### 2026-09-15 — Quiz ingresso Q6 (`10_progetto_gradio.py`, map_location)
+- **Voto (1° tentativo): 8.5/10**
+- **OK:** `map_location=device` con `cuda if available else cpu`; pattern portabile corretto per il caso “Colab GPU → PC senza CUDA” (su PC diventa `"cpu"`).
+- **Soft:** il *perché* preciso (i tensori portano etichetta `cuda:0` e senza remap torch tenta di riallocarli su GPU assente) è solo accennato (“posto giusto”). Nella Q secca bastava anche `map_location="cpu"`.
+- **Nota cap.10:** se il file è un checkpoint ricco, `torch.load` torna un dict → poi `load_state_dict(pacchetto["model_state"])`; la Q6 testa solo `map_location`.
+- **Lacune:** nessuna; #46 confermata operativa.
+
+### 2026-09-15 — Quiz ingresso Q7 (`10_progetto_gradio.py`, soglia → recall/precision)
+- **Voto (1° tentativo): 5/10**
+- **OK:** abbassare soglia → più spesso classe positiva (“busta”); ↑ FP → ↓ precision. Idea del trade-off c’è.
+- **ERRORE:** meno FN ⇒ la **recall SALE** (TP/(TP+FN)), non scende. Ha invertito il verso della recall.
+- **Lessico:** “più severo” è al contrario — soglia più bassa = più **permissivo** sulla positiva; “severo” = soglia alta.
+- **Lacune:** soglia/recall da rinforzare (ripasso formula recall); non è #53 ma concetto affine a Mini soglie C09.
+- **Next:** riscrivere Q7 in 2 righe: ↓ soglia → ↑ recall, ↓ precision + perché (più TP pescati, più FP in mezzo).
+
+### 2026-09-15 — Quiz ingresso Q7 — **post-feedback**
+- **Voto post-fix: 9/10** (1° resta **5**/10 come voto esame)
+- **OK:** ora FN ↓ → **recall ↑**; FP ↑ → precision ↓; più spesso “busta”. Trade-off corretto.
+- **Soft residuo:** resta “più severo” — andrebbe “più permissivo / sensibile” sulla positiva.
+- **Fix applicato:** verso della recall corretto.
+- **Lacune:** soglia/recall → 🟡 soft lessico; concetto numerico OK.
 
 ---
 
@@ -80,6 +108,24 @@ debito C1-C8 buste → `busta_vs_altro.pt`.
 - **Next:** rileggere 🔁 #48 (analogia tre leve) e rifare Mini 48.A (V/F) — lì il NON FA è obbligatorio.
 - **Lacune:** #48 resta 🟡 (FA ok, NON FA soft — stesso pattern C09 Mini 5.3).
 
+### 2026-09-15 — Quiz ingresso Q2 (`10_progetto_gradio.py`, AdaptiveAvgPool / residuo C09)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** 512 come dimensione del vettore; meccanismo avgpool H×W→1×1; esempi (8,512,10,10) e (8,512,7,7) → flatten (8,512); spiega perché 320×320 non rompe `Linear(512,2)`.
+- **Soft:** poteva aprire con “512 numeri” secco; typo “se se”. Il pezzo “in_features = canali, non risoluzione” c’è in sostanza.
+- **Lacune:** residuo avgpool→512 da C09 **chiuso sul merito**; #52 (decomposizione matmul con batch esplicito) resta da verificare su Mini 52.A.
+
+### 2026-09-15 — Quiz ingresso Q3 (`10_progetto_gradio.py`, ImageFolder / ordine classi)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** `ants→0`, `bees→1`; motivo = ordine **alfabetico** delle cartelle (ImageFolder). Concetto critico per Sez. 1.3 (bug etichette invertite) già a posto.
+- **Soft:** forma dizionario esplicita `{"ants": 0, "bees": 1}` sarebbe più “colloquio-ready”; contenuto equivalente.
+- **Lacune:** nessuna nuova.
+
+### 2026-09-15 — Quiz ingresso Q4 (`10_progetto_gradio.py`, lacuna #53 obiezione numerica)
+- **Voto (1° tentativo): 8.5/10**
+- **OK:** numeri veri (45; scenario 40/45 → ~90% se predici sempre la maggioranza); collega accuracy alta + recall bassa a sbilanciamento; non resta sulla frase generica “accuracy non basta”.
+- **Soft:** 40/45 = 88.9% (ha detto ~90%, ok); poteva aggiungere volatilità 1/45≈2.2 punti oppure un conteggio FN esplicito; costo di dominio (busta persa) opzionale ma da colloquio.
+- **Lacune:** #53 → 🟡→ quasi 🟢 (forte miglioramento vs Mini 6.2 C09 5/10). Consolidare su Mini 8.2 model card.
+
 ---
 
 ## Lacune e dubbi ancora aperti
@@ -87,8 +133,9 @@ debito C1-C8 buste → `busta_vs_altro.pt`.
 Ereditate da C09 da verificare qui:
 
 - 🟡 **#48** — `eval` / `no_grad` / freeze (tre leve) → 🔁 + Q1 + Sez. 3.4 + V6
-- 🟡 **#52** — decomposizione matmul + `in_features` → 🔁 + Q2 + Sez. 3.1 + TODO 4
-- 🟡 **#53** — obiezione numerica (Mini 6.2 style) → 🔁 + Q4 + Mini 8.2
+- 🟡 **#52** — decomposizione matmul + `in_features` → 🔁 + Mini 52.A + TODO 4 (Q2 ha chiuso la parte avgpool→512)
+- 🟢 **avgpool → vettore 512** — Q2 9.5/10 (15/09): meccanismo + esempi shape OK
+- 🟡 **Soglia/recall** — Q7 **5**/10: ↓ soglia ⇒ meno FN ma ha detto ↓ recall (verso invertito). Precision OK.
 - 🔴 **Pattern #6** — formato consegne (quasi ogni consegna del cap.10 dichiara
   il formato atteso: numero di bullet/righe. Serve a misurare il pattern)
 - 📌 Debito prodotto C1–C8 buste

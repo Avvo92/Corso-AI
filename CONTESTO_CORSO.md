@@ -105,7 +105,7 @@
 | 50 | **Formula H_out: il `+ 1` finale** | 🟢 Superato (C09) | Q2 con `floor` OK; riusato su ResNet stem |
 | 51 | **Due Pool in serie / catena dei dimezzamenti** | 🟡 Quasi chiuso (C09) | Mini 2.1/2.2 **9.5**; V7 **9.5** su 320→10. Pattern #28 soft residuo (notazione MaxPool) |
 | 52 | **Debug matmul: decomporre i numeri dell'errore** | 🟡 In miglioramento (C09→C10) | TODO 3: 1° **6.5**, 2° **8.5** (`in_features` OK). Manca ancora esplicitare **32=batch** a freddo. Rinforzo Mini 52 in C10 |
-| 53 | **Metriche con classi sbilanciate: per classe / macro-F1** | 🟡 In miglioramento (C09→C10) | TODO 4 merito OK post-fix; **Mini 6.2 5/10** obiezione generica. Target: frase con FN/recall numerici |
+| 53 | **Metriche con classi sbilanciate / obiezione “sui numeri”** | 🟡 Quasi chiusa (C10 Q4) | C09 Mini 6.2 **5**/10 generica. **C10 Q4 8.5**/10: 45 + scenario 40/45→~90% majority + recall. Manca solo volatilità 1/45 o FN conteggiati / costo dominio. Verifica Mini 8.2 |
 | 45 | **Retrieval 5-step backward + `loss.backward()`** | 🟢 Superato | Bridge R07 Q11: catena ok; fill-in corretto post-feedback. **Quiz ingresso cap.08 Q1 (22/08): `loss.backward()` a freddo 10/10**; Micro 45.A post-fix 9/10 |
 | 46 | **`map_location` GPU→CPU + DataLoader=batch** | 🟢 Superato | Q5/Q6 + Micro 46.B (23/08) **9.5/10** operativo; confermato V6 cap.08 **9.5/10** |
 | 47 | **`.item()` sulla loss prima di `backward`** | 🟡 Rinforzata in pratica | Quiz ingresso 08 Q7 (22/08): risposto “Prima” (**2/10**). Uso poi **corretto** in TODO 4 e TODO 5 (`.item()` dopo `backward`, media pesata). Verifica a freddo al quiz d'ingresso cap.09 |
@@ -1081,12 +1081,12 @@ completezza del self-check e chiedere correzioni.
 | Freezing / `requires_grad=False` | Bloccare l’update dei pesi; forward resta attivo | M3-09 | 2/3 | 🔄 (#48 soft su eval) |
 | ImageNet | Dataset ~1.2M img / 1000 classi (ILSVRC); fonte dei pesi DEFAULT e di mean/std Normalize | M3-09 | 2/3 | 🔄 |
 | `fc.in_features` | Dimensione ingresso della testa Linear (512 ResNet18; 2048 ResNet50) — non hardcodare | M3-09 | 2/3 | 🔄 (#52) |
-| ImageFolder | Dataset da cartelle = classi; `class_to_idx` alfabetico | M3-09 | 2/3 | 🔄 |
+| ImageFolder | Dataset da cartelle = classi; `class_to_idx` alfabetico | M3-09 | 3/3 | ✅ (C10 Q3 **9.5**/10) |
 | Split per gruppo | Non spezzare lo stesso cliente/azienda tra train e val/test (anti-leakage) | M3-09 | 1/3 | 🔄 |
 | Depth-1 vs depth-2 | Solo testa vs testa+ultimo blocco conv ([PYTORCH] §14.5.3) | M3-09 | 0/3 | ⚠️ (TODO 8 non svolto) |
 | Precision / Recall / F1 | TP/(TP+FP), TP/(TP+FN), media armonica; guardie denom=0 | M3-09 | 2/3 | 🔄 (#53) |
-| Soglia di decisione | Taglio su probabilità classe positiva: ↑ soglia → ↑ precision, ↓ recall (tipico) | M3-09 | 2/3 | 🔄 |
-| AdaptiveAvgPool2d((1,1)) | Collassa H×W → 1×1 per canale → vettore fisso (512) indipendente dalla risoluzione | M3-09 | 1/3 | 🔄 |
+| Soglia di decisione | Taglio su probabilità classe positiva: ↑ soglia → ↑ precision, ↓ recall (tipico) | M3-09 | 2/3 | 🔄 (C10 Q7: 1° 5/10 verso recall; post-fix 9/10, soft “severo”) |
+| AdaptiveAvgPool2d((1,1)) | Collassa H×W → 1×1 per canale → vettore fisso (512) indipendente dalla risoluzione | M3-09 | 2/3 | 🔄 (C10 Q2 **9.5**/10) |
 
 ---
 
