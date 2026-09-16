@@ -97,6 +97,135 @@ debito C1-C8 buste → `busta_vs_altro.pt`.
 - **Fix applicato:** verso della recall corretto.
 - **Lacune:** soglia/recall → 🟡 soft lessico; concetto numerico OK.
 
+### 2026-09-16 — Quiz ingresso Q8 Feynman (`10_progetto_gradio.py`, transfer learning)
+- **Voto (1° tentativo): 8/10**
+- **OK:** analogia segretario vs bambino chiara; transfer = riuso backbone + nuova head; fase 1 head, fase 2 layer4 con prudenza; aggancio dominio documenti.
+- **Manca:** *perché* due fasi esplicito (fase 1: pochi parametri, non rovinare pesi ImageNet; fase 2: LR basso, adattare feature più specifiche). Layer generici (bordi/texture) non citati. Vincolo “ogni termine spiegato in mezza riga” solo parziale (`backbone`, `rete` soft).
+- **Next:** aggiungere 1 riga su freeze/LR basso; citare ImageNet o “milioni di foto” come pretraining.
+- **Lacune:** residuo C09 TODO 8 (depth-1 vs depth-2 a voce) — migliorato ma non chiuso al 9+.
+
+### 2026-09-16 — Mini 48.A (`10_progetto_gradio.py`, tre leve V/F)
+- **Voto (1° tentativo): 8.5/10**
+- **OK:** 1–2–3 tutti **Falso**; (1) eval → Dropout/BN non `requires_grad`; (2) `no_grad` → grafo, non BN; (3) freeze ≠ saltare il forward (parla di gradienti/backprop).
+- **Soft:** (1) “Blocca il Dropout” impreciso — in `eval()` Dropout **non spegne** nessuno (passa tutto), non lo “blocca”. (3) meglio: forward **passa** dai layer; `requires_grad=False` evita l’**aggiornamento** dei pesi (non confondere con `no_grad`).
+- **Lacune:** #48 → 🟡 quasi 🟢 (Q1 7/10 + Mini 48.A 8.5). Chiudere con Mini 48.B (una riga `with torch.no_grad()`).
+
+### 2026-09-16 — Mini 48.B (`10_progetto_gradio.py`, contesto no_grad)
+- **Voto (1° tentativo): 10/10**
+- **OK:** `with torch.no_grad():` — riga esatta; formato corretto; non confuso con `eval()` già chiamato.
+- **Lacune:** #48 → 🟢 chiusa (Q1 + 48.A + 48.B).
+
+### 2026-09-16 — Mini 52.A (`10_progetto_gradio.py`, decomposizione matmul)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** 32=batch; 512=feature dal backbone; 256=`in_features` del Linear (il mismatch); fix portabile `modello.fc.in_features` + `nn.Linear(..., 2)`.
+- **Soft:** bullet 3 un po’ prolisso; non serve nominare D=2 (non chiesto). Concetto #52 coperto a freddo sul 32.
+- **Lacune:** #52 → 🟢 chiusa.
+
+### 2026-09-16 — Mini 53.A (`10_progetto_gradio.py`, obiezione ancorata)
+- **Voto (1° tentativo): 8/10**
+- **OK:** acc 89% + recall 83% (calcolo 25/30 ok); non generica; domanda sul costo di perdere il 17% delle api (dominio).
+- **Manca (schema 4 pezzi):** conteggio assoluto **5/30** mancate; **leva** (soglia ↓) e **prezzo** (precision). “Accuracy buona” soft vs citare il 89% del PM e smontarlo.
+- **Lacune:** #53 resta 🟡 (quasi 🟢); consolidare Mini 8.2 / model card.
+
+### 2026-09-16 — Mini AVG (`10_progetto_gradio.py`, AdaptiveAvgPool)
+- **Voto (1° tentativo): 10/10**
+- **OK:** `(4,2048,12,12)` → `(4,2048,1,1)` → flatten `(4,2048)`; `in_features=2048` = ResNet50 (vs 512 ResNet18).
+- **Lacune:** avgpool→vettore fisso consolidato (già 🟢 su Q2).
+
+### 2026-09-16 — Mini 1.1 (`10_progetto_gradio.py`, 6 voci contratto)
+- **Voto (1° tentativo): 8/10**
+- **OK:** le 6 voci ci sono (arch, classi+ordine, size, norm, soglia, versione); fonti classi/soglia nella direzione giusta.
+- **Soft:** (1)(3) meglio “scelta training / checkpoint”, non “dal codice del modello”; (4) mean/std ImageNet (o dal checkpoint), non “tipo di modello”; (6) VERSIONE_CONTRATTO / scheda modello, non solo “versione del modello”.
+- **Next:** Sez. 2 — le voci vivono *dentro* il `.pt`.
+
+### 2026-09-16 — Mini 1.1 (post-feedback)
+- **Voto: 9.5/10**
+- **OK:** (1) stringa scelta da te; (2) ImageFolder; (3) training / 224 ImageNet; (4) mean/std ImageNet; (6) versione + data + metriche.
+- **Soft residuo:** (5) “la decido io” → più preciso: **sul validation** (cap.09). In deploy tutte e 6 si **leggono dal checkpoint**.
+
+### 2026-09-16 — Mini 1.2 (`10_progetto_gradio.py`, bug senza crash)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** due voci senza eccezione: **ordine classi** (etichette invertite in demo) + **mean/std** (sicuro sempre sulla stessa classe). Concetto Sez. 1.2/1.3 centrato.
+- **Soft:** prima riga un filo “perché” (manca contratto) vs solo sintomo UI; ok comunque. Altre valide: dimensione, soglia, versione.
+
+### 2026-09-16 — Mini 1.3 (`10_progetto_gradio.py`, email collega + .pt)
+- **Voto (1° tentativo): 7.5/10**
+- **OK:** le 6 voci del contratto ci sono tutte (arch≈tipo, classi+ordine, size, norm, soglia, versione/metriche). Concetto “.pt non basta” ok.
+- **Manca (formato):** consegna = **2 righe** stile email; hai fatto elenco. Pattern **#6**. Soft lessico: “tipo del modello” → **architettura**; “soglia ottimale” → soglia scelta sul validation.
+- **Target:** “Ti mando il .pt ma ti serve il contratto: arch, classi ordinate, 224, mean/std, soglia, versione. Meglio: un checkpoint ricco che li include.”
+
+### 2026-09-16 — Mini 1.3 (post-feedback)
+- **Voto: 8.5/10**
+- **OK:** tono email; **architettura**; soglia **su validation**; 6 voci complete.
+- **Soft residuo:** ancora elenco multi-riga, non **2 righe** compressi (Pattern #6). Concetto chiuso; formato ancora soft.
+
+### 2026-09-16 — Mini 2.1 (`10_progetto_gradio.py`, dentro/fuori checkpoint)
+- **Voto (1° tentativo): 10/10**
+- **OK:** DENTRO = classi, soglia, mean/std, nome_arch; FUORI = optimizer, percorsi training, immagini val, LR. Criterio “serve a predire vs serve a riprendere training” applicato.
+- **Soft:** “classe” → **classi** (plurale / ordine).
+
+### 2026-09-16 — Mini 2.2 (`10_progetto_gradio.py`, chiamata salva_checkpoint)
+- **Voto (1° tentativo): 5.5/10**
+- **OK:** nome_arch resnet18; mean/std ImageNet; note proxy; idea keyword args.
+- **Errori:** (1) `*,` in chiamata — SyntaxError, `*` solo in def; (2) `classi` deve essere **lista** `["ants","bees"]` non dict; (3) soglia consegna **0.45** non 0.5; (4) accuracy **0.889**; (5) `):` di troppo.
+- **Next:** riscrivere la chiamata senza `*` e con lista classi.
+
+### 2026-09-16 — Mini 2.2 (post-feedback)
+- **Voto: 10/10**
+- **OK:** niente `*` in call; `classi=["ants","bees"]`; soglia 0.45; accuracy 0.889; mean/std; note proxy. Sintassi valida.
+
+### 2026-09-16 — Mini 2.3 (`10_progetto_gradio.py`, Missing/Unexpected + strict)
+- **Voto (1° tentativo): 7.5/10**
+- **OK:** (a) idea rinomina testa; (b) `strict=False` → testa non caricata → predizioni a caso. Punto produzione centrato.
+- **Soft/errore:** direzione Missing/Unexpected invertita a parole: **Missing** = il *modello* ha `fc`, il *file* no; **Unexpected** = il *file* ha `head`, il *modello* no. Nell’errore il nome è **`head`**, non “classificatore”.
+- **Target (a):** stesso scheletro, testa salvata come `head` e codice attuale aspetta `fc`.
+
+### 2026-09-16 — Mini 2.3 (post-feedback)
+- **Voto: 10/10**
+- **OK:** (a) modello `.fc` vs file `.head` = rinomina testa; (b) `strict=False` → `fc` random, demo silenziosamente sbagliata. Direzione Missing/Unexpected corretta.
+
+### 2026-09-16 — Mini 2.4 (`10_progetto_gradio.py`, weights_only + data)
+- **Voto (1° tentativo): 8.5/10**
+- **OK:** `"data": str(datetime.now())`; idea tipi base / niente oggetti ricchi.
+- **Soft:** il blocco è al **load** (`weights_only=True`), non alla serializzazione in sé; `datetime.now()` spesso si salva, ma non si ricarica in modo sicuro. Typo “possimo”.
+
+### 2026-09-16 — Mini 3.1 (`10_progetto_gradio.py`, pesi_pretrained=None)
+- **Voto (1° tentativo): 9/10**
+- **OK:** spreco perché subito dopo `load_state_dict` del checkpoint; ImageNet scaricato sarebbe inutilizzato/sovrascritto (anche backbone).
+- **Soft:** poteva citare ~45 MB / tempo boot Spaces; “pesi aggiornati” → più preciso **sovrascritti** dal `.pt`.
+
+### 2026-09-16 — Mini 3.2 (`10_progetto_gradio.py`, caricamento pigro)
+- **Voto (1° tentativo): 3.5/10**
+- **Errore:** confonde lazy con “ricarica a ogni predict”. In `ClassificatoreVisivo` il load è `if self._modello is None` → **una volta**, poi cache.
+- **Manca:** `__init__` eager = boot lento, 1ª+succ. veloci; lazy = boot veloce, **1ª** predict lenta, **succ.** veloci come eager.
+- **Next:** rileggere Sez. 3.3 punti 1–2 (lazy + una volta sola).
+
+### 2026-09-16 — Mini 3.2 (post-feedback)
+- **Voto: 8/10**
+- **OK:** health check Spaces + lazy; guardia `_modello is None` (non ricarica ogni volta). Concetto corretto dopo chiarimento.
+- **Soft (consegna):** manca esplicito **1ª vs successive** sui tempi: eager → 1ª già veloce; lazy → **solo la 1ª** lenta, poi come eager. Un po’ lungo vs 2 righe.
+
+### 2026-09-16 — Mini 3.3 (`10_progetto_gradio.py`, difetti di riuso)
+- **Voto (1° tentativo): 6/10**
+- **OK:** vedi hardcode (arch, 512, path assoluto) → sintomo 1 “devi editare il codice”. Fix `getattr` / `in_features` / path parametro nella direzione giusta.
+- **Manca (sintomi 2 e 3 di Sez. 3.0):** (2) a **ogni** chiamata ricostruisce, `weights="DEFAULT"` (scarica ImageNet) + load da disco — side effect / non riuso pulito; (3) **`print`** intrecciato, ritorna indice non probabilità. Extra validi: no `eval`/`no_grad`, no Normalize, `Resize((224,224))` deforma, no `map_location`.
+- **Next:** mappare 1→hardcode, 2→ricarica/side effect, 3→print/UI.
+
+### 2026-09-16 — Mini 3.3 (alternativa: riscrittura `crea_predittore`)
+- **Voto: 9.5/10**
+- **OK:** factory+closure chiude i 3 sintomi in pratica: (1) path/device/contratto non hardcode; (2) load una volta in `crea_predittore`, non a ogni predict; (3) return dict probabilità, no print. Pipeline: RGB, transform da contratto, unsqueeze, no_grad, softmax. Riga `predici = crea_...` commentata → no side effect all’import.
+- **Soft:** a voce saper ancora *nominare* i 3 sintomi 3.0 (consegna originale era elenco); codice dimostra padronanza operativa.
+
+### 2026-09-16 — Mini 3.4 (`10_progetto_gradio.py`, eval stato vs no_grad contesto)
+- **Voto (1° tentativo): 8/10**
+- **OK:** eval → Dropout off + BN running stats; no_grad → niente grafo / risparmio; no_grad a ogni forward di predizione.
+- **Soft:** manca la parola-chiave **stato vs contesto** (perché uno basta una volta: resta sull’oggetto; l’altro vale solo dentro `with`). “Smette BatchNorm” impreciso (BN gira ancora, ma con running). Consegna 1 riga → 2. Typo: autograd, “in tutto”.
+
+### 2026-09-16 — Mini 3.4 (post-feedback)
+- **Voto: 8.5/10**
+- **OK:** BN corretta (running_mean/var, normalizza ancora); no_grad/autograd/VRAM ok.
+- **Soft residuo:** ancora non esplicita **stato persistente vs contesto `with`** (il “perché” della consegna). Ancora 2 righe vs 1.
+
 ---
 
 ## Valutazioni esercizi / quiz / mini-esercizi
@@ -132,13 +261,13 @@ debito C1-C8 buste → `busta_vs_altro.pt`.
 
 Ereditate da C09 da verificare qui:
 
-- 🟡 **#48** — `eval` / `no_grad` / freeze (tre leve) → 🔁 + Q1 + Sez. 3.4 + V6
-- 🟡 **#52** — decomposizione matmul + `in_features` → 🔁 + Mini 52.A + TODO 4 (Q2 ha chiuso la parte avgpool→512)
+- 🟢 **#48** — `eval` / `no_grad` / freeze → chiusa (Mini 48.B **10**/10)
+- 🟢 **#52** — decomposizione matmul + `in_features` → Mini 52.A **9.5**/10
 - 🟢 **avgpool → vettore 512** — Q2 9.5/10 (15/09): meccanismo + esempi shape OK
 - 🟡 **Soglia/recall** — Q7 **5**/10: ↓ soglia ⇒ meno FN ma ha detto ↓ recall (verso invertito). Precision OK.
 - 🔴 **Pattern #6** — formato consegne (quasi ogni consegna del cap.10 dichiara
   il formato atteso: numero di bullet/righe. Serve a misurare il pattern)
-- 📌 Debito prodotto C1–C8 buste
+- 🟡 **#53** — obiezione sui numeri → Mini 53.A **8**/10 (manca 5/30 + leva soglia); consolidare Mini 8.2
 
 ---
 

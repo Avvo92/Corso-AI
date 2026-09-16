@@ -44,7 +44,7 @@
 | **Ultimo completato** | modulo_03_dl_cv/**09_transfer_learning.py** (14/09/2026) — transfer ResNet18, freeze→head→`layer4`, ImageFolder, metriche/soglie; **TRACK PROVA** Ants vs Bees (Colab F2 val~90.7% / test~88.9%, track **8**/10); TODO 8 e P6 README residuali; C1–C8 buste = debito. **Voto difficoltà 8**/10 (lunghezza pipeline). |
 | **Modulo attuale** | Modulo 03 — Deep Learning & Computer Vision (**10 capitoli** dopo split 27/05/2026) — **9/10 chiusi**, resta solo cap.10 |
 | **Difficoltà media** | ~**7.05** (30 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, 7, 7, **8** ↑ |
-| **Priorità attive** | 🔴 Pattern **#6** consegne; 🟡 **#48** `eval`≠`no_grad`≠freeze; 🟡 **#52** decomposizione matmul/`in_features` (fix ok, verbale soft); 🟡 **#53** obiezione numerica (Mini 6.2); 🟡 Pattern **#28**/#51 quasi chiusi su ResNet; 🟢 #49/#50; 🟡 #47 spiegazione grafo; 📌 debito **C1–C8** buste; 📌 **Pre-M10:** ripasso React/Node (parcheggiato). |
+| **Priorità attive** | 🔴 Pattern **#6** consegne; 🟢 **#48**/**#52** chiuse (C10 Mini); 🟡 **#53** obiezione numerica; 🟡 Pattern **#28**/#51 quasi chiusi su ResNet; 🟢 #49/#50; 🟡 #47 spiegazione grafo; 📌 debito **C1–C8** buste; 📌 **Pre-M10:** ripasso React/Node (parcheggiato). |
 | **Sessione corrente** | Sessione 29 |
 
 ---
@@ -100,12 +100,12 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
-| 48 | **`eval` ≠ freeze ≠ `no_grad` (tre leve)** | 🟡 In miglioramento (C09→C10) | C09 Mini 5.3: FA ok, NON FA soft. **C10 Q1 7/10:** stesso schema — FA `eval`/BN + FA `no_grad`/grafo ok; manca esplicitare NON FA (eval≠freeze/autograd; no_grad≠BN/Dropout). Verifica su Mini 48.A |
+| 48 | **`eval` ≠ freeze ≠ `no_grad` (tre leve)** | 🟢 Chiusa (C10) | C09 soft → C10 Q1 7/10 → Mini 48.A 8.5 → **Mini 48.B 10/10** (`with torch.no_grad():`). Distinzione operativa ok; tenere a ripasso il phrasing Dropout in eval |
 | 49 | **Il `1` di `(1,28,28)` è il CANALE, non il batch** | 🟢 Superato (C09) | Q3 fix + Mini 3.2 9/10; Mini 3.1 `repeat` dopo 4/10. Consolidato PIL/`Grayscale` vs tensore `repeat` |
 | 50 | **Formula H_out: il `+ 1` finale** | 🟢 Superato (C09) | Q2 con `floor` OK; riusato su ResNet stem |
 | 51 | **Due Pool in serie / catena dei dimezzamenti** | 🟡 Quasi chiuso (C09) | Mini 2.1/2.2 **9.5**; V7 **9.5** su 320→10. Pattern #28 soft residuo (notazione MaxPool) |
-| 52 | **Debug matmul: decomporre i numeri dell'errore** | 🟡 In miglioramento (C09→C10) | TODO 3: 1° **6.5**, 2° **8.5** (`in_features` OK). Manca ancora esplicitare **32=batch** a freddo. Rinforzo Mini 52 in C10 |
-| 53 | **Metriche con classi sbilanciate / obiezione “sui numeri”** | 🟡 Quasi chiusa (C10 Q4) | C09 Mini 6.2 **5**/10 generica. **C10 Q4 8.5**/10: 45 + scenario 40/45→~90% majority + recall. Manca solo volatilità 1/45 o FN conteggiati / costo dominio. Verifica Mini 8.2 |
+| 52 | **Debug matmul: decomporre i numeri dell'errore** | 🟢 Chiusa (C10) | C09 6.5→8.5. **Mini 52.A 9.5/10**: 32=batch, 512=feature, 256=`in_features` bug, fix `fc.in_features` |
+| 53 | **Metriche con classi sbilanciate / obiezione “sui numeri”** | 🟡 Quasi chiusa (C10) | Q4 8.5; **Mini 53.A 8/10**: 89% vs 83% + costo 17% api. Manca 5/30 assoluti + leva soglia/precision. Verifica Mini 8.2 |
 | 45 | **Retrieval 5-step backward + `loss.backward()`** | 🟢 Superato | Bridge R07 Q11: catena ok; fill-in corretto post-feedback. **Quiz ingresso cap.08 Q1 (22/08): `loss.backward()` a freddo 10/10**; Micro 45.A post-fix 9/10 |
 | 46 | **`map_location` GPU→CPU + DataLoader=batch** | 🟢 Superato | Q5/Q6 + Micro 46.B (23/08) **9.5/10** operativo; confermato V6 cap.08 **9.5/10** |
 | 47 | **`.item()` sulla loss prima di `backward`** | 🟡 Rinforzata in pratica | Quiz ingresso 08 Q7 (22/08): risposto “Prima” (**2/10**). Uso poi **corretto** in TODO 4 e TODO 5 (`.item()` dopo `backward`, media pesata). Verifica a freddo al quiz d'ingresso cap.09 |
@@ -1040,7 +1040,7 @@ completezza del self-check e chiedere correzioni.
 | Termine | Definizione breve | Cap. | Contatore | Stato |
 |---------|-------------------|-----|-----------|-------|
 | Tensore | Array multi-dim su CPU/GPU; cugino di `ndarray` con autograd/device | M3-07 | 3/3 | ✅ |
-| `requires_grad` | Dice a PyTorch di tracciare le ops su quel tensore per `.backward()` / `.grad` | M3-07 | 2/3 | 🔄 (C09 freeze OK; #48 residuo su eval) |
+| `requires_grad` | Dice a PyTorch di tracciare le ops su quel tensore per `.backward()` / `.grad` | M3-07 | 3/3 | ✅ (#48 chiusa C10 Mini 48) |
 | Autograd | Motore che costruisce il grafo e calcola i gradienti (`loss.backward()`) | M3-07 | 2/3 | 🔄 |
 | `nn.Module` / `nn.Linear` | Blocco con `forward` e parametri; Linear = `X @ W.T + b` (weight out×in) | M3-07 | 3/3 | ✅ |
 | DataLoader | “Carrello”: batch + shuffle dal Dataset verso il training loop | M3-07 | 2/3 | 🔄 |
@@ -1069,7 +1069,7 @@ completezza del self-check e chiedere correzioni.
 | Logits multiclasse | Punteggi grezzi `(N, 10)` in uscita dal `Linear` finale: **non** probabilità (il softmax è nella loss) | M3-08 | 2/3 | 🔄 |
 | `torch.flatten(x, 1)` | Tiene la dim 0 (batch) e schiaccia da C in poi: `(N,32,7,7)` → `(N,1568)` | M3-08 | 2/3 | 🔄 |
 | `argmax(dim=1)` | Per ogni riga del batch, indice del logit più alto = classe predetta | M3-08 | 2/3 | 🔄 |
-| `model.train()` / `model.eval()` | Modalità del modulo (dropout/batchnorm); `eval()` + `torch.no_grad()` in valutazione | M3-08 | 1/3 | ⚠️ (#48 confusione con freeze) |
+| `model.train()` / `model.eval()` | Modalità del modulo (dropout/batchnorm); `eval()` + `torch.no_grad()` in valutazione | M3-08 | 3/3 | ✅ (#48 chiusa C10) |
 | Fashion-MNIST | 60k+10k immagini 28×28 grayscale, 10 classi di abbigliamento; dataset pubblico low-stakes | M3-08 | 2/3 | 🔄 |
 
 ### Cap.09 M3 — Transfer learning
@@ -1078,7 +1078,7 @@ completezza del self-check e chiedere correzioni.
 |---------|-------------------|---------------|-------------------------|-------|
 | Transfer learning | Riusare backbone pre-addestrato (es. ImageNet) e adattare la testa / ultimi layer al tuo task | M3-09 | 2/3 | 🔄 |
 | Fine-tuning | Sbloccare e riallenare anche parte del backbone (qui `layer4`) con LR basso | M3-09 | 2/3 | 🔄 |
-| Freezing / `requires_grad=False` | Bloccare l’update dei pesi; forward resta attivo | M3-09 | 2/3 | 🔄 (#48 soft su eval) |
+| Freezing / `requires_grad=False` | Bloccare l’update dei pesi; forward resta attivo | M3-09 | 3/3 | ✅ (#48 chiusa C10) |
 | ImageNet | Dataset ~1.2M img / 1000 classi (ILSVRC); fonte dei pesi DEFAULT e di mean/std Normalize | M3-09 | 2/3 | 🔄 |
 | `fc.in_features` | Dimensione ingresso della testa Linear (512 ResNet18; 2048 ResNet50) — non hardcodare | M3-09 | 2/3 | 🔄 (#52) |
 | ImageFolder | Dataset da cartelle = classi; `class_to_idx` alfabetico | M3-09 | 3/3 | ✅ (C10 Q3 **9.5**/10) |
@@ -1563,7 +1563,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | Catena `dL/dW1` (5 anelli) | 27/07 (cap.05 M3) | ✅ cap.06 🔁 #39 + Q2 | bridge R06 | — | 🟢 |
 | Training loop + cache | 03/08 (cap.06 M3) | quiz ingresso cap.07 | autograd sez.2 + V3 | — | 🟢 Loop PyTorch ok; residuo soft 5-step a parole (#45) |
 | Scaler parentesi / clip p | 31/07 (cap.06) | ✅ #42/#43 cap.07 | — | — | 🟢 |
-| Autograd / `requires_grad` / `backward` | 13/08 (cap.07) | ✅ quiz ingresso 08 Q1/Q2 (backward 10/10) | ⚠️ Mini 5.3 C09 eval≠no_grad | quiz ingresso + Mini 48 cap.10 | ⚠️ Lacuna **#48** |
+| Autograd / `requires_grad` / `backward` | 13/08 (cap.07) | ✅ quiz ingresso 08 Q1/Q2 (backward 10/10) | ✅ Mini 48.A/B C10 | — | 🟢 #48 chiusa |
 | DataLoader + `map_location` | 13/08 (cap.07) | ✅ quiz ingresso 08 Q5/Q6 (#46) | ✅ V6 cap.08 9.5 + TODO 5 DataLoader su Dataset custom | — | 🟢 |
 | `state_dict` / checkpoint | 13/08 (cap.07) | ✅ cap.08 save CNN su Colab | ✅ C09 save/load ants_vs_bees | cap.10 load Spaces | 🟢 |
 | Shape `(N,C,H,W)` + formula `H_out` | 25/08 (cap.08) | ✅ V1/V2 10/10 | ✅ C09 Q2 + ResNet stem | — | 🟢 |
@@ -1642,12 +1642,12 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 45 | **Retrieval 5-step backward + fill-in `loss.backward()`** | Cap.07 TODO 4 (13/08/2026) | Formula compressa; fill-in `auto_grad()` invece di `loss.backward()` / autograd; manca ReLU/layer2. | Cap.08 quiz ingresso + bridge R07 | 🟢 Quiz ingresso 08 Q1 (22/08): ordine + `loss.backward()` a freddo |
 | 46 | **`map_location` GPU→CPU + DataLoader=batch (Feynman)** | Cap.07 V5/V6 (13/08/2026) | V5 generica; V6 senza “pacchetti/batch”. | Cap.08 quiz ingresso | 🟢 Micro 46.B 23/08 + Q5/Q6 |
 | 47 | **`.item()` vs `backward` sulla loss** | Quiz ingresso 08 Q7 (22/08/2026) | Risposto “Prima” invece di **Dopo** (log); rischio `loss = loss.item()` che spezza il grafo. | Uso corretto in cap.08 TODO 4 e TODO 5; cap.09 Q1: ordine **dopo** ✅ a freddo (5.5/10) ma manca spiegazione grafo/RAM | 🟡 |
-| 48 | **`requires_grad` / `eval` / `no_grad` (tre leve)** | Quiz 08 Q8 + C09 Mini 5.3 | Freezing/forward OK in C09; Mini 5.3 primo **4**/10 poi **8**/10 (`eval`≠freeze≠`no_grad`). | Cap.10 Mini 48 + Sez.3 | 🟡 |
+| 48 | **`requires_grad` / `eval` / `no_grad` (tre leve)** | Quiz 08 Q8 + C09 Mini 5.3 | Freezing/forward OK in C09; Mini 5.3 primo **4**/10 poi **8**/10. **C10:** Q1 7/10 → Mini 48.A 8.5 → Mini 48.B **10**/10 (`with torch.no_grad():`). | Cap.10 Mini 48 | 🟢 |
 | 49 | **Il `1` di `(1,28,28)` è il canale, non il batch** | Mini 1.2 cap.08 (23/08/2026) | Letto come batch / numero di righe. `squeeze()` toglie le dimensioni di size 1 (qui **C**), non le righe; `permute` serve per `(C,H,W)`→`(H,W,C)` su RGB. | cap.09 Q3: primo tentativo 5/10 (`unsqueeze`); fix `squeeze` → 9/10; lacuna **🟢** su Q3 | 🟢 |
 | 50 | **Formula `H_out`: il `+ 1` finale** | Mini 2.1 cap.08 (23/08/2026) | 6/10: `(28+0-3)/1 = 25` senza `+1` → risposta 25 invece di **26**. Poi corretta e riusata bene in V2, Mini 5.1, TODO 7. | cap.09 Q2: primo tentativo 8/10; fix con `floor` → 9/10; lacuna **🟢** su questo esercizio | 🟢 |
 | 51 | **Catena dei dimezzamenti su più Pool** | V4 (3/10) + TODO 7 (4/10) cap.08 (26/08–01/09) | Errori speculari conteggio pool in C08. | C09 Mini 2.1/2.2/V7 **9.5** — quasi chiuso | 🟡 |
-| 52 | **Debug matmul: decomporre i numeri dell'errore** | TODO 3 C08 + C09 | C09: 1° **6.5**, 2° **8.5** (`in_features` OK); 32=batch ancora soft a freddo | Cap.10 Mini 52 | 🟡 |
-| 53 | **Metriche / obiezione numerica** | TODO 6c C08 + Mini 6.2 C09 | Mini 6.2 **5/10** generica; TODO 4 guardie denom OK post-fix | Cap.10 Mini 53 | 🟡 |
+| 52 | **Debug matmul: decomporre i numeri dell'errore** | TODO 3 C08 + C09 | C09: 1° **6.5**, 2° **8.5**. **C10 Mini 52.A 9.5/10**: 32=batch a freddo + fix `in_features` | Cap.10 Mini 52 | 🟢 |
+| 53 | **Metriche / obiezione numerica** | TODO 6c C08 + Mini 6.2 C09 | Mini 6.2 **5/10**. C10 Q4 8.5 + **Mini 53.A 8/10** (89/83 + costo %; soft su 5/30 e leva). | Cap.10 Mini 8.2 | 🟡 |
 | 40 | **Feynman gradient descent** — manca il ciclo iterativo | Quiz verifica V8 cap.05 (27/07/2026) | Analogia della collina corretta e vincoli lessicali rispettati, ma la risposta descrive **dove guardare**, non il ciclo "senti → fai un passo → risenti → ripeti" né l'effetto della **dimensione del passo**. Rinforzo: quiz ingresso cap.06 Q7 (Feynman backprop) + bridge R05 es.11. **27/07: Q7 saltata per scelta dello studente** → verifica spostata a fine cap.06, dopo la backprop in codice. | M3 fine cap.06 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato

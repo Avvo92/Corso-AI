@@ -208,6 +208,7 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # E perché `Linear(512, 2)` continua a funzionare anche se l'immagine in
 # ingresso era 320×320 invece di 224×224?
 # TUA RISPOSTA:
+# presenta un vettore di shape (N_esempi, 512). Continua a funzionare grazie all'averagepool, che schiaccia qualunque H e W a 1. Ad esempio se se arriva all'avgpool (8, 512, 10, 10) o (8, 512, 7, 7), in uscita la shape sarà (8, 512, 1, 1) e, dopo il flatten, diventa (8, 512).
 
 # --------------------------------------------------------------------------
 # Q3 — ordine delle classi
@@ -215,6 +216,7 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # Con `ImageFolder` su una cartella che contiene `ants/` e `bees/`,
 # quanto vale `class_to_idx`? E da cosa dipende quell'ordine?
 # TUA RISPOSTA:
+# dato che ImageFolder ordina in ordine alfabetico, class_to_idx di ants vale 0 e class_to_idx di bees vale 1.
 
 # --------------------------------------------------------------------------
 # Q4 — 🔁 lacuna #53 — obiezione sui numeri
@@ -223,6 +225,7 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # Consegna: UNA obiezione tecnica che cita ALMENO UN NUMERO (non
 # "l'accuracy da sola non basta", che è vero ma generico).
 # TUA RISPOSTA:
+# su un set così limitato (45 esempi), l'accuracy non è sufficiente come metrica di appoggio, anche perchè non sappiamo la distribuzione delle classi. Ad esempio, se classe 1 è presente 40 volte su 45, se il nostro modello dicesse sempre 1, avrebbe ragione il 90% dell volte. Bisognerebbe vedere anche recall, per capire quanti target sfuggono al nostro vaglio. Se accuracy alta e recall bassa, avremmo la conferma che la prima è alta per via della distribuzione dei target, non perchè il modello predice correttamente.
 
 # --------------------------------------------------------------------------
 # Q5 — preprocessing
@@ -230,10 +233,10 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # Elenca nell'ORDINE i 4 passaggi che trasformano un `PIL.Image` RGB in
 # un tensore pronto per il forward di una ResNet ImageNet.
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
-# 4)
+# 1) Resize(256)
+# 2) CenterCrop(224)
+# 3) ToTensor()
+# 4) Normalize(mean, std)
 
 # --------------------------------------------------------------------------
 # Q6 — map_location
@@ -241,6 +244,10 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # Hai allenato su Colab (GPU CUDA) e ora carichi il `.pt` sul tuo PC
 # senza CUDA. Cosa passi a `torch.load` e perché serve?
 # TUA RISPOSTA:
+# device = "cuda" if torch.cuda.is_available() else "cpu"
+# modello.load_state_dict(torch.load(percorso_pesi, map_location=device))
+# in questo modo, in base al device disponibile carico i pesi del modello nel posto giusto a prescindere.
+# Questo serve perchè avendo usato un cuda nel runtime di colab, i pesi sono impostati per essere usati da una gpu nvidia. Se sul pc non l'abbiamo, dobbiamo reimpostare il modello e i pesi in modo da poter essere utilizzati su cpu.
 
 # --------------------------------------------------------------------------
 # Q7 — soglia
@@ -248,6 +255,7 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # Nel cap.09 hai esplorato le soglie da 0.3 a 0.7. Se ABBASSI la soglia
 # sulla classe positiva, cosa succede a recall e precision, e perché?
 # TUA RISPOSTA:
+# Tendenzialmente, abbassando la soglia rendiamo il modello più "severo" (nel caso di nostro dominio, ci da classe "busta" più spesso). In questo modo, ci sfuggono meno fn(falsi negativi), andando così ad alzare la recall. Ma di converso, aumenterebbero i fp (falsi positivi), andando ad abbassare la precision.
 
 # --------------------------------------------------------------------------
 # Q8 — 💬 Feynman
@@ -257,6 +265,7 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # fatto in due fasi (prima solo la testa, poi anche `layer4`).
 # Vincolo: ogni termine tecnico che usi lo spieghi in mezza riga.
 # TUA RISPOSTA:
+# Immagina questa situazione: hai bisogno di un assistente per aiutarti catalogare e smistare documenti reddituali. Hai due scelte: la prima, prendere un bambino e formarlo partendo dall'insegnargli a leggere e scrivere. Oppure prendere un segretario di uno studio medico, che ha molte competenze trasversali che puoi usare, anche se devi dargli un infarinata sui documenti reddituali. Il transfer learning è come scegliere la seconda opzione. Prendiamo una rete e ne conserviamo il backbone(strati profondi e intermedi) e ricreiamo e addestriamo solo l'head (l'ultimo layer, che si occupa della classificazione finale). Poi, se necessario, possiamo addestrare anche il layer4 (l'ultimo strato convoluzionale, ma con prudenza per non perdere la conoscenza che già ha).
 
 
 # ==========================================================================
@@ -315,14 +324,16 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 #   2. `torch.no_grad()` cambia il comportamento della BatchNorm.
 #   3. Con il backbone congelato, il forward salta i layer congelati.
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
+# 1) Falso. Blocca il Dropout(spegnimento di neuroni casuali ad ogni ciclo) e il Batchnorm (smette di usare la mean e std del batch e usa quella acculata in tutto il training)
+# 2) Falso. Smette di tracciare il grafo delle operazioni eseguite nel forward e che occorrono per la backprop.
+# 3) Falso. Il backbone congelato significa che non si tiene traccia del gradiente del backbone, e di conseguenza non viene considerato nella retropropagazione.
 
 # 🧩 Mini 48.B — UNA riga di codice (formato: una riga).
 # Hai già chiamato `modello.eval()`. Scrivi la riga che apre il contesto
 # in cui PyTorch non costruisce il grafo.
 # TUA RIGA:
+
+# with torch.no_grad():
 
 
 # --------------------------------------------------------------------------
@@ -369,9 +380,11 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # 🧩 Mini 52.A — tre bullet, uno per numero (formato: tre bullet).
 # Errore: (32x512) and (256x2).
 # TUA RISPOSTA:
-# - 32 =
-# - 512 =
-# - 256 = ... e il fix portabile è:
+# - 32 = righe della matrice mat1, sono il numero di esempi del batch
+# - 512 = colonne della matrice mat1, sono il numero di features per ogni esempio del batch
+# - 256 = ... e il fix portabile è: Sono le righe del mat2, ossia le in_features che si aspetta il linear. Si può sistemare componendo il Linear in questo modo: 
+# in_features = modello.fc.in_features
+# modello.fc = nn.Linear(in_features, 2)
 
 
 # --------------------------------------------------------------------------
@@ -402,6 +415,8 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # accuracy globale 0.89. Il project manager festeggia l'89%.
 # Scrivi l'obiezione ancorata.
 # TUA FRASE:
+
+# Accuracy buona, ma recall sensibilmente più bassa ( 89 % acc e 83 % recall). Siamo sicuri che possiamo permetterci di perdere il 17 % delle api?
 
 
 # --------------------------------------------------------------------------
@@ -434,6 +449,10 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # dopo `flatten(1)` → shape __________
 # quindi `in_features` della testa è __________ (che architettura è?)
 # TUA RISPOSTA:
+
+# `AdaptiveAvgPool2d((1,1))` su `(4, 2048, 12, 12)` → shape (4, 2048, 1, 1)
+# dopo `flatten(1)` → shape (4, 2048)
+# quindi `in_features` della testa è 2048 (che architettura è? -> resnet50)
 
 
 # ==========================================================================
@@ -601,12 +620,12 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # inferenza. Accanto a ognuna, una parola per dire dove la prendi
 # (es. "dal codice del modello", "dal cap.09", "da ImageFolder"...).
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
-# 4)
-# 5)
-# 6)
+# 1) Architettura del modello (es. resnet18) -> La scelgo io in base al modello utilizzato, scrivendola come stringa.
+# 2) Quali classi e in che ordine. -> da ImageFolder
+# 3) Quale dimensione di immagine si aspetta -> Scelta in base al training del modello (Imagenet di solito 224 x 224)
+# 4) Tipo di normalizzazione -> In base alla media e la std di Imagenet (per modelli tipo resnet 18)
+# 5) Soglia -> La decido io
+# 6) Versione -> La imposto io in base alla versione del modello, e riassume anche la data e le metriche del modello impostato con quei pesi.
 
 
 # --------------------------------------------------------------------------
@@ -616,8 +635,8 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # eccezione. Per ciascuna scrivi in una riga come te ne accorgeresti
 # guardando il comportamento della demo (non il codice).
 # TUA RISPOSTA:
-# -
-# -
+# - Ordine delle classi -> Se non ho il contratto che mi dice l'indicizzazione delle classi, potrei invertirle, e il modello a quel punto potrebbe dire bees e pensare ants.
+# - Tipo di normalizzazione -> potrei usare una normalizzazione sbagliata nelle trasformazioni e a quel punto il modello potrebbe predire con molta sicurezza sempre solo una delle classi.
 
 
 # --------------------------------------------------------------------------
@@ -627,6 +646,14 @@ ROOT = Path(__file__).parent if "__file__" in globals() else Path.cwd()
 # Scrivi in 2 righe cosa gli servirebbe ancora, usando le parole del
 # contratto, come se stessi rispondendo all'email.
 # TUA RISPOSTA:
+
+#Ti ho mandato il .pt con i pesi del modello addestrato: cmq, per il corretto utilizzo e la successiva analisi, ti invierò quanto segue:
+# Architettura del modello.
+# classi e indicizzazione corretta.
+# dimensione delle immagini attese in input.
+# normalizzazione per la trasformazione delle immagini.
+# soglia selezionata su validation.
+# versione e metriche di riferimento.
 
 
 # ==========================================================================
@@ -912,8 +939,8 @@ def carica_checkpoint(percorso, device="cpu"):
 #   optimizer_state · classi · percorsi dei file di training · soglia ·
 #   mean/std · immagini del validation · nome_arch · learning rate usato
 # TUA RISPOSTA:
-# DENTRO:
-# FUORI:
+# DENTRO:classe, soglia, mean/std, nome_arch, 
+# FUORI: optimizer_state, percorsi dei file di training, immagini del validation, lr usato 
 
 
 # --------------------------------------------------------------------------
@@ -925,6 +952,18 @@ def carica_checkpoint(percorso, device="cpu"):
 # nota che chiarisce che è un proxy e non buste paga.
 # TUO CODICE:
 
+# ckpt = salva_checkpoint(
+#     modello = modello_di_prova,
+#     percorso = "percorso_di_prova.pt",
+#     nome_arch = "resnet18",
+#     classi = ["ants", "bees"],
+#     dimensione_input=224,
+#     mean = [0.485, 0.456, 0.406],
+#     std = [0.229, 0.224, 0.225],
+#     soglia = 0.45,
+#     metriche= {"accuracy": 0.889},
+#     note="il modello è stato allenato per la proxy ants vs bees e non su buste paga",
+# )
 
 # --------------------------------------------------------------------------
 # 🧩 Mini-esercizio 2.3 — leggere l'errore (formato: 2 bullet)
@@ -935,9 +974,8 @@ def carica_checkpoint(percorso, device="cpu"):
 # In due bullet: (a) cosa è successo, (b) perché `strict=False` qui
 # sarebbe una pessima idea.
 # TUA RISPOSTA:
-# -
-# -
-
+# - il modello ha .fc. Il .pt chiama .head. Segno che probabilmente il linear finale è stato rinominato in .head.
+# - sarebbe una pessima idea perchè con strict=False parti con .fc random. La demo funziona ma da risposte casuali.
 
 # --------------------------------------------------------------------------
 # 🧩 Mini-esercizio 2.4 — weights_only (formato: 2 righe)
@@ -947,6 +985,10 @@ def carica_checkpoint(percorso, device="cpu"):
 # sicuro, e in una riga di' perché la versione "ovvia"
 # (`"data": datetime.now()`) non funzionerebbe.
 # TUA RISPOSTA:
+
+# "data": str(datetime.now())
+
+# Non possimo usare oggetti all'interno del contratto, perchè per ragioni di sicurezza il weights_only bloccherebbe la serializzazione.
 
 
 # ==========================================================================
@@ -1262,6 +1304,7 @@ class ClassificatoreVisivo:
 # Spiega in due righe perché scaricare i pesi ImageNet qui sarebbe uno
 # spreco, e cosa succederebbe comunque ai pesi ImageNet un attimo dopo.
 # TUA RISPOSTA:
+# sarebbe uno spreco perchè poco dopo nella funzione facciamo il load dello state_dict con i pesi aggiornati (compresi quelli del backbone). In pratica scaricheremmo inutilmente qualcosa che già abbiamo e inseriamo cmq subito dopo.
 
 
 # --------------------------------------------------------------------------
@@ -1270,8 +1313,7 @@ class ClassificatoreVisivo:
 # Cosa cambia, in termini di tempo di risposta, fra caricare il modello
 # nel `__init__` e caricarlo alla prima `predict`? Rispondi distinguendo
 # la PRIMA richiesta dalle SUCCESSIVE (2 righe).
-# TUA RISPOSTA:
-
+# TUA RISPOSTA: cambia per lo space, perchè caricandolo nell'__init__ l'healt cheack impiega troppi secondi. Caricandolo alla prima predict bypassiamo questo inconveniente, fermo restando che dobbiamo evitare che il modello venga ricaricato ad ogni predizione inserendo nel metodo carica una condizione che veda prima se il modello è ancora inizializzato su none oppure già abbiamo fatto la prima predizione e lo abbiamo effettivamente caricato.
 
 # --------------------------------------------------------------------------
 # 🧩 Mini-esercizio 3.3 — trova il difetto di riuso
@@ -1289,10 +1331,27 @@ class ClassificatoreVisivo:
 #         print(m(t.unsqueeze(0)).argmax().item())
 #
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
 
+def crea_predittore(percorso_ckpt, device="cpu"):
+    modello, contratto = carica_checkpoint(percorso_ckpt, device)
+    transform = transform_eval(
+        dimensione = contratto['dimensione_input'],
+        mean = contratto['mean'],
+        std = contratto['std']
+    )
+    classi = contratto["classi"]
+
+    def predici(immagine_pil):
+        img = immagine_pil.convert("RGB")
+        tensore = transform(img)
+        tensore = tensore.unsqueeze(0).to(device)
+        with torch.no_grad():
+            logits = modello(tensore)
+            probabilita = torch.softmax(logits, dim=1)[0]
+            return {nome: float(p) for nome, p in zip(classi, probabilita)}
+    return predici
+
+# predici = crea_predittore("dati/pesi/ants_vs_bees.pt")
 
 # --------------------------------------------------------------------------
 # 🧩 Mini-esercizio 3.4 — eval è stato, no_grad è contesto (1 riga)
@@ -1300,6 +1359,8 @@ class ClassificatoreVisivo:
 # Spiega in una riga perché `eval()` si chiama una volta sola sul modello
 # mentre `no_grad()` va aperto ogni volta che predici.
 # TUA RISPOSTA:
+# eval() si chiama solo una volta sola sul modello per metterlo in modalita' valutazione .Il modello in pratica smette di usare il Batchnorm cominciando a utilizzare running_mean e running_var per normalizzare gli input.
+# with torch.no_grad() wrappa il forward, e fa smettere autograd di tracciare il grafo delle operazioni, risparmiando vram in fase di valutazione (non dobbiamo in questo caso aggiornare i pesi). Si attiva ogni volta che viene lanciato un forward per fare una previsione.
 
 
 # ==========================================================================
