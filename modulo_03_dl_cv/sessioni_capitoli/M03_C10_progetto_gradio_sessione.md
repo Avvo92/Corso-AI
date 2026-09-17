@@ -226,6 +226,47 @@ debito C1-C8 buste → `busta_vs_altro.pt`.
 - **OK:** BN corretta (running_mean/var, normalizza ancora); no_grad/autograd/VRAM ok.
 - **Soft residuo:** ancora non esplicita **stato persistente vs contesto `with`** (il “perché” della consegna). Ancora 2 righe vs 1.
 
+### 2026-09-17 — Mini 4.1 (`10_progetto_gradio.py`, Interface minima)
+- **Voto (1° tentativo / fix immediato): 9.5/10**
+- **OK:** `gr.Interface` + `lambda x: x**2` + `gr.Number()` in/out + `.launch()`. Parentisi componenti ok; riga commentata → no side effect all’import.
+- **Soft:** opzionale `if __name__ == "__main__":` intorno al launch.
+
+### 2026-09-17 — Mini 4.1 (post-feedback)
+- **Voto: 9/10**
+- **OK:** Interface + Number() + launch sotto guardia `__main__`.
+- **Soft sintassi:** manca `:` dopo `if __name__ == "__main__"` e indentazione di `launch()` (in codice vero sarebbe SyntaxError). Come bozza commentata concetto ok.
+
+### 2026-09-17 — Mini 4.2 (`10_progetto_gradio.py`, gr.Label V/F)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** **Falso**; `gr.Label` accetta dict `{classe: probabilità}` e disegna le barre — non serve un altro componente solo per le probabilità.
+- **Soft:** “in ordine” non è il punto centrale; il punto è dict → barre / stringa → etichetta secca.
+
+### 2026-09-17 — Mini 4.3 (`10_progetto_gradio.py`, Image type pil vs numpy)
+- **Voto (1° tentativo): 9/10**
+- **OK:** (1) transforms torchvision lavorano bene su PIL (+ `convert("RGB")`); (2) numpy è (H,W,C), PyTorch vuole (C,H,W) — con PIL+`ToTensor` la permutazione è inclusa.
+- **Soft:** “tensore numpy” → array NumPy; typo “immagile”.
+
+### 2026-09-17 — Mini 4.4 (`10_progetto_gradio.py`, TypeError Interface arity)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** mismatch n°/ordine `inputs` di `Interface` vs parametri di `predici` (qui 2 componenti → 1 arg). Errore tipico Sez. 4.2.
+- **Soft:** si può citare anche `outputs` vs valori di `return` (stessa regola); qui il messaggio punta agli **inputs**.
+
+### 2026-09-17 — Mini 5.1 (`10_progetto_gradio.py`, shape pipeline)
+- **Voto (1° tentativo): 6/10**
+- **OK:** numeri Resize ~341 e 256; CenterCrop 224; finali `(3,224,224)` e `(1,3,224,224)`.
+- **Errori:** (1) dopo `convert`/`Resize`/`Crop` è ancora **PIL**, non `(C,H,W)` — i canali arrivano con **ToTensor**; (2) PIL 400×300 = W×H → lato corto è **300**; dopo Resize(256): **341×256** (W×H) = in CHW sarebbe `(3,256,341)`, non `(3,341,256)`.
+- **Target:** RGB 400×300 → Resize 341×256 → Crop 224×224 → ToTensor `(3,224,224)` → unsqueeze `(1,3,224,224)`.
+
+### 2026-09-17 — Mini 5.2 (`10_progetto_gradio.py`, softmax dim)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** `(4,2)` = 4 esempi × 2 classi; `dim=1` somma 1 sulle classi per riga (giusto); `dim=0` somma sulle immagini per classe (senza senso).
+- **Soft:** consegna 1 riga → 3 (Pattern #6); contenuto pieno.
+
+### 2026-09-17 — Mini 5.3 (`10_progetto_gradio.py`, Normalize assente)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** (1) no crash: shape/range ancora validi per Conv2d (0–1); (2) probabilità plausibili ma sbagliate, tipico “sempre sicuro sulla stessa classe”. Allineato Sez. 1.2 / 5.2.
+- **Soft:** “inevitabilmente” un filo forte (è il caso *tipico*); il perché profondo = input fuori scala ImageNet `(x-mean)/std`.
+
 ---
 
 ## Valutazioni esercizi / quiz / mini-esercizi
@@ -254,6 +295,13 @@ debito C1-C8 buste → `busta_vs_altro.pt`.
 - **OK:** numeri veri (45; scenario 40/45 → ~90% se predici sempre la maggioranza); collega accuracy alta + recall bassa a sbilanciamento; non resta sulla frase generica “accuracy non basta”.
 - **Soft:** 40/45 = 88.9% (ha detto ~90%, ok); poteva aggiungere volatilità 1/45≈2.2 punti oppure un conteggio FN esplicito; costo di dominio (busta persa) opzionale ma da colloquio.
 - **Lacune:** #53 → 🟡→ quasi 🟢 (forte miglioramento vs Mini 6.2 C09 5/10). Consolidare su Mini 8.2 model card.
+
+### 2026-09-17 — Assemblaggio `modello.py` (core riusabile per `app.py`)
+- **Voto (1° tentativo): 9/10**
+- **OK:** import protetti; costanti; `transform_eval` + `costruisci_modello` + `carica_checkpoint` + `ClassificatoreVisivo`; ordine dipendenze corretto (`costruisci` prima di `carica`); import del modulo OK.
+- **Soft:** `ROOT` e `PIL`/`VERSIONE_CONTRATTO` inutilizzati (ok se tieni `salva_checkpoint` dopo); manca `salva_checkpoint` (non serve alla sola demo Gradio).
+- **Next:** `pip install torchvision` nel venv (oggi manca → predizione fallirebbe); poi smoke con `.pt` + Gradio.
+- **Lacune:** nessuna nuova sul riuso codice.
 
 ---
 

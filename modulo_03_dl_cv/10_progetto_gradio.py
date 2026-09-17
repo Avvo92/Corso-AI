@@ -1544,6 +1544,9 @@ def crea_predittore(percorso_ckpt, device="cpu"):
 # Scrivi 4-5 righe: una `Interface` che prende un numero e restituisce il
 # suo quadrato. (Componenti: `gr.Number`.)
 # TUO CODICE:
+# interfaccia = gr.Interface(fn=lambda x: x**2, inputs= gr.Number(), outputs=gr.Number())
+# if __name__ == "__main__"
+#   interfaccia.launch()
 
 
 # --------------------------------------------------------------------------
@@ -1552,6 +1555,7 @@ def crea_predittore(percorso_ckpt, device="cpu"):
 # "`gr.Label` vuole l'etichetta secca vincente; per mostrare le
 #  probabilità serve un componente diverso."
 # TUA RISPOSTA:
+# Falso: dipende se in uscita dalla funzione c'è una stringa o un dizionario. Se c'è il dizionario con tutte le classi, mostra le barre di tutte le classi in ordine.
 
 
 # --------------------------------------------------------------------------
@@ -1560,8 +1564,8 @@ def crea_predittore(percorso_ckpt, device="cpu"):
 # Perché scegliamo `gr.Image(type="pil")` e non `type="numpy"`?
 # Un bullet sul preprocessing, uno sull'ordine degli assi.
 # TUA RISPOSTA:
-# -
-# -
+# - Il preprocessing di torch si aspetta un immagile di tipo PIL, non direttamente un tensore numpy.
+#  - Scegliendo numpy dovremmo occuparci di invertire l'ordine in cui si trovano i canali nel tensore ( (H, W, C) -> (C, H, W).
 
 
 # --------------------------------------------------------------------------
@@ -1571,7 +1575,7 @@ def crea_predittore(percorso_ckpt, device="cpu"):
 # `TypeError: predici() takes 1 positional argument but 2 were given`.
 # In una riga: dove guardi e perché.
 # TUA RISPOSTA:
-
+# Guarderei gli input passati tramite gr.Interface() se coincidono con quelli richiesti dalla funzione predici(). E' il classico errore in cui si rischia di incappare, ossia gli argomenti passati devono essere lo stesso numero che la funzione si aspetta e nello stesso ordine.
 
 # ==========================================================================
 # SEZIONE 5 — predict() END-TO-END
@@ -1715,7 +1719,11 @@ def crea_predittore(percorso_ckpt, device="cpu"):
 # Scrivi la shape dopo OGNI passaggio (una riga per passaggio):
 #   convert("RGB") → Resize → CenterCrop → ToTensor → unsqueeze(0)
 # TUA RISPOSTA:
-
+# dopo convert("RGB") -> 400×300          (ancora PIL, W×H; non è un tensore)
+# dopo Resize         -> 341×256          (PIL, W×H; lato corto 300→256)
+# dopo CenterCrop     -> 224×224          (PIL)
+# dopo ToTensor       -> (3, 224, 224)    (C, H, W)
+# dopo unsqueeze      -> (1, 3, 224, 224) (N, C, H, W)
 
 # --------------------------------------------------------------------------
 # 🧩 Mini-esercizio 5.2 — dim del softmax (formato: 1 riga)
@@ -1723,6 +1731,9 @@ def crea_predittore(percorso_ckpt, device="cpu"):
 # Su logits di shape (4, 2), cosa cambia fra `softmax(dim=1)` e
 # `softmax(dim=0)`? Quale è quello giusto e perché.
 # TUA RISPOSTA:
+# Se i logits arrivano in questa shape, significa che sono 4 righe, per ognuna 2 classi. 
+# Dunque l'asse 0 è l'asse delle righe degli esempi, mentre l'asse 1 riguarda le classi.
+# softmax(dim=0) confronterebbe portando a somma 1 le righe per ogni classe, e non avrebbe senso. Mentre facendolo su dim=1 per ogni riga riporterebbe a somma 1 le classi per ogni riga, che è esattamente quello che vogliamo.
 
 
 # --------------------------------------------------------------------------
@@ -1733,8 +1744,8 @@ def crea_predittore(percorso_ckpt, device="cpu"):
 # Un bullet: perché il codice non dà errore.
 # Un bullet: cosa vedresti nelle probabilità.
 # TUA RISPOSTA:
-# -
-# -
+# - Non da errore perchè effettivamente to tensor trasforma i canali in numeri tra 0 e 1, quindi il modello riesce ad eleborare l'input
+# - Dato che la scala però è sbagliata, probabilmente vedremo come output sempre risposte ultra confindenti (es circa 0.98) ma sempre sulla stessa classe, perchè gli input non scalati spingeranno inevitabilmente verso una sola delle classi.
 
 
 # --------------------------------------------------------------------------
