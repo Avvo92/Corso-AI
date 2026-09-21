@@ -303,6 +303,33 @@ debito C1-C8 buste → `busta_vs_altro.pt`.
 - **Next:** `pip install torchvision` nel venv (oggi manca → predizione fallirebbe); poi smoke con `.pt` + Gradio.
 - **Lacune:** nessuna nuova sul riuso codice.
 
+### 2026-09-21 — Mini 6.1 (`10_progetto_gradio.py`, 4 blocchi app.py)
+- **Voto (1° tentativo): 8.5/10**
+- **OK:** 4 bullet come da formato (#6 ok); B1 config senza logica; B3 core testabile senza Gradio; B4 solo UI. Criterio separazione logica/presentazione compreso.
+- **Soft:** B2 — manca “caricamento pigro / una sola istanza a livello modulo”; typo minori.
+- **Lacune:** nessuna nuova.
+
+### 2026-09-21 — Mini 6.2 (`10_progetto_gradio.py`, test togli Gradio)
+- **Voto (1° tentativo): 8/10**
+- **OK:** riscrivi solo blocco 4 (UI); idea separazione corretta; 1 riga come da formato.
+- **Soft:** non dice esplicitamente che B1–B3 restano; typo “blocca”.
+- **Lacune:** nessuna nuova.
+
+### 2026-09-21 — Mini 6.3 (`10_progetto_gradio.py`, test core senza Gradio)
+- **Voto (1° tentativo): 9/10**
+- **OK:** `Image.open` → `analizza` → assert somma ≈ 1 (`isclose`/`atol=1e-5`); path corretto sotto `dati/`; nessun `demo.launch`.
+- **Soft:** `esito['ants']+esito['bees']` ok sul proxy; più generico `sum(esito.values())`. Codice a livello modulo nel capitolo (side effect all'import) — accettabile per il mini.
+- **Lacune:** nessuna nuova.
+
+### 2026-09-21 — Mini 6.3 post-feedback (sum generico)
+- **Voto (post-feedback): 7.5/10** — idea giusta, bug: `sum(esito.values)` senza `()` → non itera le probabilità (TypeError o assert senza senso). Serve `sum(esito.values())`.
+- **Fix atteso:** `assert np.isclose(sum(esito.values()), 1.0, atol=1e-5), ...`
+- **Lacune:** attenzione metodi dict da chiamare (`.values()` / `.keys()` / `.items()`).
+
+### 2026-09-21 — Mini 6.3 fix applicato (`.values()`)
+- **Fix applicato:** `sum(esito.values())` corretto; assert + PIL + path ok.
+- **Voto 1° tentativo resta 9/10**; post-bug risolto → esercizio chiuso sul merito.
+
 ---
 
 ## Lacune e dubbi ancora aperti

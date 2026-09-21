@@ -1903,10 +1903,10 @@ def crea_predittore(percorso_ckpt, device="cpu"):
 # --------------------------------------------------------------------------
 # Una riga per blocco: cosa contiene e cosa NON deve contenere.
 # TUA RISPOSTA:
-# - Blocco 1:
-# - Blocco 2:
-# - Blocco 3:
-# - Blocco 4:
+# - Blocco 1: contiente le costanti e i percorsi, NON deve contenere nessuna logica di funzionamento dell'app.
+# - Blocco 2:contiene SOLO l'istanza con cui si inizializza il classificatore visivo,
+# - Blocco 3: contiene solo la funzione che prende un immagini e restituisce dati. Può essere testata anche solo tramite assert, non contiene le logiche di Gradio.
+# - Blocco 4: contiene solo la logica di Gradio, quindi tutte quelle funzione relative alla visualizzazione nel browser.
 
 
 # --------------------------------------------------------------------------
@@ -1915,6 +1915,7 @@ def crea_predittore(percorso_ckpt, device="cpu"):
 # Se domani sostituisci Gradio con FastAPI, quali blocchi riscrivi e
 # quali resti a guardare?
 # TUA RISPOSTA:
+# Il blocca 4, perchè è l'unico che contiene le logiche di visualizzazione.
 
 
 # --------------------------------------------------------------------------
@@ -1924,7 +1925,22 @@ def crea_predittore(percorso_ckpt, device="cpu"):
 # apri un'immagine con PIL, chiama la funzione, controlla con un `assert`
 # che le probabilità sommino a circa 1 (tolleranza 1e-5).
 # TUO CODICE:
+from PIL import Image
+from app import analizza
+from pathlib import Path
+import numpy as np
 
+p = (
+    Path("dati")
+    / "proxy_ants_bees"
+    / "test"
+    / "ants"
+    / "35558229_1fa4608a7a.jpg"
+)
+immagine_pil = Image.open(p)
+esito, riepilogo = analizza(immagine_pil)
+assert np.isclose(sum(esito.values()), 1.0, atol=1e-5), "Le probabilità non sommano a 1!"
+print(esito)
 
 # ==========================================================================
 # SEZIONE 7 — DEPLOY SU HUGGINGFACE SPACES
