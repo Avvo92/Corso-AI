@@ -1,0 +1,13 @@
+# Requirements per la DEMO Hugging Face Spaces (Gradio + ResNet18 CPU).
+
+# Pin con == → build ripetibile (come un package-lock.json).
+# Torch CPU → niente CUDA (lo Space gratuito non ha GPU).
+#
+# Allinea `sdk_version` nel README.md dello Space a questa versione di Gradio.
+
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch==2.14.0
+torchvision==0.29.0
+gradio==6.27.0
+pillow==12.1.1

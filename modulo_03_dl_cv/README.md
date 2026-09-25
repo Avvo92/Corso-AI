@@ -1,6 +1,6 @@
 # Modulo 3 — Deep Learning & Computer Vision
 
-> **Stato**: 🟡 **In corso — 9/10 capitoli** (ultimo chiuso: cap.09 transfer, 14/09/2026, voto **8**/10). Resta cap.10 Gradio + HF Spaces.
+> **Stato**: 🟡 **10/10 core chiusi**, modulo **non archiviato** (ultimo: cap.10, 25/09/2026, voto **8.5**/10 — chiuso **con residuo**). Demo Gradio funzionante in locale (`app/`), ma **nessun URL pubblico**: dal 2026 gli Space Gradio HF richiedono un piano a pagamento. Cap.12 Grad-CAM **creato** — da svolgere.
 > Vedi `CONTESTO_CORSO.md` → Stato Attuale / Computer Vision nel Prodotto.
 
 ## Obiettivo del modulo
@@ -15,6 +15,8 @@ Classificatore visivo **busta paga vs non-busta paga** + demo Gradio deployata. 
 
 > **⚠️ Split del 27/05/2026**: il vecchio `03_backpropagation.py` (monolitico, 1700 righe, atteso 9/10) è stato spezzato in **4 sotto-capitoli** (03 loss → 04 derivate → 05 chain rule + GD → 06 backprop + training). I file successivi sono stati rinumerati di conseguenza (04→07, 05→08, 06→09, 07→10). Il modulo M3 è passato da 7 a **10 capitoli**.
 >
+> **📌 Estensione del 25/09/2026**: creato **`12_grad_cam_interpretabilita.py`** (teoria + quiz + TODO + pipeline). `grad_cam_pipeline.py` = wrapper CLI. Numerazione 12 per non collidere con `11_colab_track_prova_ants_bees.py`.
+>
 > **Espansione del 27/05/2026 (post-split)**: su richiesta dello studente ("tanti esercizi, pipeline complete, richiami forti intra-M3 per padroneggiare la pipeline DL"), tutti i 4 sotto-capitoli sono ora **PIENI di esercizi e pipeline integrate** (~14-17 mini-esercizi inline + 16-19 TODO numerati per file). Ogni file ha 5-6 sezioni di teoria con mini-esercizio dopo ogni concetto, 1 pipeline integrata che lega col capitolo precedente, 6 esercizi tipologie (colloquio/refactor/debug/retrieval/interleaving/real-world), quiz d'ingresso + verifica, mini-progetto finale, checkpoint. Difficoltà attese ricalibrate (vedi tabella).
 
 | # | File | Argomento | Difficoltà attesa | Piattaforma |
@@ -28,7 +30,8 @@ Classificatore visivo **busta paga vs non-busta paga** + demo Gradio deployata. 
 | 07 | `07_pytorch_intro.py` ✅ **chiusura anticipata** (13/08/2026, voto **7**/10) | Tensori, autograd, `nn.Module`, Dataset/DataLoader, training loop, `state_dict`, Colab. #42/#43/#44 🟢. Residui TODO 4–6 + 🏗️ + #27/#45/#46 → cap.08 / bridge R07. | 7–8/10 atteso → **7** | Colab |
 | 08 | `08_cnn_computer_vision.py` ✅ **completato** (01/09/2026, voto **7**/10) | CNN: `(N,C,H,W)`, Conv2d, MaxPool, `PiccolaCNN` allenata su Fashion-MNIST (Colab), feature maps, CrossEntropy target Long. 🔁 #27/#45/#46 chiusi; debito tabellare M3-07 chiuso (TODO 5, 9.5/10). Niente buste paga. Nuovi rinforzi → cap.09: #48/#49/#51/#52. | 8/10 atteso → **7** | Colab |
 | 09 | `09_transfer_learning.py` ✅ **completato** (14/09/2026, voto **8**/10) | Transfer ResNet18, freeze→head→`layer4`, ImageFolder, metriche/soglie. **TRACK PROVA** Ants vs Bees (Colab); debito prodotto C1–C8 buste. | 7 atteso → **8** | Colab |
-| 10 | `10_progetto_gradio.py` 🟡 **scritto ed esteso** (14/09/2026), da svolgere | **Due assi di riuso**: (1) modello — contratto di inferenza a 6 voci, checkpoint ricco (`salva_checkpoint`/`carica_checkpoint`), `weights_only`, model card; (2) codice — `costruisci_modello` generica, `transform_eval` derivata dal contratto, classe `ClassificatoreVisivo` riusata da Gradio **e** da FastAPI (ponte `prob_busta_paga_visivo`). In mezzo: anatomia Gradio, `predict` end-to-end, `app.py` in 4 blocchi, deploy HF Spaces (portfolio #2), smoke test e latenza p50/p95. Rinforzi 🔁 #48/#52/#53/#6/avgpool. Track prova `.pt` ora; buste quando C1–C8. 🔄 CONFRONTO PRIMA/DOPO fine modulo. | 7/10 | CPU + HF Spaces |
+| 10 | `10_progetto_gradio.py` ✅ **chiuso con residuo** (25/09/2026, voto **8.5**/10) — svolti quiz/mini/TODO 1–6 e 🏗️ G1–G5 (pacchetto Space in `app/`); **aperti** TODO 7, G6–G8 deploy, 🔄 CONFRONTO PRIMA/DOPO | **Due assi di riuso**: (1) modello — contratto di inferenza a 6 voci, checkpoint ricco (`salva_checkpoint`/`carica_checkpoint`), `weights_only`, model card; (2) codice — `costruisci_modello` generica, `transform_eval` derivata dal contratto, classe `ClassificatoreVisivo` riusata da Gradio **e** da FastAPI (ponte `prob_busta_paga_visivo`). In mezzo: anatomia Gradio, `predict` end-to-end, `app.py` in 4 blocchi, deploy HF Spaces (portfolio #2), smoke test e latenza p50/p95. Rinforzi 🔁 #48/#52/#53/#6/avgpool. Track prova `.pt` ora; buste quando C1–C8. 🔄 CONFRONTO PRIMA/DOPO fine modulo. | 7/10 | CPU + HF Spaces |
+| 12 | `12_grad_cam_interpretabilita.py` 🟡 **creato** (25/09/2026), da svolgere | Grad-CAM / heatmap: probabilità vs feature map vs CAM; hooks; pesi×A; overlay; Regola 43 (ripassi 08/09/10). CLI: file stesso o wrapper `grad_cam_pipeline.py`. Collegamento prodotto: spiegazione al consulente. | 7/10 | CPU |
 
 **Tempo stimato**: 3-4 settimane (dopo lo split: andare graduali sui 4 mini-capitoli matematici 03-06).
 

@@ -127,4 +127,5 @@ REGOLE GENERALI (sempre attive)
 - Il file CONTESTO_CORSO.md e la fonte di verita per tutto il corso
 - Il file APPUNTI_APPLICATIVO.md (stub) + docs/prodotto/README.md sono la fonte di verita per il prodotto
 - Se esiste un conflitto tra chat e file contesto, il file contesto ha priorita
+- **Regola 43 (vincolante)**: prima di citare/riusare concetti di capitoli precedenti in esercizi o spiegazioni, inserire un ripasso propositivo (`# 🔁 RIPASSO PROPOSITIVO` / equivalente in chat). Dettaglio in CONTESTO_CORSO.md
 - L'agente non deve mai modificare questo file (.cursorrules)

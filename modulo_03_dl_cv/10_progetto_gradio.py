@@ -2133,9 +2133,9 @@ print(esito)
 # Elenca i tre file indispensabili di uno Space Gradio e, per ognuno, in
 # mezza riga, a cosa serve.
 # TUA RISPOSTA:
-# -
-# -
-# -
+# - file READEME.md con YAML iniziale, in cui sono particolarmente importanti sdk, sdk_version e app_file. In pratica sono le istuzioni per dire a HF come leggere l'app.
+# - file requirments.txt, dove pinnare le versioni corrette di gradio, torch, torchvision e pillow. Così chiunque può installare nel venv le versioni corrette necessarie per utilizzare l'app.
+# - file app.py, contenente la logica che espone la demo.
 
 
 # --------------------------------------------------------------------------
@@ -2144,7 +2144,16 @@ print(esito)
 # Scrivi il blocco YAML del README per il tuo Space (sdk gradio, file
 # app.py, titolo a scelta).
 # TUA RISPOSTA:
-
+#     ---
+#     title: Classificatore Ants vs Bees
+#     emoji: 🐝🐜
+#     colorFrom: gray
+#     colorTo: yellow
+#     sdk: gradio
+#     sdk_version: 4.44.0
+#     app_file: app.py
+#     pinned: false
+#     ---
 
 # --------------------------------------------------------------------------
 # 🧩 Mini-esercizio 7.3 — pin (formato: 1 riga)
@@ -2152,6 +2161,7 @@ print(esito)
 # Perché `gradio==4.44.0` e non `gradio`? Rispondi con il caso concreto
 # che si evita.
 # TUA RISPOSTA:
+# ad ogni build dell'app, scrivendo solo gradio HF automaticamente scarica la versione più recente. Quindi l'app funziona fino a quando non arriva una versione più aggiornata di gradio e poi l'app smette di funzionare. Specificando la versione, abbiamo la certezza che HF scaricherà sempre la versione giusta e che è necessaria per poter far funzionare la nostra app. Abbiamo sperimentato questo tipo di problema utilizzando Gradio 6 e allow_flagging, parametro che era stato deprecato.
 
 
 # --------------------------------------------------------------------------
@@ -2160,10 +2170,11 @@ print(esito)
 # Per ognuno dei quattro errori di 7.6, scrivi se lo troveresti nel log
 # di BUILD o in quello di RUNTIME.
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
-# 4)
+# 1) runtime
+# 2) runtime
+# 3) build
+# 4) build
+
 
 
 # ==========================================================================
@@ -2322,9 +2333,9 @@ print(esito)
 # Scegli i TRE controlli che faresti per primi dopo il deploy e, per
 # ognuno, una riga sul bug che scoprirebbe.
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
+# 1) Caricare una foto di un ape "palese" e vedere con quanta sicurezza il modello risponde "bees". E' l'unico modo per avere la certezza che le classi non siano invertite
+# 2) Le probabilità sommano a 1: se così non è, c'è un errore nel softmax.
+# 3) Carico prima l'immagine A e vedo il risultato. Dopo carico l'immagine B, se il risultato non cambia è possibile che sto ripassando al modello l'immagine che è in cache, e non una nuova.
 
 
 # --------------------------------------------------------------------------
@@ -2333,8 +2344,75 @@ print(esito)
 # Scrivi la voce "quanto va" della tua model card usando i numeri veri
 # del cap.09 (test accuracy ~0.889, 45 immagini). Devono comparire
 # almeno due numeri e la classe positiva.
-# TUA RISPOSTA:
+# TUA RISPOSTA: 
 
+print("\nMini-esercizio 8.2\n")
+
+from modello import ClassificatoreVisivo
+from addestramento import prepara_dataloader, valuta, tabella_soglie
+
+PERCORSO_PESI = Path(__file__).resolve().parent /"dati"/"pesi"/"ants_vs_bees.pt"
+PERCORSO_DATI = Path(__file__).resolve().parent/"dati"/"proxy_ants_bees"
+DIM_IMMAGINE = 224
+
+classificatore = ClassificatoreVisivo(PERCORSO_PESI, device="cpu").carica()
+modello = classificatore._modello
+contratto = classificatore._contratto
+dl_test = prepara_dataloader(
+    PERCORSO_DATI,
+    pipeline="grayscale_doc",
+    num_workers=0    
+)[2]
+criterio = nn.CrossEntropyLoss()
+
+dati_valutazione = valuta(
+    modello,
+    dl_test,
+    criterio=criterio,
+    device="cpu"
+)
+
+soglia = [contratto['soglia']]
+
+valutazione = tabella_soglie(
+    dati_valutazione[2],
+    dati_valutazione[4],
+    soglia
+)
+
+"""
+---
+title: Classificatore Ants vs Bees
+sdk: gradio
+app_file: app.py
+---
+
+Classificatore visivo — formiche vs api
+
+1. A cosa serve (e a cosa no)
+Distingue foto di **formiche** da foto di **api**.  
+Non riconosce altri insetti, non identifica la specie, non è uno strumento medico o produttivo.
+
+2. Su cosa è stato addestrato
+Dataset **hymenoptera** (tutorial PyTorch transfer learning), circa  
+**245 train / 108 val / 45 test**. Immagini pubbliche, zero dati personali.
+
+3. Come è stato addestrato
+**ResNet18** pre-addestrata su ImageNet, fine-tuning in due fasi:  
+prima solo la testa (`fc`), poi anche `layer4` con learning rate più basso.
+
+4. Quanto va
+La classe positiva è **`bees`**: su questo set piccolo l’accuracy da sola non basta a giudicare il modello in produzione.
+Sul **test set (45 immagini)** l’**accuracy** è circa **0.889**, il recall su classe positiva (bees) **0.875**, precision **0.913**.
+
+5. Soglia
+Soglia **0.5** su `p(bees)`:  
+sopra → `bees`, sotto → `ants`. Scelta sul validation; se la sposti privilegi recall o precision.
+
+6. Limiti
+Dataset piccolo; fuori dominio (es. un gatto) il modello **risponde comunque** con una delle due classi e può sembrare molto sicuro.  
+Le immagini caricate in demo non vengono conservate. Demo didattica, non garanzia su foto molto diverse dal training.
+"""
 
 # --------------------------------------------------------------------------
 # 🧩 Mini-esercizio 8.3 — percentili (formato: 1 riga)
@@ -2342,6 +2420,7 @@ print(esito)
 # Perché riportiamo p50 e p95 invece della media? Rispondi con l'esempio
 # numerico di 8.3.b.
 # TUA RISPOSTA:
+# Per avere un valore mediano effettivo, che non una media sporcata dai casi eccezionali (particolarmente fortunati o sfortunati).
 
 
 # --------------------------------------------------------------------------
@@ -2351,6 +2430,7 @@ print(esito)
 # Spiega in due righe perché è il comportamento atteso e come lo
 # dichiareresti nella model card.
 # TUA RISPOSTA:
+# Il modello è addestrato a riconoscere  api e formiche. Dato che in ogni deve rispondere, se mettiamo immagini diverse da api e formiche, ovviamente lui risponderà utilizzando le uniche due classi che sono tra le sue opzioni.
 
 
 # ==========================================================================
@@ -2384,35 +2464,35 @@ print(esito)
 # Lo hai già visto FastAPI nel M1 cap.12 (`12_web_bridge.py`), quindi qui
 # guardiamo solo le differenze di questo caso.
 #
-#     from fastapi import FastAPI, UploadFile, File, HTTPException
-#     from PIL import Image
-#     import io
+# from fastapi import FastAPI, UploadFile, File, HTTPException
+# from PIL import Image
+# import io
 #
-#     app = FastAPI(title="Classificatore visivo documenti")
+# app = FastAPI(title="Classificatore visivo documenti")
 #
 #     # Stessa istanza, stessa classe, stesso checkpoint. Zero logica nuova.
 #     classificatore = ClassificatoreVisivo("pesi/ants_vs_bees.pt")
 #
-#     @app.get("/info")
-#     def info():
-#         """Espone il CONTRATTO. Un client può interrogarlo."""
-#         return classificatore.scheda()
-#
-#     @app.post("/classifica")
-#     async def classifica(file: UploadFile = File(...)):
-#         contenuto = await file.read()
-#         try:
-#             immagine = Image.open(io.BytesIO(contenuto))
-#         except Exception:
-#             raise HTTPException(status_code=400, detail="File non è un'immagine")
-#
-#         esito = classificatore.predict_etichetta(immagine)
-#         return {
-#             "etichetta": esito["etichetta"],
-#             "probabilita": esito["probabilita"],
-#             "soglia": esito["soglia"],
-#             "versione_modello": classificatore.scheda()["versione_contratto"],
-#         }
+# @app.get("/info")
+# def info():
+#     """Espone il CONTRATTO. Un client può interrogarlo."""
+#     return classificatore.scheda()
+
+# @app.post("/classifica")
+# async def classifica(file: UploadFile = File(...)):
+#     contenuto = await file.read()
+#     try:
+#         immagine = Image.open(io.BytesIO(contenuto))
+#     except Exception:
+#         raise HTTPException(status_code=400, detail="File non è un'immagine")
+
+#     esito = classificatore.predict_etichetta(immagine)
+#     return {
+#         "etichetta": esito["etichetta"],
+#         "probabilita": esito["probabilita"],
+#         "soglia": esito["soglia"],
+#         "versione_modello": classificatore.scheda()["versione_contratto"],
+#     }
 #
 # Quattro dettagli che nella versione Gradio non c'erano e qui sì:
 #
@@ -2487,8 +2567,8 @@ print(esito)
 # Passando da Gradio a FastAPI: un bullet su cosa cambia nel modo in cui
 # arriva l'immagine, un bullet su cosa cambia nella gestione degli errori.
 # TUA RISPOSTA:
-# -
-# -
+# - Gradio prende il file che gli passiamo e lo trasforma già in PIL (gr.Image(type="pil")). In FastAPI  invece arriva come bytes in memoria, e dobbiamo riconvertirlo in PIL prima di mandare "analizza".
+# - Gradio usa la UI. mentre FastAPI usa una risposta https (intercettata da noi con HTTPException).
 
 
 # --------------------------------------------------------------------------
@@ -2497,6 +2577,11 @@ print(esito)
 # Perché esporre un endpoint `/info` con il contratto, e quali campi ci
 # metteresti (elenca quelli che NON sono pesi)?
 # TUA RISPOSTA:
+# E' utile per chi sta usando l'API le caratteristiche del modello utilizzato. Ci metterei:
+# tipo di rete (es. resnet18)
+# classi che la rete è in grado di prevedere (es. ants e bees)
+# tipo di addestramento (transer e finetuning, con lr) e nome dell'attributo "testa" (es. fc)
+# soglia ottimale (ottenuta dal val)
 
 
 # --------------------------------------------------------------------------
@@ -2506,6 +2591,7 @@ print(esito)
 # In due righe: qual è la regola da rispettare e perché in produzione il
 # problema non si presenta.
 # TUA RISPOSTA:
+# la feature "prob_busta_paga_visivo" che finiscono nel train di un modello tabellare non devono essere prodotte da una CNN allenata sulle stesse righe. In produzione, dato che ogni pratica che valutiamo è nuova, questa precauzione non è necessario specificarla. 
 
 
 # ==========================================================================
@@ -2521,6 +2607,7 @@ print(esito)
 # Che shape ha il tensore passato al modello? E quanti canali, dopo il
 # `convert("RGB")`?
 # TUA RISPOSTA:
+# shape (1, 3, 224, 224) -> il 3 riguarda i canali dopo convert("RGB")
 
 # --------------------------------------------------------------------------
 # V2 — Trova l'errore
@@ -2533,6 +2620,7 @@ print(esito)
 #     but torch.cuda.is_available() is False
 # Cosa manca, e in quale delle due righe?
 # TUA RISPOSTA:
+# Manca la map_location nella prima riga (torch.load("pesi_da_colab.pt", map_location="cpu")). Colab ha addestrato con una GPU nvidia (cuda), e ha esportato i pesi serializzato i pesi per "cuda". Ma il terminale ci dice che noi non abbiamo cuda a disposizione sulla nostra macchina, dunque la soluzione e specificare il device giusto al load dei pesi.
 
 # --------------------------------------------------------------------------
 # V3 — Vero / Falso con motivazione
@@ -2540,16 +2628,22 @@ print(esito)
 # "Su Spaces gratuito devo quantizzare o alleggerire ResNet18, altrimenti
 #  la demo non parte."
 # TUA RISPOSTA:
+# Falso. E' solo buona norma, per alleggerire la fase di build e renderla più veloce, evitare di caricare i pesi in quel momento, e invece caricarli alla prima richiesta di predizione (lazy download)
 
 # --------------------------------------------------------------------------
 # V4 — Completa il codice
 # --------------------------------------------------------------------------
 #     logits = modello(batch)              # shape (1, 2)
-#     probabilita = torch.________(logits, dim=___)[0]
-#     return {nome: float(p) for nome, p in zip(________, probabilita)}
+#     probabilita = torch.______(logits, dim=____)[0]
+#     return {nome: float(p) for nome, p in zip(______, probabilita)}
 #
 # Riempi i tre spazi e spiega in mezza riga la scelta del `dim`.
 # TUA RISPOSTA:
+# la dim è stata scelta perche per ogni riga dobbiamo confrontare tutte i valori delle colonne, e non tutti i valori delle righe per ogni colonna.
+
+#     logits = modello(batch)              # shape (1, 2)
+#     probabilita = torch.softmax(logits, dim=1)[0]
+#     return {nome: float(p) for nome, p in zip(self.classi, probabilita)}
 
 # --------------------------------------------------------------------------
 # V5 — Il bug silenzioso (formato: 2 bullet)
@@ -2560,8 +2654,9 @@ print(esito)
 # Un bullet con la causa più probabile, un bullet con il controllo che la
 # confermerebbe in trenta secondi.
 # TUA RISPOSTA:
-# -
-# -
+# - Il bug più probabile è un inversione delle classi.
+# - stampi classificatore.classi (o class_to_idx del training) e confronti l’ordine usato nel dict di output. Se è invertito, abbiamo trovato il bug.
+# - Altra ipotesi potrebbe essere quella di avere usato mean e std diversi da quelli del training.
 
 # --------------------------------------------------------------------------
 # V6 — Le tre leve (formato: 3 righe)
@@ -2569,9 +2664,10 @@ print(esito)
 # Per ciascuna, dove va messa in un servizio di inferenza e perché
 # proprio lì: `requires_grad=False`, `eval()`, `no_grad()`.
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
+# - modell.eval() -> il modello smette di usare il Batchnorm e comincia ad usare le running_mean e running_var (media e varianza accumulata nel train).
+# - with torch.no_grad() -> wrappa il forward e viene attivato ogni volta che si fa una predizione. Dice a torch di smettere di tenere traccia del grafo delle operazioni visto che siamo in inferenza e non dobbiamo calcolare i gradienti per la backprop.
+# - E' il freeze che usiamo per non aggiornare il backbone di resnet. In inferenza non occorre, dato che tra l'altro stiamo utilizzando anche torch.no_grad().
+
 
 # --------------------------------------------------------------------------
 # V7 — 💬 Feynman
@@ -2580,6 +2676,7 @@ print(esito)
 # dopo sono veloci? Spiegalo in 4-6 righe a un collega sviluppatore,
 # senza dire che "il modello si scalda".
 # TUA RISPOSTA:
+# Per diversi motivi: Il container che si sveglia dallo sleep. Poi l'avvio con relativa importazione di torch. Poi il funzionamento del Classificatore con lazy load: La prima volta che il classificatore fa una predizione, carica i pesi, e questa operazione gli fa perdere del tempo. Dalla seconda in poi, il modello con i relativi pesi è già caricato in memoria, e quindi più veloce si limita soltanto a fare la predizione.Infine l'allocazione dei buffer, ossia le zone di memoria di lavoro che al primo forward devono essere tutte allocate. Alla seconda predizione, tutte queste operazioni sono state effettuate e rimangono solo i calcoli.
 
 # --------------------------------------------------------------------------
 # V8 — 💬 Feynman sul riuso
@@ -2588,6 +2685,8 @@ print(esito)
 # Rispondi in 4-6 righe spiegando cos'è il contratto di inferenza e
 # portando UN esempio concreto di guasto che non produce errori.
 # TUA RISPOSTA:
+# I pesi sono importanti, ma senza contratto di inferenza i soli pesi rischiano di essere inutilizzabili:
+# Il contratto di inferenza da tutte quelle informazioni necessarie per far funzionare correttamente il modello a cui applichiamo i pesi. Un esempio di guasto che non produce errori e la mean e la std usata nella trasformazione delle immagini su cui facciamo le previsioni. Se non sappiamo quali sono quelle corrette, il modello riceve dati scalati diversi rispetto quelli su cui è allanata, e dunque produce delle previsioni sbagliate, ma nessun errore evidente.
 
 
 # ==========================================================================
@@ -2607,12 +2706,11 @@ print(esito)
 #   4. cosa versioni e come lo esponi a chi consuma
 #   5. come ti accorgi che qualcosa è andato storto dopo il deploy
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
-# 4)
-# 5)
-
+# 1) Spedisco il contratto di inferenza: di fatto questo contratto riassume architettura, ordine e indicizzazione delle classi, size, mean/std, soglia, versione.
+# 2) Se devo far vedere il modello a un collega -> demo (Gradio); Se ho bisogno di utilizzarlo all 'interno di un app -> API
+# 3) CPU -> inferenza ; GPU -> training. La CPU va benissimo per la demo sullo space, GPU si rende necessaria per modelli molto pesanti o migliaia di immagini da processare.
+# 4) Versiono pesi e contratto: se aggiorno delle informazioni, sui pesi o sul contratto, aggiorno la versione, in modo da non poter fare confusione.
+# 5) seguendo una lista di check -> output che cambia tra immagine A e B -> le probabilità sommano a 1 -> foto di api ovvie restituiscono classe "bees" (ordine corretto e non invertito)-> carico e provo foto con trasparenze e in grigio (verifica del convert("RGB")) -> invio senza immagine, controllo la guardia del if image is Nome -> il disclaimer si vede senza scrollare -> nessun documento sensibile o reale negli esempi.
 
 # --------------------------------------------------------------------------
 # TODO 2 — 🔧 [REFACTORING]
@@ -2622,20 +2720,20 @@ print(esito)
 #     modello = None
 #
 #     def pred(percorso):
-#         global modello
-#         modello = models.resnet18(weights="DEFAULT")
-#         modello.fc = nn.Linear(512, 2)
+#         global modello -> cosi facendo ogni chiamata deve ricostruire il modello. Dobbiamo wrappare in un if modello is None la logica che regola la costruzione del modello.
+#         modello = models.resnet18(weights="DEFAULT") -> Inutile scaricare i pesi di default visto che subito dopo li andiamo a caricare dal file.pt
+#         modello.fc = nn.Linear(512, 2)  -> struttura hardcoded di input e output del Linear non è consigliabile. Meglio usare modello.fc.in_features per gli input e classes prese dal contratto per l'output.
 #         modello.load_state_dict(
-#             torch.load("C:/Users/visaf/Desktop/pesi/ants.pt")
+#             torch.load("C:/Users/visaf/Desktop/pesi/ants.pt") -> Non va bene usare percorsi assoluti all'interno della funzione, questo lo rende inutilizzabile al di fuori della demo. Inoltre non viene specificata la map_location, con il rischio che i pesi siano serializzati per cuda e noi stiamo invece cercando di utilizzare il modello tramite cpu.
 #         )
-#         modello.train()
+#         modello.train() -> il modello usa media e varianza del Batch (quindi una sola immagine per calcolarla), invece di usare quelle accumulate nel orso di tutto il train  (running_mean e running_var).
 #         img = Image.open(percorso)
 #         t = transforms.Compose([
-#             transforms.Resize((224, 224)),
+#             transforms.Resize((224, 224)), -> Il resize andrebbe fatto solo sul lato corto per mantenere le proporzioni, dopo di che bisognerebbe fare un center crop a 224 per non deformare l'immagine.
 #             transforms.ToTensor(),
-#         ])(img)
-#         out = modello(t.unsqueeze(0))
-#         print("classe:", out.argmax().item())
+#         ])(img) -> se l'immagine è in scala di grigi con su solo canale, il modello non può accettarla senza prima una conversione. Inoltre manca la Normalizzazione (non abbiamo nemmeno la mean e la std del contratto di inferenza).
+#         out = modello(t.unsqueeze(0)) -> manca with torch.no_grad, dato che siamo in inferenza non ha senso tenere traccia del grafo delle operazioni.
+#         print("classe:", out.argmax().item()) -> Il print è scarno di info, dato che restituisce solo il nome della classe più alta, così come l'out dopo. Sarebbe il caso di dare anche le probabilità. Inoltre
 #         return out.argmax().item()
 #
 # Parte (a): elenca i SEI problemi, uno per bullet, con mezza riga di
@@ -2674,9 +2772,10 @@ print(esito)
 # Scrivi: (a) la diagnosi in 2 bullet, (b) il fix in 1 bullet.
 # Indizio da usare, non da ignorare: 133 byte.
 # TUA RISPOSTA:
-# (a) -
-#     -
-# (b) -
+# (a) - Il file .pt è un puntatore. Ce lo suggerisce il peso del file (133 bytes) che sono decisamente meno rispetto ai 40 MB circa dei pesi veri e proprio.
+#    - Probabilmente non avevamo lfs quando abbiamo messo nella repo i pesi, e dunque abbiamo il puntatore ma non il file.
+
+# (b) - La soluzione è fare: git lfs install,  git lfs track *.pt e poi il git add .gitattributes pesi/ants_vs_bees.pt. Infine di nuovo commit e push.
 
 
 # --------------------------------------------------------------------------
@@ -2693,6 +2792,27 @@ print(esito)
 # Suggerimento: `hasattr`.
 # TUO CODICE:
 
+def costruisci_modello(
+    nome_arch: str,
+    num_classi: int,
+    pesi = None
+):
+    if not VISION_OK:
+        raise RuntimeError("Serve torch vision per poter costruire il modello!")
+    costruttore = getattr(models, nome_arch, None)
+    if costruttore is None:
+        raise ValueError("L'architettura non esiste tra i modelli di torch")  
+    modello = costruttore(weights=pesi)
+    if hasattr(modello, "classifier"):
+        in_features = modello.classifier[-1].in_features
+        modello.classifier[-1] = nn.Linear(in_features, num_classi)        
+        return modello
+    elif hasattr(modello, "fc"):
+        in_features = modello.fc.in_features
+        modello.fc = nn.Linear(in_features, num_classi)
+        return modello
+    else:
+        raise ValueError("Il nome della testa del modello non corrisponde ne a 'fc', ne a 'classifier'")
 
 # --------------------------------------------------------------------------
 # TODO 5 — 🔀 [INTERLEAVING] — M2 Streamlit + M3 Gradio
@@ -2708,11 +2828,10 @@ print(esito)
 #   4. come combineresti in un'unica schermata lo score tabellare del M2
 #      e quello visivo del M3 per la stessa pratica
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
-# 4)
-
+# 1) Riutilizzere semaforo e recall
+# 2) Non ha senso i motivi top tre, perchè di fatto abbiamo un linear finale composto di 512 input, che non sono "motivi" spiegabili e comprensibili in linguaggio umano, ma mappe di features.
+# 3) Diventerebbe probabilità genuinità.
+# 4) Dato che lo score tabellare analizza la pratica nella sua interezza, integrerei semplicemente una sezione in cui si vede la probabilità di genuinità della busta paga, come ulteriore elemento per il consulente che deve fare la valutazione.
 
 # --------------------------------------------------------------------------
 # TODO 6 — 🌊 [REAL-WORLD] — consegna vaga, come nella realtà
@@ -2728,11 +2847,20 @@ print(esito)
 # Almeno uno dei punti deve proporre un'ALTERNATIVA praticabile, non solo
 # un divieto: il collega ha un bisogno reale e va indirizzato.
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
-# 4)
-# 5)
+# Non metto le 40 buste dei clienti nella demo né nel repo dello Space.
+# Motivo: sono documenti reddituali di terzi; una demo pubblica (o anche “interna” versionata) le espone a chi ha accesso al codice/esempi.
+
+# Anche se “dopo le togliamo”, non le carico.
+# Motivo: Git (e spesso i backup/CDN dello Space) conserva la storia; cancellare i file oggi non cancella i commit di ieri.
+
+# Non è una decisione mia da solo: serve ok legale/privacy (e del titolare del trattamento), non basta il sì del collega.
+# Motivo: i dati sono dei clienti, non “materiale di prova” della rete commerciale.
+
+# Alternativa praticabile: Space privato solo ai colleghi oppure esempi sintetici (layout da busta senza dati reali) oppure prova in locale sul PC di chi valuta, senza pushare i PDF.
+# Motivo: soddisfi il bisogno “voglio far provare i colleghi” senza pubblicare documenti veri.
+
+# Anche tecnicamente è prematuro: il modello attuale è sul proxy ants/bees, non sulle buste.
+# Motivo: con PDF reali i colleghi vedrebbero predizioni fuori dominio (sbagliate/illudenti) e penserebbero che “il prodotto non funziona”, mentre manca ancora il track buste (C1–C8 / busta_vs_altro.pt)
 
 
 # --------------------------------------------------------------------------

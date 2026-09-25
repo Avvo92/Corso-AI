@@ -23,6 +23,10 @@ l'agente DEVE:
 
 Dal messaggio successivo (e in tutte le chat corso): applicare il **Profilo linguistico** descritto in `CONTESTO_CORSO.md` → Profilo → **Profilo linguistico — chiarezza + glossario inline** (italiano semplice; acronimi sempre con spiegazione facile inline).
 
+## Regola 43 — Ripasso propositivo (vincolante)
+
+Se in un capitolo o in chat si **cita / riusa** un concetto di un capitolo precedente: **prima** del richiamo inserire un ripasso propositivo (`# 🔁 RIPASSO PROPOSITIVO` nei file; 2–5 frasi in chat). Dettaglio: [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md) → Regole Didattiche **43**. Rule file: [`.cursor/rules/43-ripasso-propositivo.mdc`](.cursor/rules/43-ripasso-propositivo.mdc). **Non ignorabile.**
+
 ## Fail-safe
 
 Se `CONTESTO_CORSO.md` non e leggibile/completo:

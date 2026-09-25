@@ -5,8 +5,8 @@
 | **Modulo** | M03 — Deep Learning & Computer Vision |
 | **File capitolo** | `10_progetto_gradio.py` |
 | **File diario** | `M03_C10_progetto_gradio_sessione.md` |
-| **Stato** | in corso (aperto 14/09/2026 alla chiusura C09; capitolo esteso il 14/09/2026) |
-| **Voto difficoltà** | — |
+| **Stato** | ✅ **Chiuso con residuo** il 25/09/2026 (aperto 14/09/2026). Residui: G6–G8 deploy, TODO 7 system design, 🔄 CONFRONTO PRIMA/DOPO |
+| **Voto difficoltà** | **8.5**/10 — *“difficoltà di tenere mentalmente uniti i pezzi di tutta la pipeline, dall'addestramento alla costruzione del modello fino all'app Gradio”* |
 
 ---
 
@@ -330,25 +330,277 @@ debito C1-C8 buste → `busta_vs_altro.pt`.
 - **Fix applicato:** `sum(esito.values())` corretto; assert + PIL + path ok.
 - **Voto 1° tentativo resta 9/10**; post-bug risolto → esercizio chiuso sul merito.
 
+### 2026-09-22 — Mini 7.1 (`10_progetto_gradio.py`, 3 file minimi Space)
+- **Voto (1° tentativo): 6.5/10**
+- **OK:** README+YAML (sdk/app_file) e requirements pinnati — contenuto buono; formato 3 bullet.
+- **Manca:** il terzo file indispensabile è **`app.py`** (codice + oggetto `demo`), non il `.pt`. I pesi sono necessari alla *questa* demo ma non sono il file minimo dello Space Gradio (possono stare su Hub/LFS).
+- **Soft:** typo READEME / requirments; note LFS/`hf_hub_download` utili ma fuori consegna.
+- **Lacune:** none grave; ripasso “cos’è uno Space” = README + requirements + app.py.
+
+### 2026-09-22 — Mini 7.1 fix applicato (`app.py` come 3°)
+- **Fix applicato:** terzo bullet → `app.py` (logica / espone demo). Triade corretta.
+- **Soft residuo:** typo READEME→README, requirments→requirements; “istuzioni”; B3 poteva citare oggetto `demo`.
+- **Voto 1° resta 6.5/10**; fix ok → concetto chiuso.
+
+### 2026-09-22 — Mini 7.2 (`10_progetto_gradio.py`, front-matter YAML)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** `---` delimiters; `sdk: gradio`; `app_file: app.py`; `title`; `sdk_version` pinnata; struttura come Sez. 7.2.
+- **Soft:** due emoji ok; allineare `sdk_version` a quella reale in `requirements` / venv al deploy (ora in locale hai Gradio 6.x — per Spaces meglio pin coerente).
+- **Lacune:** nessuna.
+
+### 2026-09-22 — Mini 7.3 (`10_progetto_gradio.py`, pin versioni)
+- **Voto (1° tentativo): 8.5/10**
+- **OK:** caso concreto = breaking change su nuova release → app che ieri andava oggi no; pin = install riproducibile.
+- **Soft:** non è “a ogni launch”: tipicamente a **build/reinstall** dopo push; formato chiedeva 1 riga (paragrafo lungo — #6 soft). Esempio ancora più concreto: `allow_flagging` rimosso in Gradio 6.
+- **Lacune:** nessuna.
+
+### 2026-09-22 — Mini 7.3 post-feedback
+- **Fix applicato:** “build” al posto di launch + esempio reale `allow_flagging` / Gradio 6.
+- **Soft residuo:** ancora più di 1 riga (#6 soft).
+- **Voto 1° resta 8.5/10**; concetto chiuso bene.
+
+### 2026-09-22 — Mini 7.4 (`10_progetto_gradio.py`, build vs runtime)
+- **Voto (1° tentativo): 7.5/10**
+- **OK:** 1 runtime, 2 runtime, 4 build.
+- **Errore:** 3 `ModuleNotFoundError: torchvision` → **RUNTIME** (pip del build finisce; fallisce l’`import` all’avvio dell’app). Build fallirebbe solo se `pip install` stesso esplode.
+- **Lacune:** soft — distinguere “manca dal requirements” (sintomo a runtime) vs “install che fallisce” (build).
+
+### 2026-09-23 — Mini 8.1 (`10_progetto_gradio.py`, smoke test 3 controlli)
+- **Voto (1° tentativo): 9/10**
+- **OK:** 3 punti numerati; (1) ape palese → ordine classi; (2) somma≈1 → softmax/`dim`; (3) A poi B → cache o input ignorato. Allineati alla checklist Sez. 8.1.
+- **Soft:** “unico modo” per le classi invertite è un po’ forte (anche foto formica + confronto); typo “un ape”.
+- **Lacune:** nessuna.
+
+### 2026-09-24 — Mini 8.2 (`10_progetto_gradio.py`, model card “quanto va” / #53)
+- **Voto (1° tentativo): 9/10**
+- **OK:** 2 frasi in voce 4 con `bees`, `45`, `~0.889` + recall/precision (schema #53 ancorato); riuso `ClassificatoreVisivo`/`valuta`/`tabella_soglie`; pipeline `grayscale_doc`, `num_workers=0`, dl test `[2]`; soglia come `[contratto['soglia']]`.
+- **Soft:** consegna chiedeva solo 2 frasi — hai fatto model card intera (plus, ok); codice top-level nel capitolo (side effect all’import); `DIM_IMMAGINE` inutilizzata.
+- **Lacune:** #53 su model card → rinforzata (quasi 🟢 se i numeri recall/prec sono quelli misurati a soglia 0.5).
+
+### 2026-09-24 — Mini 8.3 (`10_progetto_gradio.py`, p50/p95 vs media)
+- **Voto (1° tentativo): 6/10**
+- **OK:** idea giusta (mediana non sporcata dagli estremi); 1 riga.
+- **Manca:** esempio numerico obbligatorio di 8.3.b (19×30 ms + 1×2000 ms → media ~128 ms, che non è né tipica né peggiore). Senza numeri non chiudi #53-style / consegna.
+- **Lacune:** soft Pattern #6 (formato ok, contenuto incompleto rispetto a “esempio numerico”).
+
+### 2026-09-24 — Mini 8.4 (`10_progetto_gradio.py`, gatto / fuori dominio)
+- **Voto (1° tentativo): 7/10**
+- **OK:** capisce che ha solo 2 classi e deve comunque rispondere → sceglie ants/bees.
+- **Manca:** (1) meccanismo softmax (probabilità solo sulle classi note, anche alta confidenza); (2) seconda parte consegna — **come lo dichiari nella model card** (limiti / fuori dominio). Formato 2 righe non rispettato (un blocco solo).
+- **Lacune:** soft — chiudere il pezzo “dichiarazione onesta in model card”.
+
+### 2026-09-24 — Mini 9.1 (`10_progetto_gradio.py`, Gradio → FastAPI)
+- **Voto (1° tentativo): 8/10**
+- **OK:** 2 bullet; immagine = PIL vs bytes→PIL; errori = UI vs `HTTPException`.
+- **Soft:** B1 dice “analizza” (in API è `predict_etichetta`); B2 “risposta https” → meglio **status code HTTP** (es. 400) + detail per il client software.
+- **Lacune:** nessuna grave.
+
+### 2026-09-24 — Mini 9.2 (`10_progetto_gradio.py`, endpoint `/info`)
+- **Voto (1° tentativo): 7.5/10**
+- **OK:** perché = client API conosce caratteristiche senza leggere docs; arch + classi + soglia.
+- **Manca / fuori luogo:** per riuso inferenza servono anche **dimensione_input, mean/std, pipeline_eval, versione_contratto**. LR / “transfer+finetune” / nome `fc` sono più model card che contratto di predizione (ok in `note`/`metriche`, non essenziali in `/info`).
+- **Lacune:** soft — `/info` ≈ `scheda()` (contratto senza pesi).
+
+### 2026-09-24 — Mini 9.3 (`10_progetto_gradio.py`, leakage prob_busta_paga_visivo)
+- **Voto (1° tentativo): 8.5/10**
+- **OK:** regola anti-leakage = CNN non allenata sulle stesse righe del train tabellare; in produzione i documenti sono nuovi → niente leakage da costruzione dataset.
+- **Soft:** “non è necessario specificarla” → meglio: il problema **non esiste** in prod (casi fuori dal training), non che “non va dichiarata”. Opzionale: citare out-of-fold / CNN fit solo su train → predici su val/test.
+- **Lacune:** nessuna.
+
+### 2026-09-24 — Quiz verifica V1 (`10_progetto_gradio.py`, shape tensore)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** `(1, 3, 224, 224)`; 3 = RGB dopo `convert`; 224 dal contratto; 1 = batch.
+- **Soft:** poteva dire esplicitamente che 500×400 sparisce nel resize/crop della pipeline.
+- **Lacune:** nessuna.
+
+### 2026-09-24 — Quiz verifica V2 (`10_progetto_gradio.py`, map_location CUDA→CPU)
+- **Voto (1° tentativo): 9.5/10**
+- **OK:** manca `map_location="cpu"` su **`torch.load`** (prima riga); Colab salva tensori etichettati cuda; in locale senza GPU serve rimappare. Lacuna #46 ok.
+- **Soft:** typo minori; `load_state_dict` è la seconda riga e va bene dopo il load corretto.
+- **Lacune:** nessuna.
+
+### 2026-09-24 — Quiz verifica V3 (`10_progetto_gradio.py`, quantizzazione Spaces)
+- **Voto (1° tentativo): 7/10**
+- **OK:** **Falso** — ResNet18 in inferenza sta su Spaces CPU gratuito senza quantizzare.
+- **Motivazione debole:** lazy load / non caricare i pesi al build è un tema di **cold start**, non risponde a “devo quantizzare?”. Motivo giusto: modello già abbastanza leggero; ms per immagine su CPU, non serve alleggerirlo per far partire la demo.
+- **Lacune:** soft — non confondere quantizzazione con lazy loading.
+
+### 2026-09-24 — Quiz verifica V4 (`10_progetto_gradio.py`, completa softmax)
+- **Voto (1° tentativo): 5.5/10** ~~(errata: non avevo visto il codice compilato sotto)~~
+- **Rivalutazione corretta sotto.**
+
+### 2026-09-24 — Quiz verifica V4 rivalutato (`10_progetto_gradio.py`)
+- **Voto (1° tentativo, corretto): 9/10**
+- **OK:** `softmax`, `dim=1`, `zip(self.classi, …)`; `[0]` già in traccia; spiegazione dim = softmax sulle classi (colonne) per riga batch.
+- **Soft:** formulazione “confrontare” un po’ informale (è normalizzare/sommare a 1 sull’asse classi).
+- **Lacune:** nessuna. Mentor: scusa confusione sulla lettura della risposta.
+
+### 2026-09-24 — Quiz verifica V5 (`10_progetto_gradio.py`, bug silenzioso ants)
+- **Voto (1° tentativo): 6/10**
+- **OK:** causa più probabile = **inversione ordine classi** (Sez. 1.3 / nomi a mano vs checkpoint).
+- **Manca:** il 2° bullet ripete il *sintomo* della consegna (ape → ants ~0.99), non un *controllo* che conferma la causa. Controllo giusto: stampare `classificatore.classi` / confronto con `class_to_idx` del training (o mean/std vs contratto).
+- **Lacune:** soft Pattern #6 + diagnostica (controllo ≠ riprodurre il bug).
+
+### 2026-09-24 — Quiz verifica V5 post-feedback (`10_progetto_gradio.py`)
+- **Voto (post-feedback, non esame): 9.5/10**
+- **OK:** inversione classi; controllo `classificatore.classi` / `class_to_idx` vs ordine dict; ipotesi B mean/std ≠ training.
+- **Soft:** consegna chiedeva 2 bullet → 3 (contenuto ok, formato Pattern #6 soft).
+- **Lacune:** #54 → 🟡 (corretto dopo hint; da verificare a freddo).
+
+### 2026-09-24 — Quiz verifica V6 (`10_progetto_gradio.py`, tre leve)
+- **Voto (1° tentativo): 5.5/10**
+- **OK:** `no_grad` = wrap sul forward / niente grafo / meno memoria.
+- **Manca / errore:** (1) `requires_grad=False` in un *servizio di inferenza* **non serve** (era freeze in training) — ha risposto solo “dove freezo i layer”; (2) `eval()`: BN in eval **usa** `running_mean`/`running_var` (non le “spegne”); Dropout sì off. Dove: **subito dopo load pesi** (stato del modello), non “dopo no_grad”.
+- **Lacune:** #48 riaperta 🟡 (BN + dove va freeze vs inferenza).
+
+### 2026-09-24 — Quiz verifica V6 post-feedback (`10_progetto_gradio.py`)
+- **Voto (post-feedback, non esame): 8/10**
+- **OK:** `no_grad` wrap ogni predizione; `requires_grad=False` = freeze training, **in inferenza non serve**.
+- **Soft:** `eval` — running_* ok, ma ancora “smette di usare BatchNorm” (BN resta attiva, cambia solo *quali* stats); manca “subito dopo load”. Typo `modell`.
+- **Lacune:** #48 resta 🟡 (phrasing BN da chiudere a freddo).
+
+### 2026-09-24 — Quiz verifica V7 (`10_progetto_gradio.py`, Feynman cold start Space)
+- **Voto (1° tentativo): 6/10**
+- **OK:** lazy load pesi alla 1ª predizione; dalla 2ª i pesi restano in RAM → solo forward. Niente “si scalda”.
+- **Manca (rubrica ≥3 di 4):** risveglio container sleep; avvio processo + import `torch`; prima forward con allocazione buffer. Risposta corta vs 4–6 righe.
+- **Lacune:** soft cold start Spaces (solo pezzo lazy load).
+
+### 2026-09-24 — Quiz verifica V7 post-feedback (`10_progetto_gradio.py`)
+- **Voto (post-feedback, non esame): 9.5/10**
+- **OK:** sleep container; import torch; lazy load pesi; buffer 1ª forward; dalla 2ª solo calcoli. Niente “si scalda”.
+- **Soft:** un blocco unico (poteva essere 4–6 righe più spezzate); “avvio processo” implicito nell’import.
+- **Lacune:** #55 → 🟡 (completo dopo hint; da verificare a freddo).
+
+### 2026-09-24 — Quiz verifica V8 (`10_progetto_gradio.py`, Feynman contratto)
+- **Voto (1° tentativo): 7/10**
+- **OK:** idea “.pt ≠ tutto”; guasto silenzioso mean/std ≠ training (accettabile, Sez. 1.2); nessun errore di runtime.
+- **Manca:** (a) cos’è il contratto in concreto (arch, **classi ordinate**, size, mean/std, soglia, versione) — “tutte le info” è vago; (b) rubrica preferisce anche **classi invertite**; (c) conclusione: contratto **nel** checkpoint, nomi letti da lì non a mano in demo.
+- **Lacune:** soft — elenco voci contratto + caso classi.
+
+### 2026-09-24 — TODO 1 (`10_progetto_gradio.py`, colloquio produzione 5 bullet)
+- **Voto (1° tentativo): 6.5/10**
+- **OK:** (1) contratto a 6 voci; (2) Gradio vs API criterio umani/software; (5) pezzi di smoke utili (A≠B, somma 1, bees, RGB, guardia).
+- **Manca:** (1) esplicita “pesi **+** contratto”; (3) **numero** (decine di ms ResNet18 CPU) — ha solo regola qualitativa; (4) **come esporre** versione (`/info` o campo in risposta); (5) post-deploy continuo: latenza, distribuzione predizioni, errori nei log (oltre checklist UI).
+- **Lacune:** soft Pattern #6 su “con un numero” + esposizione versione.
+
+### 2026-09-25 — TODO 2 annotazioni a lato (`10_progetto_gradio.py`, pre-parte a)
+- **Voto (check diagnostico, non ancora parte a formale): 7.5/10**
+- **OK:** reload/`if is None`; `DEFAULT` inutile; path assoluto; `map_location`; `512`→`in_features`; RGB; Normalize; `no_grad`.
+- **Errore:** `train()` — BN confusa: in train usa stats del **batch**; `running_*` sono quelle accumulate e le usa **`eval()`**.
+- **Manca come 6° problema distinto:** `return argmax` + `print` (indice grezzo, niente nomi/proba, mescola logica/UI). Soft: `Resize((224,224))` deforma vs Resize+CenterCrop.
+- **Lacune:** #48 BN phrasing ancora aperta.
+
+### 2026-09-25 — TODO 2 annotazioni rivalutate (`10_progetto_gradio.py`)
+- **Voto (check diagnostico): 9.5/10**
+- **OK:** tutti e 6 i filoni rubrica — reload; path; DEFAULT+`map_location`; `train`→batch stats vs `running_*` + `no_grad`; `512`/Resize+crop/RGB/Normalize; return/`print` senza proba utili.
+- **Soft:** su `return argmax().item()` hai scritto “nome classe” — è un **indice intero** (0/1), peggio del solo nome. Parte (a) formale ancora da scrivere in **esattamente 6 bullet**.
+- **Lacune:** #48 → 🟡 quasi chiusa su BN (spiegazione train corretta nelle annotazioni).
+
+### 2026-09-25 — TODO 3 (`10_progetto_gradio.py`, DEBUG git-lfs 133 byte)
+- **Voto (1° tentativo scritto): 9/10**
+- **OK:** (a) 133 B = puntatore ≠ ~40 MB pesi; LFS assente/non usato al commit. (b) `lfs track` + add `.gitattributes` + `.pt` + commit/push.
+- **Soft:** manca `git lfs install`; se il file era già in history come non-LFS a volte serve `git rm --cached` + ri-add; alternativa valida `hf_hub_download`. Nota: concetto rinforzato in chat prima della risposta scritta.
+- **Lacune:** nessuna grave su LFS.
+
+### 2026-09-25 — TODO 4 (`10_progetto_gradio.py`, retrieval costruisci_modello)
+- **Voto (1° tentativo dopo iterazioni in chat): 8.5/10**
+- **OK:** getattr + check None; `modello = costruttore(weights=pesi)`; testa via `in_features`; `hasattr` su modello per `fc`/`classifier`; else chiaro.
+- **Soft:** `AttributeError` → meglio `ValueError` + messaggio con esempi; su EfficientNet `classifier` è spesso `Sequential` → serve `[-1].in_features` / sostituire solo l’ultimo (estensione non ancora robusta al 100%).
+- **Lacune:** soft — Sequential vs Linear sulla testa `classifier`.
+
+### 2026-09-25 — TODO 4 rivalutato (`10_progetto_gradio.py`)
+- **Voto (post-iterazioni): 9.5/10**
+- **OK:** getattr/`is None`/`ValueError`; build una volta; `hasattr` su modello; `fc` + `classifier[-1].in_features` con replace dell’ultimo Linear (tiene Dropout).
+- **Soft:** messaggio errore arch potrebbe citare esempi (`resnet18`, …); edge case se `classifier` fosse Linear puro (senza `[-1]`) — raro sulle reti tipiche del TODO.
+- **Lacune:** nessuna grave.
+
+### 2026-09-25 — TODO 5 (`10_progetto_gradio.py`, interleaving Streamlit/Gradio)
+- **Voto (1° tentativo): 6/10**
+- **OK:** (1) semaforo riusabile; (2) `motivi_top3` no su immagine (feature senza nome umano).
+- **Manca / errore:** (1) meglio anche **disclaimer** + logica soglia→decisione→azione; recall in UI è soft. (3) non diventa “prob. genuinità” — diventa **feature map / Grad-CAM** (“dove ha guardato”, cap.08). (4) affiancare score tabellare + visivo e semaforo sulla **combinazione** con pesi dichiarati, non solo una sezione extra.
+- **Lacune:** soft — explainability visiva ≠ probabilità.
+
 ---
 
 ## Lacune e dubbi ancora aperti
 
 Ereditate da C09 da verificare qui:
 
-- 🟢 **#48** — `eval` / `no_grad` / freeze → chiusa (Mini 48.B **10**/10)
-- 🟢 **#52** — decomposizione matmul + `in_features` → Mini 52.A **9.5**/10
-- 🟢 **avgpool → vettore 512** — Q2 9.5/10 (15/09): meccanismo + esempi shape OK
-- 🟡 **Soglia/recall** — Q7 **5**/10: ↓ soglia ⇒ meno FN ma ha detto ↓ recall (verso invertito). Precision OK.
-- 🔴 **Pattern #6** — formato consegne (quasi ogni consegna del cap.10 dichiara
-  il formato atteso: numero di bullet/righe. Serve a misurare il pattern)
-- 🟡 **#53** — obiezione sui numeri → Mini 53.A **8**/10 (manca 5/30 + leva soglia); consolidare Mini 8.2
+- 🟡 **#48** — BN chiarita in TODO 2 annotazioni (train=batch, eval=running_*); da fissare a freddo
+- 🟢 **#52** — Mini 52.A **9.5**/10
+- 🟢 **avgpool → vettore 512** — Q2 9.5/10
+- 🟡 **Soglia/recall** — Q7 **5**/10
+- 🔴 **Pattern #6** — formato consegne (TODO 1.3: manca il numero)
+- 🟡 **#53** — Mini 53.A **8**/10
+- 🟡 **#54** — diagnostica V5 (post-fix ok)
+- 🟡 **#55** — cold start Space (V7 post-fix 9.5; da verificare a freddo)
+- 🟡 **Contratto di inferenza (V8)** — idea ok, elenco voci + conclusione checkpoint soft
+- 🟡 **TODO 1 colloquio** — versione esposta + latenza numerica
+- 🟡 **TODO 2** — annotazioni 9.5; manca ancora parte (a) 6 bullet + codice (b)
+- 🟢 **TODO 3 LFS** — 9/10
+- 🟢 **TODO 4** — 9.5/10 (post-iterazioni; `classifier[-1]`)
+- 🟡 **TODO 5** — Grad-CAM/feature map vs proba; combo semaforo
+
+---
+
+### 2026-09-25 — Decisione corso: Grad-CAM ripianificato (saturazione)
+- **Prima ipotesi:** coda M3 subito dopo C10.
+- **Decisione studente:** troppo saturo → Grad-CAM in **ripresa M3/prodotto** (buste / Validator / ripasso), non post-Spaces.
+- **Fine modulo formale:** chiusura C10. Seed `grad_cam_pipeline.py` resta. Evitare `11_*` (c’è già `11_colab_track_...`).
+
+### 2026-09-25 — Decisione corso: M3-11 Grad-CAM (superata, vedi sopra)
+- Ipotesi iniziale post-C10: archiviata lo stesso giorno.
+
+---
+
+### 2026-09-25 — Canonizzata Regola 43 (ripasso propositivo)
+- Obbligo: prima di citare il passato in esercizi/teoria/chat → `# 🔁 RIPASSO PROPOSITIVO`.
+- File aggiornati: CONTESTO, mentor-ai-corso, AGENTS, .cursorrules, `.cursor/rules/43-ripasso-propositivo.mdc`.
+
+---
+
+### 2026-09-25 — TODO 6 (`10_progetto_gradio.py`, real-world buste nella demo)
+- **Nota esame:** la versione nel file è stata scritta **dopo** aver visto la traccia del mentor (era partito con 1 solo punto: “non accetto senza anonimizzazione”). Non è un primo tentativo a freddo → **non si registra voto**.
+- **1° tentativo autonomo (parziale):** solo punto 1, e troppo debole (“ok se anonimizzate”): in una demo/repo i documenti dei clienti non entrano comunque.
+- **Copertura finale (5/5):** no documenti reali; storia Git non si cancella; decisione non individuale (titolare/privacy); alternativa praticabile (Space privato / sintetici / locale); prematuro anche tecnicamente (modello su proxy ants-bees).
+- **Lacuna:** nessuna nuova sul merito privacy; conferma Pattern #6 (partire dal formato richiesto: 5 punti numerati).
+
+### 2026-09-25 — 🏗️ PROGETTO INCREMENTALE G1–G5 (pacchetto Space `modulo_03_dl_cv/app/`)
+- **Valutazione: 8.5/10** sul lavoro di packaging.
+- **OK:** cartella dedicata con `app.py` + `modello.py`; `dati/pesi/ants_vs_bees.pt`; 4 immagini di esempio; `requirements.txt` **solo demo** e pinnato (`torch==2.14.0`, `torchvision==0.29.0`, `gradio==6.27.0`, `pillow==12.1.1`) con extra-index **CPU**; `README.md` con front-matter (`sdk`, `sdk_version` allineata, `app_file`) + model card nelle 6 voci; demo verificata in locale su `127.0.0.1:7860`.
+- **Errori intercettati prima del deploy:** (1) primo `requirements` era quello del corso (`>=`, sklearn/streamlit/fastapi); (2) dataset `proxy_ants_bees` (~47 MB) e secondo `.pt` dentro il pacchetto; (3) **path esempi**: `app.py` leggeva `QUI/"esempi"` mentre le foto erano in `dati/esempi/` → `examples=None`; (4) `"""` residuo in fondo al README.
+- **Lettura positiva:** tutti e 4 trovati **prima** di pubblicare — è esattamente il comportamento chiesto dallo smoke test (lacuna #54 usata sul campo).
+
+### 2026-09-25 — G6–G8 NON eseguiti: blocco di piattaforma (non didattico)
+- **Fatto:** aperta la creazione dello Space su Hugging Face.
+- **Blocco:** policy HF 2026 — **Gradio/Docker Spaces girano su compute e richiedono un piano a pagamento** (PRO per account personali). Restano free: Static HTML e **Gradio Lite** (browser, niente PyTorch/`.pt` → incompatibili con questa demo) oppure fino a **2 Space ZeroGPU** per account personale in regola (email verificata, account >30 giorni), che però richiederebbero `@spaces.GPU` nel codice.
+- **Decisione studente:** non pagare, non forzare → **chiudere il capitolo** con il residuo dichiarato.
+- **Conseguenze:** Portfolio #2 resta senza URL; **niente archivio M3** né scommento dipendenze M4 finché il deliverable non è sciolto.
+- **Opzioni aperte (prossima sessione):** ZeroGPU + `@spaces.GPU` · HF PRO · altro host (Render/Railway) · community grant · demo locale documentata con screenshot/GIF nel portfolio.
+
+---
+
+## Esito finale del capitolo (25/09/2026)
+
+| Blocco | Esito |
+|--------|-------|
+| Quiz d'ingresso Q1–Q8 | ✅ svolti (medi 1° tentativo ~7.5) |
+| Quiz verifica V1–V8 | ✅ svolti (deboli V6 5.5, V7 6, V8 7 → lacune #55/#56/#57) |
+| Mini-esercizi | ✅ svolti |
+| TODO 1–6 | ✅ svolti (TODO 6 con traccia vista) |
+| TODO 7 📐 system design | ❌ **non svolto** |
+| 🏗️ G1–G5 | ✅ |
+| 🏗️ G6–G8 (deploy/smoke/latenza) | ❌ bloccati (policy HF) |
+| 🏗️ P1–P5 track buste | ❌ debito noto (serve C1–C8) |
+| 🔄 CONFRONTO PRIMA/DOPO | ❌ **non svolto** (Regola 16: da fare prima dell'archivio M3) |
+
+**Voto difficoltà: 8.5/10** — il più alto del modulo dopo il 9 del cap.05. Motivazione dello studente: il carico non viene dai concetti singoli ma dal **tenere insieme la catena** addestramento → checkpoint/contratto → costruzione modello → app.
 
 ---
 
 ## Note per fine modulo (mentor)
 
-- Aggiornare Portfolio URL #2; protocollo FINE MODULO (archivio M3, scommentare M4 in requirements).
+- ⚠️ **Archivio M3 NON eseguito il 25/09/2026**: il protocollo FINE MODULO (archivio + scommento M4 in `requirements.txt` + URL portfolio) resta **sospeso** finché non si scioglie il blocco deploy e non si completa il 🔄 CONFRONTO PRIMA/DOPO.
 - Passo 13 solo a chiusura di **questo** capitolo, non di C09.
 - Nota tecnica emersa scrivendo il capitolo: da PyTorch 2.6 `torch.load` usa
   `weights_only=True` per default, quindi nel checkpoint ricco vanno **solo**

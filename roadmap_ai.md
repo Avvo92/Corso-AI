@@ -160,16 +160,17 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | 08 | `08_cnn_computer_vision.py` | CNN: filtri, pooling, feature maps — come un computer "vede" | Base per Computer Vision |
 | 09 | `09_transfer_learning.py` | Modelli pre-addestrati (ResNet, YOLO), fine-tuning base | Nella pratica non si traina da zero quasi mai |
 | 10 | `10_progetto_gradio.py` | Progetto: classificatore immagini + demo Gradio | Portfolio piece #2 |
+| — | `12_grad_cam_interpretabilita.py` | Grad-CAM / heatmap + ripasso CNN/inferenza | 🟡 **Creato 25/09** — da svolgere (dopo C10 o a blocchi) |
 
 **Librerie**: torch, torchvision, gradio
 
 **Piattaforma**: **Google Colab** (GPU gratuita) — la GPU locale (AMD Vega 10) non supporta CUDA. Workflow: sviluppo codice in Cursor → training su Colab → risultati in locale.
 
-**Demo di modulo**: classificatore immagini su Gradio/HuggingFace Spaces.
+**Demo di modulo**: classificatore immagini Gradio (**cap.10**) — pacchetto pronto in `modulo_03_dl_cv/app/`, **live solo in locale**: dal 2026 gli Space Gradio HF richiedono piano a pagamento (free: Static/Lite o max 2 ZeroGPU). Portfolio #2 **in sospeso**. Grad-CAM = **cap.12** creato (`12_grad_cam_interpretabilita.py`; wrapper `grad_cam_pipeline.py`).
 
-**Analogie ponte**: CNN filtri → CSS selettori (cercano pattern). Transfer learning → pacchetto npm pre-fatto.
+**Analogie ponte**: CNN filtri → CSS selettori (cercano pattern). Transfer learning → pacchetto npm pre-fatto. Grad-CAM → dito del giudice sulla foto.
 
-**Tempo**: 3-4 settimane (post split: il blocco matematico 03-06 va piu' graduale, ma ogni sotto-capitolo e' piu' "digeribile").
+**Tempo**: 3-4 settimane per 01–10; Grad-CAM in sessione di ripresa successiva (stimata breve, quando serve al prodotto).
 
 > **Nota di calibrazione (28/07/2026)**: nessun colloquio chiedera' mai di scrivere la backpropagation a mano.
 > Le roadmap 2026 collocano la matematica alla voce "minimo indispensabile": algebra lineare per gli embedding,

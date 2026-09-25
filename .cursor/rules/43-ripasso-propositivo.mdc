@@ -1,0 +1,31 @@
+---
+description: Regola 43 — Ripasso propositivo obbligatorio prima di citare concetti passati (richiesta studente 25/09/2026). Sempre attiva.
+alwaysApply: true
+---
+
+# Regola 43 — Ripasso propositivo (OBBLIGATORIA)
+
+Fonte di verità: `CONTESTO_CORSO.md` → **Regole Didattiche Concordate → 43**.
+
+## Quando scatta
+
+Ogni volta che in un **file capitolo** (teoria, mini, TODO, quiz, progetto, interleaving, colloquio) o in **chat** si cita / riusa un concetto, strumento o pezzo di lavoro di un **capitolo o modulo precedente**.
+
+## Cosa fare (non negoziabile)
+
+1. **Prima** del richiamo, inserire un ripasso propositivo.
+2. Nei file: blocco `# 🔁 RIPASSO PROPOSITIVO — [concetto / cap. YY]` con 3–8 righe operative (+ micro-check opzionale).
+3. In chat: 2–5 frasi di ripasso prima di usare il concetto passato.
+4. Check mentale: “Cito il passato? → c’è il ripasso subito prima? Se no, aggiungilo.”
+
+## Vietato
+
+- “Come hai fatto nel cap.X…” senza ripasso
+- Interleaving / progetti che mescolano il passato senza rispolverarlo
+- Dare per fresco ciò che può essersi annebbiato
+
+## Note
+
+- Non sostituisce i quiz bridge **Regola 40** (tra capitoli).
+- Rafforza ripasso intelligente, rinforzo mirato, Regola 42.
+- Capitoli **già chiusi**: non retrofit solo per questa regola (protocollo H); vale per file nuovi/in lavorazione e per tutta la chat da ora.

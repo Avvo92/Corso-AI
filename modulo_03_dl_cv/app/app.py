@@ -4,15 +4,11 @@
 from pathlib import Path
 
 import gradio as gr
-
-# In questo capitolo le funzioni stanno nel file del corso; nello Space
-# copiale in un modulo `modello.py` accanto a app.py e importalo così:
 from modello import ClassificatoreVisivo
 
-QUI = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()         # ⚠️ mai percorsi assoluti: lo Space
-                                     #    non ha le tue cartelle
+QUI = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
 PERCORSO_PESI = QUI / "dati" / "pesi" / "ants_vs_bees.pt"
-CARTELLA_ESEMPI = QUI / "esempi"
+CARTELLA_ESEMPI = QUI / "dati" / "esempi"
 
 TITOLO = "Classificatore visivo — formiche vs api"
 DESCRIZIONE = (
