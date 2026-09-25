@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 25/09/2026 — **Chiuso M3 cap.10** (voto **8.5**/10) con **residuo dichiarato**: demo Gradio funziona in locale (`modulo_03_dl_cv/app/`), ma **niente URL Spaces** (policy HF 2026: Gradio su compute richiede PRO). Portfolio #2 resta aperto. Creato cap.12 Grad-CAM.
+> **Ultimo aggiornamento**: 25/09/2026 (2ª sessione) — **Aperto il Modulo 4 (NLP)**: creata la struttura `modulo_04_nlp/` e scritto il **cap.01 `01_testo_come_numeri.py`** (verificato in esecuzione). Scelta dello studente: pausa dal deploy M3 e cambio argomento. Il **M3 resta non archiviato** (portfolio #2 senza URL, cap.12 Grad-CAM da svolgere, TODO 7 + 🔄 CONFRONTO PRIMA/DOPO in coda).
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -40,11 +40,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | **nessuno aperto**. Disponibile **`12_grad_cam_interpretabilita.py`** (creato 25/09, da svolgere). M3 **non archiviato**: manca il deliverable portfolio #2 (deploy). |
-| **Ultimo completato** | modulo_03_dl_cv/**10_progetto_gradio.py** (25/09/2026) — contratto di inferenza a 6 voci, checkpoint ricco, `costruisci_modello`/`transform_eval`/`ClassificatoreVisivo`, `app.py` in 4 blocchi, pacchetto Space in `modulo_03_dl_cv/app/` (pesi + esempi + requirements pinnati CPU + README YAML/model card), demo **live in locale** su `127.0.0.1:7860`. **Residui**: G6–G8 (deploy/smoke/latenza), TODO 7 system design, 🔄 CONFRONTO PRIMA/DOPO. **Voto difficoltà 8.5**/10. |
-| **Modulo attuale** | Modulo 03 — **10 cap. core chiusi (10/10)** + cap.12 Grad-CAM creato da svolgere. **Archivio M3 NON fatto**: attende deploy o decisione alternativa. |
+| **Capitolo in corso** | **M4 cap.01 — `modulo_04_nlp/01_testo_come_numeri.py`** (creato e verificato 25/09/2026, **da svolgere**). Diario: `modulo_04_nlp/sessioni_capitoli/M04_C01_testo_come_numeri_sessione.md`. |
+| **Ultimo completato** | modulo_03_dl_cv/**10_progetto_gradio.py** (25/09/2026) — contratto di inferenza a 6 voci, checkpoint ricco, `costruisci_modello`/`transform_eval`/`ClassificatoreVisivo`, `app.py` in 4 blocchi, pacchetto Space in `modulo_03_dl_cv/app/`, demo **live in locale** su `127.0.0.1:7860`. **Residui**: G6–G8 (deploy/smoke/latenza), TODO 7 system design, 🔄 CONFRONTO PRIMA/DOPO. **Voto difficoltà 8.5**/10. |
+| **Modulo attuale** | **Modulo 04 — NLP, Embeddings & Transformers** (aperto 25/09/2026, 0/7 capitoli). Modulo 03: 10 cap. core chiusi + cap.12 creato da svolgere, **archivio NON fatto** (attende portfolio #2). |
 | **Difficoltà media** | ~**7.10** (31 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, 7, 7, 8, **8.5** ↑ |
-| **Priorità attive** | 🔴 **Deploy portfolio #2 bloccato** (policy HF: Gradio compute = PRO) → decidere alternativa; 🔴 Pattern **#6**; 📌 svolgere **C12 Grad-CAM**; 📌 Regola **43**; 🟡 #48 (BN)/#53/#55/#56; 📌 C1–C8 buste; 📌 Pre-M10 React. |
+| **Priorità attive** | 📌 **svolgere M4 C01**; 🔴 Pattern **#6**; 🔴 **Deploy portfolio #2 bloccato** (policy HF: Gradio compute = PRO) → decidere alternativa, **in pausa per scelta dello studente**; 📌 **C12 Grad-CAM** da svolgere (lì i rinforzi #57/#58); 📌 Regola **43**; 🟡 #53/#55/#56; 📌 C1–C8 buste; 📌 Pre-M10 React; 📌 **mock interview** (Regola 27, attiva dal M4). |
 | **Sessione corrente** | Sessione 29 |
 
 ---
@@ -59,8 +59,17 @@
 | **Data** | 25/09/2026 |
 | **Cosa è stato fatto** | Sessione lunga C10: TODO 6 real-world (privacy buste), assemblato il pacchetto Space in `modulo_03_dl_cv/app/` (app.py, modello.py, pesi, 4 esempi, `requirements.txt` pinnato CPU, README con front-matter YAML + model card), demo Gradio verificata in locale. Creato cap.12 Grad-CAM (`12_grad_cam_interpretabilita.py`, `grad_cam_pipeline.py` → wrapper). **Chiusura formale C10** con voto **8.5**/10. |
 | **Errori emersi** | Path esempi disallineato (`dati/esempi` vs `esempi`) trovato prima del deploy; Pattern **#6** ancora attivo; #48 phrasing BN; TODO 6 scritto dopo aver visto la traccia mentor (non 1° tentativo a freddo). |
-| **Cosa fare nella prossima sessione** | (1) **Decidere come sbloccare portfolio #2** (HF PRO / ZeroGPU / altro host / demo locale documentata); (2) svolgere **C12 Grad-CAM**; (3) opz. TODO 7 system design + 🔄 CONFRONTO PRIMA/DOPO; (4) debito C1–C8 buste. |
-| **Stato motivazione** | Buona sul codice, frustrazione sul deploy (paywall HF inatteso): ha scelto di chiudere il capitolo invece di forzare il deploy. |
+| **Cosa fare nella prossima sessione** | (1) **Svolgere M4 cap.01** `01_testo_come_numeri.py` (quiz ingresso → teoria + mini → quiz verifica → TODO); (2) installare `transformers`/`sentence-transformers` **solo prima del cap.02**; (3) in coda, senza fretta: portfolio #2, C12 Grad-CAM, TODO 7 + 🔄 CONFRONTO PRIMA/DOPO, debito C1–C8 buste. |
+| **Stato motivazione** | Buona sul codice, frustrazione sul deploy (paywall HF inatteso): ha scelto di chiudere il capitolo invece di forzare il deploy e di **cambiare argomento** ("pausa da questo argomento, passiamo al modulo successivo"). Lettura mentor: saturazione da pipeline lunga + blocco esterno, non calo di interesse. Ripartenza M4 volutamente morbida (cap.01 senza installazioni, CPU, nessun training). |
+
+### ➕ Coda della sessione 29 — apertura M4 (25/09/2026)
+
+| Campo | Valore |
+|-------|--------|
+| **Richiesta** | "Pausa da questo argomento, prepara il prossimo modulo nella sua struttura e il primo capitolo, coerente con lo stato attuale del corso." |
+| **Fatto** | Creata `modulo_04_nlp/` con: `README.md` (indice 7 capitoli, privacy testo, filo prodotto ramo testuale), `dati/note_documenti.csv` (30 testi **sintetici**: busta_paga / cu / estratto_conto / altro), `01_testo_come_numeri.py` (capitolo completo), `sessioni_capitoli/` (README + template + diario C01), `quiz_ripasso_tra_capitoli/` (README + template, Regola 40). Scommentate in `requirements.txt` le dipendenze **M3** e **M4**. Aggiornata la roadmap. |
+| **Verifica tecnica** | Capitolo eseguito con il venv: `demo_bow_a_mano()` + `pipeline_dimostrativa()` ok; `CountVectorizer`/`TfidfVectorizer` con tokenizer custom ok (`token_pattern=None`); soluzioni Mini 1.1 / V1 / TODO 7 confrontate con l'output reale; baseline TODO 1 fattibile (accuracy ≈ 0.89 su split stratificato, numeri piccoli e volutamente non affidabili). |
+| **Scelte didattiche** | Regola 43: tre ripassi propositivi in Sez. 0 (fit/transform + leakage M2, coseno del Ponte, preprocess coerente M3 C10). Regola 26: RECALL CROSS-MODULO = TODO 1. Pattern #6 rinforzato nel TODO 2 con formato esplicito. Lacune **#57/#58** *non* forzate qui (sono di visione): restano assegnate ai rinforzi già scritti in C12; il tema spiegabilità torna in versione testuale nel task T4 del progetto. |
 ---
 
 ## 🔴 Priorità Attive — Errori e Lacune da Monitorare ORA
@@ -146,13 +155,15 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo da svolgere** | modulo_03_dl_cv/**`12_grad_cam_interpretabilita.py`** — già scritto (25/09/2026), diario `M03_C12_grad_cam_interpretabilita_sessione.md` creato. Nessun nuovo file capitolo da produrre. |
-| **Bridge prima** | Non previsto un `M03_R10` formale (C10 chiuso con residuo). Se C12 parte a freddo: bastano i 4 ripassi Regola 43 già in Sez. 0 del capitolo. |
-| **Rinforzi da inserire in C12 (🔁)** | 🟡 **#48** — phrasing BatchNorm: in `eval()` BN **resta attiva** ma usa `running_mean/var` (non “si spegne”); serve micro-check a freddo. 🔴 **#6** — consegne con formato esplicito (“con un numero”, “esattamente N bullet”). 🟡 **#53** obiezione con numeri assoluti + leva soglia. 🟡 **#55** cold start a freddo. |
-| **Residui C10 da recuperare (opzionali)** | TODO 7 📐 system design (endpoint/pagina vs fascicolo, timeout, fallback, versioning); 🔄 **CONFRONTO PRIMA/DOPO** (parte A codice + parte B 5 bullet) — richiesto dalla Regola 16 per l'ultimo capitolo del modulo, da fare prima dell'archivio M3. |
-| **Blocco da sciogliere** | 🔴 **Portfolio #2**: scegliere tra ZeroGPU (free, max 2 Space, serve `@spaces.GPU`), HF PRO, altro host, o dichiarare la demo “locale + screenshot” nel portfolio. Finché non è deciso, **niente archivio M3** né scommento dipendenze M4. |
-| **Concetti ⚠️ da monitorare** | Ordine classi dal checkpoint (mai riscritto a mano); `map_location`; `weights_only=True`; path relativi nel pacchetto app (già inciampato: `esempi/` vs `dati/esempi/`); privacy sugli esempi pubblici. |
-| **Ponte mentale da riusare** | **Contratto = etichetta sulla chiavetta USB**; **il bug che non crasha**; **core unico, due vetrine**; **cold start = prima query dopo il deploy**. In C12 si aggiunge: **Grad-CAM = dito del giudice sulla foto**. |
+| **Prossimo da svolgere** | modulo_04_nlp/**`01_testo_come_numeri.py`** — già scritto e verificato (25/09/2026), diario `M04_C01_testo_come_numeri_sessione.md` creato. Nessun nuovo file capitolo da produrre. |
+| **Struttura M4 pronta** | `modulo_04_nlp/`: `README.md`, `dati/note_documenti.csv` (30 testi sintetici, 4 tipi), `sessioni_capitoli/` (README + template + C01), `quiz_ripasso_tra_capitoli/` (README + template). Dipendenze M4 scommentate in `requirements.txt` — **il cap.01 non le usa**. |
+| **Bridge prima** | Nessuno: è il primo capitolo del modulo. Il collegamento col passato è affidato ai tre ripassi Regola 43 in Sez. 0 (fit/transform + leakage, similarità coseno, preprocess coerente). |
+| **Rinforzi già dentro C01 (🔁)** | 🔴 **#6** — TODO 2 con formato dichiarato ("esattamente 4 bullet") + avviso in testa. 🟡 **leakage** — ripasso 0.1 + Mini 2.3 + V3. 🟡 **coseno** — ripasso 0.2 + TODO 5 retrieval a freddo. **Preprocess coerente (C10)** — ripasso 0.3 + TODO 4 debug. |
+| **Rinforzi NON messi qui (e perché)** | 🔴 **#57** (BatchNorm in `eval()`) e 🔴 **#58** (explainability visiva ≠ probabilità) sono di dominio visione: restano assegnati ai blocchi già scritti in `12_grad_cam_interpretabilita.py`. Forzarli in un capitolo NLP sarebbe rumore. Il tema "spiegabilità onesta" torna comunque nel task T4 del progetto incrementale in versione testuale (`parole_decisive` vs `motivi_top3`). |
+| **Residui M3 da recuperare (in coda, non bloccanti)** | C12 Grad-CAM da svolgere; TODO 7 📐 system design C10; 🔄 **CONFRONTO PRIMA/DOPO** (Regola 16, obbligatorio prima dell'archivio M3); 🔴 **Portfolio #2**: scegliere tra ZeroGPU (free, max 2 Space, serve `@spaces.GPU`), HF PRO, altro host, o demo "locale + screenshot". Finché non è deciso, **niente archivio M3**. |
+| **Concetti ⚠️ da monitorare in C01** | `fit` solo sul train anche per il vocabolario (leakage silenzioso); vettorizzatore salvato **insieme** al modello; tokenizer identico fra training e produzione; parole fuori vocabolario ignorate in silenzio; privacy: il testo OCR è più sensibile dell'immagine. |
+| **Ponte mentale da riusare** | **Bag of Words = scheda con le caselle da barrare**; **TF-IDF = la casella barrata su tutte le schede non distingue nulla**; **coseno = quanto due frecce puntano nella stessa direzione**; **il bug che non crasha** (dal C10, qui in versione tokenizer). Da introdurre nel cap.02: **embedding = coordinate GPS del significato**. |
+| **Dopo C01** | Popolare il bridge `M04_R01_after_C01_before_C02_testo_to_embeddings.md` (Regola 40), poi creare `02_embeddings.py` presentando gli embeddings come risposta ai **3 limiti** della Sez. 5 di C01 (sinonimi, ordine, OOV). Installare `transformers`/`sentence-transformers` prima di aprirlo. |
 
 ---
 
@@ -162,7 +173,7 @@
 > File: `modulo_03_dl_cv/12_grad_cam_interpretabilita.py` + diario `M03_C12_*_sessione.md`.
 > `grad_cam_pipeline.py` resta come **wrapper CLI** verso il cap.12.
 >
-> **Priorità operativa:** chiudere C10 (Spaces) resta il focus portfolio; C12 si può studiare dopo o a blocchi.
+> **Priorità operativa (agg. 25/09/2026, 2ª sessione):** lo studente ha chiesto una **pausa dall'argomento** ed è passato al **M4**. C12 resta disponibile, da riprendere quando serve al prodotto (ramo visivo) o come sessione a sé. Non è un prerequisito del M4.
 > Numerazione **12** (non 11) per non collidere con `11_colab_track_prova_ants_bees.py`.
 
 | Campo | Valore |
@@ -1894,7 +1905,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M3 cap.09 — Transfer learning | ✅ Completato (14/09/2026) | 🏗️ **TRACK PROVA** Ants vs Bees: dataset proxy + Colab due fasi → `.pt` (val~90.7%, test~88.9%); track **8**/10. **TRACK PRODOTTO** C1–C8 buste = **debito** (nessun `busta_vs_altro.pt` ancora). Voto difficoltà **8**/10. Input per cap.10: pesi prova + (quando pronto) pesi prodotto. |
 | M3 cap.10 — Gradio + deploy | 🟡 Completato **con residuo** (25/09/2026) | 🏗️ **G1–G5 ✅**: pesi + contratto, verifica core senza UI, pacchetto Space `modulo_03_dl_cv/app/` (app.py, modello.py, requirements pinnati CPU, README YAML), 4 esempi, model card 6 voci. **G6–G8 ❌**: deploy/smoke/latenza bloccati dalla policy HF. Voto **8.5**/10. |
 | M3 — DL & CV (portfolio CNN cap.10) | 🟡 Modulo **non archiviato** | Codice completo; manca solo l'URL pubblico (portfolio #2). Cap.12 Grad-CAM creato (da svolgere). Feature `prob_busta_paga_visivo` con C1–C8. |
-| M4 — NLP | ⬜ Da fare | |
+| M4 cap.01 — Testo come numeri | 🟡 Assegnato (25/09/2026) | 🏗️ **Ramo testuale — fondamenta**. T1 `testo_utils.py` (normalizzazione + tokenizzazione OCR italiano, segnaposto `<importo>`/`<data>`); T2 segnaposto `<cf>`/`<iban>` = mini-anonimizzatore; T3 `classifica_tipo_documento()` → `prob_tipo_doc_testuale` + `parole_decisive`; T4 nota di spiegabilità onesta (gemello testuale dei `motivi_top3` M2); T5 **contratto** salvato col modello (versione, classi ordinate, tokenizer, data) — stesso ragionamento del C10 M3. |
+| M4 — NLP | 🟡 In corso (aperto 25/09/2026) | **Ramo testuale**: estrazione campi da OCR + matching semantico cross-documento. 0/7 capitoli svolti. |
 | M5 — LLM | ⬜ Da fare | |
 | M6 — RAG | ⬜ Da fare | |
 | M7 — Agents | ⬜ Da fare | |
@@ -2418,6 +2430,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 25/09/2026 (2ª) | **Apertura Modulo 4 — NLP, Embeddings & Transformers**. Creata `modulo_04_nlp/`: `README.md` (indice 7 capitoli, privacy specifica del testo, filo prodotto "ramo testuale", promemoria regole per i capitoli futuri), `dati/note_documenti.csv` (30 testi **sintetici** su 4 tipi documento), **`01_testo_come_numeri.py`** (capitolo completo: quiz ingresso 7 domande, 3 ripassi Regola 43 in Sez. 0, tokenizzazione OCR italiano con segnaposto `<importo>`/`<data>`, BoW a mano + `CountVectorizer`, TF-IDF intuizione→codice→formula, coseno, 3 limiti come ponte al cap.02, 📚 lettura parallela [NLP-TRANS]/[ALAMMAR], quiz verifica 8 domande con Feynman, TODO 1–7 con 🔄 RECALL CROSS-MODULO / 🎯 COLLOQUIO / 🔧 REFACTORING / 🔍 DEBUG / 🧠 RETRIEVAL / 🔀 INTERLEAVING, 🏗️ progetto T1–T5, soluzioni verificate in esecuzione), `sessioni_capitoli/` (README + template + diario C01), `quiz_ripasso_tra_capitoli/` (README con i 6 bridge previsti + template). Scommentate in `requirements.txt` le dipendenze **M3** e **M4** (nota: il cap.01 non le richiede). Aggiornati `roadmap_ai.md` (M4 🟡 aperto, componente prodotto, analogie, tempi 2-3 settimane) e le sezioni di stato di questo file. **Archivio M3 ancora NON creato**: il DoD portfolio #2 resta aperto, il debito è dichiarato in tutti i file toccati. | Richiesta studente: "vorrei prendere una pausa da questo argomento e passare al modulo successivo; prepara il prossimo modulo nella sua struttura e il primo capitolo, coerente con lo stato attuale del corso". Lettura mentor: saturazione dopo la pipeline lunga del C10 (voto difficoltà 8.5) + blocco esterno sul deploy → ripartenza morbida, capitolo senza installazioni né training | Stato Attuale, Ultima Sessione (+ coda sessione 29), Prossimo Capitolo, sezione Grad-CAM, Progetto Incrementale, changelog, `modulo_04_nlp/*`, `requirements.txt`, `roadmap_ai.md` |
 | 25/09/2026 | **Chiusura M3 cap.10** (`10_progetto_gradio.py`, voto **8.5**/10 — “tenere uniti i pezzi della pipeline”): Stato → nessun capitolo aperto, prossimo da svolgere = C12; Ultima Sessione; media ~**7.10** (31 cap); Valutazioni **M3-10**; **Glossario nuova sezione cap.10** (14 termini: contratto, checkpoint ricco, `weights_only`, `strict`, Gradio `Interface`, `examples`, `flagging_mode`, lazy load, cold start, front-matter, pin `==`, git-lfs, model card, p50/p95); Pattern **#6** aggiornato (TODO 1 “con un numero”); lacune **#54 → 🟢**, #55/#56 → 🟡 con micro-check in C12, **#57 NUOVA** (BatchNorm in eval: “si spegne” vs running_*) e **#58 NUOVA** (explainability visiva ≠ probabilità) entrambe 🔴 → rinforzo in C12; Progetto: riga cap.10 **G1–G5 ✅ / G6–G8 ❌**; Portfolio riga #2 → 🔴 **non deployato** con motivo (policy HF 2026: Gradio compute richiede PRO; free = Static/Lite o max 2 ZeroGPU); Prossimo Capitolo riscritto su C12 + residui C10 (TODO 7, 🔄 CONFRONTO). **Archivio M3 e scommento dipendenze M4 NON eseguiti** (DoD portfolio #2 aperto). File capitolo **non modificato** (protocollo H). | Richiesta studente: “lasciamo stare [il deploy]. Chiudiamo qui il capitolo” dopo il blocco paywall HF | Stato, Ultima Sessione, priorità, prossimo cap, valutazioni, glossario, pattern, lacune, progetto, portfolio, diario C10, README M3, roadmap, changelog |
 | 25/09/2026 | **Regola 43 — Ripasso propositivo prima di riprendere il passato**: obbligo canonico (file capitolo + chat) di inserire `# 🔁 RIPASSO PROPOSITIVO` prima di citare/riusare concetti di capitoli precedenti. Rafforza 10/14/18/19/42; non sostituisce Regola 40. Aggiornati CONTESTO, `mentor-ai-corso.mdc`, `AGENTS.md`, `.cursorrules`, **nuovo** `.cursor/rules/43-ripasso-propositivo.mdc` (alwaysApply). | Richiesta studente: concetti si annebbiano; riprese di filo senza ripasso | Regole #43, template, priorità, AGENTS, mentor rules, cursorrules, changelog |
 | 25/09/2026 | **Creato M3 cap.12** `12_grad_cam_interpretabilita.py` (~600+ righe): Regola 43 ripassi 08/09/10; hooks; `grad_cam` + overlay; CLI; quiz Q/V; TODO 1–6 + G-CAM. `grad_cam_pipeline.py` → wrapper. Diario `M03_C12_*`. README/roadmap/CONTESTO allineati. | Richiesta studente: trasformare pipeline in capitolo estremamente chiaro | Stato, Ultima Sessione, sezione Grad-CAM, ponti, ripasso, README, roadmap, changelog |

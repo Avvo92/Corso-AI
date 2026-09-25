@@ -184,11 +184,13 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 ## Modulo 4 — NLP, Embeddings & Transformers
 
+> **Stato 25/09/2026**: 🟡 **modulo aperto** — struttura creata (`modulo_04_nlp/`), cap.01 scritto e verificato, da svolgere. Il M3 resta **non archiviato** (portfolio #2 senza URL, cap.12 + TODO 7 + confronto prima/dopo in coda): debito noto, non bloccante.
+
 **Obiettivo**: capire come il testo diventa numeri e come funzionano i modelli di linguaggio. Gli **embeddings** sono il concetto più importante dal M4 in poi.
 
 | # | File | Argomento | Perché serve |
 |---|------|-----------|-------------|
-| 01 | `01_testo_come_numeri.py` | Tokenizzazione, bag of words, TF-IDF | Come il testo diventa numeri |
+| 01 | `01_testo_come_numeri.py` 🟡 **creato 25/09** | Tokenizzazione di testo italiano sporco (apostrofi, importi, date), bag of words, TF-IDF, similarità coseno fra documenti | Come il testo diventa numeri — e perché contare non basta |
 | 02 | `02_embeddings.py` | Word2Vec, sentence-transformers — "coordinate GPS del significato" | IL concetto chiave — prerequisito per RAG, vector DB, tutto |
 | 03 | `03_similarita_coseno.py` | Misurare la "distanza" tra significati | Prerequisito per RAG e vector DB |
 | 04 | `04_transformer_spiegato.py` | L'architettura Transformer ad alto livello (senza formule) | "Perché GPT funziona?" — domanda da colloquio |
@@ -196,13 +198,17 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | 06 | `06_sentiment_classificazione.py` | Sentiment analysis + classificazione testo | Applicazione pratica immediata |
 | 07 | `07_progetto_recensioni.py` | Progetto: analizzatore recensioni e-commerce + Streamlit | Portfolio piece #3 |
 
-**Librerie**: transformers, sentence-transformers, tokenizers
+**Librerie**: transformers, sentence-transformers, tokenizers (scommentate in `requirements.txt` il 25/09/2026; **il cap.01 non le richiede**, bastano numpy/pandas/scikit-learn)
 
-**Demo di modulo**: app Streamlit che analizza recensioni prodotti (sentiment, categorie, keyword).
+**Piattaforma**: CPU locale. Colab solo se un capitolo richiede modelli grandi — con `sentence-transformers` piccoli (MiniLM) non serve.
 
-**Analogie ponte**: Embedding → coordinate GPS. Tokenizer → `split()` intelligente. HuggingFace → npm dell'AI.
+**Demo di modulo**: app Streamlit che analizza recensioni prodotti (sentiment, categorie, keyword) — portfolio #3.
 
-**Tempo**: 2 settimane
+**Componente prodotto**: **ramo testuale** del Controllo Documentale AI — normalizzazione testo OCR, `prob_tipo_doc_testuale`, matching semantico fra documenti della stessa pratica.
+
+**Analogie ponte**: Embedding → coordinate GPS. Tokenizer → `split()` intelligente. Bag of Words → scheda con caselle da barrare. TF-IDF → la casella barrata su tutte le schede non distingue nulla. HuggingFace → npm dell'AI.
+
+**Tempo**: 2-3 settimane
 
 ---
 
