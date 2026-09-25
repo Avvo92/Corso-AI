@@ -28,14 +28,16 @@ Nota: il portfolio #2 (M3, Gradio) è ancora senza URL; se nel frattempo si sblo
 | # | File | Argomento | Difficoltà attesa | Piattaforma |
 |---|------|-----------|-------------------|-------------|
 | 01 | `01_testo_come_numeri.py` 🟡 **scritto** (25/09/2026), da svolgere | Normalizzazione e tokenizzazione del testo italiano (apostrofi, accenti, importi, date), vocabolario, **Bag of Words** a mano e con `CountVectorizer`, **TF-IDF** (intuizione → codice → formula), similarità coseno fra documenti, limiti del conteggio. Recall M2: `fit` solo sul train = niente leakage. | 6/10 | CPU locale |
-| 02 | `02_embeddings.py` ⬜ da creare | Da conteggi a **coordinate del significato**: word embeddings, `sentence-transformers`, modelli multilingua, cosa cattura e cosa no | 7/10 | CPU locale (modelli piccoli) |
-| 03 | `03_similarita_coseno.py` ⬜ da creare | Misurare distanza fra significati, soglie, top-k, valutazione di una ricerca semantica | 6/10 | CPU locale |
-| 04 | `04_transformer_spiegato.py` ⬜ da creare | Architettura Transformer ad alto livello: attention come "a cosa guardo mentre leggo". Domanda da colloquio | 7/10 | CPU locale |
-| 05 | `05_huggingface_pipeline.py` ⬜ da creare | `transformers`: pipeline, tokenizer, modelli pre-addestrati, model card. L'"npm dell'AI" | 6/10 | CPU locale + Colab se serve |
-| 06 | `06_sentiment_classificazione.py` ⬜ da creare | Classificazione di testo e sentiment: baseline TF-IDF vs modello pre-addestrato, metriche | 7/10 | CPU locale |
-| 07 | `07_progetto_recensioni.py` ⬜ da creare | Progetto: analizzatore testi + Streamlit (portfolio #3) | 7/10 | CPU + Streamlit Cloud |
+| 02 | `02_embeddings.py` ⚪ placeholder | Da conteggi a **coordinate del significato**: word embeddings, `sentence-transformers`, modelli multilingua, cosa cattura e cosa no | 7/10 | CPU locale (modelli piccoli) |
+| 03 | `03_similarita_coseno.py` ⚪ placeholder | Misurare distanza fra significati, soglie, top-k, valutazione di una ricerca semantica | 6/10 | CPU locale |
+| 04 | `04_transformer_spiegato.py` ⚪ placeholder | Architettura Transformer ad alto livello: attention come "a cosa guardo mentre leggo". Domanda da colloquio. **Mock interview** del modulo (Regola 27) | 7/10 | CPU locale |
+| 05 | `05_huggingface_pipeline.py` ⚪ placeholder | `transformers`: pipeline, tokenizer, modelli pre-addestrati, model card. L'"npm dell'AI" | 6/10 | CPU locale + Colab se serve |
+| 06 | `06_sentiment_classificazione.py` ⚪ placeholder | Classificazione di testo e sentiment: baseline TF-IDF vs modello pre-addestrato, metriche, analisi errori | 7/10 | CPU locale |
+| 07 | `07_progetto_recensioni.py` ⚪ placeholder | Progetto: analizzatore testi + Streamlit (portfolio #3) + 🔄 CONFRONTO PRIMA/DOPO | 7/10 | CPU + Streamlit Cloud |
 
 **Tempo stimato**: 2-3 settimane.
+
+> ⚪ **placeholder** = il file esiste e contiene già obiettivo, contenuto previsto, DoD provvisoria, prerequisiti, ripassi Regola 43 da inserire, libri di riferimento e task del progetto incrementale. **Non è il capitolo**: va sostituito dal mentor con il contenuto completo quando il capitolo precedente è chiuso. Eseguirlo stampa solo un promemoria.
 
 ## Librerie
 
