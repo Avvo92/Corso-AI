@@ -58,7 +58,13 @@ Eseguito con il venv del corso, tutto verde:
 > - Collegare ogni lacuna emersa al suo ID in `CONTESTO_CORSO.md`.
 > - Append-only.
 
-_(nessuna valutazione registrata: capitolo non ancora svolto)_
+### [2026-09-25] — Quiz ingresso Q3 (preprocess coerente) — **post-feedback**
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Q3 (righe ~124–132), dopo correzione
+- **Valutazione (post-feedback):** **9/10**
+- **Punti di forza:** Ora c’è il nucleo: predizioni peggiori + **non crasha** = bug silenzioso. Esempi resize/mean-std restano coerenti col contratto.
+- **Residuo:** ancora più lungo delle 2 righe richieste; typo “silenzionsi”.
+- **Nota:** voto esame resta **6.5/10** (1° tentativo); questo è consolidamento dopo hint.
 
 ---
 

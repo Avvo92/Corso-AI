@@ -110,7 +110,7 @@ PERCORSO_DATI = QUI / "dati" / "note_documenti.csv"
 # --------------------------------------------------------------------------
 # Nel M2 usavi StandardScaler dentro una Pipeline. In una riga: cosa impara
 # `fit`? In una riga: cosa fa `transform`?
-# TUA RISPOSTA:
+# TUA RISPOSTA: fit serve per trovare media e varianza calcolata su tutto il set di train. transform invece serve per normalizzare i valori usando media e varianza prodotta dal fit. il fit va esclusivamente fatto con il set di train.
 #
 #
 # --------------------------------------------------------------------------
