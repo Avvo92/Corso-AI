@@ -502,12 +502,15 @@ def demo_bow_a_mano() -> None:
 # 🧩 Mini 2.1 — Prima di eseguire `demo_bow_a_mano()`: quante colonne avrà
 #   la tabella? Perché "netto" nella riga d1 vale 2?
 # TUA RISPOSTA:
+# la tabella avrà 4 colonne (busta, canone, netto, saldo);
+# Perche "netto" nel d1 compare 2 volte: d1 -> 1, 0, 2, 0
 #
 #
 # 🧩 Mini 2.2 — Prevedi l'output (formato: vettore):
 #   Con il vocabolario dell'esempio, che vettore produce
 #   "canone canone sconosciuto"?
 # TUA RISPOSTA:
+# []
 #
 #
 # --------------------------------------------------------------------------

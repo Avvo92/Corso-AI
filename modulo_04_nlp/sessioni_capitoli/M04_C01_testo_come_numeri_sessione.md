@@ -80,6 +80,49 @@ Eseguito con il venv del corso, tutto verde:
 
 ---
 
+### [2026-09-29] — Mini 2.1 (colonne BoW e conteggio "netto")
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 2.1 (righe ~501–506)
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**
+- **Punti di forza:** 4 colonne corrette; "netto" = 2 perché compare due volte in d1. Il vettore `2, 1, 0, 0` è coerente con l'ordine che ha scritto lui.
+- **Errori / lacune:** L'ordine delle colonne non è quello del codice: `costruisci_vocabolario` ordina in **alfabetico** → `busta, canone, netto, saldo`. La riga d1 stampata è quindi `1, 0, 2, 0`, non `2, 1, 0, 0`.
+- **Correzione / suggerimento:** Il conteggio è giusto; a fissare le posizioni è `sorted()`, non l'ordine di comparsa nel testo.
+- **Pattern errore / ID contesto:** ordine del vocabolario (stesso tema "posizione fissa" del contratto classi M3); nessuna lacuna 🔴 nuova.
+
+---
+
+### [2026-09-29] — Mini 2.1 — **post-feedback**
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 2.1 (righe ~502–507), dopo correzione
+- **Valutazione (post-feedback):** **9/10**
+- **Punti di forza:** Il vettore d1 è ora `1, 0, 2, 0`, cioè l'ordine alfabetico reale (`busta, canone, netto, saldo`). "netto" = 2 resta corretto.
+- **Residuo:** tra parentesi le colonne sono ancora scritte `(netto, busta, saldo, canone)`, che non corrisponde a quel vettore.
+- **Nota:** voto esame resta **8/10** (1° tentativo).
+
+---
+
+### [2026-09-29] — Mini 2.2 (OOV nel vettore BoW)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 2.2 (righe ~508–513)
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** `[0, 2, 0, 0]` con ordine alfabetico (`busta, canone, netto, saldo`): `canone` due volte in posizione 1, `sconosciuto` ignorato perché fuori vocabolario.
+- **Errori / lacune:** nessuno.
+- **Correzione / suggerimento:** —
+- **Pattern errore / ID contesto:** ordine colonne del Mini 2.1 applicato correttamente qui.
+
+---
+
+### [2026-09-29] — Mini 2.3 (fit_transform / transform / leakage)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 2.3 (righe ~548–553)
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** `fit_transform` sul train, `transform` su test/produzione, e il nome preciso **preprocessing leakage** (sottotipo del data leakage: il vocabolario/IDF vedono il test).
+- **Errori / lacune:** nessuno.
+- **Correzione / suggerimento:** —
+- **Pattern errore / ID contesto:** recall leakage M2 solido, applicato al vettorizzatore.
+
+---
+
 ## Lacune e dubbi ancora aperti
 
 - _(da compilare durante lo studio)_
