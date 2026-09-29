@@ -28,16 +28,27 @@ Nota: il portfolio #2 (M3, Gradio) è ancora senza URL; se nel frattempo si sblo
 | # | File | Argomento | Difficoltà attesa | Piattaforma |
 |---|------|-----------|-------------------|-------------|
 | 01 | `01_testo_come_numeri.py` 🟡 **scritto** (25/09/2026), da svolgere | Normalizzazione e tokenizzazione del testo italiano (apostrofi, accenti, importi, date), vocabolario, **Bag of Words** a mano e con `CountVectorizer`, **TF-IDF** (intuizione → codice → formula), similarità coseno fra documenti, limiti del conteggio. Recall M2: `fit` solo sul train = niente leakage. | 6/10 | CPU locale |
-| 02 | `02_embeddings.py` ⚪ placeholder | Da conteggi a **coordinate del significato**: word embeddings, `sentence-transformers`, modelli multilingua, cosa cattura e cosa no | 7/10 | CPU locale (modelli piccoli) |
+| 02a | `02a_embeddings_concetto.py` ⚪ placeholder | **L'idea**: da conteggi a coordinate del significato, idea distribuzionale, da parola a frase, cosa NON catturano. Embedding giocattolo in 2D, **zero installazioni** | 6/10 | CPU locale |
+| 02b | `02b_embeddings_pratica.py` ⚪ placeholder | **La pratica**: `sentence-transformers`, `encode()`, modelli multilingua, confronto TF-IDF vs embeddings (incluso il caso in cui TF-IDF vince) | 7/10 | CPU locale (modelli piccoli) |
 | 03 | `03_similarita_coseno.py` ⚪ placeholder | Misurare distanza fra significati, soglie, top-k, valutazione di una ricerca semantica | 6/10 | CPU locale |
 | 04 | `04_transformer_spiegato.py` ⚪ placeholder | Architettura Transformer ad alto livello: attention come "a cosa guardo mentre leggo". Domanda da colloquio. **Mock interview** del modulo (Regola 27) | 7/10 | CPU locale |
 | 05 | `05_huggingface_pipeline.py` ⚪ placeholder | `transformers`: pipeline, tokenizer, modelli pre-addestrati, model card. L'"npm dell'AI" | 6/10 | CPU locale + Colab se serve |
 | 06 | `06_sentiment_classificazione.py` ⚪ placeholder | Classificazione di testo e sentiment: baseline TF-IDF vs modello pre-addestrato, metriche, analisi errori | 7/10 | CPU locale |
-| 07 | `07_progetto_recensioni.py` ⚪ placeholder | Progetto: analizzatore testi + Streamlit (portfolio #3) + 🔄 CONFRONTO PRIMA/DOPO | 7/10 | CPU + Streamlit Cloud |
+| 07a | `07a_progetto_core_testuale.py` ⚪ placeholder | Progetto parte 1: mappa pipeline, contratto testuale, `analizza_testo()` **verificato da riga di comando, senza UI** | 6/10 | CPU |
+| 07b | `07b_progetto_streamlit_deploy.py` ⚪ placeholder | Progetto parte 2: app Streamlit, deploy (portfolio #3), latenza + 🔄 CONFRONTO PRIMA/DOPO | 7/10 | CPU + Streamlit Cloud |
 
 **Tempo stimato**: 2-3 settimane.
 
 > ⚪ **placeholder** = il file esiste e contiene già obiettivo, contenuto previsto, DoD provvisoria, prerequisiti, ripassi Regola 43 da inserire, libri di riferimento e task del progetto incrementale. **Non è il capitolo**: va sostituito dal mentor con il contenuto completo quando il capitolo precedente è chiuso. Eseguirlo stampa solo un promemoria.
+
+### Perché 02 e 07 sono in due parti (29/09/2026)
+
+Split deciso dopo un'analisi dei voti di difficoltà del M3. Nel M3 la lunghezza del file non prediceva la fatica (il capitolo da 3.121 righe è costato 7, quello da 2.668 è costato 9): i due picchi sono arrivati da **astrazione composta** (cap.05, voto 9) e **integrazione di molti pezzi** (cap.10, voto 8.5, motivazione dello studente: "tenere mentalmente uniti i pezzi di tutta la pipeline").
+
+- **02a / 02b** — separano l'idea di embedding dalla logistica di `sentence-transformers` (installazioni, download da centinaia di MB, cache). Se il download fa storie, la frustrazione non deve attaccarsi al concetto: è quello che è successo con il paywall Hugging Face nel M3 cap.10.
+- **07a / 07b** — ricalcano la tappa che nel M3 ha funzionato ("verifica il core senza interfaccia"). 07a si chiude solo quando `analizza_testo()` gira da riga di comando; solo allora si apre 07b con UI e deploy.
+
+Restano **due parti dello stesso capitolo**: i bridge Regola 40 restano 6, uno per passaggio fra capitoli numerati (nessun bridge fra 02a e 02b, né fra 07a e 07b).
 
 ## Librerie
 

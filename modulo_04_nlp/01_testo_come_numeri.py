@@ -119,7 +119,7 @@ PERCORSO_DATI = QUI / "dati" / "note_documenti.csv"
 # "Faccio fit dello scaler su tutto il dataset, poi divido in train e test:
 #  tanto lo scaler non vede le etichette."
 # TUA RISPOSTA:
-#
+# Sbagliato. E' leakage: Così facendo il modello avrebbe visto anche il test per stabilire media e varianza su cui poi normalizzare. A quel punto, testando sugli stessi dati, il modello avrebbe un vantaggio nel generare le sue previsioni. E' in produzione le metriche di controllo calerebbero.
 #
 # --------------------------------------------------------------------------
 # Q3 — preprocess coerente (M3 cap.10) (formato: 2 righe)
@@ -128,7 +128,7 @@ PERCORSO_DATI = QUI / "dati" / "note_documenti.csv"
 # training (Resize/CenterCrop/Normalize con gli stessi mean/std).
 # Cosa succedeva se erano diversi? E perché era un bug pericoloso?
 # TUA RISPOSTA:
-#
+# Se il resize non è fatto in maniera corretta (resize rispetto al lato corto e poi center crop) le immagini che passiamo in inferenza rischiano di presentare al loro interno schemi differenti che il modello faticherebbe a riconoscere. Se invece la normalizzazione non viene fatta con la varianza e media corrette (che dovremmo trovare nel contratto di inferenza), a quel punto le risposte potrebbero essere semplicemente peggiori di quelle che il modello saprebbe dare. Entrambi sono pericolosi perchè il modello non crasha, semplicemente la qualità delle sue risposte cala. Sono bug cosidetti silenzionsi.
 #
 # --------------------------------------------------------------------------
 # Q4 — shape (Ponte + M3) (formato: prevedi l'output)
@@ -136,7 +136,8 @@ PERCORSO_DATI = QUI / "dati" / "note_documenti.csv"
 # Hai 30 documenti e un vocabolario di 400 parole.
 # Che shape ha la matrice "documenti × parole"? Cosa rappresenta la cella [5, 12]?
 # TUA RISPOSTA:
-#
+# shape -> (30, 400)
+# La cella [5, 12] indica indica alla riga 5 volte compare la parola in indice 12.
 #
 # --------------------------------------------------------------------------
 # Q5 — similarità coseno (Ponte cap.01) (formato: 1 riga + intuizione)
@@ -144,6 +145,7 @@ PERCORSO_DATI = QUI / "dati" / "note_documenti.csv"
 # Cosa misura la similarità coseno fra due vettori? Cosa significa un
 # valore vicino a 1 e uno vicino a 0?
 # TUA RISPOSTA:
+# Il coseno misura la similarità di direzione di due vettori. Più due vettori hanno direzione simile, più il valore di coseno tende a 1. Viceversa, più due vettori puntano in direzioni diversi, più il valore tende a 0.
 #
 #
 # --------------------------------------------------------------------------
@@ -153,7 +155,7 @@ PERCORSO_DATI = QUI / "dati" / "note_documenti.csv"
 #   print(testo.lower().split())
 # Quante voci ha la lista? Ti sembrano tutte "parole"?
 # TUA RISPOSTA:
-#
+# In teoria, considerando che tutto il testo si trova tra apici, dovrebbe essere una stringa (anche il 1.703,45. Inoltre lo split tronca quando vede gli spazi, quindi la lista ha 5 voci.
 #
 # --------------------------------------------------------------------------
 # Q7 — 💬 a naso, prima di studiare (formato: 3 righe)
@@ -162,7 +164,7 @@ PERCORSO_DATI = QUI / "dati" / "note_documenti.csv"
 # di testo in numeri utilizzabili da un modello? Scrivi la tua idea grezza.
 # Alla fine del capitolo la rileggerai — serve proprio per quello.
 # TUA RISPOSTA:
-#
+# Utilizzerei una sorta di hot encoding, ossia creo un vocabolario contenente tutte le parole che compaiono almeno una volta in tutti i documenti. Poi, per ogni documento, tengo traccia di quante volte compare ogni singola parola.
 #
 
 
@@ -192,7 +194,7 @@ PERCORSO_DATI = QUI / "dati" / "note_documenti.csv"
 #
 # 🧩 Mini 0.1 — Una riga: cosa impara un vettorizzatore di testo nel `fit`?
 # TUA RISPOSTA:
-#
+# Impara le parole da mettere nel Bag of words, e quante volte ognuna compare in almeno un documento per ricavare l'IDF.
 #
 # --------------------------------------------------------------------------
 # 🔁 RIPASSO PROPOSITIVO — similarità coseno (Ponte Matematico cap.01)
@@ -215,7 +217,7 @@ PERCORSO_DATI = QUI / "dati" / "note_documenti.csv"
 # 🧩 Mini 0.2 — V/F + mezza riga: "Due documenti con lo stesso argomento ma
 #   lunghezza molto diversa hanno per forza coseno basso."
 # TUA RISPOSTA:
-#
+# Falso. Il coseno indica quanto quei documenti (visti come vettori) mirano alla stessa direzione. Questo significa che se due documenti hanno lunghezze diverse, avranno norme diverse ma potrebbero tranquillamente avere coseno molto vicino a 1 (ossia potrebbero avere direzioni molto simili).
 #
 # --------------------------------------------------------------------------
 # 🔁 RIPASSO PROPOSITIVO — preprocess coerente (M3 cap.10)
@@ -234,8 +236,8 @@ PERCORSO_DATI = QUI / "dati" / "note_documenti.csv"
 # 🧩 Mini 0.3 — Due righe: qual è, in questo capitolo, l'equivalente del
 #   "contratto di inferenza" del M3? Cosa deve viaggiare insieme al modello?
 # TUA RISPOSTA:
-#
-#
+# Il vocabolario, e il tipo di tokenizzazione (maiuscole, minuscole, punteggiatura ecc.) e l'IDF.
+
 
 
 # ==========================================================================
@@ -330,11 +332,15 @@ def normalizza(testo: str) -> str:
     I segnaposto si mettono DOPO il minuscolo e PRIMA della tokenizzazione,
     altrimenti la regex dei token spezzerebbe i numeri.
     """
+    # 1) Uniforma caratteri strani dell'OCR (es. accenti "composti" → una sola lettera)
     testo = unicodedata.normalize("NFC", testo)
+    # 2) Tutto minuscolo: "NETTO", "Netto", "netto" diventano la stessa stringa
     testo = testo.lower()
+    # 3a) Ogni importo tipo 1.703,45 → segnaposto (spazi ai lati = token separato dopo)
     testo = RE_IMPORTO.sub(" <importo> ", testo)
+    # 3b) Ogni data tipo 01/03/2026 → segnaposto <data>
     testo = RE_DATA.sub(" <data> ", testo)
-    return testo
+    return testo  # stringa pulita, ancora NON tagliata in parole (lo fa tokenizza)
 
 
 # Parole grammaticali italiane: compaiono ovunque e non distinguono nulla.
@@ -356,39 +362,50 @@ def tokenizza(testo: str, togli_stopword: bool = True) -> list[str]:
     Sceglie i token con una regex invece che con split():
     così punteggiatura, apostrofi e trattini non si appiccicano alle parole.
     """
+    # 1) Prima pulisce sempre (minuscolo, <importo>, <data>…) — anche se già fatto, è idempotente
     testo = normalizza(testo)
+    # 2) Estrae tutte le sequenze di lettere / segnaposto (findall = lista di match)
     token = RE_TOKEN.findall(testo)
 
-    # Scarta i token di una sola lettera: quasi sempre residui di apostrofi
-    # ("dell'importo" → "dell", "importo"; "l'iban" → "l", "iban").
+    # 3) Scarta i token di una sola lettera: quasi sempre residui di apostrofi
+    #    ("dell'importo" → "dell", "importo"; "l'iban" → "l", "iban").
     token = [t for t in token if len(t) > 1]
 
+    # 4) Opzionale: toglie parole grammaticali inutili ("di", "il", "la"…)
     if togli_stopword:
         token = [t for t in token if t not in STOPWORD_IT]
 
-    return token
+    return token  # lista di stringhe: il documento ridotto a pezzi utili
 
 
 # 🧩 Mini 1.1 — Esegui mentalmente `tokenizza("Cedolino PAGA del 01/03/2026
 #   per l'importo di 1.703,45 EUR")` e scrivi la lista che ti aspetti.
 #   Poi eseguila davvero e confronta.
 # TUA RISPOSTA (attesa):
-#
+# ['cedolino', 'paga', '<data>', 'importo', '<importo>', 'eur']
 # TUA RISPOSTA (reale):
-#
+
+print("\nMini-esercizio 1.1\n")
+
+testo = "Cedolino PAGA del 01/03/2026 per l'importo di 1.703,45 EUR"
+testo_token = tokenizza(
+    testo
+)
+print(testo_token)
+
 #
 # 🧩 Mini 1.2 — Trova l'errore: uno junior scrive
 #       token = testo.lower().replace(".", "").split()
 #   Elenca DUE problemi concreti che questa riga crea sul nostro dominio.
 # TUA RISPOSTA:
-# -
-# -
+# - Il problema è che rischiamo di non riconosce gli importi, che molto spesso usano "." per dividere le migliaia. Togliere i punti ci porta in conflitto con il metodo di riconoscimento degli importi che abbiamo definito in RE_IMPORTO.
+# Split non è sufficiente per tokenizzare in modo appropriato. Split taglia solo sugli spazi, mentre regex sceglie cosa è un token, dunque è un approccio più solido.
 #
 # 🧩 Mini 1.3 — Scelta di dominio (2 righe): perché trasformiamo gli importi
 #   in `<importo>` invece di cancellarli? Cita un motivo di modello e uno di
 #   privacy.
 # TUA RISPOSTA:
-#
+# Perchè qualunque importo che possiamo trovare in una busta paga sarebbe di fatto "unico", e inserirlo in una bags of word  così come sono sarebbe inutile. Ma anche cancellarli non va bene, perchè perdiamo informazione importante visto il dominio. Dunque la soluzione è sostituire ogni importo con un placeholder "ripetitivo", condiviso per ogni busta paga. Inoltre, così facendo, evitiamo di inserire dati sensibili (come la retribuzione reale) di terzi. 
 #
 
 

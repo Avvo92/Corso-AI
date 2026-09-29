@@ -191,12 +191,14 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 | # | File | Argomento | Perché serve |
 |---|------|-----------|-------------|
 | 01 | `01_testo_come_numeri.py` 🟡 **creato 25/09** | Tokenizzazione di testo italiano sporco (apostrofi, importi, date), bag of words, TF-IDF, similarità coseno fra documenti | Come il testo diventa numeri — e perché contare non basta |
-| 02 | `02_embeddings.py` | Word2Vec, sentence-transformers — "coordinate GPS del significato" | IL concetto chiave — prerequisito per RAG, vector DB, tutto |
+| 02a | `02a_embeddings_concetto.py` ⚪ **placeholder** | L'idea di embedding: spazio denso, idea distribuzionale, limiti. Embedding giocattolo 2D, zero installazioni | IL concetto chiave — prerequisito per RAG, vector DB, tutto |
+| 02b | `02b_embeddings_pratica.py` ⚪ **placeholder** | `sentence-transformers`, `encode()`, multilingua, TF-IDF vs embeddings | Split dal 02 il 29/09: separa il concetto dalla logistica dei download |
 | 03 | `03_similarita_coseno.py` | Misurare la "distanza" tra significati | Prerequisito per RAG e vector DB |
 | 04 | `04_transformer_spiegato.py` | L'architettura Transformer ad alto livello (senza formule) | "Perché GPT funziona?" — domanda da colloquio |
 | 05 | `05_huggingface_pipeline.py` | HuggingFace: pipeline, modelli pre-addestrati, tokenizer | L'ecosistema standard open-source |
 | 06 | `06_sentiment_classificazione.py` | Sentiment analysis + classificazione testo | Applicazione pratica immediata |
-| 07 | `07_progetto_recensioni.py` | Progetto: analizzatore recensioni e-commerce + Streamlit | Portfolio piece #3 |
+| 07a | `07a_progetto_core_testuale.py` ⚪ **placeholder** | Core testuale + contratto, verificato senza interfaccia | Split dal 07 il 29/09: replica la tappa "core senza UI" che ha funzionato nel M3 |
+| 07b | `07b_progetto_streamlit_deploy.py` ⚪ **placeholder** | App Streamlit + deploy + 🔄 confronto prima/dopo | Portfolio piece #3 |
 
 **Librerie**: transformers, sentence-transformers, tokenizers (scommentate in `requirements.txt` il 25/09/2026; **il cap.01 non le richiede**, bastano numpy/pandas/scikit-learn)
 

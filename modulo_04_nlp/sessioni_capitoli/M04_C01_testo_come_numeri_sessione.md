@@ -58,13 +58,25 @@ Eseguito con il venv del corso, tutto verde:
 > - Collegare ogni lacuna emersa al suo ID in `CONTESTO_CORSO.md`.
 > - Append-only.
 
-### [2026-09-25] — Quiz ingresso Q3 (preprocess coerente) — **post-feedback**
+### [2026-09-28] — Quiz ingresso Q7 (idea a naso)
 
-- **Esercizio / blocco:** `01_testo_come_numeri.py` Q3 (righe ~124–132), dopo correzione
-- **Valutazione (post-feedback):** **9/10**
-- **Punti di forza:** Ora c’è il nucleo: predizioni peggiori + **non crasha** = bug silenzioso. Esempi resize/mean-std restano coerenti col contratto.
-- **Residuo:** ancora più lungo delle 2 righe richieste; typo “silenzionsi”.
-- **Nota:** voto esame resta **6.5/10** (1° tentativo); questo è consolidamento dopo hint.
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Q7 (righe ~159–168)
+- **Valutazione (primo tentativo — "voto esame"):** **9/10** (rubrica aperta: nessuna risposta “sbagliata”)
+- **Punti di forza:** Ha già in testa il filo del capitolo: **vocabolario** di tutte le parole + per ogni documento un vettore di **conteggi**. È esattamente Bag of Words.
+- **Errori / lacune:** Nome: “hot encoding” / one-hot di solito = presenza 0/1 (una casella attiva), non i conteggi. Quello che ha descritto è **count vector / BoW**, non one-hot classico.
+- **Correzione / suggerimento:** A fine capitolo rileggi questa risposta: TF-IDF = stessa idea + peso per rarità; embeddings = superamento dei limiti. Nessuna lacuna da aprire.
+- **Pattern errore / ID contesto:** terminologia M2 (one-hot) riusata sul testo — utile da precisare, non bloccante.
+
+---
+
+### [2026-09-28] — Mini 1.3 (segnaposto importo: modello + privacy)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 1.3 (righe ~403–408)
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** Entrambi i motivi: (modello) valore esatto quasi unico/inutile in BoW ma la **presenza** conta → placeholder; (privacy) non mettere retribuzioni reali nel vocabolario/log.
+- **Errori / lacune:** nessuno (un filo più lungo delle 2 righe chieste, contenuto completo).
+- **Correzione / suggerimento:** —
+- **Pattern errore / ID contesto:** —
 
 ---
 
