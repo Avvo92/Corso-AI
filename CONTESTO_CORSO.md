@@ -82,7 +82,7 @@
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08–C10)** | C08–C09 note. **C10 V5:** “controllo che conferma la causa” → ha riproposto il sintomo. **C10 TODO 1:** chiesto “con un numero”, dato solo criterio qualitativo. Antidoto: se la consegna chiede *causa* + *controllo* (o *un numero*), elencarli come job separati prima di scrivere |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08–C10, M4 C01)** | C08–C09 note. **C10 V5:** “controllo che conferma la causa” → ha riproposto il sintomo. **C10 TODO 1:** chiesto “con un numero”, dato solo criterio qualitativo. **M4 C01 V6 (02/10):** chiesto come si trasforma il testo + perché il conteggio non basta + analogia propria → descritta solo la pipeline dei conteggi (6.5/10). **V7 (02/10, 6/10):** chiesto causa + controllo, dati solo tre cause senza controllo. Antidoto: se la consegna chiede due job, elencarli vuoti prima di scrivere |
 | 18 | Confusione Series vs DataFrame | 🟡 In miglioramento | Quiz cap.02 ok; consolidare su nuovi DataFrame |
 | 19 | `if var:` vs `is not None` per numeri opzionali | 🟡 In miglioramento | Rinforzo terminologico cap.02; evitare "null" in risposte |
 | 20 | Anti-pattern valutazione confuso con feature engineering | 🟡 In miglioramento | Rinforzato in cap.02 (blocco dedicato + quiz) |
@@ -1274,7 +1274,7 @@ completezza del self-check e chiedere correzioni.
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08+C09)** | C08: 4 occorrenze. **C09:** Mini 2.4 “due righe”, Mini 6.2 “UNA obiezione sui numeri” (5/10), TODO 6 “5 punti + motivo” (5.5→7.5). Antidoto: lista numerata vuota prima di scrivere |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08+C09, M4 C01)** | C08: 4 occorrenze. **C09:** Mini 2.4 “due righe”, Mini 6.2 “UNA obiezione sui numeri” (5/10), TODO 6 “5 punti + motivo” (5.5→7.5). **M4 C01 V6 (02/10, 6.5/10):** manca «perché contare non basta» e l'analogia propria. **V7 (02/10, 6/10):** tre cause, zero controlli. Antidoto: lista numerata vuota prima di scrivere |
 | 18 | **Confusione Series vs DataFrame** | 🟡 In miglioramento | Rinforzato cap.01-02; quiz cap.02 ok |
 | 19 | **`if var:` vs `is not None` per numeri opzionali** | 🟡 In miglioramento | Emerso cap 12 — rinforzo terminologico cap.02 |
 | 20 | **Anti-pattern valutazione vs feature engineering** | 🟡 In miglioramento | Quiz cap.01 + rinforzo cap.02 |

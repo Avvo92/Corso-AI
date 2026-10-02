@@ -123,6 +123,213 @@ Eseguito con il venv del corso, tutto verde:
 
 ---
 
+### [2026-09-30] — Mini 3.1 (IDF a mano)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 3.1 (righe ~665–670)
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** `log(10/10) = 0` per la parola in tutti i documenti; `log(10/2) = log(5) ≈ 1.609` per quella in 2 su 10. Rapporto e logaritmo giusti.
+- **Errori / lacune:** nessuno.
+- **Correzione / suggerimento:** —
+- **Pattern errore / ID contesto:** —
+
+---
+
+### [2026-09-30] — Mini 3.2 (TF-IDF e sinonimi)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 3.2 (righe ~671–675)
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**
+- **Punti di forza:** V/F corretto (Falso). Motivo giusto: TF-IDF non ha nozione di significato, "cedolino" e "busta paga" restano stringhe diverse.
+- **Errori / lacune:** La formula è scritta con una barra (`TF / log(...)`), che si legge come divisione. Il peso è il **prodotto** `TF * log(N/df)`.
+- **Correzione / suggerimento:** Tenere il prodotto esplicito. Il limite (niente sinonimi) è il ponte verso gli embeddings.
+- **Pattern errore / ID contesto:** soft su formula→codice (Pattern #27, già 🟡); concetto del limite 1 acquisito.
+
+---
+
+### [2026-09-30] — Mini 3.3 (IDF alti sul CSV)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 3.3 (righe ~680–685)
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**
+- **Punti di forza:** Parole allineate all'output (`interessato`, `sensi`, `ottobre`, IDF ≈ 3.40). Commento giusto: IDF alto qui è rarità, non un segnale del tipo di documento.
+- **Errori / lacune:** Il commento resta generico. Manca il perché operativo: compaiono in un solo documento (`log(30/1)`), quindi "distintivo" e "capita una volta" qui coincidono.
+- **Correzione / suggerimento:** `ottobre` è un mese di una busta; `sensi`/`interessato` vengono da una frase legale. Non classificano busta vs CU.
+- **Pattern errore / ID contesto:** giudizio di dominio solido. Codice di prova ancora a livello modulo (già segnalato in chat).
+
+---
+
+### [2026-09-30] — Mini 4.1 (coseno vs distanza euclidea)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 4.1 (righe ~749–753)
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**
+- **Punti di forza:** Il coseno è descritto bene: direzione, non grandezza; documenti di lunghezza diversa possono restare simili. Allineato a #59 (1 = stessa direzione).
+- **Errori / lacune:** «La distanza euclidea è la grandezza di un vettore» è falso. Quella è la **norma** `||v||`. La distanza euclidea fra due vettori è `||a - b||`, la lunghezza della differenza.
+- **Correzione / suggerimento:** Un testo lungo ha conteggi grandi: in distanza euclidea risulta lontano da uno corto sullo stesso argomento. Il coseno divide per le norme e quel effetto sparisce.
+- **Pattern errore / ID contesto:** confusione norma vs distanza; #59 resta 🟡 (direzione ok, da chiudere a freddo al quiz).
+
+---
+
+### [2026-10-01] — Mini 4.1 — **post-feedback**
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 4.1 (righe ~750–753), dopo correzione
+- **Valutazione (post-feedback):** **8.5/10**
+- **Punti di forza:** Definizione corretta: distanza euclidea = tratto fra le punte. Coseno = stessa direzione, indipendente dalla grandezza.
+- **Residuo:** Manca il caso concreto che motiva la scelta: un documento lungo e uno corto sullo stesso argomento hanno le punte lontane solo per i conteggi più grandi.
+- **Nota:** voto esame resta **7/10** (1° tentativo).
+
+---
+
+### [2026-10-01] — Mini 4.1 — **post-feedback 2**
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 4.1 (righe ~749–753), dopo il secondo ritocco
+- **Valutazione (post-feedback):** **9.5/10**
+- **Punti di forza:** Definizione delle punte ok; coseno = direzione. Ora c'è il caso di dominio: testo con parole ripetute vs testo sintetico, stesso contenuto, lunghezze diverse.
+- **Residuo:** typo ("abbiamo", "ripeto"). La frase «i vettori possono avere distanze diverse» resta un po' ambigua: la distanza è fra due punte, non una proprietà di un vettore solo.
+- **Nota:** voto esame resta **7/10**.
+
+---
+
+### [2026-10-01] — Mini 4.2 (guardia norma zero)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 4.2 (righe ~755–759)
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**
+- **Punti di forza:** Condizione giusta: nessuna parola del vocabolario → vettore tutto zeri → norma 0 → denominatore del coseno a 0. Ha visto anche che il numeratore (dot) è 0, quindi 0/0.
+- **Errori / lacune:** Manca un esempio di dominio: testo vuoto, OCR fallito, oppure solo stopword/numeri che dopo `tokenizza` non lasciano token nel vocabolario.
+- **Correzione / suggerimento:** La guardia `return 0.0` evita il NaN e dice «nessuna direzione, quindi nessuna similarità».
+- **Pattern errore / ID contesto:** —
+
+---
+
+### [2026-10-01] — Mini 5.1 (tre limiti BoW, esempi di dominio)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 5.1 (righe ~794–800)
+- **Valutazione (primo tentativo — "voto esame"):** **9/10**
+- **Punti di forza:** Tre esempi suoi, uno per limite. Sinonimi retributivi (`paga base` / `retribuzione base`); ordine perso (`nome cognome` vs `cognome nome`); OOV (`Progressivo` scartato se in vocabolario c'è solo `prog`).
+- **Errori / lacune:** `minimale` non è lo stesso concetto di paga base (è un'altra grandezza). L'ordine nome/cognome è un buon esempio meccanico, ma il senso della frase quasi non cambia: il caso grave è un confronto invertito («il netto supera il lordo»).
+- **Correzione / suggerimento:** Tenere gli esempi. Al colloquio, sul limite dell'ordine, usare una frase il cui significato si rovescia.
+- **Pattern errore / ID contesto:** —
+
+---
+
+### [2026-10-01] — Mini 6.1 (pipeline: documento più simile)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` Mini 6.1 (righe ~872–878)
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**
+- **Punti di forza:** Meccanismo corretto per questa funzione, che è BoW + coseno e non TF-IDF: non vince una parola magica, vince la sovrapposizione tra le parole della query e quelle del documento. Ha riconosciuto che il risultato è pertinente.
+- **Errori / lacune:** Non nomina il tipo (`busta_paga`). Non dice quali sovrapposizioni lo separano dalle altre buste: `cedolino` e `irpef` stanno in pochi documenti; `netto` e `busta` stanno in quasi tutte le buste e da sole non basterebbero.
+- **Correzione / suggerimento:** Due righe: tipo atteso = busta paga; hanno pesato di più le parole della query che le altre buste non hanno.
+- **Pattern errore / ID contesto:** soft Pattern #6 (la consegna chiedeva tipo + parola che ha pesato). Chiamata `pipeline_dimostrativa()` ancora a livello modulo.
+
+---
+
+### [2026-10-01] — Quiz verifica V1 (BoW e parola fuori vocabolario)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` V1 (righe ~885–891)
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Output giusto: `[0, 1]`. Motivo giusto per `canone`: non sta nel vocabolario, quindi `bag_of_words` la ignora.
+- **Errori / lacune:** Nel commento ha scritto `{netto: 1, saldo: 2}`. L'ordine alfabetico con `enumerate` parte da 0: `{netto: 0, saldo: 1}`. Con indici 1 e 2 la scrittura in posizione 2 uscirebbe da un vettore lungo 2.
+- **Correzione / suggerimento:** La stampa NumPy reale è `[0. 1.]` (stessi valori). `saldo` della query vale 1 perché nella frase da convertire compare una volta; il doppio `saldo` del primo documento serve solo a mettere la parola nel vocabolario.
+- **Pattern errore / ID contesto:** —
+
+---
+
+### [2026-10-01] — Quiz verifica V1 (post-feedback)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` V1 (righe ~885–891), seconda valutazione richiesta
+- **Valutazione (post-feedback, non sostituisce l'8.5):** **10/10**
+- **Punti di forza:** Vocabolario corretto `{netto: 0, saldo: 1}`. Vettore `[0, 1]`: zero `netto`, un `saldo`. `canone` fuori vocabolario, quindi ignorata.
+- **Errori / lacune:** —
+- **Correzione / suggerimento:** In console NumPy stampa `[0. 1.]`: stessi valori, tipo float.
+- **Pattern errore / ID contesto:** —
+
+---
+
+### [2026-10-01] — Quiz verifica V2 (parola in tutti i documenti)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` V2 (righe ~893–897)
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** Vero, con il conto giusto: `12 * log(5/5) = 12 * 0 = 0`. Ha usato il prodotto TF × IDF e un esempio numerico suo.
+- **Errori / lacune:** —
+- **Correzione / suggerimento:** Con la formula del capitolo il peso è esattamente 0. In `TfidfVectorizer` con `smooth_idf=True` lo stesso caso resta un numero molto piccolo.
+- **Pattern errore / ID contesto:** —
+
+---
+
+### [2026-10-01] — Quiz verifica V3 (fit su train+test)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` V3 (righe ~899–909)
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**
+- **Punti di forza:** Nome giusto (preprocessing leakage) e causa giusta: lo split arriva dopo `fit_transform`, quindi vocabolario e IDF hanno già visto il test.
+- **Errori / lacune:** Il codice di correzione non gira. `X` a quel punto non esiste: va spezzato `tutti_i_testi`. Manca `X_test = vec.transform(testi_test)`; rifare il fit sul test rimetterebbe il leakage.
+- **Correzione / suggerimento:** Prima lo split dei testi grezzi, poi `fit_transform` sul train e `transform` sul test.
+- **Pattern errore / ID contesto:** —
+
+---
+
+### [2026-10-02] — Quiz verifica V3 (post-feedback)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` V3 (righe ~906–914), seconda valutazione richiesta
+- **Valutazione (post-feedback, non sostituisce il 7):** **10/10**
+- **Punti di forza:** Split sui testi grezzi (`tutti_i_testi`, 80/20). `fit_transform` solo sul train, `transform` sul test. Diagnosi e nome del leakage restano quelli giusti.
+- **Errori / lacune:** —
+- **Correzione / suggerimento:** In un progetto vero il vettorizzatore sta dentro una Pipeline valutata in cross-validation, così il fit non può rivedere il test per sbaglio.
+- **Pattern errore / ID contesto:** —
+
+---
+
+### [2026-10-02] — Quiz verifica V4 (formula del coseno)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` V4 (righe ~917–921)
+- **Valutazione (primo tentativo — "voto esame"):** **10/10**
+- **Punti di forza:** `np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))`, la stessa formula di `coseno()`.
+- **Errori / lacune:** —
+- **Correzione / suggerimento:** Se una delle due norme è 0, questa riga divide per zero. In `coseno()` quel caso ritorna `0.0`.
+- **Pattern errore / ID contesto:** formula del coseno ok; #59 resta da chiudere a freddo (TODO 5 / quiz), non su questo riempimento.
+
+---
+
+### [2026-10-02] — Quiz verifica V5 (definizione di IDF)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` V5 (righe ~924–927)
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Effetto giusto: parola in molti documenti → IDF basso, poco indicativa; parola in pochi documenti → IDF alto.
+- **Errori / lacune:** La domanda «in quanti documenti c'è questa parola?» è la document frequency (`df`), il conteggio grezzo. L'IDF è il peso di rarità che si ricava da quel conteggio: `log(N / df)`.
+- **Correzione / suggerimento:** Due righe: l'IDF dice quanto la parola è rara nel corpus; serve ad abbassare le parole ovunque e ad alzare quelle che distinguono il tipo di documento.
+- **Pattern errore / ID contesto:** —
+
+---
+
+### [2026-10-02] — Quiz verifica V6 (Feynman: testo in numeri)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` V6 (righe ~929–935)
+- **Valutazione (primo tentativo — "voto esame"):** **6.5/10**
+- **Punti di forza:** Pipeline dei conteggi chiara e giusta: pulizia, segnaposto, stopword, vocabolario alfabetico, borse della stessa lunghezza e dello stesso ordine, conteggi diversi. Nessuna formula, niente parola vietata.
+- **Errori / lacune:** Manca la seconda domanda («perché non basta contare»: le parole ovunque non distinguono, quindi si abbassa il loro peso). Manca un'analogia sua. «Borsa di parole» è il nome tecnico, non l'analogia.
+- **Correzione / suggerimento:** Aggiungere 2–3 frasi: un'analogia da web (schede con caselle, filtri di un catalogo) e il caso `importo` contro `cedolino`.
+- **Pattern errore / ID contesto:** Pattern **#6** (job espliciti saltati). Concetto TF-IDF già ok in V2/V5: qui è consegna incompleta, non lacuna nuova.
+
+---
+
+### [2026-10-02] — Quiz verifica V7 (test 95%, produzione no)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` V7 (righe ~937–944)
+- **Valutazione (primo tentativo — "voto esame"):** **6/10**
+- **Punti di forza:** Tre cause nel pezzo giusto (vocabolario, normalizzazione, token), non nel modello. La prima è la più vicina: in produzione compaiono parole che il vocabolario del train non ha.
+- **Errori / lacune:** Nessun bullet ha il controllo chiesto dalla consegna. La terza («tokenizzato male») non spiega perché il test resta al 95%: se l'errore è identico in test e in produzione, il test non crolla. La seconda parla di similarità e query, che è la ricerca, non il classificatore di tipo.
+- **Correzione / suggerimento:** Ogni bullet = differenza tra i due ambienti + un controllo. Esempio sul primo: prendi 20 testi reali e conta quante parole finiscono fuori vocabolario.
+- **Pattern errore / ID contesto:** Pattern **#6** di nuovo (manca il controllo).
+
+---
+
+### [2026-10-02] — Quiz verifica V8 (numeri nel testo)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` V8 (righe ~947–951)
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Posizione giusta: il valore esatto è rumore, cancellare i numeri no. Al posto della cancellazione propone i segnaposto, come fa `normalizza`.
+- **Errori / lacune:** Non dice quali (`<importo>` e `<data>`, separati) né perché la presenza resta informativa: un testo con un importo non è lo stesso di un testo senza.
+- **Correzione / suggerimento:** Due segnaposto distinti. Effetto collaterale utile: il valore vero (stipendio, data) non resta nel testo.
+- **Pattern errore / ID contesto:** —
+
+---
+
 ## Lacune e dubbi ancora aperti
 
 - _(da compilare durante lo studio)_

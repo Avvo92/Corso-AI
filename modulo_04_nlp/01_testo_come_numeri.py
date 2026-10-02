@@ -85,6 +85,7 @@ import re                       # espressioni regolari: "trova i pezzi che sembr
 import unicodedata              # per gestire accenti e caratteri strani dell'OCR
 from collections import Counter  # conteggio di occorrenze, già visto nel M1
 from pathlib import Path
+import os
 
 import numpy as np
 import pandas as pd
@@ -510,7 +511,7 @@ def demo_bow_a_mano() -> None:
 #   Con il vocabolario dell'esempio, che vettore produce
 #   "canone canone sconosciuto"?
 # TUA RISPOSTA:
-# []
+# [0, 2, 0, 0]
 #
 #
 # --------------------------------------------------------------------------
@@ -550,7 +551,7 @@ def vettorizza_conteggi(testi_train: list[str], testi_test: list[str]):
 #   "Sul train chiamo ____________, su test e produzione chiamo ____________,
 #    perché altrimenti commetto ____________."
 # TUA RISPOSTA:
-#
+# fit_transform, transform, preprocessing leakage
 #
 
 
@@ -636,18 +637,20 @@ def idf_a_mano(documenti: list[str]) -> dict[str, float]:
     return {parola: float(np.log(n_documenti / quanti)) for parola, quanti in df.items()}
 
 
-def mostra_idf_estremi(documenti: list[str], quante: int = 8) -> None:
+def mostra_idf_estremi(documenti: list[str], quante: int = 8, verbose = False) -> list[tuple[str, float]]:
     """Stampa le parole con IDF più basso (inutili) e più alto (distintive)."""
     idf = idf_a_mano(documenti)
     ordinate = sorted(idf.items(), key=lambda coppia: coppia[1])
+    if verbose:
+        print(f"\n--- {quante} parole PIÙ COMUNI (IDF basso = poco utili) ---")
+        for parola, valore in ordinate[:quante]:
+            print(f"  {parola:<20} idf={valore:.3f}")
 
-    print(f"\n--- {quante} parole PIÙ COMUNI (IDF basso = poco utili) ---")
-    for parola, valore in ordinate[:quante]:
-        print(f"  {parola:<20} idf={valore:.3f}")
-
-    print(f"\n--- {quante} parole PIÙ RARE (IDF alto = distintive) ---")
-    for parola, valore in ordinate[-quante:]:
-        print(f"  {parola:<20} idf={valore:.3f}")
+        print(f"\n--- {quante} parole PIÙ RARE (IDF alto = distintive) ---")
+        for parola, valore in ordinate[-quante:]:
+            print(f"  {parola:<20} idf={valore:.3f}")
+        
+    return ordinate[-quante:]
 
 
 def vettorizza_tfidf(testi_train: list[str], testi_test: list[str]):
@@ -665,19 +668,34 @@ def vettorizza_tfidf(testi_train: list[str], testi_test: list[str]):
 # 🧩 Mini 3.1 — Con 10 documenti, una parola che compare in tutti e 10 che
 #   IDF ha (usando log(N/df))? E una che compare in 2?
 # TUA RISPOSTA:
-#
+# Una parole che compare in tutti e 10 a IDF = 0
+# Una parola che compare in 2 documenti su 10 -> log(10/2) -> log(5) = circa 1,609
+
 #
 # 🧩 Mini 3.2 — V/F + motivazione: "TF-IDF capisce che 'cedolino' e
 #   'busta paga' significano la stessa cosa."
 # TUA RISPOSTA:
-#
+# Falso: TF - IDF sono la Term Frequency di una parola (es. cedolino) in un documento / log(n_documenti/ in quanti documenti la parola compare). Non ha nulla a che vedere con il significato della parola e non ha modo di capire la similitudine di significato tra parole.
 #
 # 🧩 Mini 3.3 — Esegui `mostra_idf_estremi(...)` sul CSV del capitolo e
 #   incolla qui le 3 parole con IDF più alto. Ti sembrano davvero
 #   distintive del tipo di documento? Una riga di commento.
 # TUA RISPOSTA:
-#
-#
+# interessato -> 3.4011973816621555), sensi -> 3.4011973816621555, ottobre -> 3.4011973816621555
+# In realtà sembrano parole poco significative rispetto l'analisi che noi dobbiamo fare.
+
+print("\nMini-esercizio 3.3\n")
+
+path = Path(__file__).resolve().parent
+path_dati = os.path.join(path, "dati", "note_documenti.csv")
+df = pd.read_csv(path_dati)
+
+testi = list(df['testo'].values)
+
+prova = mostra_idf_estremi(
+    testi,
+    3 
+)
 
 
 # ==========================================================================
@@ -732,12 +750,12 @@ def documento_piu_simile(query: str, documenti: list[str]) -> tuple[int, float]:
 # 🧩 Mini 4.1 — Due righe: perché usiamo il coseno e non la distanza
 #   euclidea per confrontare documenti di lunghezza diversa?
 # TUA RISPOSTA:
-#
+# la distanza euclidea è la distanza tra le punte di due vettori. Nel nostro caso, dei vettori possono avere distanze diverse, ma questo non ci da indicazione sul fatto che siano simili o meno in termini di contenuto. Il coseno invece, ci fa capire quanto quei vettori puntino nella stessa direzione: quindi, quanto siano simili proprio in termini di contenuto, a prescindere dalla loro grandezza. Nel nostro dominio, è probabile che due documenti abbiamo lunghezze diverse (ad esempio un documento dove molte parole si ripeto rispetto ad uno più sintetico), ma nella sostanza possono essere molto simili.
 #
 # 🧩 Mini 4.2 — Nella funzione `coseno` c'è una guardia su norma zero.
 #   Quando può succedere davvero, nel nostro dominio?
 # TUA RISPOSTA:
-#
+# Qualora un documento non contenga nessuna parola del vocabolario che abbiamo utilizzato nel funzione bags_of_words(). A quel punto quel vettore avrebbe norma = 0, dunque nella formula del coseno (a dot b) / (|a| * |b|) avremmo -> 0 / 0.
 #
 
 
@@ -777,9 +795,9 @@ def documento_piu_simile(query: str, documenti: list[str]) -> tuple[int, float]:
 # 🧩 Mini 5.1 — Per ognuno dei 3 limiti, scrivi un esempio TUO preso dal
 #   dominio documentale (non ricopiare i miei).
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
+# 1) I documenti reddituali spesso presentano parole diverse ma con significati identici, le quali vengono usate in modo complementare (es. paga base, retribuzione base, minimale). la BoW non capisce che questi termini sono simili in termini di significato.
+# 2) Se cerchiamo un documento alterato in cui l'ordine di parole è invertito (es. [nome e cognome] vs [cognome e nome]) la bagsofwords lo ignora, e per lei i documenti sono identici.
+# 3) Se tra i doc compare una parola non presente nel vocabolario, per quanto questa possa essere importante, questa viene semplicemente ignorata e scartata. Es. Se nel vocabolario non c'è la parola "Progressivo" (perchè nel vocabolario c'era solo prog, che è la versione abbreviata), la Bow la scarta. 
 #
 #
 # --------------------------------------------------------------------------
@@ -850,14 +868,14 @@ def pipeline_dimostrativa() -> None:
     print(f"risposta : [{dati.loc[indice, 'tipo']}] {testi[indice]}")
     print(f"coseno   : {punteggio:.3f}")
     print("=" * 70)
-
+    
 
 # 🧩 Mini 6.1 — Esegui `pipeline_dimostrativa()`. Il documento restituito al
 #   punto 5 è del tipo che ti aspettavi? Scrivi 2 righe: cosa ha funzionato
 #   e quale parola secondo te ha pesato di più.
 # TUA RISPOSTA:
-#
-#
+# Non credo che una parola in particolare abbia pesato più delle altre, credo abbiamo pesato in generale il fatto che molte delle parole contenute nella query erano contenute nel documento che la funzione ha restituito. In generale ha funzionato il fatto che il sistema ha trovato un documento analizzando le parole contenute della richiesta e ha restituito di fatto un documento pertinente a tale richiesta.
+pipeline_dimostrativa()
 
 
 # ==========================================================================
@@ -866,17 +884,17 @@ def pipeline_dimostrativa() -> None:
 #
 # V1 — Prevedi l'output
 #   documenti = ["saldo saldo", "saldo netto"]
-#   vocabolario = costruisci_vocabolario(documenti)
+#   vocabolario = costruisci_vocabolario(documenti)-> {netto: 0, saldo: 1}
 #   print(bag_of_words("saldo canone", vocabolario))
 #   Cosa stampa e perché "canone" non compare?
 # TUA RISPOSTA:
-#
+# [0, 1] -> canone non è contenuto nel vocabolario
 #
 # V2 — V/F + motivazione
 #   "Se una parola compare in tutti i documenti del corpus, con TF-IDF il suo
 #    peso tende a zero."
 # TUA RISPOSTA:
-#
+# Vero -> Ipotizzando di avere 5 documenti, se su un doc una parola ha TF = 12, e questa compare in tutti i documenti la formula TF-IDF sarebbe -> 12 * (log(5 / 5)) -> 12 * 0 -> 0.
 #
 # V3 — Trova l'errore
 #   vec = TfidfVectorizer()
@@ -884,18 +902,29 @@ def pipeline_dimostrativa() -> None:
 #   X_train, X_test = X[:24], X[24:]
 #   Cosa c'è di sbagliato, come si chiama il problema, e come lo correggi?
 # TUA RISPOSTA:
-#
+
+# PREPROCESSING LEAKAGE: il test è finito nel fit, dato che il set è stato splittato dopo il fit_transform. lo si corregge nel seguente modo:
+
+# vec = TfidfVectorizer()
+
+# testi_train, testi_test = tutti_i_testi[:int(len(tutti_i_testi)*0.8)], tutti_i_testi[int(len(tutti_i_testi)*0.8):]
+
+# X_train = vec.fit_transform(testi_train)
+
+# X_test = vec.transform(testi_test)
+
 #
 # V4 — Completa il codice
 #   Vuoi la similarità fra due documenti già vettorizzati `v1` e `v2`:
 #       similarita = np.dot(v1, v2) / ( __________ * __________ )
 # TUA RISPOSTA:
+#      similarita = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 #
 #
 # V5 — Definizione (2 righe, senza formule)
 #   Cos'è l'IDF e a cosa serve?
 # TUA RISPOSTA:
-#
+# l'IDF  è la risposta alla domanda "In quanti dei miei documenti c'è questa parola?". Serve per dare un importanza relativa a ogni parole: Se la parola è presente in molti documenti, allora l'IDF di quella parola sarà basso (parola poco indicativa), viceversa sarà alto per quelle parole presenti solo in uno o pochi documenti.
 #
 # V6 — 💬 Feynman (5-7 righe)
 #   Spiega a un collega sviluppatore web, che non ha mai fatto NLP, come si
@@ -903,7 +932,7 @@ def pipeline_dimostrativa() -> None:
 #   Vincoli: niente formule, niente parola "vettorializzazione", e almeno
 #   un'analogia tua.
 # TUA RISPOSTA:
-#
+# Abbiamo un dataset di partenza, composto da tanti documenti. Il primo passaggio richiede di uniformare il testo (es. tutto in lowercase, sostituire gli importi e le date in placeholder). dopo di che si creano dei token da ogni parola di ogni documento, eliminando gli articoli e le congiunzioni visto che non ci sono utili. Poi si prendono tutte le parole, una sola volta per ogni parola, e si costruisce un vocabolario ordinato per ordine alfabetico. Con quello, creiamo una borsa di parole per ogni documento del nostro set e, per ogni parola del vocabolario, per ogni documento segniamo quante volte ogni parola occorre al suo interno. Alla fine, per ognuno dei nostri documenti avremo borse tutte della stessa dimensione e stesso ordine, ma con conteggi ovviamente differenti.  
 #
 # V7 — Ragionamento di dominio (3 bullet)
 #   Il tuo classificatore di tipo documento va benissimo in test (95%) e
