@@ -330,9 +330,97 @@ Eseguito con il venv del corso, tutto verde:
 
 ---
 
+### [2026-10-02] — TODO 1 (baseline tipo documento)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 1 (righe ~977–1015)
+- **Valutazione (primo tentativo — "voto esame"):** **7/10**
+- **Punti di forza:** Pipeline giusta, `fit` solo sul train, split stratificato con `random_state=42`. Recall per classe calcolato bene: su questo split `altro` 0, le altre classi 1. Commento sul leakage corretto (il `fit` del tubo non riallena in `predict`).
+- **Errori / lacune:** `acc_score` calcolato e non stampato. Manca il commento (e): l'accuracy è affidabile? Le metriche per classe sono solo il recall. `TfidfVectorizer()` di default non usa `tokenizza`.
+- **Correzione / suggerimento:** Stampare l'accuracy. Accanto al recall, precision per classe (o `classification_report`). Il commento parte dal recall 0 di `altro`: nel test quella classe è un documento solo.
+- **Pattern errore / ID contesto:** Pattern **#6** (punti d ed e della consegna incompleti).
+
+---
+
+### [2026-10-02] — TODO 1 (post-feedback)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 1 (righe ~977–1019), seconda valutazione richiesta
+- **Valutazione (post-feedback, non sostituisce il 7):** **8/10**
+- **Punti di forza:** Accuracy stampata (0.833). Formula di precision e recall giuste, con la guardia sullo zero. `tokenizer=tokenizza` nel tubo. Commento sul leakage invariato e corretto.
+- **Errori / lacune:** La riga «Precision» stampa `{rec}`, quindi il recall. Su `busta_paga` la precision vera è 2/3: il documento `altro` è stato chiamato busta. Manca ancora il commento (e). Warning: `token_pattern` va messo a `None` quando si passa `tokenizer`.
+- **Correzione / suggerimento:** Stampare `prec`. Il commento (e) può partire da lì: accuracy 5/6, ma una busta in più è un `altro` scambiato, e nel test `altro` è un documento solo.
+- **Pattern errore / ID contesto:** Pattern **#6** ancora aperto sul punto (e).
+
+---
+
+### [2026-10-02] — TODO 1 (terza valutazione)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 1 (righe ~977–1021), terza valutazione richiesta
+- **Valutazione (post-feedback, non sostituisce il 7):** **9.5/10**
+- **Punti di forza:** Precision stampata con `prec` (busta paga 0.667). `token_pattern=None` e `lowercase=False`. Commento (e) presente: accuracy poco affidabile perché il test è piccolo e la composizione dipende dallo split. Warning di scikit-learn sparito.
+- **Errori / lacune:** Il commento non usa i numeri di questo run: 6 documenti in test, `altro` è un solo esempio e viene chiamato busta. «Randomizzazione dei file» è la randomizzazione delle righe.
+- **Correzione / suggerimento:** Una mezza riga in più sul commento, con il 5/6 e la precision 2/3 delle buste.
+- **Pattern errore / ID contesto:** punto (e) chiuso in forma generica.
+
+---
+
+### [2026-10-02] — TODO 2 (colloquio, 4 domande)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 2 (righe ~1038–1044)
+- **Valutazione (primo tentativo — "voto esame"):** **6.5/10**
+- **Punti di forza:** Quattro bullet, formato rispettato. (1) formula TF × log(N/df) giusta. (2) criterio concreto: se bastano parole spia e non i sinonimi, TF-IDF; esempio cedolino. Commento leakage del TODO 1 era corretto.
+- **Errori / lacune:** (1) «Inverted» non è il nome: è Inverse; manca l'effetto in una frase. (3) il limite citato è l'OOV, che è la domanda 4; il limite grave della BoW è l'assenza di significato (o l'ordine). (4) il rimedio «metti nel vocabolario anche i documenti della query» è il leakage: rifà il fit su dati che non sono il train.
+- **Correzione / suggerimento:** Default: la parola si scarta. Rimedi: segnaposto per i pattern noti, token a sotto-parole, oppure riaddestrare il vettorizzatore su un nuovo train, non sul documento appena arrivato.
+- **Pattern errore / ID contesto:** formato #6 ok. Il rimedio del punto 4 contraddice il commento anti-leakage del TODO 1.
+
+---
+
+### [2026-10-02] — TODO 2 (post-feedback)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 2 (righe ~1038–1044), seconda valutazione richiesta
+- **Valutazione (post-feedback, non sostituisce il 6.5):** **8.5/10**
+- **Punti di forza:** (3) ora cita significato e ordine, non più l'OOV. (4) default giusto (si scarta); rimedi giusti: pezzi, segnaposto, riaddestramento su un train che contiene quelle parole. Non propone più di rifare il vocabolario sulla query.
+- **Errori / lacune:** (1) e (2) invariati: «Inverted», manca l'effetto in una frase; «busta» è una spia debole e la lunghezza del documento non decide. (3) elenca due limiti e non dice quale è il più grave, né perché. (4) «spezzare le parole più importanti» è impreciso: si spezzano le parole mai viste, non solo le importanti.
+- **Correzione / suggerimento:** Al colloquio, sul punto 3, sceglierne uno e chiudere con la conseguenza (sinonimi estranei, oppure il confronto che si rovescia).
+- **Pattern errore / ID contesto:** il rimedio leakage del punto 4 è corretto dopo il feedback. Verifica a freddo ancora nel TODO 4.
+
+---
+
+### [2026-10-02] — TODO 3 (refactoring di `prepara`)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 3 (righe ~1072–1127)
+- **Valutazione (primo tentativo — "voto esame"):** **6.5/10**
+- **Punti di forza:** Struttura a tre funzioni. Date → `<data>`. Stopword in un set. Token con regex, niente `split(" ")` e niente `print` dentro la funzione. NFC presente.
+- **Errori / lacune:** L'analisi non dice il danno del `replace`: `1.703,45` diventa `170345`. `MY_RE_IMPORTO` ha una virgola al posto di `|`, quindi non aggancia nessun importo dei testi di prova. In output non c'è nessun `<importo>`: le cifre spariscono perché `MY_RE_TOKEN` tiene solo le lettere.
+- **Correzione / suggerimento:** Il secondo ramo della regex va separato con `|`, come in `RE_IMPORTO` del capitolo. Nell'analisi mancano anche `split(" ")` e il `print` nella funzione.
+- **Pattern errore / ID contesto:** soft Pattern **#6** (il danno preciso del replace non è scritto).
+
+---
+
+### [2026-10-02] — TODO 3 (post-feedback)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 3 (righe ~1072–1127), seconda valutazione richiesta
+- **Valutazione (post-feedback, non sostituisce il 6.5):** **6/10**
+- **Punti di forza:** L'analisi ora nomina lo `split` e il fatto che gli importi vengono smontati. Date, stopword e struttura delle funzioni erano già a posto.
+- **Errori / lacune:** `MY_RE_IMPORTO` ha il `|` dopo `(\.\d{3})*`, quindi il primo ramo è «1–3 cifre» senza virgola né decimali. Su `01/03/2026` produce tre `<importo>` e lascia il `6`. Su `1.703,45` spezza in due segnaposto. Il danno preciso (`1.703,45` → `170345`) non è ancora scritto. Manca il `print` nella lista dei problemi.
+- **Correzione / suggerimento:** Il `|` sta tra i due importi completi: `...,\d{2}\b|\b\d+,\d{2}\b`.
+- **Pattern errore / ID contesto:** soft Pattern **#6** ancora sul danno del replace.
+
+---
+
+### [2026-10-02] — TODO 3 (terza valutazione)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 3 (righe ~1072–1127), terza valutazione richiesta
+- **Valutazione (post-feedback, non sostituisce il 6.5):** **8.5/10**
+- **Punti di forza:** `MY_RE_IMPORTO` è quella del capitolo. Sui testi di prova ogni importo è un solo `<importo>` (`1.703,45`, `2450,00`, `512,30`, `750,00`) e ogni data è un solo `<data>`. Stopword in un set, niente `split` e niente `print` nella funzione.
+- **Errori / lacune:** L'analisi dice ancora «spezzati e rincollati», non che `1.703,45` diventa `170345`. Il quarto problema elencato è la normalizzazione Unicode; il `print` dentro la funzione non è nominato.
+- **Correzione / suggerimento:** Nel commento, una riga sul numero inventato. Il `print` è il quarto problema di stile: una funzione di preparazione non deve stampare.
+- **Pattern errore / ID contesto:** soft Pattern **#6** sul danno preciso, ancora aperto nell'analisi.
+
+---
+
 ## Lacune e dubbi ancora aperti
 
-- _(da compilare durante lo studio)_
+- TODO 2 punto 4: una parola mai vista in produzione si scarta. Inserirla rifacendo il vocabolario sulla query è leakage. Da riverificare a freddo nel TODO 4.
 
 ---
 

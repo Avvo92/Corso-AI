@@ -939,16 +939,16 @@ pipeline_dimostrativa()
 #   male in produzione. Indica TRE cause plausibili legate a questo
 #   capitolo (non al modello). Una per bullet, con il controllo che faresti.
 # TUA RISPOSTA:
-# -
-# -
-# -
+# - il vocabolario è troppo piccolo, e non comprende delle parole che sono significative per i documenti del mondo reale.
+# - Non abbiamo normalizzato bene i dati del train o quelli della query, e dunque qualcosa sporca i dati e non consente di verificare similarità in maniera corretta.
+# - Non abbiamo tokenizzato allo stesso modo i dati di train e quelli della query.
 #
 #
 # V8 — Scelta tecnica motivata (2 righe)
 #   Un collega propone: "togliamo tutti i numeri dal testo, tanto sono
 #   rumore". Rispondi: sei d'accordo? Cosa proponi al posto suo?
 # TUA RISPOSTA:
-#
+# Vero il fatto che presi così come sono, fanno solo da rumore. Ma invece di toglierli, possiamo sostituirli con dei placeholders.
 #
 
 
@@ -974,6 +974,51 @@ pipeline_dimostrativa()
 # il problema si risolve da solo. Spiega nel commento perché.
 # TUO CODICE:
 
+#Perché il fit del tubo allena il vettorizzatore solo sui testi che gli passi in quel momento, e il predict non lo riallena.
+
+print("\nESERCIZIO 1\n")
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import (
+    accuracy_score
+)
+
+PATH_DATI = os.path.join(Path(__file__).resolve().parent, "dati", "note_documenti.csv")
+dati = pd.read_csv(PATH_DATI)
+
+X = dati.drop(columns=["id","tipo"])
+y = dati['tipo']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    random_state=42,
+    test_size=.2,
+    stratify=y)
+
+pipe = Pipeline([
+    ('tfidf', TfidfVectorizer(tokenizer=tokenizza, token_pattern=None, lowercase=False)),
+    ('clf', LogisticRegression(random_state=42, max_iter=1_000))
+])
+
+pipe.fit(X_train['testo'], y_train)
+y_pred = pipe.predict(X_test['testo'])
+
+acc_score = accuracy_score(y_test, y_pred)
+print(f"\nAccuracy Score: {acc_score}\n")
+
+classi = y_test.unique()
+for c in classi:
+    tp = len(y_test[(y_pred == c) & (y_test == c)])
+    fn = len(y_test[(y_pred != c) & (y_test == c)])
+    fp = len(y_test[(y_pred == c) & (y_test != c)])
+    rec = tp / (tp + fn) if (tp + fn) != 0 else 0.0
+    prec = tp / (tp + fp) if (tp + fp) != 0 else 0.0
+    print(f"Recall su {c}: {rec}")
+    print(f"Precision su {c}: {prec}\n")
+    
+# L'accuracy è poco affidabile perchè il set del test è troppo piccolo per avere una metrica stabile. Molto dipende dalla composizione del set in base alla randomizzazione dei file di test.
 
 # --------------------------------------------------------------------------
 # TODO 2 — 🎯 [COLLOQUIO] (formato: esattamente 4 bullet, uno per domanda)
@@ -989,11 +1034,14 @@ pipeline_dimostrativa()
 #   4. "Come gestisci una parola mai vista in produzione?" — cosa succede
 #      di default e cosa puoi fare
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
-# 4)
 
+# 1) Term Frequency * Inverted Document Frequency. Sarebbe n_occorenze di una parola all'interno di un doc * log(n_doc / doc in cui la parola compare).
+
+# 2) Quando per classificare i documenti non ho bisogno delle similitudini di significato e quando i documenti sono piccoli e composti da poche parole, tutte molto caratterizzanti. Es. Se ho bisogno di classificare correttamente delle buste paghe, mi è sufficiente che il modello riconosca poche parole estremamente caratterizzanti (es. "busta" o "cedolino").
+
+# 3) La BoW non capisce le similitudini di significato, e l'ordine delle parole si perde.
+
+# 4) Di default verrebbe scartata dalla BoW. Si gestisce andando a spezzare le parone più importanti nel tokenizzatore, o intervenendo con dei segna posti, oppure riaddestrando il modello con un train set che comprende anche le parole che troviamo in produzione
 
 # --------------------------------------------------------------------------
 # TODO 3 — 🔧 [REFACTORING]
@@ -1022,12 +1070,63 @@ pipeline_dimostrativa()
 # Attenzione: uno dei problemi è di DOMINIO, non di stile — quel
 # `replace(",", "")` sul nostro testo fa un danno preciso. Quale?
 # TUA ANALISI:
-# -
-# -
-# -
-# -
+# - il codice cerca di eliminare i separatori e sostituirli, ma è meglio usare regex che riconosca i pattern: split spezza male. Inoltre produce gli importi, così facendo vengono spezzati e rincollati
+# - il codice non riconosce importi e date, e non li sostituisce con dei placeholders (dominio).
+# - il codice mette hardcoded nell'if alcuni articoli e congiunzioni, ma meglio fare una lista di stop_words.
+# - il codice non effettua nessun tipo di normalizzazione per i caratteri speciali.
 # TUO CODICE:
 
+print("\nTODO 3\n")
+
+MY_RE_DATA = re.compile(r"\b\d{1,2}[/-]\d{1,2}([/-]\d{2,4})?\b")
+MY_RE_IMPORTO = re.compile(r"\b\d{1,3}(\.\d{3})*,\d{2}\b|\b\d+,\d{2}\b")
+MY_RE_TOKEN = re.compile(r"[a-zàèéìòù<>]+")
+MY_STOPWORD_IT = {
+    "di", "a", "da", "in", "con", "su", "per", "tra", "fra",
+    "il", "lo", "la", "i", "gli", "le", "un", "uno", "una",
+    "del", "dello", "della", "dei", "degli", "delle",
+    "al", "allo", "alla", "ai", "agli", "alle",
+    "dal", "dalla", "nel", "nella", "sul", "sulla",
+    "e", "ed", "o", "che", "non", "si", "come", "anche",
+}
+
+def my_normalizza(testo: str) -> str:
+    testo = unicodedata.normalize("NFC", testo)
+    testo = testo.lower()
+    testo = MY_RE_IMPORTO.sub(" <importo> ", testo)
+    testo = MY_RE_DATA.sub(" <data> ", testo)
+    return testo
+
+def my_tokenizza(testo: str, togli_stopwords: bool = True) -> list[str]:
+    testo = my_normalizza(testo)
+    token = MY_RE_TOKEN.findall(testo)
+    token = [t for t in token if len(t) > 1]
+    if togli_stopwords:
+        token = [t for t in token if t not in MY_STOPWORD_IT]
+        return token
+    return token
+
+def my_prepara_testi(testi: list[str]) -> list[list[str]]:
+    tokenizzati = []
+    for testo in testi:
+        testo = my_tokenizza(testo)
+        tokenizzati.append(testo)
+    return tokenizzati
+
+testi = [
+    "Cedolino paga del 01/03/2026. Netto in busta 1.703,45 EUR.",
+    "Totale competenze 2450,00. Trattenute IRPEF 512,30.",
+    "Estratto conto al 15/01/2026: saldo disponibile 3.250,80 euro.",
+    "Canone di locazione marzo 2026 pari a 750,00 da versare entro il 05/03/2026.",
+    "Certificazione unica: redditi di lavoro dipendente e ritenute.",
+    "Il pagamento è stato rifiutato per fondi insufficienti.",
+    "Fattura n. 18 del 2/4/26. Imponibile 1.200,50 più IVA.",
+    "Dichiarazione sostitutiva: il sottoscritto è interessato a tutti gli effetti.",
+]
+
+prova = my_prepara_testi(testi)
+
+print(prova)
 
 # --------------------------------------------------------------------------
 # TODO 4 — 🔍 [DEBUG] — nessun aiuto, trovalo da solo

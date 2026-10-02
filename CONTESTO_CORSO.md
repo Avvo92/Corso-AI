@@ -82,7 +82,7 @@
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08–C10, M4 C01)** | C08–C09 note. **C10 V5:** “controllo che conferma la causa” → ha riproposto il sintomo. **C10 TODO 1:** chiesto “con un numero”, dato solo criterio qualitativo. **M4 C01 V6 (02/10):** chiesto come si trasforma il testo + perché il conteggio non basta + analogia propria → descritta solo la pipeline dei conteggi (6.5/10). **V7 (02/10, 6/10):** chiesto causa + controllo, dati solo tre cause senza controllo. Antidoto: se la consegna chiede due job, elencarli vuoti prima di scrivere |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08–C10, M4 C01)** | C08–C09 note. **C10 V5:** “controllo che conferma la causa” → ha riproposto il sintomo. **C10 TODO 1:** chiesto “con un numero”, dato solo criterio qualitativo. **M4 C01 V6 (02/10):** chiesto come si trasforma il testo + perché il conteggio non basta + analogia propria → descritta solo la pipeline dei conteggi (6.5/10). **V7 (02/10, 6/10):** chiesto causa + controllo, dati solo tre cause senza controllo. **TODO 1 (02/10, esame 7/10; poi 8; chiusura 9.5):** precision e commento (e) sistemati. Il commento resta generico (test piccolo), senza i 6 documenti e la classe `altro`. **TODO 3 (02/10, esame 6.5; poi 6; chiusura 8.5):** regex importi corretta, `<importo>` e `<data>` uno per occorrenza. L'analisi non dice ancora che `1.703,45` diventa `170345`, e non elenca il `print`. Antidoto: se la consegna chiede due job, elencarli vuoti prima di scrivere |
 | 18 | Confusione Series vs DataFrame | 🟡 In miglioramento | Quiz cap.02 ok; consolidare su nuovi DataFrame |
 | 19 | `if var:` vs `is not None` per numeri opzionali | 🟡 In miglioramento | Rinforzo terminologico cap.02; evitare "null" in risposte |
 | 20 | Anti-pattern valutazione confuso con feature engineering | 🟡 In miglioramento | Rinforzato in cap.02 (blocco dedicato + quiz) |
@@ -1274,7 +1274,7 @@ completezza del self-check e chiedere correzioni.
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08+C09, M4 C01)** | C08: 4 occorrenze. **C09:** Mini 2.4 “due righe”, Mini 6.2 “UNA obiezione sui numeri” (5/10), TODO 6 “5 punti + motivo” (5.5→7.5). **M4 C01 V6 (02/10, 6.5/10):** manca «perché contare non basta» e l'analogia propria. **V7 (02/10, 6/10):** tre cause, zero controlli. Antidoto: lista numerata vuota prima di scrivere |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08+C09, M4 C01)** | C08: 4 occorrenze. **C09:** Mini 2.4 “due righe”, Mini 6.2 “UNA obiezione sui numeri” (5/10), TODO 6 “5 punti + motivo” (5.5→7.5). **M4 C01 V6 (02/10, 6.5/10):** manca «perché contare non basta» e l'analogia propria. **V7 (02/10, 6/10):** tre cause, zero controlli. **TODO 1 (02/10, esame 7; chiusura 9.5):** precision e commento (e) sistemati. **TODO 3 (02/10, esame 6.5; chiusura 8.5):** regex sistemata. Antidoto: lista numerata vuota prima di scrivere |
 | 18 | **Confusione Series vs DataFrame** | 🟡 In miglioramento | Rinforzato cap.01-02; quiz cap.02 ok |
 | 19 | **`if var:` vs `is not None` per numeri opzionali** | 🟡 In miglioramento | Emerso cap 12 — rinforzo terminologico cap.02 |
 | 20 | **Anti-pattern valutazione vs feature engineering** | 🟡 In miglioramento | Quiz cap.01 + rinforzo cap.02 |
