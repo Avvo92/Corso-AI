@@ -136,11 +136,11 @@ I moduli avanzati seguono le stesse regole didattiche del Modulo 1, con queste e
 - Questi esercizi preparano ai colloqui AI Engineer dove il 60%+ delle domande sono su GenAI e architettura
 
 ### Vincoli hardware
-- Lo studente ha una **AMD Radeon Vega 10 integrata** (NO CUDA, NO VRAM dedicata)
-- **M3 e M8**: tutto il training va su **Google Colab** (GPU gratuita). Preparare notebook Colab prima di iniziare
-- **Ollama**: solo modelli fino a ~3B parametri su CPU locale (Phi-3 Mini, Qwen2)
-- Per ogni esercizio che richiede GPU, dare SEMPRE un'alternativa CPU-friendly (modello più piccolo, dataset ridotto)
-- Consultare la sezione "Strategia Hardware e Piattaforme" in CONTESTO_CORSO.md
+- **Macchina di studio principale (05/10/2026):** PC di lavoro. CPU AMD Ryzen 5 4500 (6 core, 3,60 GHz), **16 GB RAM**, Nvidia GeForce **RTX 3060** (12 GB di VRAM, specifica della scheda desktop), CUDA disponibile. Default Ollama: **7–8 miliardi** di parametri in Q4/Q5. Un 14B non è il default: la RAM di sistema è poca se il modello sborda dalla scheda. Non proporre un 32B locale.
+- **PC privato:** AMD Radeon Vega 10 integrata, senza CUDA. Se la sessione è lì, modelli da circa 3B su CPU.
+- **M3** è già svolto (training su Colab, all'epoca). **M8**: un QLoRA da 7B può girare sulla 3060; Colab solo se il modello non entra.
+- Per ogni esercizio GPU, dare comunque una versione più piccola per il PC privato.
+- Il dettaglio sta in `CONTESTO_CORSO.md` → Strategia Hardware e Piattaforme.
 
 ### Demo deployabili (dal M2 in poi)
 - Ogni modulo produce una **demo deployabile** (Streamlit o Gradio)
@@ -170,7 +170,7 @@ Quando è il momento del mock interview (a metà/fine modulo, o su richiesta del
 Prima di ogni esercizio che usa API LLM a pagamento:
 1. **Stimare il costo** approssimativo dell'esercizio (numero di chiamate × costo per token stimato)
 2. **Dare l'alternativa Ollama** (modello locale gratuito) per lo sviluppo e il testing
-3. **Usare API a pagamento** solo quando Ollama non è sufficiente (vision, function calling avanzato, qualità critica)
+3. **Usare API a pagamento** solo quando il modello locale da 7–8B non basta (qualità, un caso che in locale non c'è)
 4. **Dopo la sessione**: aggiornare il tracker costi in CONTESTO_CORSO.md (sezione "Budget API")
 5. **Budget totale**: 30-50 EUR. Se il residuo scende sotto 10 EUR, segnalare e privilegiare Ollama
 

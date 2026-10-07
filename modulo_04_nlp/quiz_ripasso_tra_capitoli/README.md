@@ -13,7 +13,7 @@ Questi file implementano la **Regola 40** di `CONTESTO_CORSO.md`: blocchi brevi 
 
 | Dopo capitolo | Prima capitolo | File | Stato |
 |---------------|----------------|------|-------|
-| 01 testo come numeri | 02 embeddings | `M04_R01_after_C01_before_C02_testo_to_embeddings.md` | ⬜ da popolare alla chiusura del cap.01 |
+| 01 testo come numeri | 02 embeddings | `M04_R01_after_C01_before_C02_testo_to_embeddings.md` | ✅ popolato in chiusura C01 (05/10/2026) |
 | 02 embeddings | 03 similarità coseno | `M04_R02_after_C02_before_C03_embeddings_to_similarita.md` | ⬜ |
 | 03 similarità coseno | 04 transformer | `M04_R03_after_C03_before_C04_similarita_to_transformer.md` | ⬜ |
 | 04 transformer | 05 HuggingFace | `M04_R04_after_C04_before_C05_transformer_to_hf.md` | ⬜ |

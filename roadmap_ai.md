@@ -164,7 +164,7 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 **Librerie**: torch, torchvision, gradio
 
-**Piattaforma**: **Google Colab** (GPU gratuita) — la GPU locale (AMD Vega 10) non supporta CUDA. Workflow: sviluppo codice in Cursor → training su Colab → risultati in locale.
+**Piattaforma**: il training del M3 è stato fatto su **Google Colab**, perché allora la macchina di studio era la Vega (senza CUDA). Dal 05/10/2026 la macchina principale è la RTX 3060: un training nuovo di questo tipo può stare in locale se entra in 12 GB.
 
 **Demo di modulo**: classificatore immagini Gradio (**cap.10**) — pacchetto pronto in `modulo_03_dl_cv/app/`, **live solo in locale**: dal 2026 gli Space Gradio HF richiedono piano a pagamento (free: Static/Lite o max 2 ZeroGPU). Portfolio #2 **in sospeso**. Grad-CAM = **cap.12** creato (`12_grad_cam_interpretabilita.py`; wrapper `grad_cam_pipeline.py`).
 
@@ -184,14 +184,14 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 ## Modulo 4 — NLP, Embeddings & Transformers
 
-> **Stato 25/09/2026**: 🟡 **modulo aperto** — struttura creata (`modulo_04_nlp/`), cap.01 scritto e verificato, da svolgere. Il M3 resta **non archiviato** (portfolio #2 senza URL, cap.12 + TODO 7 + confronto prima/dopo in coda): debito noto, non bloccante.
+> **Stato 05/10/2026**: 🟡 **modulo aperto** — cap.01 **chiuso** (voto difficoltà 4/10). Prossimo: `02a_embeddings_concetto.py` (idea, zero installazioni), dopo il bridge R01. Il M3 resta **non archiviato** (portfolio #2 senza URL, cap.12 + TODO 7 + confronto prima/dopo in coda): debito noto, non bloccante.
 
 **Obiettivo**: capire come il testo diventa numeri e come funzionano i modelli di linguaggio. Gli **embeddings** sono il concetto più importante dal M4 in poi.
 
 | # | File | Argomento | Perché serve |
 |---|------|-----------|-------------|
-| 01 | `01_testo_come_numeri.py` 🟡 **creato 25/09** | Tokenizzazione di testo italiano sporco (apostrofi, importi, date), bag of words, TF-IDF, similarità coseno fra documenti | Come il testo diventa numeri — e perché contare non basta |
-| 02a | `02a_embeddings_concetto.py` ⚪ **placeholder** | L'idea di embedding: spazio denso, idea distribuzionale, limiti. Embedding giocattolo 2D, zero installazioni | IL concetto chiave — prerequisito per RAG, vector DB, tutto |
+| 01 | `01_testo_come_numeri.py` ✅ **chiuso 05/10** (voto 4) | Tokenizzazione di testo italiano sporco (apostrofi, importi, date), bag of words, TF-IDF, similarità coseno fra documenti | Come il testo diventa numeri — e perché contare non basta |
+| 02a | `02a_embeddings_concetto.py` 🟡 **scritto 05/10** (riscritto integralmente), da svolgere | L'idea di embedding: spazio denso, ipotesi distribuzionale, limiti. **Mappa calcolata dai 30 documenti** del cap.01 (co-occorrenze → PPMI → SVD), zero installazioni. Coseno a memoria (retrieval), task prodotto su `testo_utils.py` | IL concetto chiave — prerequisito per RAG, vector DB, tutto |
 | 02b | `02b_embeddings_pratica.py` ⚪ **placeholder** | `sentence-transformers`, `encode()`, multilingua, TF-IDF vs embeddings | Split dal 02 il 29/09: separa il concetto dalla logistica dei download |
 | 03 | `03_similarita_coseno.py` | Misurare la "distanza" tra significati | Prerequisito per RAG e vector DB |
 | 04 | `04_transformer_spiegato.py` | L'architettura Transformer ad alto livello (senza formule) | "Perché GPT funziona?" — domanda da colloquio |
@@ -202,11 +202,11 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 
 **Librerie**: transformers, sentence-transformers, tokenizers (scommentate in `requirements.txt` il 25/09/2026; **il cap.01 non le richiede**, bastano numpy/pandas/scikit-learn)
 
-**Piattaforma**: CPU locale. Colab solo se un capitolo richiede modelli grandi — con `sentence-transformers` piccoli (MiniLM) non serve.
+**Piattaforma**: PC di lavoro (RTX 3060, dal 05/10/2026). `sentence-transformers` piccoli anche su CPU; la scheda li accelera. Il cap.01 non richiede GPU. Colab solo se un modello non entra in 12 GB di VRAM.
 
 **Demo di modulo**: app Streamlit che analizza recensioni prodotti (sentiment, categorie, keyword) — portfolio #3.
 
-**Componente prodotto**: **ramo testuale** del Controllo Documentale AI — normalizzazione testo OCR, `prob_tipo_doc_testuale`, matching semantico fra documenti della stessa pratica.
+**Componente prodotto**: dal 05/10/2026 il prodotto attivo è la torre di controllo, non Validator/Replicator. Questo modulo resta comunque il gradino degli embeddings. La demo di corso (recensioni) non cambia. Il cap.01, già scritto sui testi di buste e CU, non si riscrive.
 
 **Analogie ponte**: Embedding → coordinate GPS. Tokenizer → `split()` intelligente. Bag of Words → scheda con caselle da barrare. TF-IDF → la casella barrata su tutte le schede non distingue nulla. HuggingFace → npm dell'AI.
 
@@ -239,7 +239,7 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 > allineamento. Il vecchio `01_api_openai.py` diventa `01_api_llm.py` perche' il corso non deve legarsi a un
 > singolo fornitore: le roadmap 2026 elencano tutte OpenAI + Anthropic + Gemini + un layer unificato.
 
-**Piattaforma**: CPU locale. Ollama con modelli fino a 3B parametri (Phi-3 Mini, Qwen2) per esercizi gratuiti + API OpenAI per esercizi che richiedono qualita superiore.
+**Piattaforma**: PC di lavoro (Ryzen 5 4500, 16 GB RAM, RTX 3060). Ollama con modelli da **7–8B** (Q4/Q5) per sviluppo e test. Un 14B non è il default: con 16 GB di RAM uno sbordo dalla scheda blocca il PC. API a pagamento quando il modello locale non basta. Sul PC privato (Vega, senza CUDA) si scende a circa 3B su CPU.
 
 **Demo di modulo**: assistente AI e-commerce con function calling per cercare prodotti, controllare stock, calcolare preventivi — risposte in streaming.
 
@@ -346,7 +346,7 @@ FONDAMENTA                    CORE AI                       PRODUZIONE
 > simile), **RFT** (reinforcement fine-tuning gestito, sui modelli di ragionamento OpenAI). PPO e RLHF classico
 > sono in calo: DPO e GRPO danno il 90% del beneficio al 10% del costo di ingegneria.
 
-**Piattaforma**: **Google Colab** (GPU gratuita) — QLoRA richiede GPU NVIDIA. Workflow: preparazione dataset in locale → training su Colab → valutazione e demo in locale/HuggingFace Spaces.
+**Piattaforma**: PC di lavoro, RTX 3060 e 16 GB di RAM (dal 05/10/2026). Un QLoRA da 7B può girare in locale chiudendo il resto; se il PC va in swap, si usa Colab. Sul PC privato (Vega) il training resta su Colab.
 
 **Demo di modulo**: confronto interattivo tra modello base e modello fine-tunato sullo stesso task.
 

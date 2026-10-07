@@ -1,6 +1,6 @@
 # Modulo 4 — NLP, Embeddings & Transformers
 
-> **Stato**: 🟡 **In corso — 0/7 capitoli** (modulo aperto il 25/09/2026). Capitolo attivo: `01_testo_come_numeri.py`.
+> **Stato**: 🟡 **In corso — C01 chiuso** (05/10/2026, voto difficoltà 4/10). Capitolo attivo: `02a_embeddings_concetto.py`. Prima il bridge `M04_R01`.
 > Vedi `CONTESTO_CORSO.md` → Stato Attuale / Ramo testuale nel Prodotto.
 
 > ⚠️ **Debito M3 aperto**: il Modulo 3 è chiuso sui contenuti (10/10 capitoli) ma **non archiviato** — manca l'URL pubblico della demo (portfolio #2, bloccato dalla policy Hugging Face) e restano `12_grad_cam_interpretabilita.py` da svolgere, il TODO 7 e il 🔄 CONFRONTO PRIMA/DOPO del cap.10. Il M4 parte comunque: sono debiti di deploy/coda, non prerequisiti.
@@ -27,8 +27,8 @@ Nota: il portfolio #2 (M3, Gradio) è ancora senza URL; se nel frattempo si sblo
 
 | # | File | Argomento | Difficoltà attesa | Piattaforma |
 |---|------|-----------|-------------------|-------------|
-| 01 | `01_testo_come_numeri.py` 🟡 **scritto** (25/09/2026), da svolgere | Normalizzazione e tokenizzazione del testo italiano (apostrofi, accenti, importi, date), vocabolario, **Bag of Words** a mano e con `CountVectorizer`, **TF-IDF** (intuizione → codice → formula), similarità coseno fra documenti, limiti del conteggio. Recall M2: `fit` solo sul train = niente leakage. | 6/10 | CPU locale |
-| 02a | `02a_embeddings_concetto.py` ⚪ placeholder | **L'idea**: da conteggi a coordinate del significato, idea distribuzionale, da parola a frase, cosa NON catturano. Embedding giocattolo in 2D, **zero installazioni** | 6/10 | CPU locale |
+| 01 | `01_testo_come_numeri.py` ✅ **chiuso** (05/10/2026, voto 4/10) | Normalizzazione e tokenizzazione del testo italiano, Bag of Words, TF-IDF, coseno, `testo_utils.py` | 4/10 (dato) | CPU locale |
+| 02a | `02a_embeddings_concetto.py` 🟡 **scritto** (05/10/2026, riscritto lo stesso giorno), da svolgere | **L'idea**: da conteggi a coordinate del significato. Mappa **calcolata dai 30 documenti** (co-occorrenze → PPMI → SVD), **zero installazioni**. La prova sui sinonimi è misurata: TF-IDF 0.000 vs mappa 0.960. `coseno` da riscrivere a memoria (🧠 retrieval). Rinforzi #60 #61 #62 | 6/10 attesa | CPU locale |
 | 02b | `02b_embeddings_pratica.py` ⚪ placeholder | **La pratica**: `sentence-transformers`, `encode()`, modelli multilingua, confronto TF-IDF vs embeddings (incluso il caso in cui TF-IDF vince) | 7/10 | CPU locale (modelli piccoli) |
 | 03 | `03_similarita_coseno.py` ⚪ placeholder | Misurare distanza fra significati, soglie, top-k, valutazione di una ricerca semantica | 6/10 | CPU locale |
 | 04 | `04_transformer_spiegato.py` ⚪ placeholder | Architettura Transformer ad alto livello: attention come "a cosa guardo mentre leggo". Domanda da colloquio. **Mock interview** del modulo (Regola 27) | 7/10 | CPU locale |

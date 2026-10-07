@@ -3,7 +3,9 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 25/09/2026 (2ª sessione) — **Aperto il Modulo 4 (NLP)**: creata la struttura `modulo_04_nlp/` e scritto il **cap.01 `01_testo_come_numeri.py`** (verificato in esecuzione). Scelta dello studente: pausa dal deploy M3 e cambio argomento. Il **M3 resta non archiviato** (portfolio #2 senza URL, cap.12 Grad-CAM da svolgere, TODO 7 + 🔄 CONFRONTO PRIMA/DOPO in coda).
+> **Ultimo aggiornamento**: 05/10/2026 — **Chiuso M4 cap.01** (`01_testo_come_numeri.py`, voto difficoltà **4**/10). Prossimo: `02a_embeddings_concetto.py` (idea, zero installazioni). **Prodotto attivo** = torre di controllo. **Validator + Replicator in standby**. **Macchina di studio** = PC di lavoro: Ryzen 5 4500, **16 GB RAM**, RTX 3060 (12 GB VRAM).
+>
+> Storico 25/09/2026 (2ª sessione) — **Aperto il Modulo 4 (NLP)**: creata la struttura `modulo_04_nlp/` e scritto il **cap.01 `01_testo_come_numeri.py`** (verificato in esecuzione). Scelta dello studente: pausa dal deploy M3 e cambio argomento. Il **M3 resta non archiviato** (portfolio #2 senza URL, cap.12 Grad-CAM da svolgere, TODO 7 + 🔄 CONFRONTO PRIMA/DOPO in coda).
 >
 > **Struttura di questo file**: le prime ~100 righe contengono TUTTO ciò che l'AI
 > deve sapere immediatamente (stato, ultima sessione, priorità attive, prossimo capitolo).
@@ -40,12 +42,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | **M4 cap.01 — `modulo_04_nlp/01_testo_come_numeri.py`** (creato e verificato 25/09/2026, **da svolgere**). Diario: `modulo_04_nlp/sessioni_capitoli/M04_C01_testo_come_numeri_sessione.md`. |
-| **Ultimo completato** | modulo_03_dl_cv/**10_progetto_gradio.py** (25/09/2026) — contratto di inferenza a 6 voci, checkpoint ricco, `costruisci_modello`/`transform_eval`/`ClassificatoreVisivo`, `app.py` in 4 blocchi, pacchetto Space in `modulo_03_dl_cv/app/`, demo **live in locale** su `127.0.0.1:7860`. **Residui**: G6–G8 (deploy/smoke/latenza), TODO 7 system design, 🔄 CONFRONTO PRIMA/DOPO. **Voto difficoltà 8.5**/10. |
-| **Modulo attuale** | **Modulo 04 — NLP, Embeddings & Transformers** (aperto 25/09/2026, 0/7 capitoli). Modulo 03: 10 cap. core chiusi + cap.12 creato da svolgere, **archivio NON fatto** (attende portfolio #2). |
-| **Difficoltà media** | ~**7.10** (31 capitoli con voto; archivi M1/M2/Ponte) — trend M3: 8, 8, 8, 8, 9, 7, 7, 7, 8, **8.5** ↑ |
-| **Priorità attive** | 📌 **svolgere M4 C01**; 🟡 **#59 coseno** (Mini 0.2 ok, chiudere a TODO 5 / verifica); 🔴 Pattern **#6**; 🔴 **Deploy portfolio #2 bloccato** (policy HF, in pausa); 📌 **C12 Grad-CAM** (#57/#58); 📌 Regola **43**; 🟡 #53/#55/#56; 📌 C1–C8 buste; 📌 Pre-M10 React; 📌 **mock interview** (Regola 27). |
-| **Sessione corrente** | Sessione 29 |
+| **Capitolo in corso** | **M4 cap.02a — `modulo_04_nlp/02a_embeddings_concetto.py`** (scritto in chiusura C01, 05/10/2026, **da svolgere**). Diario: `M04_C02a_embeddings_concetto_sessione.md`. Prima il bridge `M04_R01_after_C01_before_C02_testo_to_embeddings.md`. |
+| **Ultimo completato** | modulo_04_nlp/**01_testo_come_numeri.py** (05/10/2026) — tokenizzazione, BoW, TF-IDF, coseno, `testo_utils.py` con `<cf>`/`<iban>`, classificatore di tipo e contratto. **Voto difficoltà 4**/10. |
+| **Modulo attuale** | **Modulo 04 — NLP, Embeddings & Transformers** (1 capitolo chiuso: C01). Modulo 03: archivio **NON fatto** (attende portfolio #2). |
+| **Difficoltà media** | ~**7.05** (32 capitoli con voto) — M4-01 = **4**, calo netto dopo M3-10 = 8.5. Il carico percepito qui era basso: tenere il 02a concreto. |
+| **Priorità attive** | 📌 **svolgere M4 02a**; 🟢 **#63** chiusa Mini 5.2; 🔴 Pattern **#6**; 🟢 #60 #61 #62 chiuse in 02a; 📌 torre di controllo; 📌 RTX 3060; 📌 C12 Grad-CAM (#57/#58); 📌 portfolio #2 in pausa. |
+| **Sessione corrente** | Sessione 30 |
 
 ---
 
@@ -56,11 +58,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 25/09/2026 |
-| **Cosa è stato fatto** | Sessione lunga C10: TODO 6 real-world (privacy buste), assemblato il pacchetto Space in `modulo_03_dl_cv/app/` (app.py, modello.py, pesi, 4 esempi, `requirements.txt` pinnato CPU, README con front-matter YAML + model card), demo Gradio verificata in locale. Creato cap.12 Grad-CAM (`12_grad_cam_interpretabilita.py`, `grad_cam_pipeline.py` → wrapper). **Chiusura formale C10** con voto **8.5**/10. |
-| **Errori emersi** | Path esempi disallineato (`dati/esempi` vs `esempi`) trovato prima del deploy; Pattern **#6** ancora attivo; #48 phrasing BN; TODO 6 scritto dopo aver visto la traccia mentor (non 1° tentativo a freddo). |
-| **Cosa fare nella prossima sessione** | (1) **Svolgere M4 cap.01** `01_testo_come_numeri.py` (quiz ingresso → teoria + mini → quiz verifica → TODO); (2) installare `transformers`/`sentence-transformers` **solo prima del cap.02**; (3) in coda, senza fretta: portfolio #2, C12 Grad-CAM, TODO 7 + 🔄 CONFRONTO PRIMA/DOPO, debito C1–C8 buste. |
-| **Stato motivazione** | Buona sul codice, frustrazione sul deploy (paywall HF inatteso): ha scelto di chiudere il capitolo invece di forzare il deploy e di **cambiare argomento** ("pausa da questo argomento, passiamo al modulo successivo"). Lettura mentor: saturazione da pipeline lunga + blocco esterno, non calo di interesse. Ripartenza M4 volutamente morbida (cap.01 senza installazioni, CPU, nessun training). |
+| **Data** | 05/10/2026 |
+| **Cosa è stato fatto** | Svolto e chiuso **M4 cap.01**. Quiz, TODO 1–7, progetto `testo_utils.py` (T1–T5, esame 7 poi 9). Voto difficoltà studente **4**/10. Scritti `02a_embeddings_concetto.py` e il bridge R01. Prodotto attivo e hardware 3060 già fissati in questa data. |
+| **Errori emersi** | Pattern **#6** ancora attivo (consegna incompleta: V6, V7, T4 nel capitolo invece che nel diario). Lacune **#60** (manca `transform` nel riparo), **#61** (tre segnali sulla stessa domanda), **#62** (ordine chiamato «significato»). Coseno **#59** chiuso nel TODO 5 (9.5). |
+| **Cosa fare nella prossima sessione** | (1) Bridge `M04_R01`; (2) svolgere `02a_embeddings_concetto.py` senza installare nulla; (3) `sentence-transformers` solo prima di **02b**. In coda: portfolio #2, C12, TODO 7 e confronto prima/dopo del M3. |
+| **Stato motivazione** | Alta. Il capitolo gli è pesato poco (4/10) e il filo RAG / modelli locali lo accende. Tenere il 02a corto e disegnato, non un muro di teoria. |
 
 ### ➕ Coda della sessione 29 — apertura M4 (25/09/2026)
 
@@ -82,7 +84,7 @@
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08–C10, M4 C01)** | C08–C09 note. **C10 V5:** “controllo che conferma la causa” → ha riproposto il sintomo. **C10 TODO 1:** chiesto “con un numero”, dato solo criterio qualitativo. **M4 C01 V6 (02/10):** chiesto come si trasforma il testo + perché il conteggio non basta + analogia propria → descritta solo la pipeline dei conteggi (6.5/10). **V7 (02/10, 6/10):** chiesto causa + controllo, dati solo tre cause senza controllo. **TODO 1 (02/10, esame 7/10; poi 8; chiusura 9.5):** precision e commento (e) sistemati. Il commento resta generico (test piccolo), senza i 6 documenti e la classe `altro`. **TODO 3 (02/10, esame 6.5; poi 6; chiusura 8.5):** regex importi corretta, `<importo>` e `<data>` uno per occorrenza. L'analisi non dice ancora che `1.703,45` diventa `170345`, e non elenca il `print`. Antidoto: se la consegna chiede due job, elencarli vuoti prima di scrivere |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08–C10, M4 C01)** | C08–C09 note. **C10 V5:** “controllo che conferma la causa” → ha riproposto il sintomo. **C10 TODO 1:** chiesto “con un numero”, dato solo criterio qualitativo. **M4 C01 V6 (02/10):** chiesto come si trasforma il testo + perché il conteggio non basta + analogia propria → descritta solo la pipeline dei conteggi (6.5/10). **V7 (02/10, 6/10):** chiesto causa + controllo, dati solo tre cause senza controllo. **TODO 1 (02/10, esame 7/10; poi 8; chiusura 9.5):** precision e commento (e) sistemati. Il commento resta generico (test piccolo), senza i 6 documenti e la classe `altro`. **TODO 3 (02/10, esame 6.5; poi 6; chiusura 8.5):** regex importi corretta, `<importo>` e `<data>` uno per occorrenza. L'analisi non dice ancora che `1.703,45` diventa `170345`, e non elenca il `print`. **TODO 4 (05/10, esame 8/10):** diagnosi del `vec` rifatto in produzione giusta; il riparo salva il vettorizzatore e non scrive `transform`. Antidoto: se la consegna chiede due job, elencarli vuoti prima di scrivere |
 | 18 | Confusione Series vs DataFrame | 🟡 In miglioramento | Quiz cap.02 ok; consolidare su nuovi DataFrame |
 | 19 | `if var:` vs `is not None` per numeri opzionali | 🟡 In miglioramento | Rinforzo terminologico cap.02; evitare "null" in risposte |
 | 20 | Anti-pattern valutazione confuso con feature engineering | 🟡 In miglioramento | Rinforzato in cap.02 (blocco dedicato + quiz) |
@@ -108,6 +110,10 @@
 
 | # | Concetto | Stato | Rinforzo in |
 |---|----------|-------|-------------|
+| 60 | **Salvare il vettorizzatore e in produzione chiamare `transform`** | 🟢 | Ingresso 02a Q2+Q3+Q5 (05/10). Fit sul train, `transform` in produzione, vocabolario e IDF altrimenti diversi |
+| 61 | **Il testuale di C01 dice il tipo, non è un terzo voto di alterazione** | 🟢 | Ingresso 02a Q4+Q6 (05/10). Tipo di documento; la parola mai vista si scarta |
+| 62 | **Due frasi invertite: il limite è l'ordine, non «il significato» in generale** | 🟢 | Micro #62 (05/10), **9.5/10**: «deve saper distinguere l'ordine». Q1 aveva il coseno 1 senza nominarlo |
+| 63 | **0.0 sul vettore nullo è la guardia, non il significato di coseno 0** | 🟢 | Mini 5.2 (06/10, 8/10): ignoranza (frase non mappata) e direzione diversa producono lo stesso 0.0 |
 | 48 | **`eval` ≠ freeze ≠ `no_grad` (tre leve)** | 🟢 Chiusa (C10) | C09 soft → C10 Q1 7/10 → Mini 48.A 8.5 → **Mini 48.B 10/10** (`with torch.no_grad():`). Distinzione operativa ok; tenere a ripasso il phrasing Dropout in eval |
 | 49 | **Il `1` di `(1,28,28)` è il CANALE, non il batch** | 🟢 Superato (C09) | Q3 fix + Mini 3.2 9/10; Mini 3.1 `repeat` dopo 4/10. Consolidato PIL/`Grayscale` vs tensore `repeat` |
 | 50 | **Formula H_out: il `+ 1` finale** | 🟢 Superato (C09) | Q2 con `floor` OK; riusato su ResNet stem |
@@ -155,18 +161,19 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo da svolgere** | modulo_04_nlp/**`01_testo_come_numeri.py`** — già scritto e verificato (25/09/2026), diario `M04_C01_testo_come_numeri_sessione.md` creato. Nessun nuovo file capitolo da produrre. |
-| **Struttura M4 pronta** | `modulo_04_nlp/`: `README.md`, `dati/note_documenti.csv` (30 testi sintetici, 4 tipi), `sessioni_capitoli/` (README + template + C01), `quiz_ripasso_tra_capitoli/` (README + template). Dipendenze M4 scommentate in `requirements.txt` — **il cap.01 non le usa**. |
+| **Prossimo da svolgere** | modulo_04_nlp/**`02a_embeddings_concetto.py`** — **riscritto integralmente il 05/10/2026** (vedi riga sotto). Prima il bridge `quiz_ripasso_tra_capitoli/M04_R01_after_C01_before_C02_testo_to_embeddings.md`. Zero installazioni. Diario `M04_C02a_embeddings_concetto_sessione.md`. |
+| **Riscrittura 02a (05/10/2026)** | La prima stesura (358 righe) aveva coordinate **inventate a mano**: nessun meccanismo, la promessa sui sinonimi mai misurata, nessun coseno, **nessun task prodotto** (violazione Regole 31/34), nessuna DoD, nessun blocco libro. Su richiesta dello studente riscritto completo (~1.000 righe). Ora: mappa calcolata dai **30 documenti reali** (co-occorrenze → PPMI → SVD con `numpy`, zero installazioni); la prova centrale è misurata — **TF-IDF 0.000 vs mappa 0.960** su "prospetto paga di aprile"/"cedolino di marzo", che **non co-occorrono mai**; tabella dimensioni 2/4/8 che mostra perché 2 assi non bastano (cedolino–certificazione 0.986 a dim 2, 0.015 a dim 4); sezione "quando NON usarla" (codici, IBAN, numeri di pratica → match esatto); task prodotto T1–T5 su `testo_utils.py` con 3 assert di regressione; DoD; `📚 LETTURA PARALLELA [ALAMMAR cap. 2]` + 1 esercizio 📚. **Numeri verificati eseguendo il file.** |
+| **`coseno` = 🧠 [RETRIEVAL] in 02a** | Scelta dello studente (05/10). In Sez. 3 c'è lo **stub** che solleva `NotImplementedError`: il file gira e costruisce la mappa, ma **non misura** finché non la riscrive dalla memoria. Il ripasso in cima dà il **concetto** (direzione, 1 e 0, norma = lunghezza, guardia sul vettore nullo) e **non la formula** — Regola 19 rispettata. Alla correzione: se corretta, il termine "coseno" passa a **3/3** nel glossario. |
+| **Struttura M4 pronta** | C01 chiuso. `02a_embeddings_concetto.py` riscritto (05/10/2026). Bridge `M04_R01` popolato. Diario `M04_C02a`. `sentence-transformers` solo prima di **02b**. |
 | **Placeholder cap.02–07** | **8 file** (aggiornato 29/09/2026 dopo split): `02a_embeddings_concetto.py`, `02b_embeddings_pratica.py`, `03_similarita_coseno.py`, `04_transformer_spiegato.py`, `05_huggingface_pipeline.py`, `06_sentiment_classificazione.py`, `07a_progetto_core_testuale.py`, `07b_progetto_streamlit_deploy.py`. Contengono obiettivo, contenuto previsto, DoD provvisoria, prerequisiti, ripassi Regola 43, libri e task prodotto. **Non sono capitoli**: l'agente li SOSTITUISCE con il contenuto completo alla chiusura del capitolo precedente, riusando quanto già scritto. Note vincolanti già fissate: mock interview (Regola 27) al **cap.04**; lacuna 🟡 **#53** da chiudere al **cap.06**; 🔄 CONFRONTO PRIMA/DOPO e protocollo FINE MODULO al **cap.07b**, dove è registrata la lezione del M3 C10 (**verificare la fattibilità del deploy prima** di far costruire il pacchetto). |
 | **Split 02 e 07 (29/09/2026)** | Deciso dopo analisi del profilo: nel M3 la lunghezza del file NON prediceva la difficoltà (3.121 righe → voto 7; 2.668 righe → voto 9). I picchi vengono da **astrazione composta** (C05, 9) e **integrazione multi-pezzo** (C10, 8.5). Quindi: **02a** concetto senza installazioni / **02b** pratica con `sentence-transformers` — così un download fallito non contamina il concetto portante del modulo (precedente: paywall HF in C10). **07a** core verificato da riga di comando (replica la tappa G2 che nel M3 ha funzionato) / **07b** UI, deploy, confronto prima/dopo. 07b si apre **solo** a DoD di 07a verde. Restano parti dello stesso capitolo: i bridge Regola 40 restano **6**. |
-| **Proposte NON applicate (scelta studente 29/09)** | Erano state proposte anche: (a) **taglio del cap.04** Transformer — via multi-head e positional encoding, tenere contesto + attention + famiglie BERT/GPT — con **mock interview spostato dopo il cap.05**; (b) tre vincoli trasversali su tutti i capitoli: antidoto **Pattern #6** (formato dichiarato + checklist job prima di scrivere), **glossario attivo** di 5 termini per capitolo (contromisura alla debolezza dichiarativa: #59 coseno invertito, #57 BN, #47 `.item()`), e verifica a freddo di **#59** nel quiz d'ingresso del **cap.03**. Lo studente ha scelto "solo i due split". **Da riproporre alla chiusura del cap.01.** |
-| **Bridge prima** | Nessuno: è il primo capitolo del modulo. Il collegamento col passato è affidato ai tre ripassi Regola 43 in Sez. 0 (fit/transform + leakage, similarità coseno, preprocess coerente). |
-| **Rinforzi già dentro C01 (🔁)** | 🔴 **#6** — TODO 2 con formato dichiarato ("esattamente 4 bullet") + avviso in testa. 🟡 **leakage** — ripasso 0.1 + Mini 2.3 + V3. 🟡 **coseno** — ripasso 0.2 + TODO 5 retrieval a freddo. **Preprocess coerente (C10)** — ripasso 0.3 + TODO 4 debug. |
-| **Rinforzi NON messi qui (e perché)** | 🔴 **#57** (BatchNorm in `eval()`) e 🔴 **#58** (explainability visiva ≠ probabilità) sono di dominio visione: restano assegnati ai blocchi già scritti in `12_grad_cam_interpretabilita.py`. Forzarli in un capitolo NLP sarebbe rumore. Il tema "spiegabilità onesta" torna comunque nel task T4 del progetto incrementale in versione testuale (`parole_decisive` vs `motivi_top3`). |
-| **Residui M3 da recuperare (in coda, non bloccanti)** | C12 Grad-CAM da svolgere; TODO 7 📐 system design C10; 🔄 **CONFRONTO PRIMA/DOPO** (Regola 16, obbligatorio prima dell'archivio M3); 🔴 **Portfolio #2**: scegliere tra ZeroGPU (free, max 2 Space, serve `@spaces.GPU`), HF PRO, altro host, o demo "locale + screenshot". Finché non è deciso, **niente archivio M3**. |
-| **Concetti ⚠️ da monitorare in C01** | `fit` solo sul train anche per il vocabolario (leakage silenzioso); vettorizzatore salvato **insieme** al modello; tokenizer identico fra training e produzione; parole fuori vocabolario ignorate in silenzio; privacy: il testo OCR è più sensibile dell'immagine. |
-| **Ponte mentale da riusare** | **Bag of Words = scheda con le caselle da barrare**; **TF-IDF = la casella barrata su tutte le schede non distingue nulla**; **coseno = quanto due frecce puntano nella stessa direzione**; **il bug che non crasha** (dal C10, qui in versione tokenizer). Da introdurre nel cap.02: **embedding = coordinate GPS del significato**. |
-| **Dopo C01** | Popolare il bridge `M04_R01_after_C01_before_C02_testo_to_embeddings.md` (Regola 40), poi scrivere **`02a_embeddings_concetto.py`** presentando gli embeddings come risposta ai **3 limiti** della Sez. 5 di C01 (sinonimi, ordine, OOV) — **senza installazioni**, con embedding giocattolo 2D. L'installazione di `transformers`/`sentence-transformers` serve solo prima di **02b**. Riproporre qui le proposte non applicate (taglio cap.04, glossario attivo, antidoto Pattern #6). |
+| **Proposte NON applicate (riproposte in chiusura C01, 05/10)** | (a) Taglio del cap.04 Transformer: via multi-head e positional encoding, tenere contesto + attention + famiglie BERT/GPT, mock interview dopo il cap.05. (b) Antidoto Pattern #6 su ogni capitolo (formato dichiarato prima di scrivere) e glossario attivo di 5 termini. La verifica a freddo di **#59** non serve più: chiusa nel TODO 5 del C01 (9.5). **In attesa della scelta dello studente.** Non applicate in autonomia. |
+| **Bridge prima di 02a** | `M04_R01_after_C01_before_C02_testo_to_embeddings.md` — popolato in chiusura C01 (05/10/2026). Da fare prima di aprire il capitolo. |
+| **Rinforzi già dentro 02a (🔁)** | 🔴 **#62** subito dopo il ripasso, e **misurato** in Sez. 5 (coseno 1.000 fra le due frasi invertite: la media perde l'ordine come il Bag of Words). 🔴 **#60** dopo la Sez. 2, dove `costruisci_mappa` = `fit` e `vettore_frase` = `transform`; micro-esercizio sul reindicizzare. 🔴 **#61** dopo la Sez. 8: quattro segnali, quattro domande diverse — la mappa risponde "a cosa assomiglia", non "che tipo" né "è alterato". Pattern **#6**: esercizio **E4** chiede esattamente 3 bullet su 3 limiti DIVERSI. |
+| **Rinforzi NON messi qui (e perché)** | 🔴 **#57** e 🔴 **#58** restano in `12_grad_cam_interpretabilita.py` (visione). |
+| **Residui M3 da recuperare (in coda, non bloccanti)** | C12 Grad-CAM da svolgere; TODO 7 📐 system design C10; 🔄 **CONFRONTO PRIMA/DOPO** (Regola 16, obbligatorio prima dell'archivio M3); 🔴 **Portfolio #2**: scegliere tra ZeroGPU, HF PRO, altro host, o demo "locale + screenshot". Finché non è deciso, **niente archivio M3**. |
+| **Ponte mentale da riusare** | **Embedding = un indirizzo sulla mappa del significato** (una manciata di numeri, come le coordinate). Vicino = simile. Le coordinate non le decide un umano: escono dalla **compagnia che le parole frequentano** nel corpus. La media dei punti non legge l'ordine. Ponte lavoro: nella torre di controllo scrivi "prospetto paga", fra due mesi cerchi "cedolino" — con il cap.01 la nota non esce, con la mappa sì. |
+| **Dopo 02a** | Sostituire il placeholder `02b_embeddings_pratica.py`. Installare `sentence-transformers` **prima** di 02b, non durante. |
 
 ---
 
@@ -217,18 +224,21 @@
 - **Python installato**: 3.14.3
 - **IDE**: Cursor
 - **Version control**: Git + GitHub (il corso è già in una repository)
-- **Obiettivo finale**: Entrare nel mondo del lavoro tech con competenze solide in Python, AI/ML e web development. Il progetto finale deve essere il **diamante del portfolio**: **due applicativi** deployati (Validator + Replicator — vedi `docs/prodotto/`) con stack React + FastAPI e IA integrata — da mostrare ai recruiter come prova concreta di competenza.
-- **Ruolo professionale di riferimento**: **broker di mutui / intermediazione creditizia** (contesto banca): uso quotidiano di fascicoli reddituali e documentazione cliente. Il perimetro documentale del prodotto (**due applicativi**: Validator + Replicator — indice `APPUNTI_APPLICATIVO.md` → `docs/prodotto/`, architettura e spettro in `docs/prodotto/`) resta coerente con quel contesto; il nucleo tecnico (**qualità fascicolo, incrocio multi-documento, semafori, audit, configurabilità**) è ripetibile verso **altri intermediari** con esigenze analoghe di controllo documentale.
-- **Obiettivo applicativo concreto**: Costruire un applicativo di **controllo documentale** per uso **operativo interno** (società / rete di cui fa parte) e, progettando **motore + configurazione + deploy** sin dall'M10, creare una base ripetibile verso **terzi** (licenza, fee di setup, abbonamento), senza confondere il Messaggio Prodotto con una garanzia di esito o di compliance legale — dettaglio in **Strategia prodotto** sotto e in `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` §14.3 e §16.1.
-  - Scope tecnico (allineato APPUNTI): OCR dove serve, estrazione/parsing campi chiave, **motore regole configurabile**, scoring/semafori, spiegazioni leggibili, audit trail, RAG normativo dove previsto, integrazione ramo visivo M3 (`prob_busta_paga_visivo`) nel modello tabulare M2.
-  - Il materiale documentale disponibile alimenta training/RAG dove coerente con privacy e protocollo corso.
+- **Obiettivo finale**: Entrare nel mondo del lavoro tech con competenze solide in Python, AI/ML e web development. Il progetto da costruire ora, e da mostrare, è la **torre di controllo** (05/10/2026): un'app che organizza pratiche, meeting e scadenze per un consulente con molti clienti. Brief: [`briefing_progetto_ia.md`](briefing_progetto_ia.md) e [`recap_progetto_ia.md`](recap_progetto_ia.md).
+- **Ruolo professionale di riferimento**: **broker di mutui / intermediazione creditizia** (contesto banca): uso quotidiano di fascicoli reddituali, clienti, tecnici e scadenze. La torre di controllo nasce da questo lavoro quotidiano.
+- **Obiettivo applicativo concreto (attivo dal 05/10/2026)**: applicazione locale di coordinamento. Cattura appunti e documenti, li mette in una memoria cercabile (RAG: Retrieval-Augmented Generation, prima si cercano i pezzi pertinenti e poi il modello risponde), estrae scadenze e compiti in JSON (un oggetto dati con campi fissi), e un agente controlla prima di scrivere sul gestionale. Interfaccia e dati rigidi in **Laravel**. Motore linguistico in **Python**, in locale con Ollama sulla macchina di lavoro. I capitoli M4 già scritti non si riscrivono: dal Modulo 5 i task di progetto incrementale, quando il capitolo lo consente, puntano a questa app (estrazione strutturata, RAG sugli appunti, agente che decide se cercare). Audio, separazione delle voci e centralino sono nel brief e **non** sono capitoli del corso: restano fuori programma finché non si decide di aggiungerli.
+- **Validator + Replicator**: **standby dal 05/10/2026**. Utili, non il prodotto da realizzare adesso. Documentazione e codice restano in `docs/prodotto/` e `aplicativo/`. Non assegnare task incrementali su quelle due app finché lo studente non le riapre.
+
+### Strategia prodotto — standby Validator/Replicator (storico al 07/05/2026)
+
+> Dal 05/10/2026 questa strategia **non guida** i task. Resta qui perché i file in `docs/prodotto/` la descrivono ancora.
 
 ### Strategia prodotto — portfolio, uso interno, riuso commerciale (07/05/2026)
 
 - **Fine corso (M10) → Definition of Done “tecnica vendibile”**: applicativo **deployato**, dimostrabile, con nucleo **Document QA** (ingest → classificazione tipo doc → estrazione → regole → output strutturato + audit). Questo livello è **realistico** con il percorso corso + mentoring; supera la soglia “solo demo locale”.
 - **Vendita / monetizzazione seria** richiede in più (fuori scope didattico primario ma da pianificare): contratti, limitazione responsabilità, pricing ricorrente o progetti, supporto. Il valore economico si ragiona su **EVA per il compratore** (tempo risparmiato, integrazioni richieste in meno, tracciabilità), non sul “prezzo del repository”.
 - **Posizionamento**: layer **qualità fascicolo documentale** e **supporto decisionale**, non sostituto del giudizio umano o dell’istruttoria banca; non “solo OCR” né clone di gestionale mutui — vedi matrice concettuale in `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` §14.3.
-- **Per il mentor**: quando si assegna un task al **progetto incrementale**, preferire funzionalità che ricadono nella checklist **MVP vendibile fuori casa** (`docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` §16.1): ingest, classificazione doc, estrazione minima, **regole/config**, semaforo + azioni, export report, audit, narrative privacy-by-design; API/webhook come stretch.
+- **Per il mentor (storico, non attivo)**: i task incrementali NON seguono più la checklist Validator. Dal 05/10/2026 seguono la torre di controllo, dal Modulo 5 in poi.
 
 ### Preferenze di spiegazione (aggiornamento 02/04/2026)
 
@@ -249,7 +259,8 @@ Richiesta dello studente, valida per **tutti i mentor/agent** su questo progetto
 
 ### Impegno canonico — Ripasso frontend React / Node (pre-M10) — 25/08/2026
 
-> Richiesta dello studente: quando arriverà il momento di costruire le UI delle app (Validator / Replicator), impostare il lavoro in modo **didattico** per ripassare anche il comparto **Node.js** e **React** (arrugginiti).
+> Richiesta originale (25/08/2026): ripasso Node/React prima delle UI Validator / Replicator.
+> **05/10/2026:** il prodotto attivo ha l'interfaccia in **Laravel**, stack che Gianluca già usa. Questo ripasso **resta parcheggiato** e non è più il frontend del prodotto attivo. Si riapre solo se si torna a Validator/Replicator o se un capitolo chiede React.
 
 | Campo | Valore |
 |-------|--------|
@@ -257,7 +268,7 @@ Richiesta dello studente, valida per **tutti i mentor/agent** su questo progetto
 | **Quando attivare** | **Fine M9** oppure **Fase 0 / inizio M10**, **prima** di costruire le schermate React di produzione |
 | **Cosa produrre** | Mini-percorso in `docs/ripasso_frontend_react/` (stesso stile corso: analogia → pezzo piccolo → esercizio → ponte prodotto). Brush-up mirato, non corso React completo da zero. |
 | **Scope minimo suggerito** | (1) Node/npm/script/env (2) React: componenti, props, state, effetti (3) fetch verso FastAPI (4) form + lista esiti Validator (5) upload + anteprima PDF Replicator (6) opz. TypeScript / router |
-| **Allineamento prodotto** | M4–M7 prototipi = **Streamlit**; M10 produzione = **React + FastAPI** (`docs/prodotto/`) |
+| **Allineamento prodotto** | M4–M7 prototipi di corso = **Streamlit**. Prodotto attivo (torre) = **Laravel + servizio Python locale**. React era il frontend di Validator/Replicator, ora in standby |
 | **Vincolo mentor** | Non deragliare i moduli AI per fare React in anticipo. Quando si apre M10 Fase Frontend, **verificare** che questo ripasso sia stato fatto o avviarlo subito. |
 
 ---
@@ -266,40 +277,49 @@ Richiesta dello studente, valida per **tutti i mentor/agent** su questo progetto
 
 > Questa sezione documenta l'hardware disponibile e le piattaforme alternative per i moduli che richiedono GPU.
 > L'agente DEVE consultarla prima di preparare capitoli dei moduli avanzati.
+> **Aggiornata il 05/10/2026.** La macchina di studio principale è il PC di lavoro.
 
 ### Hardware disponibile
 
-| Componente | Dettaglio |
-|------------|-----------|
-| **GPU** | AMD Radeon Vega 10 Mobile (integrata, NO CUDA, NO VRAM dedicata) |
-| **Supporto CUDA** | Nessuno — PyTorch/TensorFlow GPU non funzionano in locale |
-| **Ollama** | Funziona su CPU — limitato a modelli fino a ~3B parametri (es. Phi-3 Mini, Qwen2 0.5B/1.5B) |
-| **RAM** | Da verificare — Docker Desktop richiede almeno 8GB liberi |
-| **OS** | Windows 10 con Git Bash |
+| Macchina | Ruolo | Dettaglio |
+|----------|--------|-----------|
+| **PC di lavoro** | **Principale** — studio e corso | Specifiche incollate dallo studente il 05/10/2026. **CPU:** AMD Ryzen 5 4500, 6 core, 3,60 GHz. **RAM:** 16 GB (15,9 utilizzabili). **GPU:** Nvidia GeForce RTX 3060. CUDA disponibile (la piattaforma Nvidia per il calcolo sulla scheda). La 3060 desktop ha **12 GB di VRAM** (memoria della scheda): non era nella schermata, è la specifica di quel modello. Windows 10, 64 bit. |
+| **PC privato** | Secondario | AMD Radeon Vega 10 integrata, senza CUDA e senza VRAM dedicata. Se una sessione gira qui, si torna ai modelli piccoli su CPU (il processore), circa 3 miliardi di parametri. |
+
+### Cosa far girare in locale sul PC di lavoro (tetto 12 GB)
+
+| Uso | Modello di riferimento | Nota |
+|-----|------------------------|------|
+| Chat, esercizi M5–M7, agente | **7–8 miliardi** di parametri, quantizzati Q4 o Q5 (pesi compressi) | Ci stanno bene. Esempi: Qwen2.5 7B, Llama 3.1 8B, un distillato di ragionamento da 8B |
+| Contesto lungo o qualità in più | **14 miliardi in Q4** | Sulla scheda ci sta stretto. Con **16 GB di RAM** di sistema, se il modello sborda dalla VRAM il PC va in swap e si blocca. Non è il default. Solo a contesto corto, scheda libera, e nient'altro di pesante aperto |
+| Embeddings (i vettori del significato) | nomic-embed-text, bge piccoli | Leggeri. Si possono tenere insieme a un modello da 7–8B |
+| Non caricare | 32 miliardi, né 14B insieme a Whisper large | Non entrano. La RAM di sistema è 16 GB: non c'è margine per un secondo modello grande |
+
+Dal Modulo 5 il default degli esercizi è un modello **7–8B su Ollama** nel PC di lavoro, non un modello da 3B. L'API a pagamento resta per il confronto di qualità e per ciò che in locale non c'è. Non è più il posto dove si sviluppa tutto.
 
 ### Piattaforma per modulo
 
 | Modulo | Richiede GPU? | Piattaforma | Note |
 |--------|---------------|-------------|------|
-| M1 — Python & Dati | No | CPU locale | Tutto funziona in locale |
-| M2 — ML | No | CPU locale | Scikit-Learn funziona su CPU |
-| Ponte Matematico | No | CPU locale | Solo NumPy + Matplotlib |
-| M3 — DL & CV | **Sì** | **Google Colab** (GPU gratuita) | Training PyTorch su CPU è 10-50x più lento — usare Colab |
-| M4 — NLP & Embeddings | Parziale | CPU locale + Colab per modelli grandi | sentence-transformers funziona su CPU per modelli piccoli |
-| M5 — LLM & Prompt Eng. | No | CPU locale + API | Ollama (CPU, modelli ≤3B) + API OpenAI per il resto |
-| M6 — RAG | No | CPU locale + API | ChromaDB locale, LLM via API/Ollama |
-| M7 — AI Agents | No | CPU locale + API | Come M5-M6 |
-| M8 — Fine-Tuning | **Sì** | **Google Colab** (GPU gratuita) | QLoRA richiede GPU — impossibile in locale |
-| M9 — MLOps & Docker | Parziale | CPU locale | Docker Desktop su Windows richiede WSL2 + RAM sufficiente |
-| M10 — Progetto Finale | Parziale | CPU locale + Colab + Cloud | Deploy su cloud, training su Colab |
+| M1 — Python & Dati | No | CPU locale | Già svolto |
+| M2 — ML | No | CPU locale | Già svolto |
+| Ponte Matematico | No | CPU locale | Già svolto |
+| M3 — DL & CV | Sì (già svolto) | Colab, all'epoca | La Vega non aveva CUDA. **Non si riapre.** Un eventuale training nuovo usa la 3060 |
+| M4 — NLP & Embeddings | Parziale | PC di lavoro | `sentence-transformers` piccoli anche su CPU; la 3060 li accelera. Il cap.01 non ne ha bisogno |
+| M5 — LLM & Prompt Eng. | Utile, non obbligatoria | **Ollama 7–8B** sulla 3060 | API solo se il modello locale non basta (qualità, un caso vision particolare) |
+| M6 — RAG | Utile | PC di lavoro | ChromaDB locale + embeddings locali + LLM 7–8B |
+| M7 — AI Agents | Utile | Come M5–M6 | I cicli dell'agente girano in locale |
+| M8 — Fine-Tuning | Sì | **3060 per un QLoRA da 7B** (adattamento leggero), chiudendo browser e Docker. Se la macchina va in swap, Colab | La RAM di sistema è 16 GB: il training è fattibile ma stretto |
+| M9 — MLOps & Docker | Parziale | PC di lavoro | Docker va limitato (circa 4–6 GB). Con 16 GB totali non si lascia il default che ne prende la metà |
+| M10 — Progetto Finale | Parziale | PC di lavoro | La torre gira in locale su un modello da 7–8B. Il deploy pubblico resta una scelta a parte |
 
 ### Regole per l'agente
 
-1. **Prima di ogni modulo che richiede GPU** (M3, M8): preparare un notebook Google Colab con le dipendenze pre-installate e le istruzioni per connettere il runtime GPU
-2. **Ollama**: usare SOLO modelli fino a ~3B parametri (Phi-3 Mini, Qwen2 0.5B/1.5B). Modelli più grandi saranno troppo lenti su CPU
-3. **Google Colab**: per M3 e M8, il workflow è: sviluppare il codice in locale (Cursor) → copiare nel notebook Colab per il training → riportare i risultati in locale
-4. **Kaggle Notebooks**: backup se Google Colab non è disponibile (stesse GPU gratuite)
-5. **Esercizi adattati**: quando un esercizio richiede training su GPU, dare SEMPRE un'alternativa CPU-friendly (modello più piccolo, dataset ridotto, meno epoch) per chi non può/vuole usare Colab
+1. **Default = PC di lavoro.** Preparare gli esercizi M5+ per Ollama a 7–8B. Indicare il nome del modello e una stima di VRAM.
+2. **Tetto: 12 GB di VRAM e 16 GB di RAM.** Non proporre un 32B locale, né due modelli grandi insieme. Un 14B non è il default: con 16 GB di RAM uno sbordo dalla scheda blocca il PC.
+3. **PC privato:** se la sessione è sulla Vega, scendere a un modello da circa 3B su CPU e dirlo.
+4. **Colab** resta il piano B per un training che non entra in 12 GB, non il posto obbligatorio del M8.
+5. **Esercizi GPU:** dare comunque una versione più piccola, per la sessione sul PC privato.
 
 ---
 
@@ -313,10 +333,10 @@ Richiesta dello studente, valida per **tutti i mentor/agent** su questo progetto
 | Modulo | Costo stimato | Cosa costa | Strategia risparmio |
 |--------|---------------|-----------|---------------------|
 | M1-M4 | **0 EUR** | Niente — tutto locale/gratuito | — |
-| M5 — LLM | ~8-12 EUR | API OpenAI (chat completions, vision) | Ollama per sviluppo/test, API solo per demo finale e esercizi che richiedono GPT-4 |
-| M6 — RAG | ~3-5 EUR | Embedding API + RAG queries | Embedding locali con sentence-transformers (gratuito), API solo per generazione |
-| M7 — Agents | ~8-12 EUR | Agent loops (molte chiamate API) | Ollama per loop di sviluppo, API per demo finale |
-| M8 — Fine-Tuning | ~0-5 EUR | Training su Colab (gratuito), eval con API | Training su Colab gratis, eval con Ollama dove possibile |
+| M5 — LLM | ~8-12 EUR | API, solo dove il modello locale non basta | Default: Ollama 7–8B sulla 3060. API per un confronto di qualità |
+| M6 — RAG | ~3-5 EUR | Poche chiamate di generazione, se servono | Embedding locali + LLM locale |
+| M7 — Agents | ~8-12 EUR | I cicli lunghi, se il modello locale non regge | Prima i cicli in locale sulla 3060 |
+| M8 — Fine-Tuning | ~0-5 EUR | QLoRA 7B sulla 3060. Colab solo se non entra | Eval in locale dove basta |
 | M9-M10 | ~5-10 EUR | Deploy demo, testing finale | Semantic caching per ridurre chiamate ripetute |
 | **Riserva** | ~5-10 EUR | Imprevisti | — |
 
@@ -337,7 +357,7 @@ Richiesta dello studente, valida per **tutti i mentor/agent** su questo progetto
 
 ### Regole di gestione costi
 
-1. **Ollama-first**: per ogni esercizio dei M5-M7, PRIMA provare con Ollama (gratuito), poi API a pagamento solo quando serve qualità superiore o funzionalità non disponibili localmente (vision, function calling avanzato)
+1. **Ollama-first sulla 3060**: per ogni esercizio dei M5-M7, sviluppare e testare con un modello locale da 7–8B. L'API a pagamento solo quando quel modello non basta. Aggiornare il tracker dopo ogni sessione a pagamento. Budget totale: 30-50 EUR.
 2. **Monitoraggio**: dopo ogni sessione che usa API a pagamento, aggiornare il tracker e segnalare se si sta superando il budget allocato per quel modulo
 3. **Skill professionale**: il monitoraggio costi è una competenza AI Engineer — insegnarlo come skill, non solo come vincolo economico
 4. **Semantic caching**: dal M5 in poi, quando si ripete una query già fatta, NON richiamare l'API — usare la risposta precedente
@@ -721,7 +741,7 @@ completezza del self-check e chiedere correzioni.
 21. **Matematica tradotta in codice**: i concetti matematici NON vanno evitati — vanno tradotti. Ogni formula o concetto matematico deve essere accompagnato da: (a) **analogia concreta** (es. "il gradiente è la pendenza della collina"), (b) **codice Python equivalente** che mostra l'operazione passo passo, (c) **visualizzazione Matplotlib** dove possibile (grafico, frecce, superfici). La formula simbolica arriva ULTIMA, solo come "etichetta" di ciò che il codice fa. Sequenza obbligatoria: analogia → codice → grafico → formula. Il "Ponte Matematico" (2 capitoli tra M2 e M3) introduce i 5-6 concetti fondamentali; nei moduli successivi, ogni nuovo concetto matematico segue la stessa sequenza. **Nelle risposte in chat al mentor**: niente LaTeX — vedi "Preferenze di spiegazione" nel Profilo dello Studente.
 22. **Esercizi di debug autonomo**: dal Modulo 2 in poi, ogni capitolo deve contenere almeno 1 esercizio etichettato `# 🔍 [DEBUG]` dove Gianluca riceve codice che produce un errore reale (con stack trace completo) e deve trovare il bug da solo. Il mentor **NON usa la scala progressiva** per questi esercizi — interviene SOLO dopo 2+ tentativi falliti. Il codice buggato deve contenere errori realistici (off-by-one, tipo sbagliato, variabile non definita, logica invertita, import mancante). L'obiettivo è costruire il "muscolo del debug" — la skill #1 che separa un junior produttivo da uno che chiede aiuto ogni 10 minuti.
 23. **Esercizi real-world**: dal Modulo 5 in poi, almeno 1 esercizio per modulo etichettato `# 🌊 [REAL-WORLD]` con consegne deliberatamente vaghe, dati sporchi (encoding misto, colonne mancanti, duplicati, valori anomali), e nessuna soluzione unica. Il mentor valuta l'**approccio e il ragionamento**, non il risultato esatto. Questi esercizi preparano al divario tra esercizi puliti e il caos dei progetti reali. Esempio: "Ecco un CSV di 5000 recensioni con encoding misto e duplicati. Costruisci qualcosa di utile."
-24. **Strategia costi API**: per ogni esercizio dei Moduli M5-M7 che usa LLM, dare SEMPRE l'opzione Ollama come fallback gratuito. Prima sviluppare e testare con Ollama (modelli locali, gratis), poi passare ad API a pagamento solo quando serve qualità superiore. Insegnare il monitoraggio costi come skill professionale: dopo ogni sessione con API, aggiornare il tracker nella sezione "Budget API". Budget totale: 30-50 EUR.
+24. **Strategia costi API**: per ogni esercizio dei Moduli M5-M7 che usa un LLM (Large Language Model, un modello linguistico grande), sviluppare e testare prima con **Ollama sulla RTX 3060** (modello da 7–8 miliardi di parametri). L'API a pagamento solo quando il modello locale non basta. Dopo ogni sessione con API, aggiornare il tracker nella sezione "Budget API". Budget totale: 30-50 EUR.
 25. **Concetti durevoli prima, framework dopo**: per ogni modulo avanzato, prima costruire la soluzione "a mano" (puro Python + libreria minima), poi riscriverla con il framework. Esempio: nel M6, prima un RAG completo con puro Python + ChromaDB, poi la versione con LangChain. Nel M7, prima un agente con puro Python, poi con LangGraph. Così i concetti (che durano 10+ anni) si separano dai framework (che cambiano ogni 6 mesi). Se LangChain cambia API, i concetti restano solidi.
 26. **Recall cross-modulo**: il primo capitolo di ogni nuovo modulo (dal M3 in poi) deve contenere almeno 1 esercizio etichettato `# 🔄 [RECALL CROSS-MODULO]` che richiede di usare competenze di un modulo precedente nel nuovo contesto. Questo colma il gap di retention tra moduli distanti. Esempi: al M5, riscrivere un endpoint FastAPI dal M1 prima di costruire l'API LLM. Al M6, ripulire un CSV con Pandas come si faceva al M1. Al M9, riscrivere un modello Scikit-Learn dal M2 prima di containerizzarlo.
 27. **Mock interview mensili**: dal Modulo 4 in poi, 1 volta al mese l'AI simula un colloquio tecnico reale. 3 domande, 15 minuti ciascuna, nessun hint, valutazione severa (passeresti / borderline / non passeresti). È l'unico momento in cui l'AI abbandona il tono supportivo. I risultati sono tracciati nella sezione "Mock Interview" di questo file.
@@ -801,7 +821,7 @@ completezza del self-check e chiedere correzioni.
 | 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore + anomaly + deploy | scikit-learn, streamlit | 🟢 **Completato** — archivio [`archivi/ARCHIVIO_MODULO_02.md`](archivi/ARCHIVIO_MODULO_02.md) |
 | **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, Dense — codice + Matplotlib | Fondamenta M3 (shape, `X @ W + b`, coseno) | numpy, matplotlib | 🟢 **Completato** 07/05/2026 — vedi `archivi/ARCHIVIO_PONTE_MATEMATICO.md` |
 | 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | 🟡 **In corso — 9/10 capitoli** (ultimo chiuso: cap.09 transfer, 14/09/2026). Resta: **10 Gradio + deploy HF Spaces** |
-| 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | ⬜ Da creare |
+| 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | 🟡 **In corso — C01 chiuso** (05/10/2026, voto 4). Prossimo: `02a` |
 | 5 — LLM Integration & Prompt Engineering | API OpenAI, prompt engineering, structured output, function calling, Pydantic, Ollama, multimodale, sicurezza AI | Interfaccia intelligente: assistente operatore + structured extraction documenti variabili | openai, pydantic-ai, ollama | ⬜ Da creare |
 | 6 — RAG Systems | ChromaDB, LangChain, chunking, hybrid search, RAGAS evaluation, LangSmith observability | Compliance normativa: RAG su norme fiscali versionate con citazioni fonte | langchain, chromadb, ragas, langsmith | ⬜ Da creare |
 | 7 — AI Agents & Automation | LangGraph, tool use, multi-agent, MCP server custom, agentic RAG | Orchestratore: agente che coordina intera pipeline end-to-end | langgraph, crewai | ⬜ Da creare |
@@ -879,8 +899,9 @@ completezza del self-check e chiedere correzioni.
 | **M3-08_cnn_computer_vision** | **7** | = vs M3-07 (terzo 7 di fila). Confermato studente **01/09/2026**. Chiusura **completa**: tutti i blocchi svolti, 🏗️ B (TODO 5, debito tabellare) + C (CNN su Colab) fatti. Media primi tentativi ~**8.2** su 36 valutazioni; post-feedback ~9. Punti bassi: V4 3/10 e TODO 7 4/10 (→ Pattern #28), Q7 2/10, Q8 5.5, Mini 1.2 5.5, TODO 3 6/10. Percepito lineare: cambia l'architettura, il training loop resta quello del 07. |
 | **M3-09_transfer_learning** | **8** | ↑ vs M3-08. Confermato studente **14/09/2026** (“per via della lunghezza di tutta la pipeline”). Transfer ResNet18 + TRACK PROVA Ants/Bees (Colab). Media primi tentativi ~**7.5–8**; track prova **8**/10. Residui: TODO 8 vuoto, P6 README, debito C1–C8 buste. Punti deboli: Mini 5.3 eval/no_grad 4/10, Mini 6.2 5/10, TODO 6 real-world 5.5. |
 | **M3-10_progetto_gradio** | **8.5** | ↑ vs M3-09 — massimo del modulo dopo il 9 del cap.05. Confermato studente **25/09/2026**: *“difficoltà di tenere mentalmente uniti i pezzi di tutta la pipeline, dall'addestramento alla costruzione del modello fino all'app Gradio”* → **carico di integrazione**, non concetti isolati. Primi tentativi: forti su LFS (9), retrieval `costruisci_modello` (8.5→9.5), annotazioni TODO 2 (7.5→9.5); deboli su tre leve V6 (5.5), cold start V7 (6), TODO 1 colloquio (6.5), TODO 5 interleaving (6). Chiusura **con residuo**: G6–G8 deploy, TODO 7, 🔄 CONFRONTO PRIMA/DOPO. |
+| **M4-01_testo_come_numeri** | **4** | -4.5 ↓ vs M3-10. Confermato studente **05/10/2026**. Capitolo percepito leggero. Esami più bassi: V6 6.5, V7 6, TODO 2 e 3 a 6.5, progetto 7 (poi 9). Solidi: TODO 5 coseno 9.5, TODO 4 debug 8. Pattern #6 ancora attivo. |
 
-**Media attuale**: ~**7.10** (31 capitoli con voto, incluso M3-10 = **8.5**). Trend M3: 8, 8, 8, 8, 9, 7, 7, 7, 8, **8.5** ↑ — il carico è passato dai concetti singoli all'**integrazione end-to-end**.
+**Media attuale**: ~**7.05** (32 capitoli con voto, incluso M4-01 = **4**). Il 4 non è un calo di competenza: i primi tentativi del diario stanno intorno al 7–8. È un capitolo che gli è sembrato alla sua portata. Il 02a resta corto.
 
 ---
 
@@ -1013,7 +1034,7 @@ completezza del self-check e chiedere correzioni.
 | Dot product (prodotto scalare) | `np.dot(a,b)` o `a @ b`: somma element-wise dei prodotti `a_i * b_i`. Output: uno scalare. Base di `z = x·w + b` in regressione/Dense | Ponte-01 | 1/3 | 🔄 |
 | Norma euclidea (L2) | "Lunghezza" del vettore: `sqrt(sum(v_i^2))`. In NumPy: `np.linalg.norm(v)`. Sempre ≥ 0; zero solo per il vettore nullo. Misura grandezza, non direzione | Ponte-01 | 1/3 | 🔄 |
 | Normalizzazione | Dividere ogni componente per la norma → vettore di norma 1 (versore). Mantiene la direzione, scarta la grandezza. Indispensabile per cosine similarity efficiente | Ponte-01 | 1/3 | 🔄 |
-| Coseno (similarità) | Misura di "direzione comune" tra due vettori: `dot(a,b) / (||a|| * ||b||)`. Range [-1, +1]: +1 stessa direzione, 0 perpendicolari, -1 opposti. Su vettori normalizzati = `dot(a,b)` diretto | Ponte-01 | 1/3 | 🔄 |
+| Coseno (similarità) | Misura di "direzione comune" tra due vettori: `dot(a,b) / (||a|| * ||b||)`. Range [-1, +1]: +1 stessa direzione, 0 perpendicolari, -1 opposti. Su vettori normalizzati = `dot(a,b)` diretto | Ponte-01 | 3/3 | ✅ (retrieval 02a Sez. 3, 06/10, 9/10) |
 | Distanza euclidea | `sqrt(sum((a_i - b_i)^2))` → "distanza in linea retta" tra due punti/vettori. Diversa dal coseno: misura "lontananza", non direzione | Ponte-01 | 1/3 | 🔄 |
 | Algebra lineare | "La matematica delle frecce e delle tabelle di numeri": vettori, matrici, prodotti, trasformazioni. Fondamenta di ML/DL: ogni rete neurale = sequenza di prodotti matrice-vettore + funzioni non-lineari | Ponte-01 | 1/3 | 🔄 |
 | `numpy.linalg.norm` | `linalg` = linear algebra. Modulo NumPy con norm, det, inv, eig, ecc. `np.linalg.norm(v)` = norma euclidea (L2) di default | Ponte-01 | 1/3 | 🔄 |
@@ -1144,6 +1165,20 @@ completezza del self-check e chiedere correzioni.
 | Model card | Documentazione onesta del modello: dati, training, metriche, soglia, limiti | M3-10 | 2/3 | 🔄 |
 | p50 / p95 | Latenza mediana e coda lenta: il p95 è quello che l'utente ricorda | M3-10 | 0/3 | ⚠️ (G8 non eseguito) |
 
+### Cap.01 M4 — Il testo diventa numeri
+
+| Termine | Definizione breve | Introdotto in | Volte usato senza aiuto | Stato |
+|---------|-------------------|---------------|-------------------------|-------|
+| Token | Pezzo di testo dopo la pulizia (parola, o segnaposto come `<cf>`) | M4-01 | 1/3 | 🔄 |
+| Bag of Words | Scheda: una casella per parola, un conteggio. L'ordine non entra | M4-01 | 1/3 | 🔄 (#62) |
+| TF-IDF | Il conteggio pesato: la parola presente in tutti i documenti vale poco | M4-01 | 1/3 | 🔄 |
+| IDF | Quanto una parola è rara nel corpus. Rara = distingue. Onnipresente = no | M4-01 | 0/3 | 🔄 |
+| Sparsità | Quasi tutte le caselle a zero. Tipico del Bag of Words | M4-01 | 1/3 | 🔄 (Mini 1.1 02a, 10/10: 19.970 zeri su 20.000) |
+| OOV | Parola mai vista nel vocabolario: si scarta, non diventa una casella nuova | M4-01 | 1/3 | 🔄 (#61) |
+| Stopword | Parola troppo comune (`di`, `il`) tolta prima del conteggio | M4-01 | 1/3 | 🔄 |
+| Segnaposto | `<importo>`, `<data>`, `<cf>`, `<iban>`: la cifra sparisce, il ruolo resta | M4-01 | 1/3 | 🔄 |
+| `csr_matrix` | Matrice sparsa di scikit-learn. Su un campione piccolo si legge con `.toarray()`, non `.to_numpy()` | M4-01 | 1/3 | 🔄 |
+
 ---
 
 ## Domande Fatte Durante i Capitoli
@@ -1265,6 +1300,28 @@ completezza del self-check e chiedere correzioni.
 | 9 | `eval` vs `no_grad` vs freeze | Tre leve separate (#48) |
 | 10 | TRACK PROVA Ants/Bees | Proxy didattico; bees=1 come busta; debito C1–C8 buste dichiarato |
 
+### Cap.01 M4 — Il testo diventa numeri
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | Cos'è `joblib`? | Salva e ricarica oggetti Python (numpy, sklearn). Una lista di tuple si può salvare. Lo spacchettamento `a, b = load(...)` apre un solo livello |
+| 2 | `load(...)[:, 1]` su una lista | `[:, 1]` è di NumPy. Su una lista dà `TypeError`. Su una matrice è la colonna 1 |
+| 3 | La norma è la somma? | No. È la radice della somma dei quadrati. `[1, -1]` somma 0 e ha norma √2 |
+| 4 | Coseno di un vettore di soli zeri | Non esiste (0/0). La funzione del capitolo restituisce 0 |
+| 5 | Cos'è `csr_matrix`? | Matrice sparsa: tiene solo i valori non zero. `.toarray()` su un campione piccolo |
+| 6 | Regex codice fiscale | Dopo `lower()`: 6 lettere, 2 cifre, 1 lettera, 2 cifre, 1 lettera, 3 cifre, 1 lettera. Manca il giorno se salti `\d{2}[a-z]` |
+| 7 | `coef_[i]` | `coef_` ha una riga per classe. `i` è l'indice della classe predetta in `classes_` |
+| 8 | `if __name__ == "__main__"` | Quel blocco gira solo se lanci il file. Un `import` non lo esegue |
+| 9 | Data e ora | `datetime.now().strftime("%Y-%m-%d %H:%M:%S")` |
+| 10 | Docker, in una frase | Immagine = scatola chiusa. Container = scatola accesa. Il browser sta fuori e apre la pagina. Corso: M9 |
+
+### Cap.02a M4 — Embeddings, l'idea
+
+| # | Domanda / tema | Risposta breve |
+|---|----------------|----------------|
+| 1 | Perché solo le parole viste almeno due volte? | Un incontro solo non è una compagnia. Il filtro è sul conteggio dei token: due volte nella stessa busta passano, e la co-occorrenza resta di un documento solo |
+| 2 | PPMI: perché non basta il conteggio grezzo? | Si confronta l'incontro vero con quello atteso se le due parole fossero indipendenti. «Totale» ovunque ≈ caso. «IRPEF» rara accanto a «cedolino» = notizia. I negativi si azzerano. Non è un IDF di due parole: stessa famiglia (chi sta ovunque pesa poco), più il conteggio di quella coppia |
+
 ---
 
 ## Pattern di Errore Ricorrenti — Solo Attivi
@@ -1274,7 +1331,7 @@ completezza del self-check e chiedere correzioni.
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08+C09, M4 C01)** | C08: 4 occorrenze. **C09:** Mini 2.4 “due righe”, Mini 6.2 “UNA obiezione sui numeri” (5/10), TODO 6 “5 punti + motivo” (5.5→7.5). **M4 C01 V6 (02/10, 6.5/10):** manca «perché contare non basta» e l'analogia propria. **V7 (02/10, 6/10):** tre cause, zero controlli. **TODO 1 (02/10, esame 7; chiusura 9.5):** precision e commento (e) sistemati. **TODO 3 (02/10, esame 6.5; chiusura 8.5):** regex sistemata. Antidoto: lista numerata vuota prima di scrivere |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08+C09, M4 C01, M4 02a)** | C08: 4 occorrenze. **C09:** Mini 2.4 “due righe”, Mini 6.2 “UNA obiezione sui numeri” (5/10), TODO 6 “5 punti + motivo” (5.5→7.5). **M4 C01 V6 (02/10, 6.5/10):** manca «perché contare non basta» e l'analogia propria. **V7 (02/10, 6/10):** tre cause, zero controlli. **TODO 1 (02/10, esame 7; chiusura 9.5):** precision e commento (e) sistemati. **TODO 3 (02/10, esame 6.5; chiusura 8.5):** regex sistemata. **TODO 4 (05/10, esame 8/10):** manca `transform` nel riparo. **M4 02a Mini 3.1 (06/10, 6.5/10):** chiesto una riga per cedolino e una per saldo, scritta solo cedolino. Antidoto: lista numerata vuota prima di scrivere |
 | 18 | **Confusione Series vs DataFrame** | 🟡 In miglioramento | Rinforzato cap.01-02; quiz cap.02 ok |
 | 19 | **`if var:` vs `is not None` per numeri opzionali** | 🟡 In miglioramento | Emerso cap 12 — rinforzo terminologico cap.02 |
 | 20 | **Anti-pattern valutazione vs feature engineering** | 🟡 In miglioramento | Quiz cap.01 + rinforzo cap.02 |
@@ -1365,6 +1422,9 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠�
 | "Il bug che non crasha" | 5 voci su 6 del contratto, se sbagliate, non danno eccezione: il sistema risponde con sicurezza la cosa sbagliata (classi invertite, mean/std diversi) | Encoding sbagliato che non dà errore ma mostra caratteri storti | M3-10 | Validazione input produzione, monitoring predizioni (M9) |
 | "Core unico, due vetrine" | `ClassificatoreVisivo` non sa chi la chiama: Gradio disegna barre, FastAPI serializza JSON, la logica è la stessa | Service Laravel riusato da un controller web e da un comando artisan | M3-10 | API prodotto M10, riuso fra prototipo e produzione |
 | "Cold start = prima query dopo il deploy" | Lento perché paghi setup (container, import torch, 45 MB di pesi, primi buffer), non perché il modello "si scaldi" | Connessione DB e warm-up del pool alla prima richiesta | M3-10 | Latenza serving, misura p50/p95, ottimizzazione boot |
+| "Bag of Words = scheda da barrare" | Una casella per parola, un conteggio. Stesse parole, ordine diverso: stessa scheda | Tag di un post: conta i tag, non l'ordine del testo | M4-01 | Limite dell'ordine, ponte agli embedding |
+| "TF-IDF = la casella barrata da tutti non distingue" | Se la parola è in ogni documento, il peso scende | Un filtro «ha una descrizione» che non separa nessun prodotto | M4-01 | Perché i sinonimi e le parole rare contano di più |
+| "Embedding = indirizzo sulla mappa" | Due numeri. Vicino = significato simile. Non è un conteggio | Coordinate di due negozi: vicini non perché hanno lo stesso nome | M4-02a | RAG (M6): si cerca il punto vicino, non la parola uguale |
 
 ### Come usare questa sezione
 Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente:
@@ -1498,6 +1558,16 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - **Residui non bloccanti**: TODO 8 depth-1/2 vuoto; P6 README 5 righe; bug minori path `.pt` nel file Colab.
 - Diario: `sessioni_capitoli/M03_C09_transfer_learning_sessione.md`.
 
+### Cap.01 M4 — Il testo diventa numeri (completato 05/10/2026; voto difficoltà: **4**/10)
+
+- **Tokenizzazione** italiana: `lower`, importi e date e CF e IBAN diventano segnaposto, stopword tolte. Codice in `testo_utils.py`.
+- **Bag of Words e TF-IDF** in una `Pipeline` con `LogisticRegression`. Il vocabolario si impara sul train.
+- **Coseno** a freddo nel TODO 5 (esame 9.5): 1 con se stesso, 0 se ortogonali, 0 se la norma è zero. Lacuna **#59** chiusa.
+- **`classifica_tipo_documento`**: tipo, probabilità della classe scelta, tre parole del testo con il peso più alto su quella riga di `coef_`.
+- **Contratto** accanto al modello: versione, classi ordinate, nome del tokenizer, data. `if __name__ == "__main__"` così l'import non allena.
+- **Aperti in ingresso 02a:** #63 (la guardia sul vettore nullo), Pattern #6. #60, #61 e #62 chiuse il 05/10.
+- Diario: `sessioni_capitoli/M04_C01_testo_come_numeri_sessione.md`.
+
 ---
 
 ## Checklist di Auto-Revisione (prima di consegnare il codice)
@@ -1602,7 +1672,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | Dot product (`np.dot` / `@`) | 30/04 (cap.01 Ponte) | da fare in cap.02 Ponte (rinforzato come matrice-vettore product) | — | — | 🟡 Praticato (sez. 3 + mini-progetto) |
 | Norma euclidea | 30/04 (cap.01 Ponte) | da fare in cap.02 Ponte | — | — | 🟡 Praticato (sez. 4 + funzione `norma`) |
 | Normalizzazione (versore) | 30/04 (cap.01 Ponte) | M3 (input scaling reti neurali) | — | — | 🟡 Praticato (sez. 5) |
-| Coseno (similarità) | 30/04 (cap.01 Ponte) | M4 (embedding similarity) e M6 (retrieval RAG) | — | — | 🟡 Praticato (sez. 5 + mini-progetto top-k) |
+| Coseno (similarità) | 30/04 (cap.01 Ponte) | M4 C01 TODO 5 (05/10/2026, esame 9.5) | — | — | 🟡 Rivisto in produzione testuale. Prossimo: cap.03 M4 |
 | Distanza euclidea | 30/04 (cap.01 Ponte) | M3 (loss MSE), M4 (k-NN come baseline) | — | — | 🟡 Vista (PNG didattico) |
 
 ### Concetti M3 — Deep Learning (da popolare man mano)
@@ -1710,7 +1780,11 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | 56 | **Contratto di inferenza: voci + conclusione checkpoint** | C10 V8 (24/09/2026) | Idea .pt≠tutto + mean/std silenzioso ok (7/10). Manca elenco voci (specie classi ordinate) e “salva nel .pt / non riscrivere a mano”. **Chiusura C10:** usato correttamente in `app.py`/`modello.py` (classi e mean/std letti dal checkpoint) → resta il richiamo a memoria. | Micro-check in **C12** | 🟡 |
 | 57 | **BatchNorm in `eval()`: “si spegne” vs “cambia statistiche”** | C10 V6 + TODO 2 (24–25/09/2026) | V6 1° **5.5**/10; post-feedback 8; annotazioni TODO 2 poi 9.5 (train = stats del batch). Residuo di **linguaggio**: BN in eval resta attiva e usa `running_mean/var`. | 🔁 in **C12** + micro-check a freddo | 🔴 |
 | 58 | **Explainability visiva ≠ probabilità** | C10 TODO 5 (25/09/2026) | 6/10: ha detto che lo score visivo diventa “probabilità di genuinità”; in realtà il pezzo spiegabile è **feature map / Grad-CAM** (“dove ha guardato”), e i due score vanno combinati con pesi dichiarati. | **C12** (è il tema del capitolo) | 🔴 |
-| 59 | **Coseno: 1 = stessa direzione, 0 = indipendenti** | Ingresso M4 C01 Q5 (28/09/2026) | Idea “direzione” ok (**3.5**/10), ma valori **invertiti**: simile→0 e diversi→1. **Mini 0.2 (28/09): 10/10** — Falso + ~1 = direzioni simili (swap corretto a freddo). | Verificare ancora TODO 5 / quiz verifica | 🟡 |
+| 59 | **Coseno: 1 = stessa direzione, 0 = indipendenti** | Ingresso M4 C01 Q5 (28/09/2026) | Idea “direzione” ok (**3.5**/10), ma valori **invertiti**: simile→0 e diversi→1. **Mini 0.2 (28/09): 10/10**. **TODO 5 (05/10, esame 9.5/10):** formula giusta, vettore con se stesso → 1, norma zero → 0, ortogonali → 0. | Chiusa nel retrieval TODO 5 | 🟢 |
+| 60 | **Produzione: salvare il vettorizzatore e chiamare `transform`** | TODO 4 C01 (05/10/2026) | Diagnosi **8/10**: il secondo `vec` rifà il vocabolario sul testo in arrivo. Il riparo salva il `vec` ma non scrive `transform`. **Ingresso 02a Q2+Q3+Q5 (05/10): chiusa.** Fit sul train, in produzione `transform`; se rifai il vettorizzatore, vocabolario e IDF non sono più quelli dei pesi. | Chiusa all'ingresso 02a | 🟢 |
+| 61 | **Ramo testuale = tipo del documento, non voto di alterazione** | TODO 6 C01 (05/10/2026) | **7.5/10** sul TODO 6. **Ingresso 02a Q4+Q6 (05/10): chiusa.** Il testuale risponde al tipo; la parola mai vista si scarta e non entra nel vettore. | Chiusa all'ingresso 02a. Il micro #61 sulla mappa resta un esercizio del capitolo, non la stessa lacuna | 🟢 |
+| 62 | **BoW: frasi invertite restano uguali perché si perde l'ordine** | TODO 7 C01 (05/10/2026) | **8.5/10** sul TODO 7: coseno 1 senza nominare l'ordine. **Micro #62 (05/10), 9.5/10:** «deve saper distinguere l'ordine». | Chiusa nel micro #62. La Sez. 5 mostra che la media non lo fa ancora | 🟢 |
+| 63 | **Norma zero: 0.0 è la guardia sul divisore, non il senso di coseno 0** | Ingresso 02a Q7 (05/10/2026) | Valore **0.0** giusto, il perché in Q7 mescolava tre fatti. **Mini 5.2 (06/10, 8/10):** ignoranza (frase non in mappa) e direzione diversa, stesso risultato. | Chiusa in Mini 5.2 | 🟢 |
 | 40 | **Feynman gradient descent** — manca il ciclo iterativo | Quiz verifica V8 cap.05 (27/07/2026) | Analogia della collina corretta e vincoli lessicali rispettati, ma la risposta descrive **dove guardare**, non il ciclo "senti → fai un passo → risenti → ripeti" né l'effetto della **dimensione del passo**. Rinforzo: quiz ingresso cap.06 Q7 (Feynman backprop) + bridge R05 es.11. **27/07: Q7 saltata per scelta dello studente** → verifica spostata a fine cap.06, dopo la backprop in codice. | M3 fine cap.06 | 🔴 |
 
 Stato: 🔴 Da rinforzare | 🟡 Rinforzato (da verificare al quiz successivo) | 🟢 Superato
@@ -1839,6 +1913,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 
 ## Progetto Incrementale — "Controllo Documentale AI"
 
+> **05/10/2026 — il prodotto attivo non è più questo.** È la torre di controllo (`briefing_progetto_ia.md`, `recap_progetto_ia.md`). Le tabelle qui sotto restano lo **storico** di M1–M3 e la traccia già scritta nel cap.01 del M4: quel capitolo non si riscrive. Dal Modulo 5, un task di progetto incrementale punta alla torre (testo già scritto, scadenze, memoria cercabile, agente) e non a Validator/Replicator, finché lo studente non li riapre. Audio e telefonia del brief restano fuori dai capitoli.
+
 > Un progetto unico che cresce capitolo dopo capitolo e attraversa **tutto il corso** (10 moduli).
 > Ogni capitolo aggiunge una funzionalità usando i concetti appena appresi.
 > Alla fine del corso, Gianluca avrà costruito un **prodotto AI completo e deployato** —
@@ -1909,8 +1985,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M3 cap.09 — Transfer learning | ✅ Completato (14/09/2026) | 🏗️ **TRACK PROVA** Ants vs Bees: dataset proxy + Colab due fasi → `.pt` (val~90.7%, test~88.9%); track **8**/10. **TRACK PRODOTTO** C1–C8 buste = **debito** (nessun `busta_vs_altro.pt` ancora). Voto difficoltà **8**/10. Input per cap.10: pesi prova + (quando pronto) pesi prodotto. |
 | M3 cap.10 — Gradio + deploy | 🟡 Completato **con residuo** (25/09/2026) | 🏗️ **G1–G5 ✅**: pesi + contratto, verifica core senza UI, pacchetto Space `modulo_03_dl_cv/app/` (app.py, modello.py, requirements pinnati CPU, README YAML), 4 esempi, model card 6 voci. **G6–G8 ❌**: deploy/smoke/latenza bloccati dalla policy HF. Voto **8.5**/10. |
 | M3 — DL & CV (portfolio CNN cap.10) | 🟡 Modulo **non archiviato** | Codice completo; manca solo l'URL pubblico (portfolio #2). Cap.12 Grad-CAM creato (da svolgere). Feature `prob_busta_paga_visivo` con C1–C8. |
-| M4 cap.01 — Testo come numeri | 🟡 Assegnato (25/09/2026) | 🏗️ **Ramo testuale — fondamenta**. T1 `testo_utils.py` (normalizzazione + tokenizzazione OCR italiano, segnaposto `<importo>`/`<data>`); T2 segnaposto `<cf>`/`<iban>` = mini-anonimizzatore; T3 `classifica_tipo_documento()` → `prob_tipo_doc_testuale` + `parole_decisive`; T4 nota di spiegabilità onesta (gemello testuale dei `motivi_top3` M2); T5 **contratto** salvato col modello (versione, classi ordinate, tokenizer, data) — stesso ragionamento del C10 M3. |
-| M4 — NLP | 🟡 In corso (aperto 25/09/2026) | **Ramo testuale**: estrazione campi da OCR + matching semantico cross-documento. 0/7 capitoli svolti. |
+| M4 cap.01 — Testo come numeri | ✅ Completato (05/10/2026) | 🏗️ `testo_utils.py`: T1–T3 e T5 ok (esame progetto 7, post 9). T4 scritto nel capitolo, non nel diario. Voto difficoltà **4**/10. |
+| M4 — NLP | 🟡 In corso | **Ramo testuale**. C01 chiuso. Prossimo: 02a (idea) poi 02b (pratica). |
 | M5 — LLM | ⬜ Da fare | |
 | M6 — RAG | ⬜ Da fare | |
 | M7 — Agents | ⬜ Da fare | |
@@ -2434,6 +2510,9 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 05/10/2026 (2ª) | **Riscrittura integrale di `02a_embeddings_concetto.py`** (da 358 a ~1.000 righe). La prima stesura aveva **coordinate inventate a mano** (`MAPPA = {"cedolino": (2.0, 1.0), ...}`): nessun meccanismo, la promessa sui sinonimi raccontata e mai misurata, nessun coseno, **nessun task prodotto** (violazione Regole 31/34), nessuna DoD, nessun blocco libro, mancavano "errori tipici" e "quando NON usarlo" (Regola 30). Ora la mappa si **calcola dai 30 documenti reali** con la `tokenizza` del cap.01: co-occorrenze su documento → **PPMI** (stessa idea dell'IDF, con ripasso Regola 43) → **SVD** con `numpy`, zero installazioni. La prova centrale è un numero: **TF-IDF 0.000 vs mappa 0.960** su "prospetto paga di aprile"/"cedolino di marzo", parole che **non co-occorrono mai** — e il cap.01 dà 0.000 anche a due frasi di mondi diversi, cioè non distingue niente. Aggiunte: coseno vs distanza euclidea con ponte ai DB vettoriali del M6; **`coseno` come 🧠 [RETRIEVAL]** (stub che solleva `NotImplementedError`, scelta dello studente); Sez. 6 dimensioni con tabella misurata 2/4/8 (cedolino–certificazione **0.986 a dim 2**, **0.015 a dim 4** → perché i modelli veri usano 384); "una dimensione non ha un nome" contro le `parole_decisive` spiegabili del cap.01; cosa non cattura (negazione, cifra esatta, identità) e **quando NON usarla** (codice fiscale, IBAN, numero pratica → match esatto, anticipo ricerca ibrida M6); statico vs contestuale (cap.04); `📚 LETTURA PARALLELA [ALAMMAR cap. 2]` + E6 📚 sull'aritmetica dei vettori; checklist 8 punti; quiz verifica 8 domande con Feynman V8; E1–E6 con 🎯 [COLLOQUIO] ed E4 a esattamente 3 bullet (Pattern #6); 🏗️ T1–T5 (`costruisci_mappa` + `vettore_frase` in `testo_utils.py`, mappa salvata con `joblib`, contratto esteso con `mappa_dim`/`mappa_min_conteggio`/`mappa_n_parole`, **3 assert di regressione** per Regola 37, spiegabilità onesta nel diario); DoD di capitolo. **Tutti i numeri verificati eseguendo il file**; grafico 2D testato headless. I tag 🔧 🔍 🔀 restano in **02b** (split 29/09). | Domanda dello studente: «credi possa essere migliorato, considerando l'importanza del topic?». Critica accettata e scope **completo** scelto da lui. L'embedding è il mattone portante di 02b, 03, 05, 07 e di tutto il M6: un capitolo con coordinate inventate non regge quel peso | Prossimo Capitolo (3 righe nuove + rinforzi + ponte mentale), changelog, `modulo_04_nlp/02a_embeddings_concetto.py`, diario `M04_C02a` |
+| 05/10/2026 | **Chiusura M4 cap.01** (`01_testo_come_numeri.py`, voto difficoltà **4**/10). Media ~**7.05** (32 capitoli). Lacuna **#59** 🟢. Aperte **#60 #61 #62** e Pattern **#6**. Scritti `02a_embeddings_concetto.py` (zero installazioni, rinforzi dentro) e il bridge `M04_R01`. File del capitolo chiuso **non modificato**. Proposte del 29/09 (taglio cap.04, antidoto #6, glossario attivo) **riproposte, non applicate**. | Voto studente «4» in chiusura capitolo | Stato, sessione, priorità, prossimo, valutazioni, glossario, domande, ponti, competenze, ripasso, lacune, progetto, changelog, `02a`, bridge, diari, README M4, roadmap |
+| 05/10/2026 | **Prodotto attivo = torre di controllo** (pratiche, meeting, scadenze). Brief in `briefing_progetto_ia.md` e `recap_progetto_ia.md`. **Validator + Replicator in standby**. **Hardware di studio**, specifiche incollate dallo studente: Ryzen 5 4500, **16 GB RAM**, GeForce RTX 3060 (VRAM 12 GB, specifica desktop). Default modelli **7–8B**. Il 14B non è il default perché la RAM di sistema è 16 GB. PC privato Vega = fallback a ~3B su CPU. Cap.01 del M4 non riscritto. Audio/diarizzazione fuori programma. | Scelta studente: il controllo documentale è meno realizzabile subito; la macchina con cui studia è quella di lavoro. I 32 GB di RAM del brief Gemini non c'erano: la schermata di sistema dice 16 GB | Profilo, Strategia hardware, Budget API, Regola 24, Progetto incrementale, priorità, `APPUNTI_APPLICATIVO.md`, `docs/prodotto/README.md`, `AGENTS.md`, `mentor-ai-corso.mdc`, `roadmap_ai.md` |
 | 29/09/2026 | **Split placeholder M4 cap.02 e cap.07**. `02_embeddings.py` → **`02a_embeddings_concetto.py`** (idea, embedding giocattolo 2D, zero installazioni) + **`02b_embeddings_pratica.py`** (`sentence-transformers`, confronto con TF-IDF, esercizi 🎯/🔧/🔍/🧠/🔀). `07_progetto_recensioni.py` → **`07a_progetto_core_testuale.py`** (mappa pipeline a inizio capitolo, contratto testuale, `analizza_testo()` verificato **senza UI**, DoD bloccante) + **`07b_progetto_streamlit_deploy.py`** (verifica fattibilità deploy come Sez. 0, app, portfolio #3, 🔄 CONFRONTO PRIMA/DOPO, protocollo FINE MODULO). Il M4 passa a 9 file capitolo; i **bridge Regola 40 restano 6** (a/b = parti dello stesso capitolo). Allineati README M4, `roadmap_ai.md`, Prossimo Capitolo. | Analisi del profilo su richiesta dello studente: nel M3 la lunghezza non predice la difficoltà (3.121 righe → 7; 2.668 → 9); i picchi vengono da **astrazione composta** (C05 = 9) e **integrazione multi-pezzo** (C10 = 8.5, "tenere uniti i pezzi"). Lo split separa concetto da logistica (02) e core da interfaccia (07), replicando la tappa G2 che nel M3 ha funzionato. Lo studente ha scelto **solo i due split**: taglio del cap.04, spostamento mock interview e vincoli trasversali (Pattern #6, glossario attivo, verifica #59 al cap.03) restano **proposti e non applicati**, da riproporre alla chiusura del cap.01 | Prossimo Capitolo (righe Placeholder / Split / Proposte non applicate / Dopo C01), `modulo_04_nlp/*`, README M4, `roadmap_ai.md`, changelog |
 | 25/09/2026 (2ª) | **Apertura Modulo 4 — NLP, Embeddings & Transformers**. Creata `modulo_04_nlp/`: `README.md` (indice 7 capitoli, privacy specifica del testo, filo prodotto "ramo testuale", promemoria regole per i capitoli futuri), `dati/note_documenti.csv` (30 testi **sintetici** su 4 tipi documento), **`01_testo_come_numeri.py`** (capitolo completo: quiz ingresso 7 domande, 3 ripassi Regola 43 in Sez. 0, tokenizzazione OCR italiano con segnaposto `<importo>`/`<data>`, BoW a mano + `CountVectorizer`, TF-IDF intuizione→codice→formula, coseno, 3 limiti come ponte al cap.02, 📚 lettura parallela [NLP-TRANS]/[ALAMMAR], quiz verifica 8 domande con Feynman, TODO 1–7 con 🔄 RECALL CROSS-MODULO / 🎯 COLLOQUIO / 🔧 REFACTORING / 🔍 DEBUG / 🧠 RETRIEVAL / 🔀 INTERLEAVING, 🏗️ progetto T1–T5, soluzioni verificate in esecuzione), `sessioni_capitoli/` (README + template + diario C01), `quiz_ripasso_tra_capitoli/` (README con i 6 bridge previsti + template). **Placeholder dei capitoli 02–07** creati nella stessa sessione, su richiesta dello studente: non file vuoti ma schede operative (contenuto previsto, DoD provvisoria, prerequisiti, ripassi Regola 43, libri, task prodotto), con già fissati mock interview al cap.04, chiusura lacuna #53 al cap.06, CONFRONTO PRIMA/DOPO + protocollo FINE MODULO + lezione deploy-M3 al cap.07. Scommentate in `requirements.txt` le dipendenze **M3** e **M4** (nota: il cap.01 non le richiede). Aggiornati `roadmap_ai.md` (M4 🟡 aperto, componente prodotto, analogie, tempi 2-3 settimane) e le sezioni di stato di questo file. **Archivio M3 ancora NON creato**: il DoD portfolio #2 resta aperto, il debito è dichiarato in tutti i file toccati. | Richiesta studente: "vorrei prendere una pausa da questo argomento e passare al modulo successivo; prepara il prossimo modulo nella sua struttura e il primo capitolo, coerente con lo stato attuale del corso". Lettura mentor: saturazione dopo la pipeline lunga del C10 (voto difficoltà 8.5) + blocco esterno sul deploy → ripartenza morbida, capitolo senza installazioni né training | Stato Attuale, Ultima Sessione (+ coda sessione 29), Prossimo Capitolo, sezione Grad-CAM, Progetto Incrementale, changelog, `modulo_04_nlp/*`, `requirements.txt`, `roadmap_ai.md` |
 | 25/09/2026 | **Chiusura M3 cap.10** (`10_progetto_gradio.py`, voto **8.5**/10 — “tenere uniti i pezzi della pipeline”): Stato → nessun capitolo aperto, prossimo da svolgere = C12; Ultima Sessione; media ~**7.10** (31 cap); Valutazioni **M3-10**; **Glossario nuova sezione cap.10** (14 termini: contratto, checkpoint ricco, `weights_only`, `strict`, Gradio `Interface`, `examples`, `flagging_mode`, lazy load, cold start, front-matter, pin `==`, git-lfs, model card, p50/p95); Pattern **#6** aggiornato (TODO 1 “con un numero”); lacune **#54 → 🟢**, #55/#56 → 🟡 con micro-check in C12, **#57 NUOVA** (BatchNorm in eval: “si spegne” vs running_*) e **#58 NUOVA** (explainability visiva ≠ probabilità) entrambe 🔴 → rinforzo in C12; Progetto: riga cap.10 **G1–G5 ✅ / G6–G8 ❌**; Portfolio riga #2 → 🔴 **non deployato** con motivo (policy HF 2026: Gradio compute richiede PRO; free = Static/Lite o max 2 ZeroGPU); Prossimo Capitolo riscritto su C12 + residui C10 (TODO 7, 🔄 CONFRONTO). **Archivio M3 e scommento dipendenze M4 NON eseguiti** (DoD portfolio #2 aperto). File capitolo **non modificato** (protocollo H). | Richiesta studente: “lasciamo stare [il deploy]. Chiudiamo qui il capitolo” dopo il blocco paywall HF | Stato, Ultima Sessione, priorità, prossimo cap, valutazioni, glossario, pattern, lacune, progetto, portfolio, diario C10, README M3, roadmap, changelog |

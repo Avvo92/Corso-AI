@@ -1,6 +1,8 @@
 # Applicativi prodotto — Indice (due software)
 
-> **Traccia organizzativa** del prodotto fine corso: **Validator** e **Replicator** (applicativi separati, stesso dominio documentale).
+> **Standby dal 05/10/2026.** Validator e Replicator non sono il prodotto attivo. Si conservano. Il prodotto da costruire è la torre di controllo: [`../../briefing_progetto_ia.md`](../../briefing_progetto_ia.md) e [`../../recap_progetto_ia.md`](../../recap_progetto_ia.md). Non assegnare task su queste due app finché lo studente non le riapre.
+
+> **Traccia organizzativa** del prodotto fine corso, in pausa: **Validator** e **Replicator** (applicativi separati, stesso dominio documentale).
 
 ---
 
@@ -63,4 +65,5 @@
 | 2026-05-22 | **Loop antagonista V↔R:** `PROTOCOLLO_LOOP_ANTAGONISTA_VR.md`; gap G11; esempi `evasion_report` / `rule_candidates`. |
 | 2026-05-22 | **`CANONE_STRESS_TEST_LAB_VR.md`:** Validator solo PDF; Replicator `stress_test` vs `internal`; `metadata_mimic_y`; contraddizioni bundle/metadati risolte. |
 | 2026-07-28 | **Mentor Engine parcheggiato come idea post-M10** (`IDEA_POST_CORSO_MENTOR_ENGINE.md`). Motivo: riusa lo stack del M10 (memoria agente, retrieval, structured output, LLM-as-judge, FastAPI/Docker) quindi costa poco **dopo**, ma aprirlo ora spaccherebbe il focus sul prodotto del corso. Tre nodi aperti: economia dei token per studente, chi scrive i contenuti, prova di efficacia oltre n=1. |
-| 2026-08-25 | **Ripasso React/Node pre-M10** canonizzato: studente arrugginito; mini-percorso didattico in `docs/ripasso_frontend_react/` da attivare fine M9 / inizio M10 **prima** UI React produzione. Prototipi M4–M7 restano Streamlit. Vedi `CONTESTO_CORSO.md` → Profilo → Impegno canonico. |
+| 2026-10-05 | **Validator e Replicator in standby.** Prodotto attivo: torre di controllo (`briefing_progetto_ia.md`, `recap_progetto_ia.md`). Motivo studente: utile, meno realizzabile nell'immediato. Hardware di studio aggiornato nel contesto: PC di lavoro RTX 3060. |
+| 2026-08-25 | **Ripasso React/Node pre-M10** canonizzato: studente arrugginito; mini-percorso didattico in `docs/ripasso_frontend_react/` da attivare fine M9 / inizio M10 **prima** UI React produzione. Prototipi M4–M7 restano Streamlit. Vedi `CONTESTO_CORSO.md` → Profilo → Impegno canonico. Dal 05/10/2026 il frontend del prodotto attivo è Laravel: il ripasso React resta parcheggiato. |

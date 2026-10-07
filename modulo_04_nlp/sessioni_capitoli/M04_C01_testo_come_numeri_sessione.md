@@ -5,8 +5,8 @@
 | **Modulo** | M04 — NLP, Embeddings & Transformers |
 | **File capitolo** | `01_testo_come_numeri.py` |
 | **File diario** | `M04_C01_testo_come_numeri_sessione.md` |
-| **Stato** | aperto 25/09/2026 — da svolgere |
-| **Voto difficoltà** | — |
+| **Stato** | chiuso 05/10/2026 |
+| **Voto difficoltà** | 4/10 |
 
 ---
 
@@ -418,15 +418,92 @@ Eseguito con il venv del corso, tutto verde:
 
 ---
 
+### [2026-10-05] — TODO 4 (debug produzione)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 4 (righe ~1132–1164), primo tentativo
+- **Valutazione (primo tentativo — "voto esame"):** **8/10**
+- **Punti di forza:** (a) il secondo `vec` rifà il vocabolario sul testo in arrivo. (b) in test si usava lo stesso vettorizzatore del train. (d) collegato alle mean/std non salvate nel contratto di inferenza del M3 cap.10. Chiude a freddo il punto 4 del TODO 2.
+- **Errori / lacune:** (c) l'idea «salva anche il vec» è giusta, ma manca `transform` al posto di `fit_transform`. I file non coincidono: `model_vec.pkl` in scrittura, `modello_vec.pkl` in lettura. Senza `transform`, ricaricare il vec e rifare `fit` rimette il bug.
+- **Correzione / suggerimento:** `joblib.dump((modello, vec), "modello_vec.pkl")`, poi `transform` sul testo nuovo.
+- **Pattern errore / ID contesto:** lacuna **#60**. Soft Pattern **#6**: la frase operativa copre il salvataggio e non la chiamata in produzione.
+
+---
+
+### [2026-10-05] — TODO 5 (retrieval coseno)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 5 (righe ~1169–1195), primo tentativo
+- **Valutazione (primo tentativo — "voto esame"):** **9.5/10**
+- **Punti di forza:** Formula `(a @ b) / (||a|| * ||b||)`, `np.linalg.norm`, shape diverse e matrici rifiutate, norma zero → `0.0`, `assert` con `np.isclose` sul vettore con se stesso. Provato: se stesso → 1, zeri → 0, ortogonali → 0. Chiude la lacuna **#59**.
+- **Errori / lacune:** Il messaggio di errore parla solo di «uguale dimensione» e copre anche il caso 2D. Nessun buco sulla formula.
+- **Correzione / suggerimento:** Nel `ValueError`, separare «shape diverse» da «non sono vettori 1D».
+- **Pattern errore / ID contesto:** **#59** → 🟢.
+
+---
+
+### [2026-10-05] — TODO 6 (interleaving tre segnali)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 6 (righe ~1209–1224), primo tentativo
+- **Valutazione (primo tentativo — "voto esame"):** **7.5/10**
+- **Punti di forza:** (4) il visivo soffre di più su una foto storta, con il limite degli angoli di rotazione in training. (3) la heatmap è «dove ha guardato», e il testuale si può ridurre a un top di parole. (2) il criterio c’è: errori di conti e codice fiscale pesano più della varietà dei layout.
+- **Errori / lacune:** (1) il disaccordo non è un documento concreto, e il testuale è un’altra `prob_busta` spinta a 0.5 dalle parole mai viste. (2) i tre segnali corrono la stessa gara; il testuale di questo capitolo dice il tipo. (3) vince il tabellare, mentre all’operatore si mostrano le parole, non il vettore da centinaia di posizioni.
+- **Correzione / suggerimento:** Un foglio solo: il testo dice cedolino, il layout no, i conti tornano. Regola: il testuale decide il tipo; visivo e tabellare, con pesi, l’alterazione.
+- **Pattern errore / ID contesto:** lacuna **#61**.
+
+---
+
+### [2026-10-05] — TODO 7 (ordine perso nel BoW)
+
+- **Esercizio / blocco:** `01_testo_come_numeri.py` TODO 7 (righe ~1238–1253), primo tentativo
+- **Valutazione (primo tentativo — "voto esame"):** **8.5/10**
+- **Punti di forza:** Il run stampa `1.0000000000000002`, riportato come 1. (b) i due vettori sono identici perché le parole sono le stesse. `.toarray()` sulla `csr_matrix` dopo un primo crash su `.to_numpy()`.
+- **Errori / lacune:** Il codice usa `TfidfVectorizer`, non i conteggi BoW: qui il numero non cambia, le due righe restano uguali. (b) non dice che l'ordine non entra nel vettore. (c) «un modello che distingue il significato» è la zona giusta; il limite isolato da queste due frasi è l'ordine.
+- **Correzione / suggerimento:** In (c), un modello che legge la frase in sequenza. Un sacco di significati, senza ordine, darebbe ancora 1.
+- **Pattern errore / ID contesto:** lacuna **#62**.
+
+---
+
+### [2026-10-05] — Progetto incrementale T1–T5 (check DoD)
+
+- **Esercizio / blocco:** `testo_utils.py` + note T4 in `01_testo_come_numeri.py` (~1285–1288)
+- **Valutazione (primo tentativo — "voto esame"):** **7/10** sul deliverable
+- **Punti di forza:** T2 ok (`<cf>` e `<iban>`, i codici non restano nei token). T3 ha le tre chiavi e le parole escono dal testo. T5 ha versione, classi, tokenizer e data.
+- **Errori / lacune:** T1: in fondo al file il training e il `print` partono all'import. T4 è nel capitolo, non nel diario, e il «non promette» è vago. T5: `named_step` (manca la s) fa crashare il `return` del contratto.
+- **Correzione / suggerimento:** Spostare query/print sotto `if __name__`. Tre righe nel diario. `named_steps`.
+- **Pattern errore / ID contesto:** soft Pattern **#6** (DoD di T1 e sede di T4).
+
+---
+
+### [2026-10-05] — Progetto incrementale T1–T5 (post-feedback)
+
+- **Esercizio / blocco:** `testo_utils.py` dopo `if __name__`, `named_steps`, `VERSIONE`; T4 ancora in `01_testo_come_numeri.py` (~1288–1289)
+- **Valutazione (post-feedback, non sostituisce il 7/10):** **9/10**
+- **Punti di forza:** L'import di `tokenizza` non stampa. Il run dà `busta_paga`, probabilità circa 0.50, parole `netto`/`eur`/`paga` presenti nel testo. Il contratto ha versione, classi ordinate, `tokenizza` e data. Il testo di T4 dice cosa promette e cosa no.
+- **Errori / lacune:** T4 è nel capitolo, non nel diario. Manca una terza riga, c'è un `# #` vuoto.
+- **Correzione / suggerimento:** Spostare quelle due frasi nel diario del capitolo.
+- **Pattern errore / ID contesto:** soft Pattern **#6**, solo sulla sede di T4.
+
+### [2026-10-05] — Chiusura capitolo (voto difficoltà)
+
+- **Esercizio / blocco:** chiusura formale C01. T4 copiato qui dal capitolo (`01_testo_come_numeri.py` ~1288–1289). Il file del capitolo non è stato modificato.
+- **Valutazione:** voto difficoltà studente **4/10**. Gli esami restano quelli già registrati (progetto 7, post-feedback 9, non sostituisce il 7).
+- **Testo T4 (sue parole):** «parole_decisive promette all'operatore le tre parole di questo testo che hanno spinto di più verso il tipo scelto. Sono parole davvero presenti nel documento, non un vettore da centinaia di caselle. Non promette che quelle tre parole siano la causa del verdetto, né che il tipo sia giusto. Il resto del vocabolario ha pesato comunque, e l'elenco non dice niente sull'ordine della frase.»
+- **Errori / lacune:** la sede era il capitolo, non il diario (Pattern #6, già contato nel post-feedback). Manca la terza riga, c'è un `# #` vuoto.
+- **Next step:** bridge R01, poi `02a`. Installazione di `sentence-transformers` solo prima di 02b.
+
+---
+
 ## Lacune e dubbi ancora aperti
 
-- TODO 2 punto 4: una parola mai vista in produzione si scarta. Inserirla rifacendo il vocabolario sulla query è leakage. Da riverificare a freddo nel TODO 4.
+- TODO 2 punto 4: verifica a freddo **passata** nel TODO 4 (05/10, esame 8/10). Ha riconosciuto da solo che rifare il vocabolario sul testo in arrivo stacca il modello dal training.
+- Residuo TODO 4 (c): salva il vettorizzatore, ma non scrive `transform` al posto di `fit_transform`, e i due nomi file non coincidono. Lacuna **#60**.
+- TODO 6 (05/10, esame 7.5/10): i tre segnali messi sulla stessa domanda. Il testuale di C01 dice il tipo; le parole mai viste si scartano, non producono 0.5. Lacuna **#61**.
+- TODO 7 (05/10, esame 8.5/10): il coseno 1 è giusto. In (c) manca la parola «ordine». Lacuna **#62**.
 
 ---
 
 ## Note per il capitolo successivo (mentor)
 
-- Il cap.02 apre con l'installazione di `transformers` / `sentence-transformers`: farla **prima** di iniziare il capitolo, non durante.
-- Riprendere i 3 limiti della Sez. 5 come apertura del cap.02: gli embeddings vanno presentati come risposta a quei limiti, non come tecnologia a sé.
-- Popolare il bridge `M04_R01_after_C01_before_C02_testo_to_embeddings.md` alla chiusura di questo capitolo (Regola 40).
-- Debito M3 da non perdere di vista: portfolio #2 senza URL, `12_grad_cam_interpretabilita.py` da svolgere, TODO 7 e 🔄 CONFRONTO PRIMA/DOPO del cap.10, archivio M3 non creato.
+- `02a_embeddings_concetto.py` è già scritto. Zero installazioni. I rinforzi #60 #61 #62 sono dentro.
+- `sentence-transformers` solo prima di **02b**.
+- Bridge `M04_R01_after_C01_before_C02_testo_to_embeddings.md` popolato il 05/10/2026.
+- Debito M3: portfolio #2 senza URL, `12_grad_cam_interpretabilita.py` da svolgere, TODO 7 e 🔄 CONFRONTO PRIMA/DOPO del cap.10, archivio M3 non creato.

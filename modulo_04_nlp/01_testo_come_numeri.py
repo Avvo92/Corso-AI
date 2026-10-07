@@ -88,6 +88,7 @@ from pathlib import Path
 import os
 
 import numpy as np
+from numpy.typing import NDArray
 import pandas as pd
 
 # scikit-learn: gli stessi oggetti del M2, ma applicati al testo.
@@ -1151,11 +1152,17 @@ print(prova)
 #   b) perché in test non si vedeva? (una frase)
 #   c) come si ripara? (una frase operativa)
 #   d) 🔁 collega: a quale errore del M3 cap.10 assomiglia questo?
+
 # TUA RISPOSTA:
-# a)
-# b)
-# c)
-# d)
+
+# a) il problema è il secondo vec: il testo in arrivo viene vettorizzato a partire dai soli dati in arrivo, quindi si perde il dizionario utilizzato dal primo vec che ha prodotto i dati su cui il modello è addestrato.
+
+# b) il test è stato probabilmente fatto utilizzato il vec che ha prodotto i dati su cui il modello è stato addestrato, quindi i documenti del test venivano vettorizzati a partire dallo stesso tfidf dei dati del train.
+
+# c) si ripara salvando oltre al modello, anche il vettorizzatore utilizzato per produrre i dati che il modello ha usato per addestrarsi: 
+# joblib.dump([(1, modello), (2, vec)], "model_vec.pkl") -> modello, vec = [e[1] for e in joblib.load("modello_vec.pkl")]
+
+# d) sembra l'errore per cui nel contratto di inferenza non venivano salvate la mean e la std che il modello usa per normalizzare i dati che riceve in input, e quindi quando produceva le previsioni sui dati di produzione, questi generavano risultati sballati (di cui un caso indicativo è proprio il modello che, a prescindere dagli input, genera sempre la stella classe come risultato). 
 
 
 # --------------------------------------------------------------------------
@@ -1170,6 +1177,22 @@ print(prova)
 # un vettore con se stesso sia 1.0 (a meno di errori di arrotondamento).
 # TUO CODICE:
 
+print("\nTODO 5\n")
+
+def my_coseno(a: NDArray[np.float64], b: NDArray[np.float64]) -> float:
+    if a.shape != b.shape or a.ndim > 1 or b.ndim > 1:
+        raise ValueError("gli elementi passati alla funzione devono essere vettori di uguale dimensione!")
+    norm_a = np.linalg.norm(a)
+    norm_b = np.linalg.norm(b)
+    den = (norm_a * norm_b)
+    cos = (a @ b) / den if den != 0 else 0.0
+    return float(cos)
+
+a = np.random.standard_normal(5)
+
+assert np.isclose(my_coseno(a, a), 1, atol=1e-6), "Ops, qualcosa è andato storto!!"
+
+print(my_coseno(a, a))
 
 # --------------------------------------------------------------------------
 # TODO 6 — 🔀 [INTERLEAVING] — testo + tabellare + visivo
@@ -1191,10 +1214,14 @@ print(prova)
 #   3. Quale dei tre è più facile da spiegare all'operatore, e perché?
 #   4. Quale dei tre rischia di più con un documento fotografato storto?
 # TUA RISPOSTA:
-# 1)
-# 2)
-# 3)
-# 4)
+
+# 1) es. di disaccordo: dalle feature la busta restituisce prob alterato 0.2 (quindi prob genuino 0.8, semaforo verde). Il classificatore visivo percepisce delle difformità di layot e da prob_busta basso (0.1, semaforo rosso). il testuale restituisce una prob_busta neutra (0.5) indirizzata dal fatto che ci sono molte parole e voci che non ha mai visto in una busta.
+
+# 2) Le feature estratte sono le più importanti, una difformita o errore nei conti o differenze tra codice fiscale in diversi documenti pesano molto più di tutto il resto. In seconda posizione, le difformita visive: se il classificatore percepisce che una busta ha un formato strano che non riconosce come quello tipico di una busta paga, è un segnale di allarme ma meno pericoloso visto la vastità del numero dei formati in circolazione (a meno che il classificatore non venga specializzato sul riconoscere difformità rispetto a specifici formati che conosce bene). In ultima posizione il classificatore testuale: dato che le voci in una busta sono estremamente variegate e cambiano da formato a formato, è difficile che produca un segnale decisamente rilevante.
+
+# 3) Il più facile da spiegare è il primo sulle feature: questo perchè è facile dire quale feature ha spinto la valutazione in una direzione, visto che sono etichette che riguardano topic che un operatore sa bene. Difficile invece fargli capire come la rete convoluzionale produce le feature map e le traduce in segnali e probabilità (ma possiamo usare una heat map da sovrapporre all'immagine della busta di partenza per vedere alla fine dove la rete a messo il focus per produrre la sua predizione). Il modello testuale, per quanto intuitivo, rischia di essere molto dispersivo in termini di lettura di operatore, visto che ogni busta potenzialmente produce dei vettori molto lunghi (centinaia di posizioni, ognua per una parola specifica). Per il testuale possiamo prendere però le parole che hanno prodotto un risultato più grande e creare cmq una sorta di top_n come per il clf del modulo 2.
+
+# 4) Rischia di più il classificatore visivo. E vero che nella pipeline di addestramento usiamo delle trasformazione che comprendono la rotazione delle immagini, ma entro certi angoli: Se un immagine è troppo storta, il classificatore visivo rischia di non riuscire a riconoscere i pattern a cui è abituato.
 
 
 # --------------------------------------------------------------------------
@@ -1209,10 +1236,21 @@ print(prova)
 # b) spiega in una riga perché esce quel numero
 # c) in una riga: che tipo di modello servirebbe per distinguerle?
 # TUA RISPOSTA:
-# a)
-# b)
-# c)
+# a) coseno = 1
+# b) di fatto il vettore che restituisce un BoW è identico per entrami i documenti visto che sono composti dalle stesse identiche parole.
+# c) Servirebbe un modello capace di distinguere il significato, e non che usi solo le parole e quante volte si ripetono.
 
+print("\nTODO 7\n")
+
+a = "il netto supera il lordo"
+b = "il lordo supera il netto"
+
+vec = TfidfVectorizer(tokenizer=tokenizza, lowercase=False, token_pattern=None)
+X = vec.fit_transform([a, b]).toarray()
+
+prova_cos = my_coseno(X[0], X[1])
+
+print(prova_cos)
 
 # --------------------------------------------------------------------------
 # 🏗️ PROGETTO INCREMENTALE — il ramo testuale nasce qui
@@ -1225,30 +1263,32 @@ print(prova)
 # Il capitolo 01 posa le fondamenta: la normalizzazione del testo.
 # Se questa è fragile, tutto il modulo lo sarà.
 #
-#   [ ] T1 — Crea `modulo_04_nlp/testo_utils.py` e spostaci, ripulite:
+#   [V] T1 — Crea `modulo_04_nlp/testo_utils.py` e spostaci, ripulite:
 #            `normalizza`, `tokenizza`, `STOPWORD_IT` e le regex.
 #            DoD: `from testo_utils import tokenizza` funziona, e il file
 #                 non stampa nulla quando viene importato.
 #
-#   [ ] T2 — Aggiungi due segnaposto in più, utili sul dominio reale:
+#   [V] T2 — Aggiungi due segnaposto in più, utili sul dominio reale:
 #            `<cf>` per qualcosa che sembra un codice fiscale (16 caratteri
 #            alfanumerici) e `<iban>` per una stringa che inizia con IT.
 #            DoD: un testo con un CF finto produce il token `<cf>` e il
 #                 codice originale NON compare fra i token.
 #            Nota privacy: questo è anche un mini-anonimizzatore.
 #
-#   [ ] T3 — Scrivi `classifica_tipo_documento(testo) -> dict` che usa la
+#   [V] T3 — Scrivi `classifica_tipo_documento(testo) -> dict` che usa la
 #            Pipeline del TODO 1 e restituisce:
 #                {"tipo": "busta_paga", "prob_tipo_doc_testuale": 0.87,
 #                 "parole_decisive": ["cedolino", "irpef", "netto"]}
 #            DoD: le tre chiavi ci sono; `parole_decisive` contiene parole
 #                 che compaiono davvero nel testo in input.
 #
-#   [ ] T4 — Spiegabilità onesta: `parole_decisive` è l'equivalente
+#   [V] T4 — Spiegabilità onesta: `parole_decisive` è l'equivalente
 #            testuale dei `motivi_top3` del M2. Scrivi 3 righe nel diario
 #            del capitolo: cosa promette all'operatore e cosa NON promette.
-#
-#   [ ] T5 — Salva accanto al modello un piccolo **contratto** (dizionario
+#   parole_decisive promette all'operatore le tre parole di questo testo che hanno spinto di più verso il tipo scelto. Sono parole davvero presenti nel documento, non un vettore da centinaia di caselle.
+#   Non promette che quelle tre parole siano la causa del verdetto, né che il tipo sia giusto. Il resto del vocabolario ha pesato comunque, e l'elenco non dice niente sull'ordine della frase.
+# #
+#   [V] T5 — Salva accanto al modello un piccolo **contratto** (dizionario
 #            o JSON) con: versione, elenco classi ordinate, nome del
 #            tokenizer usato, data di training.
 #            DoD: lo stesso ragionamento del contratto di inferenza del M3

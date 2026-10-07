@@ -34,17 +34,19 @@ Se `CONTESTO_CORSO.md` non e leggibile/completo:
 - segnalare il blocco
 - chiedere come procedere.
 
-## Prodotto applicativo (due app)
+## Prodotto applicativo
 
-Dopo il gate corso, per task sul **prodotto Validator/Replicator**:
+**Attivo dal 05/10/2026:** torre di controllo (pratiche, meeting, scadenze). Brief: [`briefing_progetto_ia.md`](briefing_progetto_ia.md) e [`recap_progetto_ia.md`](recap_progetto_ia.md). Hardware e regole in [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md) → Profilo e Strategia hardware. Interfaccia prevista in Laravel. Audio e telefonia del brief non sono capitoli del corso.
 
-1. [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md) — stato attivo (M3)
+**In standby:** Validator e Replicator. Non assegnare task. Se lo studente li riapre, la mappa è questa:
+
+1. [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md) — stato attivo (M4 cap.01)
 2. Se serve storico: [`archivi/README.md`](archivi/README.md) (M1, M2, Ponte)
 3. [`APPUNTI_APPLICATIVO.md`](APPUNTI_APPLICATIVO.md) — stub indice prodotto
-4. [`docs/prodotto/README.md`](docs/prodotto/README.md) — indice completo prodotto
+4. [`docs/prodotto/README.md`](docs/prodotto/README.md) — indice Validator/Replicator
 5. [`docs/prodotto/CANONE_STRESS_TEST_LAB_VR.md`](docs/prodotto/CANONE_STRESS_TEST_LAB_VR.md) — fonte di verita stress test (Validator solo PDF)
 6. [`docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md`](docs/prodotto/ARCHITETTURA_PRODOTTO_DUE_APP.md) — piano, gap, DoD M10
 7. [`docs/prodotto/DOCUMENT_SPECTRUM.md`](docs/prodotto/DOCUMENT_SPECTRUM.md) — 10 tipi, P0/P1/P2
 8. Validator → `docs/prodotto/APPUNTI_APPLICATIVO_VALIDATOR.md` + `aplicativo/validator/`
 9. Replicator → `docs/prodotto/APPUNTI_APPLICATIVO_REPLICATOR.md` + `aplicativo/replicator/`
-10. **Pre-M10 UI React:** [`docs/ripasso_frontend_react/README.md`](docs/ripasso_frontend_react/README.md) — ripasso Node/React (parcheggiato; attivare fine M9 / inizio M10). Dettaglio in `CONTESTO_CORSO.md` → Profilo → Impegno canonico.
+10. **Ripasso React/Node:** parcheggiato. Non è il frontend del prodotto attivo (quello è Laravel). Si riapre solo se si torna a Validator/Replicator. Dettaglio in `CONTESTO_CORSO.md` → Profilo → Impegno canonico.
