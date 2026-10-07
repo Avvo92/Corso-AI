@@ -260,6 +260,69 @@ eseguendo il file prima della consegna.
 - **Punti di forza:** Stesse parole, stessi conteggi. #62 tenuta.
 - **Errori / lacune:** «Stesso tipo di parole» è vago: sono le **stesse** parole. Manca la frase: l'ordine non entra nella scheda.
 
+### [2026-10-07] — E1 `lontani`
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 749–773
+- **Valutazione (primo tentativo — voto esame):** **6.5/10**
+- **Punti di forza:** `sort` senza `reverse`: i coseni più bassi in cima. `k` taglia i primi. La funzione, lanciata, farebbe il mestiere.
+- **Errori / lacune:** Copia di `vicini` (la consegna chiedeva di evitarlo: un parametro `inverti`). Stampa `"movimenti"`, non i 3 lontani da `"cedolino"`. Default `k=5` invece di 3. `np.array` non è il tipo (`np.ndarray`). `map` copre la funzione builtin.
+
+### [2026-10-07] — E1 `lontani`, post-feedback
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 754–773
+- **Valutazione (post-feedback):** **8/10**. Il voto esame resta **6.5/10**.
+- **Punti di forza:** Stampa i 3 lontani da `"cedolino"`. `sort` crescente, `k=3` in chiamata.
+- **Errori / lacune:** Resta la copia di `vicini`. Un parametro `inverti` sulla stessa funzione evita due corpi identici. Default ancora 5. `np.ndarray`, non `np.array`. Non chiamare la variabile `map`.
+
+### [2026-10-07] — E2 due mappe min 2 e 3
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 774–801
+- **Valutazione (primo tentativo — voto esame):** **9.5/10**
+- **Punti di forza:** 49 vs 34 parole. Coseno su entrambe. «prospetto» ha conteggio 2, a soglia 3 esce: vettore di zeri, coseno 0.0. L'`if` sulla chiave verifica il fatto. Ignoranza ≠ significato diverso. Il commento-soluzione in fondo al capitolo (coseno resta alto) su questo CSV è sbagliato.
+- **Errori / lacune:** `in mappa_min_3` basta, `.keys()` è ridondante. Due `if __name__`. Niente lacuna nuova.
+
+### [2026-10-07] — E3 `cerca`
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 803–836
+- **Valutazione (primo tentativo — voto esame):** **8/10**
+- **Punti di forza:** Mappa una volta, `vettore_frase` su ogni nota, coseno, `sort` decrescente, `[:k]`. Sulla domanda escono tre `estratto_conto` (id 15, 13, 12), il 13 ha «accredito stipendio». Motore giusto.
+- **Errori / lacune:** La consegna chiede tuple `(id, tipo, coseno)`. Restituisci `(id, [tipo, cos, testo])`. Il dizionario in mezzo non serve: una lista di tuple si ordina direttamente. Type hint `list[int, list[...]]` non descrive una lista di triple.
+
+### [2026-10-07] — E3, post-feedback
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 810–828
+- **Valutazione (post-feedback):** **9/10**. Il voto esame resta **8/10**.
+- **Punti di forza:** Tuple affiancate `(id, tipo, coseno, testo)`, `key` su `x[2]`. Niente dizionario, niente lista innestata. Testo solo per il quadro visivo.
+- **Errori / lacune:** Il type hint parla ancora di `tuple[int, list[...]]`. Ora è `list[tuple[int, str, float, str]]`.
+
+### [2026-10-07] — E3, type hint
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 811–832
+- **Valutazione (post-feedback):** **9.5/10**. Il voto esame resta **8/10**.
+- **Punti di forza:** Hint allineato: `list[tuple[int, str, float, str]]`. Motore, ordine, print.
+- **Errori / lacune:** `mappa: dict[str, np.array]` resta `np.ndarray`. Quarto campo extra rispetto alla consegna, scelto apposta.
+
+### [2026-10-07] — E4 tre limiti
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 847–854
+- **Valutazione (primo tentativo — voto esame):** **9/10**
+- **Punti di forza:** Tre limiti diversi: ignoranza silenziosa, ordine perso, parole tutte pari nella media. Non tre parafrasi. Pattern **#6** rispettato qui.
+- **Errori / lacune:** Il punto 3 non nomina la media: ogni parola pesa `1/n`, la nota lunga diluisce quella importante.
+
+### [2026-10-07] — E4, post-feedback
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 847–854
+- **Valutazione (post-feedback):** **10/10**. Il voto esame resta **9/10**.
+- **Punti di forza:** Il punto 3 noma la media e la diluizione. Tre limiti distinti, completi.
+- **Errori / lacune:** Nessuna.
+
+### [2026-10-07] — E5 colloquio full-text vs embedding
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 856–862
+- **Valutazione (primo tentativo — voto esame):** **7/10**
+- **Punti di forza:** Guadagno chiaro: parafrasi («burattino e falegname» senza il nome). Full-text vince sul nome esatto dell'autore.
+- **Errori / lacune:** Manca **cosa NON guadagni**: cifre, IBAN, negazioni, spiegabilità (quale parola ha deciso). Tre job, due coperti. Pattern **#6**.
+
 ---
 
 ## Lacune e dubbi ancora aperti

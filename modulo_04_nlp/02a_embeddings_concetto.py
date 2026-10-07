@@ -751,12 +751,54 @@ def vettore_frase(testo: str, mappa: dict[str, np.ndarray]) -> np.ndarray:
 #         Una funzione sola, niente copia-incolla di `vicini` se puoi evitarlo.
 # TUO CODICE:
 
+def lontani(parola: str, mappa: dict[str, np.array], k: int = 5)-> list[tuple[str, float]]:
+    if parola not in mappa:
+        return []
+    punteggi = [(altra, coseno(mappa[parola], vettore)) for altra, vettore in mappa.items() if parola != altra]
+    punteggi.sort(key=lambda x: x[1])
+    return [(p, round(c, 3)) for p, c in punteggi[:k]]
+
+# if __name__ == "__main__":
+    
+#     print("\nEsercizio 1\n")
+
+#     mappa = costruisci_mappa()
+
+#     lontani_cedolino = lontani(
+#         "cedolino",
+#         mappa,
+#         3
+#     )
+
+#     print(lontani_cedolino)
 
 # --- E2. Costruisci due mappe, una con `min_conteggio=2` e una con
 #         `min_conteggio=3`. Stampa quante parole ha ciascuna e il coseno
 #         fra "cedolino" e "prospetto" in entrambe.
 #         Una riga di commento: cosa è cambiato e perché.
 # TUO CODICE:
+
+if __name__ == "__main__":
+    
+    print("\nEsercizio 2\n")
+
+    mappa_min_2 = costruisci_mappa(
+        min_conteggio = 2
+    )
+
+    mappa_min_3 = costruisci_mappa(
+        min_conteggio = 3
+    )
+
+    print(f"Mappa min_2 n_parole = {len(mappa_min_2)} parole\nMappa min_3 n_parole = {len(mappa_min_3)} parole\n")
+
+    coseno_min_2 = coseno(vettore_frase("Cedolino", mappa_min_2), vettore_frase("Prospetto", mappa_min_2))
+    coseno_min_3 = coseno(vettore_frase("Cedolino", mappa_min_3), vettore_frase("Prospetto", mappa_min_3))
+    
+    print(coseno_min_2)
+    print(coseno_min_3, "\n")
+    
+    print(mappa_min_3['prospetto'] if 'prospetto' in mappa_min_3.keys() else "Il coseno è 0 perchè nella mappa con sbarramento ad almeno 3 occorrenze prospetto non è riuscito ad entrare, e dunque ci troviamo nel caso in cui 'ignoranza' da parte del modello che non conosce un parola rischia di essere scambiata per 'significato differente'\n")
 
 
 # --- E3. Cerca nel corpus. Scrivi `cerca(domanda, mappa, k=3)` che
@@ -765,6 +807,39 @@ def vettore_frase(testo: str, mappa: dict[str, np.ndarray]) -> np.ndarray:
 #         Provala con "quanto mi è arrivato di stipendio" e guarda i tipi
 #         che escono. Questo è, in miniatura, il motore di ricerca del M6.
 # TUO CODICE:
+
+def cerca(domanda: str, mappa: dict[str, np.ndarray], k: int = 3, percorso_dati = PERCORSO_DATI, verbose: bool = True) -> list[tuple[int, str, float, str]]:
+    corpus = pd.read_csv(percorso_dati)
+    vettore_domanda = vettore_frase(
+        domanda,
+        mappa
+    )
+    lista_vettori_corpus = [vettore_frase(nota, mappa) for nota in corpus['testo']]
+    
+    pertinenza = [coseno(vettore_domanda, vettore_nota) for vettore_nota in lista_vettori_corpus]
+    
+    out = sorted(
+        [(int(idx), tipo, float(cos), testo) for idx, tipo, cos, testo in zip(corpus['id'], corpus['tipo'], pertinenza, corpus['testo'])],
+        key=lambda x: x[2],
+        reverse=True
+        )
+    
+    if verbose:
+        print(f"Query -> {domanda}\n")
+        print("Documenti più pertinenti:\n")
+        for o in out[:k]:
+            print(f"Id documento: {o[0]}\nTipo: {o[1]}\nCoseno: {round(o[2], 4)}\nTesto: {o[3]}\n")
+    return out[:k]
+    
+if __name__ == "__main__":
+    
+    print("\nEsercizio 3\n")
+    
+    mappa = costruisci_mappa()
+    
+    risposta = cerca("quanto mi è arrivato di stipendio", mappa)
+    
+    
 
 
 # --- E4. Esattamente 3 bullet, non 2 e non 4. Cosa questa mappa NON
