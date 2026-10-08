@@ -1,6 +1,6 @@
 # Modulo 4 — NLP, Embeddings & Transformers
 
-> **Stato**: 🟡 **In corso — C01 chiuso** (05/10/2026, voto difficoltà 4/10). Capitolo attivo: `02a_embeddings_concetto.py`. Prima il bridge `M04_R01`.
+> **Stato**: 🟡 **In corso — C01 e C02a chiusi** (02a 08/10/2026, voto difficoltà ⏳). Capitolo attivo: `02b_embeddings_pratica.py`. Installare `sentence-transformers` **prima**.
 > Vedi `CONTESTO_CORSO.md` → Stato Attuale / Ramo testuale nel Prodotto.
 
 > ⚠️ **Debito M3 aperto**: il Modulo 3 è chiuso sui contenuti (10/10 capitoli) ma **non archiviato** — manca l'URL pubblico della demo (portfolio #2, bloccato dalla policy Hugging Face) e restano `12_grad_cam_interpretabilita.py` da svolgere, il TODO 7 e il 🔄 CONFRONTO PRIMA/DOPO del cap.10. Il M4 parte comunque: sono debiti di deploy/coda, non prerequisiti.
@@ -28,8 +28,8 @@ Nota: il portfolio #2 (M3, Gradio) è ancora senza URL; se nel frattempo si sblo
 | # | File | Argomento | Difficoltà attesa | Piattaforma |
 |---|------|-----------|-------------------|-------------|
 | 01 | `01_testo_come_numeri.py` ✅ **chiuso** (05/10/2026, voto 4/10) | Normalizzazione e tokenizzazione del testo italiano, Bag of Words, TF-IDF, coseno, `testo_utils.py` | 4/10 (dato) | CPU locale |
-| 02a | `02a_embeddings_concetto.py` 🟡 **scritto** (05/10/2026, riscritto lo stesso giorno), da svolgere | **L'idea**: da conteggi a coordinate del significato. Mappa **calcolata dai 30 documenti** (co-occorrenze → PPMI → SVD), **zero installazioni**. La prova sui sinonimi è misurata: TF-IDF 0.000 vs mappa 0.960. `coseno` da riscrivere a memoria (🧠 retrieval). Rinforzi #60 #61 #62 | 6/10 attesa | CPU locale |
-| 02b | `02b_embeddings_pratica.py` ⚪ placeholder | **La pratica**: `sentence-transformers`, `encode()`, modelli multilingua, confronto TF-IDF vs embeddings (incluso il caso in cui TF-IDF vince) | 7/10 | CPU locale (modelli piccoli) |
+| 02a | `02a_embeddings_concetto.py` ✅ **chiuso** (08/10/2026, voto ⏳) | **L'idea**: mappa dai 30 documenti (co-occorrenze → PPMI → SVD). T1–T4 in `testo_utils.py`. T5 tolto | ⏳ | CPU locale |
+| 02b | `02b_embeddings_pratica.py` 🟡 **scritto** (08/10/2026), da svolgere | **La pratica**: `sentence-transformers`, MiniLM 384, confronto TF-IDF, quando il full-text vince | 7/10 attesa | CPU locale (modelli piccoli) |
 | 03 | `03_similarita_coseno.py` ⚪ placeholder | Misurare distanza fra significati, soglie, top-k, valutazione di una ricerca semantica | 6/10 | CPU locale |
 | 04 | `04_transformer_spiegato.py` ⚪ placeholder | Architettura Transformer ad alto livello: attention come "a cosa guardo mentre leggo". Domanda da colloquio. **Mock interview** del modulo (Regola 27) | 7/10 | CPU locale |
 | 05 | `05_huggingface_pipeline.py` ⚪ placeholder | `transformers`: pipeline, tokenizer, modelli pre-addestrati, model card. L'"npm dell'AI" | 6/10 | CPU locale + Colab se serve |

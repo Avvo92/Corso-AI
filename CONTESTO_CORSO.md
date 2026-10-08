@@ -3,7 +3,7 @@
 > Questo file viene consultato e aggiornato dal Mentor AI ad ogni sessione.
 > Serve a mantenere continuità tra le conversazioni e calibrare il corso.
 >
-> **Ultimo aggiornamento**: 05/10/2026 — **Chiuso M4 cap.01** (`01_testo_come_numeri.py`, voto difficoltà **4**/10). Prossimo: `02a_embeddings_concetto.py` (idea, zero installazioni). **Prodotto attivo** = torre di controllo. **Validator + Replicator in standby**. **Macchina di studio** = PC di lavoro: Ryzen 5 4500, **16 GB RAM**, RTX 3060 (12 GB VRAM).
+> **Ultimo aggiornamento**: 08/10/2026 — **Chiuso M4 cap.02a** (`02a_embeddings_concetto.py`, voto difficoltà **⏳** da confermare). Prossimo: `02b_embeddings_pratica.py` (`sentence-transformers`, installare **prima**). **Prodotto attivo** = torre di controllo. **Validator + Replicator in standby**. **Macchina di studio** = PC di lavoro: Ryzen 5 4500, **16 GB RAM**, RTX 3060 (12 GB VRAM).
 >
 > Storico 25/09/2026 (2ª sessione) — **Aperto il Modulo 4 (NLP)**: creata la struttura `modulo_04_nlp/` e scritto il **cap.01 `01_testo_come_numeri.py`** (verificato in esecuzione). Scelta dello studente: pausa dal deploy M3 e cambio argomento. Il **M3 resta non archiviato** (portfolio #2 senza URL, cap.12 Grad-CAM da svolgere, TODO 7 + 🔄 CONFRONTO PRIMA/DOPO in coda).
 >
@@ -42,12 +42,12 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Capitolo in corso** | **M4 cap.02a — `modulo_04_nlp/02a_embeddings_concetto.py`** (scritto in chiusura C01, 05/10/2026, **da svolgere**). Diario: `M04_C02a_embeddings_concetto_sessione.md`. Prima il bridge `M04_R01_after_C01_before_C02_testo_to_embeddings.md`. |
-| **Ultimo completato** | modulo_04_nlp/**01_testo_come_numeri.py** (05/10/2026) — tokenizzazione, BoW, TF-IDF, coseno, `testo_utils.py` con `<cf>`/`<iban>`, classificatore di tipo e contratto. **Voto difficoltà 4**/10. |
-| **Modulo attuale** | **Modulo 04 — NLP, Embeddings & Transformers** (1 capitolo chiuso: C01). Modulo 03: archivio **NON fatto** (attende portfolio #2). |
-| **Difficoltà media** | ~**7.05** (32 capitoli con voto) — M4-01 = **4**, calo netto dopo M3-10 = 8.5. Il carico percepito qui era basso: tenere il 02a concreto. |
-| **Priorità attive** | 📌 **svolgere M4 02a**; 🟢 **#63** chiusa Mini 5.2; 🔴 Pattern **#6**; 🟢 #60 #61 #62 chiuse in 02a; 📌 torre di controllo; 📌 RTX 3060; 📌 C12 Grad-CAM (#57/#58); 📌 portfolio #2 in pausa. |
-| **Sessione corrente** | Sessione 30 |
+| **Capitolo in corso** | **M4 cap.02b — `modulo_04_nlp/02b_embeddings_pratica.py`** (scritto in chiusura 02a, 08/10/2026). Diario: `M04_C02b_embeddings_pratica_sessione.md`. **Prima:** `pip install sentence-transformers`. Nessun bridge 02a→02b (Regola 40: R02 dopo **tutto** il cap.02). |
+| **Ultimo completato** | modulo_04_nlp/**02a_embeddings_concetto.py** (08/10/2026) — mappa da co-occorrenze/PPMI/SVD, coseno, `testo_utils` T1–T4 (`mappa.pkl` + contratto + 3 assert). **T5 tolto** (studente). Voto difficoltà **⏳**. |
+| **Modulo attuale** | **Modulo 04 — NLP, Embeddings & Transformers** (2 parti chiuse: C01, C02a). Modulo 03: archivio **NON fatto** (attende portfolio #2). |
+| **Difficoltà media** | ~**7.05** (32 capitoli con voto; 02a in attesa del 1–10). M4-01 = **4**. |
+| **Priorità attive** | 📌 **installare ST poi svolgere 02b**; 🔴 Pattern **#6**; 🟢 #60–#63; 📌 torre di controllo; 📌 RTX 3060; 📌 C12 Grad-CAM (#57/#58); 📌 portfolio #2 in pausa. |
+| **Sessione corrente** | Sessione 31 |
 
 ---
 
@@ -58,11 +58,11 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Data** | 05/10/2026 |
-| **Cosa è stato fatto** | Svolto e chiuso **M4 cap.01**. Quiz, TODO 1–7, progetto `testo_utils.py` (T1–T5, esame 7 poi 9). Voto difficoltà studente **4**/10. Scritti `02a_embeddings_concetto.py` e il bridge R01. Prodotto attivo e hardware 3060 già fissati in questa data. |
-| **Errori emersi** | Pattern **#6** ancora attivo (consegna incompleta: V6, V7, T4 nel capitolo invece che nel diario). Lacune **#60** (manca `transform` nel riparo), **#61** (tre segnali sulla stessa domanda), **#62** (ordine chiamato «significato»). Coseno **#59** chiuso nel TODO 5 (9.5). |
-| **Cosa fare nella prossima sessione** | (1) Bridge `M04_R01`; (2) svolgere `02a_embeddings_concetto.py` senza installare nulla; (3) `sentence-transformers` solo prima di **02b**. In coda: portfolio #2, C12, TODO 7 e confronto prima/dopo del M3. |
-| **Stato motivazione** | Alta. Il capitolo gli è pesato poco (4/10) e il filo RAG / modelli locali lo accende. Tenere il 02a corto e disegnato, non un muro di teoria. |
+| **Data** | 08/10/2026 |
+| **Cosa è stato fatto** | Chiuso **M4 cap.02a**. Quiz, mini, E1–E6, bridge R01 già svolti in sessione. Progetto T1–T4 in `testo_utils.py` (esame **7**/10). **T5 rimosso** dalla consegna (noioso). Scritto `02b_embeddings_pratica.py` completo. Voto difficoltà 02a **da confermare**. |
+| **Errori emersi** | Pattern **#6** (E5 tre job / due coperti; Mini 3.1 una riga). T3 primo giro: contratto-valigia e versioning da deploy nel modulo. T4 primo giro: `shape !=`. E6 primo giro: colpa al metodo invece che al corpus. |
+| **Cosa fare nella prossima sessione** | (1) `pip install sentence-transformers`; (2) svolgere `02b_embeddings_pratica.py`; (3) confermare voto difficoltà 02a (1–10). In coda: portfolio #2, C12, TODO 7 M3. |
+| **Stato motivazione** | Curioso sul prodotto (programma di rilascio) e infastidito dal saggio T5. 02b è pratica + mini corti, non un altro diario discorsivo. |
 
 ### ➕ Coda della sessione 29 — apertura M4 (25/09/2026)
 
@@ -84,7 +84,7 @@
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08–C10, M4 C01)** | C08–C09 note. **C10 V5:** “controllo che conferma la causa” → ha riproposto il sintomo. **C10 TODO 1:** chiesto “con un numero”, dato solo criterio qualitativo. **M4 C01 V6 (02/10):** chiesto come si trasforma il testo + perché il conteggio non basta + analogia propria → descritta solo la pipeline dei conteggi (6.5/10). **V7 (02/10, 6/10):** chiesto causa + controllo, dati solo tre cause senza controllo. **TODO 1 (02/10, esame 7/10; poi 8; chiusura 9.5):** precision e commento (e) sistemati. Il commento resta generico (test piccolo), senza i 6 documenti e la classe `altro`. **TODO 3 (02/10, esame 6.5; poi 6; chiusura 8.5):** regex importi corretta, `<importo>` e `<data>` uno per occorrenza. L'analisi non dice ancora che `1.703,45` diventa `170345`, e non elenca il `print`. **TODO 4 (05/10, esame 8/10):** diagnosi del `vec` rifatto in produzione giusta; il riparo salva il vettorizzatore e non scrive `transform`. Antidoto: se la consegna chiede due job, elencarli vuoti prima di scrivere |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08–C10, M4 C01, M4 02a)** | **M4 02a Mini 3.1 (6.5):** una riga su due. **E5 (7/10):** tre job, due coperti (manca “cosa NON guadagni”). Antidoto in 02b: tre righe vuote prima di scrivere. C01/C08–C10: vedi tabella Pattern completa sotto |
 | 18 | Confusione Series vs DataFrame | 🟡 In miglioramento | Quiz cap.02 ok; consolidare su nuovi DataFrame |
 | 19 | `if var:` vs `is not None` per numeri opzionali | 🟡 In miglioramento | Rinforzo terminologico cap.02; evitare "null" in risposte |
 | 20 | Anti-pattern valutazione confuso con feature engineering | 🟡 In miglioramento | Rinforzato in cap.02 (blocco dedicato + quiz) |
@@ -161,7 +161,7 @@
 
 | Campo | Valore |
 |-------|--------|
-| **Prossimo da svolgere** | modulo_04_nlp/**`02a_embeddings_concetto.py`** — **riscritto integralmente il 05/10/2026** (vedi riga sotto). Prima il bridge `quiz_ripasso_tra_capitoli/M04_R01_after_C01_before_C02_testo_to_embeddings.md`. Zero installazioni. Diario `M04_C02a_embeddings_concetto_sessione.md`. |
+| **Prossimo da svolgere** | modulo_04_nlp/**`02b_embeddings_pratica.py`** — scritto in chiusura 02a (08/10/2026). Diario `M04_C02b_embeddings_pratica_sessione.md`. **Installare prima:** `pip install sentence-transformers`. Nessun bridge 02a→02b. |
 | **Riscrittura 02a (05/10/2026)** | La prima stesura (358 righe) aveva coordinate **inventate a mano**: nessun meccanismo, la promessa sui sinonimi mai misurata, nessun coseno, **nessun task prodotto** (violazione Regole 31/34), nessuna DoD, nessun blocco libro. Su richiesta dello studente riscritto completo (~1.000 righe). Ora: mappa calcolata dai **30 documenti reali** (co-occorrenze → PPMI → SVD con `numpy`, zero installazioni); la prova centrale è misurata — **TF-IDF 0.000 vs mappa 0.960** su "prospetto paga di aprile"/"cedolino di marzo", che **non co-occorrono mai**; tabella dimensioni 2/4/8 che mostra perché 2 assi non bastano (cedolino–certificazione 0.986 a dim 2, 0.015 a dim 4); sezione "quando NON usarla" (codici, IBAN, numeri di pratica → match esatto); task prodotto T1–T5 su `testo_utils.py` con 3 assert di regressione; DoD; `📚 LETTURA PARALLELA [ALAMMAR cap. 2]` + 1 esercizio 📚. **Numeri verificati eseguendo il file.** |
 | **`coseno` = 🧠 [RETRIEVAL] in 02a** | Scelta dello studente (05/10). In Sez. 3 c'è lo **stub** che solleva `NotImplementedError`: il file gira e costruisce la mappa, ma **non misura** finché non la riscrive dalla memoria. Il ripasso in cima dà il **concetto** (direzione, 1 e 0, norma = lunghezza, guardia sul vettore nullo) e **non la formula** — Regola 19 rispettata. Alla correzione: se corretta, il termine "coseno" passa a **3/3** nel glossario. |
 | **Struttura M4 pronta** | C01 chiuso. `02a_embeddings_concetto.py` riscritto (05/10/2026). Bridge `M04_R01` popolato. Diario `M04_C02a`. `sentence-transformers` solo prima di **02b**. |
@@ -173,7 +173,8 @@
 | **Rinforzi NON messi qui (e perché)** | 🔴 **#57** e 🔴 **#58** restano in `12_grad_cam_interpretabilita.py` (visione). |
 | **Residui M3 da recuperare (in coda, non bloccanti)** | C12 Grad-CAM da svolgere; TODO 7 📐 system design C10; 🔄 **CONFRONTO PRIMA/DOPO** (Regola 16, obbligatorio prima dell'archivio M3); 🔴 **Portfolio #2**: scegliere tra ZeroGPU, HF PRO, altro host, o demo "locale + screenshot". Finché non è deciso, **niente archivio M3**. |
 | **Ponte mentale da riusare** | **Embedding = un indirizzo sulla mappa del significato** (una manciata di numeri, come le coordinate). Vicino = simile. Le coordinate non le decide un umano: escono dalla **compagnia che le parole frequentano** nel corpus. La media dei punti non legge l'ordine. Ponte lavoro: nella torre di controllo scrivi "prospetto paga", fra due mesi cerchi "cedolino" — con il cap.01 la nota non esce, con la mappa sì. |
-| **Dopo 02a** | Sostituire il placeholder `02b_embeddings_pratica.py`. Installare `sentence-transformers` **prima** di 02b, non durante. |
+| **Dopo 02a (fatto 08/10)** | Placeholder 02b sostituito. T5 02a rimosso su richiesta; mini 0.1 in 02b (direzione senza nome). Rinforzo Pattern #6 (tre job). Q7 type hint `np.ndarray`. Progetto 02b: encode 30 note, `note_minilm.pkl`, chiave contratto `mappa_dim_minilm=384` (non sovrascrivere `mappa_dim=4`). |
+| **Dopo 02b** | Popolare `M04_R02_after_C02_before_C03_embeddings_to_similarita.md` e sostituire `03_similarita_coseno.py`. |
 
 ---
 
@@ -821,7 +822,7 @@ completezza del self-check e chiedere correzioni.
 | 2 — Machine Learning Fundamentals | ML classico, Scikit-Learn, metriche, overfitting, Streamlit, **primo deploy** | Cuore predittivo: classificatore + anomaly + deploy | scikit-learn, streamlit | 🟢 **Completato** — archivio [`archivi/ARCHIVIO_MODULO_02.md`](archivi/ARCHIVIO_MODULO_02.md) |
 | **Ponte Matematico** (bridge M2→M3) | Vettori, matrici, dot product, Dense — codice + Matplotlib | Fondamenta M3 (shape, `X @ W + b`, coseno) | numpy, matplotlib | 🟢 **Completato** 07/05/2026 — vedi `archivi/ARCHIVIO_PONTE_MATEMATICO.md` |
 | 3 — Deep Learning & Computer Vision | Reti neurali, PyTorch, CNN, transfer learning, Gradio | Ramo visivo: classificatore CNN per segnali grafici di alterazione documenti | torch, torchvision, gradio | 🟡 **In corso — 9/10 capitoli** (ultimo chiuso: cap.09 transfer, 14/09/2026). Resta: **10 Gradio + deploy HF Spaces** |
-| 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | 🟡 **In corso — C01 chiuso** (05/10/2026, voto 4). Prossimo: `02a` |
+| 4 — NLP, Embeddings & Transformers | Tokenizzazione, embeddings, Transformer, HuggingFace, sentence-transformers | Ramo testuale: estrazione campi OCR + matching semantico cross-documento | transformers, sentence-transformers | 🟡 **In corso — C01 + C02a chiusi** (02a 08/10, voto ⏳). Prossimo: `02b` |
 | 5 — LLM Integration & Prompt Engineering | API OpenAI, prompt engineering, structured output, function calling, Pydantic, Ollama, multimodale, sicurezza AI | Interfaccia intelligente: assistente operatore + structured extraction documenti variabili | openai, pydantic-ai, ollama | ⬜ Da creare |
 | 6 — RAG Systems | ChromaDB, LangChain, chunking, hybrid search, RAGAS evaluation, LangSmith observability | Compliance normativa: RAG su norme fiscali versionate con citazioni fonte | langchain, chromadb, ragas, langsmith | ⬜ Da creare |
 | 7 — AI Agents & Automation | LangGraph, tool use, multi-agent, MCP server custom, agentic RAG | Orchestratore: agente che coordina intera pipeline end-to-end | langgraph, crewai | ⬜ Da creare |
@@ -900,8 +901,9 @@ completezza del self-check e chiedere correzioni.
 | **M3-09_transfer_learning** | **8** | ↑ vs M3-08. Confermato studente **14/09/2026** (“per via della lunghezza di tutta la pipeline”). Transfer ResNet18 + TRACK PROVA Ants/Bees (Colab). Media primi tentativi ~**7.5–8**; track prova **8**/10. Residui: TODO 8 vuoto, P6 README, debito C1–C8 buste. Punti deboli: Mini 5.3 eval/no_grad 4/10, Mini 6.2 5/10, TODO 6 real-world 5.5. |
 | **M3-10_progetto_gradio** | **8.5** | ↑ vs M3-09 — massimo del modulo dopo il 9 del cap.05. Confermato studente **25/09/2026**: *“difficoltà di tenere mentalmente uniti i pezzi di tutta la pipeline, dall'addestramento alla costruzione del modello fino all'app Gradio”* → **carico di integrazione**, non concetti isolati. Primi tentativi: forti su LFS (9), retrieval `costruisci_modello` (8.5→9.5), annotazioni TODO 2 (7.5→9.5); deboli su tre leve V6 (5.5), cold start V7 (6), TODO 1 colloquio (6.5), TODO 5 interleaving (6). Chiusura **con residuo**: G6–G8 deploy, TODO 7, 🔄 CONFRONTO PRIMA/DOPO. |
 | **M4-01_testo_come_numeri** | **4** | -4.5 ↓ vs M3-10. Confermato studente **05/10/2026**. Capitolo percepito leggero. Esami più bassi: V6 6.5, V7 6, TODO 2 e 3 a 6.5, progetto 7 (poi 9). Solidi: TODO 5 coseno 9.5, TODO 4 debug 8. Pattern #6 ancora attivo. |
+| **M4-02a_embeddings_concetto** | **⏳** | Chiuso **08/10/2026**. Voto studente da confermare. Esame progetto T1–T4 **7**/10. E5 7 (Pattern #6), E6 6 (metodo vs corpus), E1 6.5. Solidi: Mini 1.1 10, E2 9.5, E4 9. T5 tolto. |
 
-**Media attuale**: ~**7.05** (32 capitoli con voto, incluso M4-01 = **4**). Il 4 non è un calo di competenza: i primi tentativi del diario stanno intorno al 7–8. È un capitolo che gli è sembrato alla sua portata. Il 02a resta corto.
+**Media attuale**: ~**7.05** (32 capitoli con voto; **02a in attesa**). M4-01 = **4**.
 
 ---
 
@@ -1171,13 +1173,22 @@ completezza del self-check e chiedere correzioni.
 |---------|-------------------|---------------|-------------------------|-------|
 | Token | Pezzo di testo dopo la pulizia (parola, o segnaposto come `<cf>`) | M4-01 | 1/3 | 🔄 |
 | Bag of Words | Scheda: una casella per parola, un conteggio. L'ordine non entra | M4-01 | 1/3 | 🔄 (#62) |
-| TF-IDF | Il conteggio pesato: la parola presente in tutti i documenti vale poco | M4-01 | 1/3 | 🔄 |
+| TF-IDF | Il conteggio pesato: la parola presente in tutti i documenti vale poco | M4-01 | 2/3 | 🔄 (confronto vs mappa 02a) |
 | IDF | Quanto una parola è rara nel corpus. Rara = distingue. Onnipresente = no | M4-01 | 0/3 | 🔄 |
 | Sparsità | Quasi tutte le caselle a zero. Tipico del Bag of Words | M4-01 | 1/3 | 🔄 (Mini 1.1 02a, 10/10: 19.970 zeri su 20.000) |
 | OOV | Parola mai vista nel vocabolario: si scarta, non diventa una casella nuova | M4-01 | 1/3 | 🔄 (#61) |
 | Stopword | Parola troppo comune (`di`, `il`) tolta prima del conteggio | M4-01 | 1/3 | 🔄 |
 | Segnaposto | `<importo>`, `<data>`, `<cf>`, `<iban>`: la cifra sparisce, il ruolo resta | M4-01 | 1/3 | 🔄 |
 | `csr_matrix` | Matrice sparsa di scikit-learn. Su un campione piccolo si legge con `.toarray()`, non `.to_numpy()` | M4-01 | 1/3 | 🔄 |
+
+### Cap.02a M4 — Embeddings, l'idea
+
+| Termine | Definizione breve | Introdotto in | Volte usato senza aiuto | Stato |
+|---------|-------------------|---------------|-------------------------|-------|
+| Embedding | Indirizzo: pochi numeri densi. Vicino = senso simile, non «stessa parola» | M4-02a | 1/3 | 🔄 |
+| PPMI | Pesa l'incontro di due parole rispetto al caso. Negativi → 0 | M4-02a | 1/3 | 🔄 |
+| SVD | Spezza la tabella in direzioni + valori singolari; si tengono le prime `dim` | M4-02a | 1/3 | 🔄 |
+| `vettore_frase` | Media dei punti-parola noti (`transform` della mappa). Ordine perso | M4-02a | 2/3 | 🔄 (T4 assert) |
 
 ---
 
@@ -1321,6 +1332,10 @@ completezza del self-check e chiedere correzioni.
 |---|----------------|----------------|
 | 1 | Perché solo le parole viste almeno due volte? | Un incontro solo non è una compagnia. Il filtro è sul conteggio dei token: due volte nella stessa busta passano, e la co-occorrenza resta di un documento solo |
 | 2 | PPMI: perché non basta il conteggio grezzo? | Si confronta l'incontro vero con quello atteso se le due parole fossero indipendenti. «Totale» ovunque ≈ caso. «IRPEF» rara accanto a «cedolino» = notizia. I negativi si azzerano. Non è un IDF di due parole: stessa famiglia (chi sta ovunque pesa poco), più il conteggio di quella coppia |
+| 3 | A cosa serve `posizione` / `enumerate`? | Dict parola → indice di riga. `conteggi[posizione[a], posizione[b]] += 1` usa i **valori** (gli indici), non solo le chiavi |
+| 4 | Cos'è `np.linalg.svd`? | Fattorizza la tabella: U, valori singolari, Vt. Si tengono le prime `dim` colonne di U allungate da s |
+| 5 | Libreria vs programma di rilascio | `testo_utils` = attrezzi importabili. Versioning/contatore = script a parte, non il `main` dei test |
+| 6 | joblib dump/load | `dump` scrive il file; `load` restituisce l'oggetto. Nome fisso `mappa.pkl` |
 
 ---
 
@@ -1331,7 +1346,7 @@ completezza del self-check e chiedere correzioni.
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08+C09, M4 C01, M4 02a)** | C08: 4 occorrenze. **C09:** Mini 2.4 “due righe”, Mini 6.2 “UNA obiezione sui numeri” (5/10), TODO 6 “5 punti + motivo” (5.5→7.5). **M4 C01 V6 (02/10, 6.5/10):** manca «perché contare non basta» e l'analogia propria. **V7 (02/10, 6/10):** tre cause, zero controlli. **TODO 1 (02/10, esame 7; chiusura 9.5):** precision e commento (e) sistemati. **TODO 3 (02/10, esame 6.5; chiusura 8.5):** regex sistemata. **TODO 4 (05/10, esame 8/10):** manca `transform` nel riparo. **M4 02a Mini 3.1 (06/10, 6.5/10):** chiesto una riga per cedolino e una per saldo, scritta solo cedolino. Antidoto: lista numerata vuota prima di scrivere |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08+C09, M4 C01, M4 02a)** | C08–C10 e C01 come prima. **M4 02a Mini 3.1 (6.5):** una riga su due. **E5 (7/10):** manca “cosa NON guadagni”. Antidoto in 02b Micro #6 |
 | 18 | **Confusione Series vs DataFrame** | 🟡 In miglioramento | Rinforzato cap.01-02; quiz cap.02 ok |
 | 19 | **`if var:` vs `is not None` per numeri opzionali** | 🟡 In miglioramento | Emerso cap 12 — rinforzo terminologico cap.02 |
 | 20 | **Anti-pattern valutazione vs feature engineering** | 🟡 In miglioramento | Quiz cap.01 + rinforzo cap.02 |
@@ -1424,7 +1439,8 @@ Legenda: 🔴 Attivo (si ripete) | 🟡 Visto e corretto (da monitorare) | ⚠�
 | "Cold start = prima query dopo il deploy" | Lento perché paghi setup (container, import torch, 45 MB di pesi, primi buffer), non perché il modello "si scaldi" | Connessione DB e warm-up del pool alla prima richiesta | M3-10 | Latenza serving, misura p50/p95, ottimizzazione boot |
 | "Bag of Words = scheda da barrare" | Una casella per parola, un conteggio. Stesse parole, ordine diverso: stessa scheda | Tag di un post: conta i tag, non l'ordine del testo | M4-01 | Limite dell'ordine, ponte agli embedding |
 | "TF-IDF = la casella barrata da tutti non distingue" | Se la parola è in ogni documento, il peso scende | Un filtro «ha una descrizione» che non separa nessun prodotto | M4-01 | Perché i sinonimi e le parole rare contano di più |
-| "Embedding = indirizzo sulla mappa" | Due numeri. Vicino = significato simile. Non è un conteggio | Coordinate di due negozi: vicini non perché hanno lo stesso nome | M4-02a | RAG (M6): si cerca il punto vicino, non la parola uguale |
+| "Embedding = indirizzo sulla mappa" | Pochi numeri densi. Vicino = significato simile. Non è un conteggio | Coordinate di due negozi: vicini non perché hanno lo stesso nome | M4-02a | RAG (M6): si cerca il punto vicino, non la parola uguale |
+| "Libreria vs programma di rilascio" | `testo_utils` si importa in due righe; il versioning sta in uno script a parte | Laravel: classe in `app/` vs comando Artisan di deploy | M4-02a | Contratto + `mappa.pkl` fissi; `allena_testo.py` dopo |
 
 ### Come usare questa sezione
 Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente:
@@ -1568,6 +1584,15 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - **Aperti in ingresso 02a:** #63 (la guardia sul vettore nullo), Pattern #6. #60, #61 e #62 chiuse il 05/10.
 - Diario: `sessioni_capitoli/M04_C01_testo_come_numeri_sessione.md`.
 
+### Cap.02a M4 — Embeddings, l'idea (completato 08/10/2026; voto difficoltà: **⏳**)
+
+- **Mappa calcolata** dai 30 testi: vocabolario (conteggio ≥2) → co-occorrenze → PPMI → SVD troncata (`dim=4`).
+- **`vettore_frase`**: media dei punti noti; zeri se OOV totale; ordine perso (media commutativa).
+- **Coseno** riscritto (retrieval Sez. 3) + T4: shape `(DIM,)`, auto-coseno ~1, sconosciute → 0.0.
+- **`testo_utils`**: `salva_mappa` / `carica_mappa` (`mappa.pkl`), contratto con `mappa_dim` / `min_conteggio` / `n_parole`, `VERSIONE` 1.2. T5 spiegabilità **tolto**.
+- **Distinzione** libreria importabile vs script di rilascio (versioning) capita in chat.
+- Diario: `sessioni_capitoli/M04_C02a_embeddings_concetto_sessione.md`. Progetto esame **7**/10.
+
 ---
 
 ## Checklist di Auto-Revisione (prima di consegnare il codice)
@@ -1616,6 +1641,9 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 - [ ] **Matplotlib:** ho scritto `plt.show()` **con le parentesi**? E ho salvato con `savefig` **prima** di `show()`?
 - [ ] **Confronto con None:** ho usato `is None` e non `== None`?
 - [ ] **In un file con molti esercizi in sequenza**, il modello che passo a `predict` o ai coefficienti è lo stesso su cui ho fatto l’ultimo `.fit` coerente con X/y?
+- [ ] **Consegna a N job** (es. 3 bullet): ho numerato 1..N vuoti e poi riempito? (Pattern #6)
+- [ ] **`joblib.dump`**: sto salvando l'etichetta (contratto) o ci ho messo dentro anche `pipe` / la mappa?
+- [ ] **`assert a.shape == (DIM,)`**: il `==` è quello che voglio, non `!=`
 
 ### Controlli Bonus (buone pratiche)
 - [ ] La funzione ha una docstring? (se la consegna la chiede, è OBBLIGATORIA)
@@ -1672,7 +1700,7 @@ Quando il Mentor deve spiegare un concetto nuovo, cerca prima un ponte esistente
 | Dot product (`np.dot` / `@`) | 30/04 (cap.01 Ponte) | da fare in cap.02 Ponte (rinforzato come matrice-vettore product) | — | — | 🟡 Praticato (sez. 3 + mini-progetto) |
 | Norma euclidea | 30/04 (cap.01 Ponte) | da fare in cap.02 Ponte | — | — | 🟡 Praticato (sez. 4 + funzione `norma`) |
 | Normalizzazione (versore) | 30/04 (cap.01 Ponte) | M3 (input scaling reti neurali) | — | — | 🟡 Praticato (sez. 5) |
-| Coseno (similarità) | 30/04 (cap.01 Ponte) | M4 C01 TODO 5 (05/10/2026, esame 9.5) | — | — | 🟡 Rivisto in produzione testuale. Prossimo: cap.03 M4 |
+| Coseno (similarità) | 30/04 (cap.01 Ponte) | M4 C01 TODO 5 (05/10, 9.5) | M4 02a T4 assert (08/10) | — | 🟡 Prossimo: 02b / cap.03 M4 |
 | Distanza euclidea | 30/04 (cap.01 Ponte) | M3 (loss MSE), M4 (k-NN come baseline) | — | — | 🟡 Vista (PNG didattico) |
 
 ### Concetti M3 — Deep Learning (da popolare man mano)
@@ -1826,6 +1854,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 5 domande derivata/gradiente/vanishing/p-y | M3-04 | Mid — ML/DL fondamentali | Derivata vs pendenza, sigmoid 0.25, vanishing, chain rule p-y | ⚠️ 7/10 — definizione derivata da rafforzare |
 | Chain rule + GD + learning rate (V1–V8) | M3-05 | Mid — DL fondamentali | Definizione chain rule, formula update GD, sintomi lr, debug segno `+`/`-`, previsione output GD, 5 derivate per `dL/dW1`, Feynman | ⚠️ ~8.3/10 medio — **V7 5/10** (catena W1) e **V8 7/10** (Feynman senza ciclo) da riprovare a freddo |
 | Spiega Conv / Pool / feature map e perché non flatten+MLP | M3-08 | Mid — DL & Computer Vision | Convoluzione a parole senza formule, ruolo del pooling, cos'è una feature map, critica alla rete fully-connected su pixel | ✅ Risolto (**8/10** primo tentativo — “feature map” non nominata; **9.5** post-fix). Da riprovare a freddo con l'analogia web |
+| Full-text vs embedding (quando quale) | M4-02a E5 | Mid — NLP / ricerca | Guadagno parafrasi, limiti (codici, negazione, spiegabilità), caso full-text | ⚠️ 7/10 — manca “cosa NON guadagni” (Pattern #6). Riprovare in 02b |
 | Transfer learning vs scratch + due fasi | M3-09 | Mid — DL & Computer Vision | Perché pretrained con pochi dati; freeze→head→layer4; quando cambiare idea | ✅ TODO 1 **8.5**/10 (2° **9.5**) |
 | Rimuovi duplicati da lista | 04 | Junior — classico | Iterazione, `not in`, costruzione lista di appoggio | ✅ Risolto (logica corretta, mancava incapsulamento in funzione) |
 | Inverti lista senza .reverse() | 04 | Junior — classico | Cicli, `.insert(0)`, `range()` con passo negativo | ✅ Risolto (con errori: `== l` superfluo, seconda versione usa [::-1] vietato) |
@@ -1845,7 +1874,7 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | 09 — Pandas | Pulizia dati con valori mancanti, group by + aggregazione, pivot table | ✅ |
 | M2 — ML | Train/test split manuale, calcolo accuratezza, feature scaling, "spiega overfitting" | 🟡 (metriche classificazione es.3 cap.04 ok; completare con validazione cap.05) |
 | M3 — DL & CV | Spiegare backpropagation a parole, costruire un modello semplice, leggere una loss curve | 🟡 (cap.09: transfer + metriche + Colab OK; restano Gradio deploy + loss curve overfitting in demo C10) |
-| M4 — NLP | "Cos'è un embedding?", "Come funziona un Transformer?", similarità coseno a mano | ⬜ |
+| M4 — NLP | "Cos'è un embedding?", "Come funziona un Transformer?", similarità coseno a mano | 🟡 (02a: idea + coseno; 🎯 E5 full-text vs embedding. Completare in 02b E5 a voce) |
 | M5 — LLM | "Progetta un chatbot con function calling", prompt engineering sotto pressione, "cos'è il prompt injection?" | ⬜ |
 | M6 — RAG | "Progetta un RAG per 10M documenti", "che chunking strategy useresti?", "come valuti la qualità del RAG?" | ⬜ |
 | M7 — Agents | "Progetta un agente che gestisce ordini", "quando workflow vs agente?", "cos'è il MCP?" | ⬜ |
@@ -1986,7 +2015,8 @@ Quando l'agente prepara un capitolo e ci sono lacune 🔴 nella tabella, inseris
 | M3 cap.10 — Gradio + deploy | 🟡 Completato **con residuo** (25/09/2026) | 🏗️ **G1–G5 ✅**: pesi + contratto, verifica core senza UI, pacchetto Space `modulo_03_dl_cv/app/` (app.py, modello.py, requirements pinnati CPU, README YAML), 4 esempi, model card 6 voci. **G6–G8 ❌**: deploy/smoke/latenza bloccati dalla policy HF. Voto **8.5**/10. |
 | M3 — DL & CV (portfolio CNN cap.10) | 🟡 Modulo **non archiviato** | Codice completo; manca solo l'URL pubblico (portfolio #2). Cap.12 Grad-CAM creato (da svolgere). Feature `prob_busta_paga_visivo` con C1–C8. |
 | M4 cap.01 — Testo come numeri | ✅ Completato (05/10/2026) | 🏗️ `testo_utils.py`: T1–T3 e T5 ok (esame progetto 7, post 9). T4 scritto nel capitolo, non nel diario. Voto difficoltà **4**/10. |
-| M4 — NLP | 🟡 In corso | **Ramo testuale**. C01 chiuso. Prossimo: 02a (idea) poi 02b (pratica). |
+| M4 cap.02a — Embeddings idea | ✅ Completato (08/10/2026) | `costruisci_mappa` + `vettore_frase` + `mappa.pkl` + contratto esteso + 3 assert. Esame T1–T4 **7**/10. T5 tolto. Voto difficoltà ⏳. |
+| M4 — NLP | 🟡 In corso | **Ramo testuale**. C01 e C02a chiusi. Prossimo: 02b (pratica ST). |
 | M5 — LLM | ⬜ Da fare | |
 | M6 — RAG | ⬜ Da fare | |
 | M7 — Agents | ⬜ Da fare | |
@@ -2510,6 +2540,7 @@ Le regole complete sono in `Regole Didattiche Concordate` (punti 1-38). Qui rest
 
 | Data | Modifica | Motivo | Sezione toccata |
 |------|----------|--------|-----------------|
+| 08/10/2026 | **Chiusura M4 cap.02a** (`02a_embeddings_concetto.py`). T5 spiegabilità **rimosso** su richiesta studente. Progetto T1–T4 esame **7**/10. Voto difficoltà **⏳**. Scritto `02b_embeddings_pratica.py` (ST, MiniLM 384, rinforzi #6 e direzione senza nome). File 02a: solo T5/DoD (consegna), nessuna risposta studente toccata. | Chiusura capitolo 2 M4 + «cancella la parte finale noiosa» | Stato, sessione, priorità, prossimo, valutazioni, glossario, domande, pattern, ponti, competenze, checklist, colloquio, progetto, changelog, `02b`, diari, README M4 |
 | 05/10/2026 (2ª) | **Riscrittura integrale di `02a_embeddings_concetto.py`** (da 358 a ~1.000 righe). La prima stesura aveva **coordinate inventate a mano** (`MAPPA = {"cedolino": (2.0, 1.0), ...}`): nessun meccanismo, la promessa sui sinonimi raccontata e mai misurata, nessun coseno, **nessun task prodotto** (violazione Regole 31/34), nessuna DoD, nessun blocco libro, mancavano "errori tipici" e "quando NON usarlo" (Regola 30). Ora la mappa si **calcola dai 30 documenti reali** con la `tokenizza` del cap.01: co-occorrenze su documento → **PPMI** (stessa idea dell'IDF, con ripasso Regola 43) → **SVD** con `numpy`, zero installazioni. La prova centrale è un numero: **TF-IDF 0.000 vs mappa 0.960** su "prospetto paga di aprile"/"cedolino di marzo", parole che **non co-occorrono mai** — e il cap.01 dà 0.000 anche a due frasi di mondi diversi, cioè non distingue niente. Aggiunte: coseno vs distanza euclidea con ponte ai DB vettoriali del M6; **`coseno` come 🧠 [RETRIEVAL]** (stub che solleva `NotImplementedError`, scelta dello studente); Sez. 6 dimensioni con tabella misurata 2/4/8 (cedolino–certificazione **0.986 a dim 2**, **0.015 a dim 4** → perché i modelli veri usano 384); "una dimensione non ha un nome" contro le `parole_decisive` spiegabili del cap.01; cosa non cattura (negazione, cifra esatta, identità) e **quando NON usarla** (codice fiscale, IBAN, numero pratica → match esatto, anticipo ricerca ibrida M6); statico vs contestuale (cap.04); `📚 LETTURA PARALLELA [ALAMMAR cap. 2]` + E6 📚 sull'aritmetica dei vettori; checklist 8 punti; quiz verifica 8 domande con Feynman V8; E1–E6 con 🎯 [COLLOQUIO] ed E4 a esattamente 3 bullet (Pattern #6); 🏗️ T1–T5 (`costruisci_mappa` + `vettore_frase` in `testo_utils.py`, mappa salvata con `joblib`, contratto esteso con `mappa_dim`/`mappa_min_conteggio`/`mappa_n_parole`, **3 assert di regressione** per Regola 37, spiegabilità onesta nel diario); DoD di capitolo. **Tutti i numeri verificati eseguendo il file**; grafico 2D testato headless. I tag 🔧 🔍 🔀 restano in **02b** (split 29/09). | Domanda dello studente: «credi possa essere migliorato, considerando l'importanza del topic?». Critica accettata e scope **completo** scelto da lui. L'embedding è il mattone portante di 02b, 03, 05, 07 e di tutto il M6: un capitolo con coordinate inventate non regge quel peso | Prossimo Capitolo (3 righe nuove + rinforzi + ponte mentale), changelog, `modulo_04_nlp/02a_embeddings_concetto.py`, diario `M04_C02a` |
 | 05/10/2026 | **Chiusura M4 cap.01** (`01_testo_come_numeri.py`, voto difficoltà **4**/10). Media ~**7.05** (32 capitoli). Lacuna **#59** 🟢. Aperte **#60 #61 #62** e Pattern **#6**. Scritti `02a_embeddings_concetto.py` (zero installazioni, rinforzi dentro) e il bridge `M04_R01`. File del capitolo chiuso **non modificato**. Proposte del 29/09 (taglio cap.04, antidoto #6, glossario attivo) **riproposte, non applicate**. | Voto studente «4» in chiusura capitolo | Stato, sessione, priorità, prossimo, valutazioni, glossario, domande, ponti, competenze, ripasso, lacune, progetto, changelog, `02a`, bridge, diari, README M4, roadmap |
 | 05/10/2026 | **Prodotto attivo = torre di controllo** (pratiche, meeting, scadenze). Brief in `briefing_progetto_ia.md` e `recap_progetto_ia.md`. **Validator + Replicator in standby**. **Hardware di studio**, specifiche incollate dallo studente: Ryzen 5 4500, **16 GB RAM**, GeForce RTX 3060 (VRAM 12 GB, specifica desktop). Default modelli **7–8B**. Il 14B non è il default perché la RAM di sistema è 16 GB. PC privato Vega = fallback a ~3B su CPU. Cap.01 del M4 non riscritto. Audio/diarizzazione fuori programma. | Scelta studente: il controllo documentale è meno realizzabile subito; la macchina con cui studia è quella di lavoro. I 32 GB di RAM del brief Gemini non c'erano: la schermata di sistema dice 16 GB | Profilo, Strategia hardware, Budget API, Regola 24, Progetto incrementale, priorità, `APPUNTI_APPLICATIVO.md`, `docs/prodotto/README.md`, `AGENTS.md`, `mentor-ai-corso.mdc`, `roadmap_ai.md` |

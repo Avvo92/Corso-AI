@@ -808,7 +808,12 @@ if __name__ == "__main__":
 #         che escono. Questo è, in miniatura, il motore di ricerca del M6.
 # TUO CODICE:
 
-def cerca(domanda: str, mappa: dict[str, np.ndarray], k: int = 3, percorso_dati = PERCORSO_DATI, verbose: bool = True) -> list[tuple[int, str, float, str]]:
+def cerca(domanda: str,
+        mappa: dict[str, np.ndarray],
+        k: int = 3,
+        percorso_dati = PERCORSO_DATI,
+        verbose: bool = True) -> list[tuple[int, str, float, str]]:
+    
     corpus = pd.read_csv(percorso_dati)
     vettore_domanda = vettore_frase(
         domanda,
@@ -837,18 +842,16 @@ if __name__ == "__main__":
     
     mappa = costruisci_mappa()
     
-    risposta = cerca("quanto mi è arrivato di stipendio", mappa)
-    
-    
+    risposta = cerca("quanto mi è arrivato di stipendio", mappa)    
 
 
 # --- E4. Esattamente 3 bullet, non 2 e non 4. Cosa questa mappa NON
 #         promette a chi la usa. Tre limiti DIVERSI, non tre modi di dire
 #         la stessa cosa.
 # TUA RISPOSTA:
-# 1.
-# 2.
-# 3.
+# 1. La mappa restituisce vettori di significato limitatamente agli esempi che conosce e alle parole che ho visto. Se una frase mandata come query non contiene nessuna parola che conosce, nel confronto non comunica la sua ignoranza, ma da come risultato "significato diverso".
+# 2. Non riconosce l'ordine delle parole, quindi "il lordo è più importante del netto" e "il netto è più importante del lordo" per lei hanno significato identico.
+# 3. Non sa dare un importanza relativa alle parole che compongono una frase. Nelle frasi lunghe il valore delle parole davvero importante si diluisce, Poichè ogni colonna dell'embedding di una frase è prodotto dalla media tra tutte le parole che la compongono.
 
 
 # --- E5. 🎯 [COLLOQUIO] «Abbiamo già una ricerca full-text sul database.
@@ -856,6 +859,7 @@ if __name__ == "__main__":
 #         Rispondi in 4-6 righe: cosa guadagni, cosa NON guadagni, e un caso
 #         concreto in cui la ricerca full-text resta migliore.
 # TUA RISPOSTA:
+# La ricerca full-text è utile, e in alcuni casi insostituibile: se abbiamo bisogno ad esempio di cercare un libro di un autore preciso, basta digitare il nome corretto e la ricerca produrrà i risultati cercati. Ma se non abbiamo idea di come si chiama un autore, ma vogliamo comunque avere possibilità di individuarlo, gli embedding ci danno un grande aiuto. La ricerca potrebbe diventare : libri dove si parla di un burattino e di un falegname. Gli embedding, tracciando il significato della nostra richiesta, sarebbero in grado di capire a quale libro di quale autore ci stiamo riferendo, anche se non digitiamo letteralemtne in nome dell'autore.
 
 
 # --- E6. 📚 [LIBRO] [ALAMMAR cap. 2] Il libro mostra l'aritmetica dei
@@ -865,7 +869,25 @@ if __name__ == "__main__":
 #         Poi, due righe oneste: il risultato ha senso? E se non ce l'ha,
 #         è colpa del metodo o del corpus da 30 frasi?
 # TUO CODICE:
+
+if __name__ == "__main__":
+
+    print("\nEsercizio 6\n")
+
+    mappa = costruisci_mappa()
+    mappa['prova'] = mappa['cedolino'] - mappa['netto'] + mappa["saldo"]
+    
+    prova = vicini(
+        "prova",
+        mappa,
+        3
+    )
+    
+    print(prova)
+    
 # TUA RISPOSTA:
+
+# No il metodo non funziona, e produce risultati senza senso: non è colpa del metodo, ma del corpus estramamente ridotto, che non ha una stabilità tale da permettere risultati veri.
 
 
 # ==========================================================================
@@ -879,17 +901,17 @@ if __name__ == "__main__":
 # `testo_utils.py`. Non copiare e incollare senza leggere: la firma delle
 # funzioni e il contratto cambiano.
 #
-#   [ ] T1 — Porta in `testo_utils.py` le funzioni della mappa:
+#   [V] T1 — Porta in `testo_utils.py` le funzioni della mappa:
 #            `costruisci_mappa(percorso, dim, min_conteggio) -> dict`
 #            e `vettore_frase(testo, mappa) -> np.ndarray`.
 #            DoD: `from testo_utils import costruisci_mappa` non stampa
 #            niente e non costruisce niente all'import (come il T1 del cap.01).
 #
-#   [ ] T2 — Salva la mappa su disco con `joblib`, accanto al modello.
+#   [V] T2 — Salva la mappa su disco con `joblib`, accanto al modello.
 #            DoD: esiste un file `mappa.pkl`; una funzione lo ricarica e
 #            `vettore_frase` funziona SENZA ricostruire la mappa.
 #
-#   [ ] T3 — Estendi il contratto del cap.01 (T5). Oltre a versione, classi,
+#   [V] T3 — Estendi il contratto del cap.01 (T5). Oltre a versione, classi,
 #            tokenizer e data di training, deve contenere: `mappa_dim`,
 #            `mappa_min_conteggio`, `mappa_n_parole`.
 #            E alza `VERSIONE`: la ricetta è cambiata.
@@ -897,21 +919,16 @@ if __name__ == "__main__":
 #            si capisce che i vettori vecchi nel database non sono più
 #            confrontabili. Scrivi in una riga di commento PERCHÉ.
 #
-#   [ ] T4 — Un test di regressione, in fondo al file, dentro il `__main__`.
+#   [V] T4 — Un test di regressione, in fondo al file, dentro il `__main__`.
 #            Tre `assert`: (a) `vettore_frase` restituisce la shape giusta;
 #            (b) il coseno di una frase con se stessa è circa 1;
 #            (c) una frase di sole parole sconosciute dà coseno 0.0 e non
 #            solleva eccezioni.
 #            DoD: lanciando `testo_utils.py` i tre assert passano in silenzio.
 #
-#   [ ] T5 — Spiegabilità onesta, nel DIARIO del capitolo (non qui dentro:
-#            nel cap.01 avevi messo il T4 nel posto sbagliato).
-#            File: `sessioni_capitoli/M04_C02a_embeddings_concetto_sessione.md`.
-#            Tre righe: cosa puoi dire all'operatore quando la ricerca
-#            restituisce un documento, e cosa NON puoi dirgli.
-#            Suggerimento: le `parole_decisive` del cap.01 erano parole vere
-#            del testo. Qui non hai parole da mostrare: hai una direzione
-#            senza nome.
+#   T5 — TOGLIO (08/10/2026, richiesta studente: «parte finale noiosa»).
+#        Non è più un deliverable. Il tema (direzione senza nome vs
+#        parole_decisive) torna in 02b come mini breve, non come saggio.
 
 
 # ==========================================================================
@@ -921,7 +938,7 @@ if __name__ == "__main__":
 # [ ] `coseno` riscritta dalla memoria e funzionante (il file gira e misura)
 # [ ] Tutti i 🧩 mini e i tre 🧩 micro dei rinforzi (#60, #61, #62) risposti
 # [ ] E1–E6 svolti, E4 con esattamente 3 bullet
-# [ ] T1–T5 del progetto, con i tre assert del T4 che passano
+# [V] T1–T4 del progetto, con i tre assert del T4 che passano (T5 tolto)
 # [ ] Sai rispondere a voce: perché la mappa si costruisce una volta sola
 
 

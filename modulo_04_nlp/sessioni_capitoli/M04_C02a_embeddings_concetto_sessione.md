@@ -5,8 +5,8 @@
 | **Modulo** | M04 — NLP, Embeddings & Transformers |
 | **File capitolo** | `02a_embeddings_concetto.py` |
 | **File diario** | `M04_C02a_embeddings_concetto_sessione.md` |
-| **Stato** | in corso (aperto in chiusura C01, 05/10/2026) |
-| **Voto difficoltà** | — / 10 |
+| **Stato** | chiuso 08/10/2026 (voto difficoltà in attesa dello studente) |
+| **Voto difficoltà** | ⏳ da confermare / 10 |
 
 ---
 
@@ -323,6 +323,28 @@ eseguendo il file prima della consegna.
 - **Punti di forza:** Guadagno chiaro: parafrasi («burattino e falegname» senza il nome). Full-text vince sul nome esatto dell'autore.
 - **Errori / lacune:** Manca **cosa NON guadagni**: cifre, IBAN, negazioni, spiegabilità (quale parola ha deciso). Tre job, due coperti. Pattern **#6**.
 
+### [2026-10-07] — E6 aritmetica vettori [ALAMMAR]
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 864–890
+- **Valutazione (primo tentativo — voto esame):** **6/10**
+- **Punti di forza:** Conto giusto, riuso di `vicini` con una chiave finta. I 3 vicini (stipendio, bonifico, movimenti) non sono un'analogia. «Non ha senso» è onesto.
+- **Errori / lacune:** Ha incolpato il **metodo**. Su miliardi di parole (re − uomo + donna) funziona. Qui fallisce per le **30 frasi**, non perché l'aritmetica sia falsa.
+
+### [2026-10-07] — E6, post-feedback
+
+- **Esercizio / blocco:** `02a_embeddings_concetto.py` righe 864–890
+- **Valutazione (post-feedback):** **9.5/10**. Il voto esame resta **6/10**.
+- **Punti di forza:** Non ha senso sui 30 documenti. Colpa del corpus piccolo, non dell'aritmetica. Stabilità = abbastanza incontri perché la sottrazione significhi una cosa sola.
+- **Errori / lacune:** La prima proposizione («il metodo non funziona») è ancora netta; il dopo la corregge.
+
+### [2026-10-08] — 🏗️ Progetto T1–T4 (`testo_utils.py`)
+
+- **Esercizio / blocco:** `modulo_04_nlp/testo_utils.py` (T1–T4). **T5 tolto** dalla consegna (richiesta studente, 08/10: parte finale noiosa).
+- **Valutazione (primo tentativo — voto esame):** **7/10**
+- **Punti di forza:** T1: `costruisci_mappa` / `vettore_frase` portate, import silenzioso sulla mappa. T2: `salva_mappa` / `carica_mappa` su `mappa.pkl` fisso. T3: contratto senza `pipe`, chiavi `mappa_dim` / `min_conteggio` / `n_parole`, `VERSIONE` 1.2, commento su dim 4 vs 8. T4 finale: tre assert su `vettore_frase` + `carica_mappa`, `python testo_utils.py` esce 0 e muto. Intuito giusto su libreria vs programma di rilascio (contatore, `allclose`) — parcheggiato fuori dal modulo.
+- **Errori / lacune (primo tentativo):** T3: mappa dentro il contratto, chiavi non allineate (`mappa_n_dim`), `dump` di formati diversi, `prepara_modello` a ogni salvataggio, versione = contatore lanci. T4 primo giro: ciclo sulla mappa, `shape != (DIM,)` invertito. Assert finali copiati dopo esempio del mentor. `query =` a livello modulo è un residuo C01 (non stampa). Type hint `np.array` in 02a resta Pattern #25.
+- **Next step:** 02b. Installare `sentence-transformers` **prima** della sessione. Mini breve in 02b su direzione senza nome (ex T5).
+
 ---
 
 ## Lacune e dubbi ancora aperti
@@ -334,4 +356,8 @@ eseguendo il file prima della consegna.
 
 ## Note per il capitolo successivo (mentor)
 
-- 02b solo dopo che l'idea è stata esercitata. L'installazione di `sentence-transformers` si fa prima di 02b, non durante.
+- 02b: installare `sentence-transformers` prima della sessione, non durante.
+- Pattern **#6** ancora 🔴 (E5: tre job, due coperti; Mini 3.1 una riga sola).
+- T5 spiegabilità: non rifare un saggio. Mini corto: cosa puoi/non puoi dire all'operatore; le 384 dimensioni di MiniLM non hanno nome.
+- Contratto: `mappa_dim` del giocattolo (4) ≠ dim del modello vero (384). Non mischiare i vettori.
+- Libreria (`carica_mappa`) vs script di rilascio: non rimettere il versioning nel modulo.
