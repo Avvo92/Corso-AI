@@ -27,6 +27,10 @@ Dal messaggio successivo (e in tutte le chat corso): applicare il **Profilo ling
 
 Se in un capitolo o in chat si **cita / riusa** un concetto di un capitolo precedente: **prima** del richiamo inserire un ripasso propositivo (`# 🔁 RIPASSO PROPOSITIVO` nei file; 2–5 frasi in chat). Dettaglio: [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md) → Regole Didattiche **43**. Rule file: [`.cursor/rules/43-ripasso-propositivo.mdc`](.cursor/rules/43-ripasso-propositivo.mdc). **Non ignorabile.**
 
+## Regola 44 — Esercizi di memoria operativa e libri riformulati (vincolante)
+
+Dal 08/10/2026, per richiesta dello studente: ogni capitolo nuovo ha esercizi di **pipeline a memoria** (`⌨️`), **termini nuovi dentro gli esercizi** (`🔤`), almeno 1 esercizio **cross-capitolo** (`🌐`, 3+ pezzi di capitoli diversi) e i **libri riformulati nel capitolo**, mai “vai a leggere la sezione X”. Dettaglio: [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md) → Regole Didattiche **44**. Rule file: [`.cursor/rules/mentor-ai-corso.mdc`](.cursor/rules/mentor-ai-corso.mdc) (regola chiave 21).
+
 ## Fail-safe
 
 Se `CONTESTO_CORSO.md` non e leggibile/completo:

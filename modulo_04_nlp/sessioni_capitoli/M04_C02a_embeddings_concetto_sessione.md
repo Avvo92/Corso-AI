@@ -5,8 +5,8 @@
 | **Modulo** | M04 — NLP, Embeddings & Transformers |
 | **File capitolo** | `02a_embeddings_concetto.py` |
 | **File diario** | `M04_C02a_embeddings_concetto_sessione.md` |
-| **Stato** | chiuso 08/10/2026 (voto difficoltà in attesa dello studente) |
-| **Voto difficoltà** | ⏳ da confermare / 10 |
+| **Stato** | chiuso 08/10/2026 |
+| **Voto difficoltà** | **6**/10 |
 
 ---
 
