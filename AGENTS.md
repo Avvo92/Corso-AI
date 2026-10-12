@@ -31,6 +31,10 @@ Se in un capitolo o in chat si **cita / riusa** un concetto di un capitolo prece
 
 Dal 08/10/2026, per richiesta dello studente: ogni capitolo nuovo ha esercizi di **pipeline a memoria** (`⌨️`), **termini nuovi dentro gli esercizi** (`🔤`), almeno 1 esercizio **cross-capitolo** (`🌐`, 3+ pezzi di capitoli diversi) e i **libri riformulati nel capitolo**, mai “vai a leggere la sezione X”. Dettaglio: [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md) → Regole Didattiche **44**. Rule file: [`.cursor/rules/mentor-ai-corso.mdc`](.cursor/rules/mentor-ai-corso.mdc) (regola chiave 21).
 
+## Regola 45 — Funzioni della lezione scritte dallo studente (vincolante)
+
+Dal 12/10/2026, per richiesta dello studente: dal **cap.03** in poi la funzione la cui logica è la lezione (top-k, soglia, conteggio dei vicini giusti) la scrive lui, dopo un esempio guidato corto. Restano pronte solo carico file, percorsi, cache e funzioni di capitoli precedenti (con Regola 43). La versione di riferimento sta solo nelle soluzioni. Il **02b non si riscrive**. Dettaglio: [`CONTESTO_CORSO.md`](CONTESTO_CORSO.md) → Regole Didattiche **45**. Rule file: [`.cursor/rules/mentor-ai-corso.mdc`](.cursor/rules/mentor-ai-corso.mdc) (regola chiave 22). **Non ignorabile** quando si compila un capitolo nuovo.
+
 ## Fail-safe
 
 Se `CONTESTO_CORSO.md` non e leggibile/completo:

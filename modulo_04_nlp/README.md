@@ -113,3 +113,5 @@ Deliverable che nasce qui: `testo_utils.py` (normalizzazione + tokenizzazione ro
 - Blocchi 📚 dai libri: **[NLP-TRANS]** (Tunstall/von Werra/Wolf) e **[ALAMMAR]** — vedi `docs/libri_corso/MAPPATURA_LIBRI_MODULI.md`
 - Diario `sessioni_capitoli/M04_C0X_*_sessione.md` aggiornato in append-only
 - Dal M4: **mock interview** mensile (Regola 27)
+- **Regola 44**: pipeline a memoria, termini nuovi dentro gli esercizi, un cross-capitolo, libri riformulati nel file
+- **Regola 45 (dal cap.03 in poi, 12/10/2026)**: la funzione la cui logica è la lezione la scrive lo studente, dopo un esempio guidato corto. Restano pronte solo carico file, percorsi, cache e funzioni di capitoli precedenti (con ripasso Regola 43). La versione di riferimento sta solo nelle soluzioni, in fondo. Il 02b non si riscrive

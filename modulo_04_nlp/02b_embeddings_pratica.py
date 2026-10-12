@@ -726,10 +726,10 @@ def scheda_modello(model) -> dict[str, int | float]:
         "pezzi_vocabolario": vocabulary_pieces
     }
 
-if __name__ == "__main__":
-    modello = modello_una_volta(MODELLO_ST)
-    model_card = scheda_modello(modello)
-    print(model_card)
+# if __name__ == "__main__":
+#     modello = modello_una_volta(MODELLO_ST)
+#     model_card = scheda_modello(modello)
+#     print(model_card)
 
 
 # 🧩 Mini 5.2 — Un collega propone un modello inglese "perché è più
@@ -819,8 +819,10 @@ if __name__ == "__main__":
 #     (TF-IDF e MiniLM). Poi una riga: il numero di MiniLM è più basso di
 #     quello della mappa 02a (~0.96). Vuol dire che MiniLM sbaglia?
 #     Aiuto: rileggi "la lezione in una riga" della Sezione 4.
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUA RISPOSTA:
+
+# tfidf = 0.0 minilm = 0.546. La mappa produce un coseno più alto soprattutto perchè è addestrata sulle stresse frasi su cui poi abbiamo fatto il confronto, quindi ha un vantaggio che deriva dal leakage. Il minilm non ha mai visto quelle frasi, eppure riesce a vedere la connessione di significato.
 
 def confronto_due_frasi(modello) -> dict[str, float]:
     """Coseno TF-IDF vs coseno MiniLM sulle due parafrasi del 02a."""
@@ -881,23 +883,7 @@ def vicini_minilm(query: str, modello, k: int = 3, E: np.ndarray | None = None,
     return _top_k(E @ q, k)
 
 
-def pagella(modello, k: int = 3) -> dict[str, float]:
-    """Precision@k media sui BENCHMARK, per i tre motori."""
-    dati = carica_note()
-    testi, tipi = dati["testo"].tolist(), dati["tipo"].tolist()
-    mappa = carica_mappa()
-    E = embedda(testi, modello, normalizza=True)
-    somme = {"tfidf": 0.0, "mappa": 0.0, "minilm": 0.0}
-    for query, atteso in BENCHMARK:
-        trovati = {
-            "tfidf": vicini_tfidf(query, k),
-            "mappa": vicini_mappa(query, k, mappa),
-            "minilm": vicini_minilm(query, modello, k, E),
-        }
-        for motore, lista in trovati.items():
-            giusti = sum(1 for i, _ in lista if tipi[i] == atteso)
-            somme[motore] += giusti / k
-    return {m: round(s / len(BENCHMARK), 3) for m, s in somme.items()}
+# `pagella` non è qui. La scrivi tu nel Mini 6.3b, poi il Mini 6.4 la lancia.
 
 
 def copertura_query(query: str, mappa: dict) -> float:
@@ -913,28 +899,142 @@ def copertura_query(query: str, mappa: dict) -> float:
 #     "documento per la dichiarazione dei redditi". Per ognuno stampa i tre
 #     indici e il TIPO di ciascuno (usa `carica_note()["tipo"]`).
 #     Poi una riga: chi ha capito cosa cercavi?
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUO CODICE:
+
+# if __name__ == "__main__":
+    
+#     print("\nMini 6.2\n")
+    
+#     query = "documento per la dichiarazione dei redditi"
+#     result_tfidf = vicini_tfidf(query)
+#     result_minilm = vicini_minilm(query, modello_una_volta(MODELLO_ST))
+#     corpus = carica_note()['tipo'].tolist()
+#     print("\nPunteggi tdidf\n")
+#     for indice, punteggio in result_tfidf:
+#         print(indice, punteggio, corpus[indice])
+#     print("\nPunteggi minilm\n")
+#     for indice, punteggio in result_minilm:
+#         print(indice, punteggio, corpus[indice])
+
 # TUA RISPOSTA:
-#
+# dalle risposte, si evince che il minilm ha capito quello che stavamo cercando, individuando correttamente le cu come documenti necessari per la compilazione di una dichiarazione dei redditi.
+
+
 #
 # 🧩 Mini 6.3 — Calcola `copertura_query` per queste tre query, con la
 #     mappa 02a: "remunerazione del lavoratore subordinato", "compenso
 #     mensile per il dipendente", "pizza margherita". Scrivi i tre numeri.
 #     Poi: perché la prima ti dà un podio vuoto con TF-IDF e un podio
 #     pieno con MiniLM? Una riga.
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUO CODICE:
+
+# print("\nMini 6.3\n")
+
+# mappa = carica_mappa()
+# modello = modello_una_volta(MODELLO_ST)
+# f_1 = "remunerazione del lavoratore subordinato"
+# f_2 = "compenso mensile per il dipendente"
+# f_3 = "pizza margherita"
+# cop_1_mappa = copertura_query(f_1, mappa)
+# cop_2_mappa = copertura_query(f_2, mappa)
+# cop_3_mappa = copertura_query(f_3, mappa)
+
+# podio_tfidf = vicini_tfidf(f_1)
+# podio_minilm = vicini_minilm(f_1, modello)
+
+# print(f"Copertura Query 1: {cop_1_mappa}")
+# print(f"Copertura Query 2: {cop_2_mappa}")
+# print(f"Copertura Query 3: {cop_3_mappa}")
+
+# print(f"\n=================================\n")
+
+# print(f"Podio tfidf frase 1:  {podio_tfidf if podio_tfidf else "Non sono state trovate frasi similari"}")
+# print(f"Podio minilm frase 1: {podio_minilm if podio_minilm else "Non sono state trovate frasi similari"}")
+
 # TUA RISPOSTA:
+# Il podio di tfidf è vuoto perchè ricerca frasi simili a partire dalla presenza di parole in comune. Ma dato che nella query 1 non compare nessuna parole presente nel vocabolario di tdidf, il podio restituisce una lista vuota. Invece, il minilm addestrato su milioni di frasi, riesce agevolmente a trovare nel corpus delle frasi che a livello di significato si accostano alla query.
+
+#
+# 🧩 Mini 6.3b — Scrivi tu `pagella`. Il Mini 6.4 la lancia: senza questa
+#     funzione quel mini non parte.
+#     La misura è già spiegata sopra: PRECISION@K, i primi k risultati,
+#     quota di quelli del tipo atteso. BENCHMARK è la lista di 8 coppie
+#     (query, tipo atteso) in cima al file. I tre motori sono già pronti:
+#     `vicini_tfidf(query, k)`, `vicini_mappa(query, k, mappa)`,
+#     `vicini_minilm(query, modello, k, E)`.
+#     Ognuno restituisce una lista di coppie (indice, punteggio).
+#     L'indice è la posizione nella lista `tipi`.
+#
+#     Firma, da rispettare:
+#         def pagella(modello, k: int = 3) -> dict[str, float]
+#
+#     Tre blocchi, in questo ordine.
+#
+#     BLOCCO 1 — prepara, una volta sola.
+#       - da `carica_note()` prendi due liste nello stesso ordine: i testi
+#         e i tipi
+#       - carica la mappa 02a
+#       - calcola `E = embedda(testi, modello, normalizza=True)` una volta.
+#         Se lo ricalcoli dentro il ciclo, MiniLM rilegge le 30 note a
+#         ogni query
+#       - un dizionario `somme` con tre zeri: "tfidf", "mappa", "minilm"
+#
+#     BLOCCO 2 — per ogni coppia (query, atteso) in BENCHMARK.
+#       - chiedi i vicini ai tre motori. A MiniLM passa la `E` già fatta
+#       - per ogni motore, conta quanti indici hanno `tipi[indice] == atteso`
+#       - aggiungi a `somme[motore]` la quota `giusti / k`
+#         (1 giusto su 3 aggiunge 0.333, non 1)
+#
+#     BLOCCO 3 — restituisci la media.
+#       - per ogni motore: `somme[motore] / len(BENCHMARK)`
+#       - arrotonda a 3 decimali
+#       - le chiavi restano "tfidf", "mappa", "minilm"
+#
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
+# TUO CODICE:
+
+def pagella(modello, k: int = 3) -> dict[str, float]:    
+    testi, tipi = carica_note()['testo'].tolist(), carica_note()['tipo'].tolist()
+    mappa = carica_mappa()
+    E = embedda(testi, modello, normalizza = True)
+    somme = {"tfidf": 0.0, "mappa": 0.0, "minilm": 0.0}
+    for query, atteso in BENCHMARK:
+        top_k = {
+            "tfidf": vicini_tfidf(query, k = k),
+            "mappa": vicini_mappa(query, mappa = mappa, k = k),
+            "minilm": vicini_minilm(query, modello, k = k, E = E)
+        }
+        for motore, vicini in top_k.items():
+            giusti = 0.0
+            for i, v in vicini:                
+                if tipi[i] == atteso:
+                    giusti += 1
+            giusti = giusti / k
+            somme[motore] += giusti
+    for motore, somma in somme.items():
+        somme[motore] = round(somme[motore] / len(BENCHMARK), 3)
+    return somme
 #
 #
 # 🧩 Mini 6.4 — Lancia `pagella(modello)` e scrivi i tre numeri. Poi UNA
 #     riga: quale dei tre motivi (vantaggio di casa / benchmark minuscolo /
 #     scritto dall'autore) è il più forte e come lo verificheresti?
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUA RISPOSTA:
-#
 
+
+# if __name__ == "__main__":
+    
+#     print("\nMini 6.3b\n")    
+#     modello = modello_una_volta(MODELLO_ST)
+#     prova = pagella(modello)
+#     print("\nPagella\n")
+#     for k, v in prova.items():
+#         print(f"Motore {k} -> {v}")
+        
+# In questo caso credo che il vantaggio più grande sia che il benchmark è scritto dall'autore. Lo verificherei cambiando il benchmark e scrivendo delle query che non hanno molte parole che il vocabolario della mappa e del tfidf conosce.
 
 # ==========================================================================
 # SEZIONE 7 — Quando il lessicale vince: cifre, IBAN, negazione
@@ -965,8 +1065,9 @@ def copertura_query(query: str, mappa: dict) -> float:
 #
 # 🧩 Mini 7.1 — Scrivi una query (sintetica) per cui useresti il match
 #     esatto e NON MiniLM, e il motivo in mezza riga.
-#     📋 PUNTI: 2        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 2        PUNTI CHE VEDO: 2
 # TUA RISPOSTA:
+# "prodotti scontati del 90%": In questo caso, se ad esempio questa query è scritta da un utente che cerca determinate categorie di prodotti molto scontati, non possiamo usare un minilm, perchè per lui gli sconti si "assomigliano tutti", mentre per una ricerca tfidf, possiamo andare a individuare quelle frasi nel corpus che contengono esattamente lo sconto del 90%.
 #
 #
 # 🧩 Mini 7.2 — PREVEDI (alto/basso) e POI misura il coseno MiniLM di:
@@ -974,12 +1075,27 @@ def copertura_query(query: str, mappa: dict) -> float:
 #       b) "contratto valido" / "contratto non valido"
 #     Quale delle due coppie, secondo te, è più pericolosa per la torre
 #     e perché? Una riga.
-#     📋 PUNTI: 4        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 4        PUNTI CHE VEDO: 4
 # TUA PREVISIONE:
-# TUO CODICE:
-# MISURA E RISPOSTA:
-#
+# a) altro; b) alto
 
+# TUO CODICE:
+
+# print("\nMini 7.2\n")
+
+# modello = modello_una_volta(MODELLO_ST)
+# coppie = [("sconto 10%", "sconto 90%"), ("contratto valido", "contratto non valido")]
+# embeddings = []
+
+# for c in coppie:
+#     c = embedda(c, modello, normalizza = True) 
+#     embeddings.append(c)
+    
+# for i, e in enumerate(embeddings, 1):
+#     print(f"Coseno Coppia {i}: {coseno(e[0], e[1])}")
+
+# MISURA E RISPOSTA:
+# La più pericolosa è quella riguardante la negazione: nel nostro dominio, un contratto non firmato e un contratto firmato sono diametralmente opposti, e avere un modello che restituisce un coseno elevato non aiuta molto.
 
 # ==========================================================================
 # SEZIONE 8 — Vettori lunghi 1: il prodotto scalare È il coseno
@@ -1014,18 +1130,53 @@ def copertura_query(query: str, mappa: dict) -> float:
 # 🧩 Mini 8.1 — Calcola la norma (np.linalg.norm) di un vettore ottenuto con
 #     `normalizza=False` e di uno con `normalizza=True` (stessa frase).
 #     Stampa i due numeri.
-#     📋 PUNTI: 2        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 2        PUNTI CHE VEDO: 2
 # TUO CODICE:
+
+# print("\nMini 8.1\n")
+
+# prova = "Frase generica di prova per eseguire questo esercizio"
+
+# modello = modello_una_volta(MODELLO_ST)
+# e_1 = embedda([prova], modello, normalizza = False)[0]
+# norma_1 = np.linalg.norm(e_1)
+# print(norma_1)
+# e_2 = embedda([prova], modello, normalizza = True)[0]
+# norma_2 = np.linalg.norm(e_2)
+# print(norma_2)
+
 #
 #
 # 🧩 Mini 8.2 — Prendi due vettori con normalizza=True, calcola
 #     `coseno(a, b)` con la tua funzione e poi `a @ b`. Stampa la
 #     differenza assoluta: deve essere quasi zero (errori di arrotondamento
 #     dei float, ordine 1e-7). Una riga: perché sono uguali?
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUO CODICE:
-# TUA RISPOSTA:
-#
+
+print("\nMini 8.2\n")
+
+frasi = ["Frase generica di prova per eseguire questo esercizio", "Sempre una frase di prova, ma stavolta che parla di folletti e draghi"]
+modello = modello_una_volta(MODELLO_ST)
+emb= embedda(frasi, modello, normalizza = True)
+coseno_1 = float(emb[0] @ emb[1])
+coseno_2 = coseno(emb[0], emb[1])
+
+assert np.isclose(coseno_1, coseno_2, atol= 1e-7), "Ops qualocosa è andato storto, i due coseni non sono uguali"
+print(abs(coseno_1 - coseno_2))
+
+# Sono uguali perchè la loro norma è 1, quindi fare il prodotto scalare o lanciare la funzione coseno, che divide il prodotto scalare per il prodotto delle norme dei due vettori, produce lo stesso risultato.
+
+emb_1 = embedda(frasi, modello, normalizza = True)
+emb_2 = embedda(frasi, modello, normalizza = False)
+
+coseno_1 = float(emb_1[0] @ emb_1[1])
+coseno_2 = coseno(emb_2[0], emb_2[1])
+
+assert np.isclose(coseno_1, coseno_2, atol= 1e-7), "Ops qualocosa è andato storto, i due coseni non sono uguali"
+print(abs(coseno_1 - coseno_2))
+
+# Sono uguali anche in questo caso perchè dividere ogni vettore per la propria grandezza e poi fare il loro prodotto scalare o dividere il prodotto scalare di due o più vettori per il prodotto delle loro rispettive norme produce lo stesso risultato.
 
 
 # ==========================================================================
@@ -1079,19 +1230,68 @@ def rischio_troncamento(testo: str, modello) -> dict[str, object]:
 # 🧩 Mini 9.1 — Misura (4-5 righe): tempo di encode delle 30 note in UNA
 #     chiamata batch, poi tempo di 30 encode singole in ciclo. Stampa i due
 #     tempi e il rapporto. (time.perf_counter, come nella demo.)
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUO CODICE:
-# RISULTATO:
-#
-#
+
+# print("\nMini 9.1\n")
+
+# modello = modello_una_volta(MODELLO_ST)
+# testi = carica_note()['testo'].tolist()
+
+# t_1 = time.perf_counter()
+# modello.encode(
+#     testi,
+#     convert_to_numpy=True,
+#     show_progress_bar=False,
+#     normalize_embeddings=True,
+# )
+# t_2 = time.perf_counter()
+# tempo_batch = t_2 - t_1
+
+# print(f"Encode in Batch: {round(tempo_batch, 5)}s")
+
+# t_1 = time.perf_counter()
+
+# for d in testi:
+#     modello.encode(
+#         [d],
+#         convert_to_numpy=True,
+#         show_progress_bar=False,
+#         normalize_embeddings=True,   
+#     )
+    
+# t_2 = time.perf_counter()
+# tempo_ciclo = t_2 - t_1
+
+# print(f"Encode in ciclo: {round(tempo_ciclo, 5)}s")
+# print(f"Rapporto: l'encode in batch è circa {round(tempo_ciclo / tempo_batch, 1)} volte più veloce di quello in ciclo")
+
 # 🧩 Mini 9.2 — Con `rischio_troncamento`: (a) controlla le 30 note e
 #     stampa quante sono troncate; (b) costruisci una nota artificiale di
 #     300 parole (ripeti "retribuzione lorda mensile ") e controllala.
 #     (c) una riga: cosa significa "troncato = True" per quella nota?
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUO CODICE:
+
+print("\nMini 9.2\n")
+
+frase_lunga = "retribuzione lorda mensile "
+frase_lunga = frase_lunga * 100
+modello = modello_una_volta(MODELLO_ST)
+    
+testi = carica_note()['testo'].tolist()
+valutazione = []
+for t in testi:
+    v = rischio_troncamento(t, modello)
+    valutazione.append(v['troncato'])
+
+n_troncate = len([t for t in valutazione if t])
+print(n_troncate)
+print(rischio_troncamento(frase_lunga, modello)['troncato'])
+
 # TUA RISPOSTA:
-#
+# Troncato = True per quella nota significa che, passandolo all'encode di quello specifico modello, lo nota verrà troncata perchè di lunghezza superiore ai 128 token.
+
 
 
 # ==========================================================================
@@ -1692,6 +1892,23 @@ def demo() -> None:
 # Mini 6.3 Copertura: 0.0, ~0.67, 0.0 (le cifre dipendono dal tuo mappa.pkl).
 #     La prima ha tutte parole fuori vocabolario: TF-IDF e mappa non hanno
 #     nulla da confrontare; MiniLM scompone in sottoparole note.
+# Mini 6.3b — riferimento, solo dopo il tentativo.
+#     def pagella(modello, k: int = 3) -> dict[str, float]:
+#         dati = carica_note()
+#         testi, tipi = dati["testo"].tolist(), dati["tipo"].tolist()
+#         mappa = carica_mappa()
+#         E = embedda(testi, modello, normalizza=True)
+#         somme = {"tfidf": 0.0, "mappa": 0.0, "minilm": 0.0}
+#         for query, atteso in BENCHMARK:
+#             trovati = {
+#                 "tfidf": vicini_tfidf(query, k),
+#                 "mappa": vicini_mappa(query, k, mappa),
+#                 "minilm": vicini_minilm(query, modello, k, E),
+#             }
+#             for motore, lista in trovati.items():
+#                 giusti = sum(1 for i, _ in lista if tipi[i] == atteso)
+#                 somme[motore] += giusti / k
+#         return {m: round(s / len(BENCHMARK), 3) for m, s in somme.items()}
 # Mini 6.4 tfidf 0.62, mappa 0.83, minilm 0.75 (circa). Il più forte è
 #     il vantaggio di casa: lo verifichi costruendo la mappa su 20
 #     documenti e valutando sui 10 che non ha visto.
