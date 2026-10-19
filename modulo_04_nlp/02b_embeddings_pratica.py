@@ -93,6 +93,7 @@ from pathlib import Path
 
 import joblib                     # serve al progetto (T1, T2)
 import numpy as np
+from numpy.typing import NDArray
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -457,13 +458,13 @@ def sottoparole(frase: str, modello) -> list[str]:
 #     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUO CODICE:
 
-if __name__ == "__main__":
-    modello = modello_una_volta(MODELLO_ST)
-    token_cedolino = sottoparole("cedolino", modello)
-    token_stipendio = sottoparole("stipendio", modello)
-    token_emolumenti = sottoparole("emolumenti", modello)
-    token_xyzzyq = sottoparole("xyzzyq", modello)
-    print(len(token_cedolino), len(token_stipendio), len(token_emolumenti), len(token_xyzzyq))
+# if __name__ == "__main__":
+#     modello = modello_una_volta(MODELLO_ST)
+#     token_cedolino = sottoparole("cedolino", modello)
+#     token_stipendio = sottoparole("stipendio", modello)
+#     token_emolumenti = sottoparole("emolumenti", modello)
+#     token_xyzzyq = sottoparole("xyzzyq", modello)
+#     print(len(token_cedolino), len(token_stipendio), len(token_emolumenti), len(token_xyzzyq))
 
 # TUA RISPOSTA:
 # La parole inventata non crasha, viene comunque spezzata in sotto-parole.
@@ -1154,27 +1155,27 @@ def pagella(modello, k: int = 3) -> dict[str, float]:
 #     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUO CODICE:
 
-print("\nMini 8.2\n")
+# print("\nMini 8.2\n")
 
-frasi = ["Frase generica di prova per eseguire questo esercizio", "Sempre una frase di prova, ma stavolta che parla di folletti e draghi"]
-modello = modello_una_volta(MODELLO_ST)
-emb= embedda(frasi, modello, normalizza = True)
-coseno_1 = float(emb[0] @ emb[1])
-coseno_2 = coseno(emb[0], emb[1])
+# frasi = ["Frase generica di prova per eseguire questo esercizio", "Sempre una frase di prova, ma stavolta che parla di folletti e draghi"]
+# modello = modello_una_volta(MODELLO_ST)
+# emb= embedda(frasi, modello, normalizza = True)
+# coseno_1 = float(emb[0] @ emb[1])
+# coseno_2 = coseno(emb[0], emb[1])
 
-assert np.isclose(coseno_1, coseno_2, atol= 1e-7), "Ops qualocosa è andato storto, i due coseni non sono uguali"
-print(abs(coseno_1 - coseno_2))
+# assert np.isclose(coseno_1, coseno_2, atol= 1e-7), "Ops qualocosa è andato storto, i due coseni non sono uguali"
+# print(abs(coseno_1 - coseno_2))
 
-# Sono uguali perchè la loro norma è 1, quindi fare il prodotto scalare o lanciare la funzione coseno, che divide il prodotto scalare per il prodotto delle norme dei due vettori, produce lo stesso risultato.
+# # Sono uguali perchè la loro norma è 1, quindi fare il prodotto scalare o lanciare la funzione coseno, che divide il prodotto scalare per il prodotto delle norme dei due vettori, produce lo stesso risultato.
 
-emb_1 = embedda(frasi, modello, normalizza = True)
-emb_2 = embedda(frasi, modello, normalizza = False)
+# emb_1 = embedda(frasi, modello, normalizza = True)
+# emb_2 = embedda(frasi, modello, normalizza = False)
 
-coseno_1 = float(emb_1[0] @ emb_1[1])
-coseno_2 = coseno(emb_2[0], emb_2[1])
+# coseno_1 = float(emb_1[0] @ emb_1[1])
+# coseno_2 = coseno(emb_2[0], emb_2[1])
 
-assert np.isclose(coseno_1, coseno_2, atol= 1e-7), "Ops qualocosa è andato storto, i due coseni non sono uguali"
-print(abs(coseno_1 - coseno_2))
+# assert np.isclose(coseno_1, coseno_2, atol= 1e-7), "Ops qualocosa è andato storto, i due coseni non sono uguali"
+# print(abs(coseno_1 - coseno_2))
 
 # Sono uguali anche in questo caso perchè dividere ogni vettore per la propria grandezza e poi fare il loro prodotto scalare o dividere il prodotto scalare di due o più vettori per il prodotto delle loro rispettive norme produce lo stesso risultato.
 
@@ -1273,21 +1274,21 @@ def rischio_troncamento(testo: str, modello) -> dict[str, object]:
 #     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUO CODICE:
 
-print("\nMini 9.2\n")
+# print("\nMini 9.2\n")
 
-frase_lunga = "retribuzione lorda mensile "
-frase_lunga = frase_lunga * 100
-modello = modello_una_volta(MODELLO_ST)
+# frase_lunga = "retribuzione lorda mensile "
+# frase_lunga = frase_lunga * 100
+# modello = modello_una_volta(MODELLO_ST)
     
-testi = carica_note()['testo'].tolist()
-valutazione = []
-for t in testi:
-    v = rischio_troncamento(t, modello)
-    valutazione.append(v['troncato'])
+# testi = carica_note()['testo'].tolist()
+# valutazione = []
+# for t in testi:
+#     v = rischio_troncamento(t, modello)
+#     valutazione.append(v['troncato'])
 
-n_troncate = len([t for t in valutazione if t])
-print(n_troncate)
-print(rischio_troncamento(frase_lunga, modello)['troncato'])
+# n_troncate = len([t for t in valutazione if t])
+# print(n_troncate)
+# print(rischio_troncamento(frase_lunga, modello)['troncato'])
 
 # TUA RISPOSTA:
 # Troncato = True per quella nota significa che, passandolo all'encode di quello specifico modello, lo nota verrà troncata perchè di lunghezza superiore ai 128 token.
@@ -1374,10 +1375,38 @@ def disegna_note(E: np.ndarray, tipi: list[str], percorso: Path = PERCORSO_FIGUR
 #         quel tipo, `P[maschera].std()`). Quale tipo è più sparso?
 #     (c) lancia `disegna_note(...)` e apri il file PNG che stampa: scrivi
 #         l'indice di UN punto che sta in mezzo a un gruppo di un altro tipo.
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUO CODICE:
+
+# print("\nMini 10.1\n")
+
+# note = carica_note()
+
+# embs = embedda(
+#     note['testo'].tolist(),
+#     modello_una_volta(MODELLO_ST),
+#     True    
+# )
+
+# P, var = proietta_2d(
+#     embs
+# )
+
+# print(f"Varianza spiegata dai due assi: {var}")
+
+# dispersioni = {}
+
+# for t in set(note['tipo']):
+#     disp = P[note['tipo'] == t].std()
+#     dispersioni[t] = round(float(disp), 4)
+    
+# ordinato = sorted(dispersioni.items(), key=lambda coppia: coppia[1], reverse=True)
+# print(f"Il tipo più sparso è {ordinato[0][0]}")
+
+# disegna_note(embs, note['tipo'].tolist())
+
 # TUA RISPOSTA:
-#
+# 13
 
 
 # ==========================================================================
@@ -1420,8 +1449,11 @@ def disegna_note(E: np.ndarray, tipi: list[str], percorso: Path = PERCORSO_FIGUR
 #     `contratto` le chiavi `"modello_minilm"`, `"mappa_dim_minilm"` e
 #     `"minilm_max_seq_length"`. Poi UNA riga: perché non basta
 #     `mappa_dim_minilm = 384`?
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 # TUO CODICE:
+
+
+
 # TUA RISPOSTA:
 #
 #
@@ -1530,28 +1562,54 @@ def demo() -> None:
 #
 # V1. Prevedi: encode di una frase. Quante dimensioni ha il vettore MiniLM
 #     di questo capitolo?
+# 384 dimensioni
+
 # V2. Vero o falso: il primo encode è lento perché ricalcola la SVD sui 30
 #     documenti.
+# Falso: il primo encode prepara il calcolo, allocando la memoria necessaria per eseguirlo.
+
 # V3. Trova l'errore: salvo i vettori MiniLM (384) e li confronto col coseno
 #     ai vettori della mappa 02a (4).
+# Non possiamo confrontare vettori di lunghezza diversa, fermo restando che se anche avessero stessa shape non avrebbe cmq senso.
+
 # V4. Completa: se i vettori sono normalizzati a norma 1, il coseno è ____.
+# prodotto scolare
+
 # V5. Un modello inglese su note italiane: crasha o peggiora in silenzio?
+# Peggiora in silenzio
+
 # V6. Pattern #6, tre bullet: guadagno / non guadagno / quando TF-IDF.
+# - guadagno: la possibilità di cercare per valore semantico della frase.
+# - non guadagno: la certezza di individuare correttamente frasi opposte a quelle che cerco (negazioni)
+# - quando TDIDF: per ricerche esatte, dove cerchiamo schemi precisi, codici ecc.
+
 # V7. Type hint del vettore: np.ndarray, non np.array. Vero o falso?
+# Vero
+
 # V8. 💬 Spiega con parole tue (niente codice): perché encode di una FRASE
 #     intera non è la media dei punti-parola del 02a. (La teoria è in
 #     Sezione 3: usala.)
+# Perchè il trasformer fa guardare ad ogni parola tutte le altre, e in base al contesto in cui si trova, ogni parola assume una posizione diversa nello spazio multidimensionale.
+
 # V9. Prevedi l'output: `embedda(["a", "b", "c"], modello).shape`?
 #     E `embedda("a", modello).shape`? Perché il wrapper tratta la stringa
 #     in modo speciale?
+# shape dell'output -> (3, 384) -> secondo output -> (1, 384). Tratta la stringa in modo particolare nel senso che la mette in una lista.
+
 # V10. Nel contratto salvi `mappa_dim_minilm = 384` ma non il nome del
 #     modello. Tre mesi dopo cambi modello (sempre 384 dimensioni) e la
 #     ricerca peggiora. Cos'è successo, in due righe?
+# le dimensioni sono la forma, ma è il modello che indica il tipo di spazio. Modelli con dimensioni uguali descrivono lo spazio in maniera diversa, quindi anche se si somigliano non sono la stessa cosa.
+
 # V11. Una nota contiene 400 parole. Il modello vede 128 pezzi. La clausola
 #     importante è a pagina 3 della nota. La ricerca la trova? Perché?
+# No non la trova, perchè il modello tronca a 128 token. Oltre quelli, tutte le altre parole vengono troncate e gettate via. 
+
 # V12. In 02a la mappa è stata costruita sui 30 documenti e valutata sugli
 #     stessi. Con quale termine del M2 si chiama questo problema e perché
 #     gonfia il voto?
+# Si chiama leakage, e gonfia il voto perchè è come se il modello avesse già visto le risposte sulle domande che gli facciamo.
+
 # V13. 🔤 Completa le definizioni con il termine giusto (da questo capitolo):
 #       a) "Il pezzo in cui il tokenizer spezza una parola" = ____
 #       b) "La media che riduce n vettori a uno solo" = ____
@@ -1559,6 +1617,11 @@ def demo() -> None:
 #       d) "Una lista di domande con risposte attese per confrontare
 #           motori" = ____
 #       e) "Quota delle risposte giuste nei primi k risultati" = ____
+# sottoparola
+# pooling
+# normalizzare
+# benchmark
+# precision@k
 #
 # TUE RISPOSTE:
 #
@@ -1575,7 +1638,7 @@ def demo() -> None:
 #     sulla lista. Stessa shape in uscita (n_doc, 384). Poi una riga:
 #     perché la tua versione è anche più veloce, non solo più corta?
 #     (La risposta è in Sezione 9, A.)
-#     📋 PUNTI: 2        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 2        PUNTI CHE VEDO: 2
 #
 #         modello = carica_modello_frasi()
 #         testi = pd.read_csv(PERCORSO_DATI)["testo"].tolist()
@@ -1585,6 +1648,14 @@ def demo() -> None:
 #         M = np.stack(righe)
 #
 # TUO CODICE:
+
+# modello = modello_una_volta(MODELLO_ST) # -> ho scelto questa funzione per ottimizzare, qualora il
+#                                         #    modello fosse giò stato richiamato sopra.
+# testi = pd.read_csv(PERCORSO_DATI)["testo"].tolist()
+# embs = embedda(testi, modello)          #  -> ciclare e fare embeddinds per ogni riga della lista fa 
+#                                         #     perdere molta efficenza (dalle 3 alle 5 volte più lento)
+
+# La versione riscritta è molto più veloce perchè embedda, grazie all'econde diretto del modello, effettua operazioni vettorizzare ottimizzate. Il ciclo python rallenta questo processo, spezzettandolo per n_righe volte. Inoltre paghiamo per n_righe volte il prezzo della preparazione al calcolo.
 #
 #
 # E2  🔍 [DEBUG] — Due bug, due traceback. Trova entrambi da solo.
@@ -1603,14 +1674,22 @@ def demo() -> None:
 #
 #     📋 PUNTI: 2        PUNTI CHE VEDO: ___
 # TUA RISPOSTA (una frase per bug: qual è il bug, non come silenziare):
-#
+# - bug 1 : la mappa produce un vettore di shape diversa da quello prodotto dal modello. Il confronto tramite coseno non può avvenire (fermo restando che non avrebbe proprio senso in generalo confrontare spazi multidimensionali dove le coordinate hanno valori completamente diversi)
+# - bug 2: Il modello ha un massimo di token di input, che nel nostro caso è 128 (126 dalla query più due di servizio). Inserendo un intero contratto in input, il modello prende i primi 126 token, e tronca e getta il resto. Quindi,se il nodo saliente del contratto si trovava alla fine, il modello non lo ha preso in cosiderazione (non lo ha proprio mai visto), e dunque produce risposte pertinenti solo con i primi 126 token.
 #
 # E3  🧠 [RETRIEVAL] — A freddo, senza scorrere 02a: scrivi 4 righe che
 #     caricano la mappa giocattolo e stampano il coseno di una frase con
 #     se stessa. Deve essere ~1.
 #
 # TUO CODICE:
-#
+
+# print("\nEsercizio 3\n")
+
+# frase = "la dichiarazione di quest'anno ha un lordo alto"
+# mappa = carica_mappa()
+# vet_frase = vettore_frase(frase, mappa)
+# print(coseno(vet_frase,  vet_frase))
+
 #
 # E4  🔀 [INTERLEAVING] — Ripasso: TF-IDF del cap.01 + encode di ora.
 #     Stessa query "documento per la dichiarazione dei redditi". Trova
@@ -1618,20 +1697,38 @@ def demo() -> None:
 #     MiniLM. Sono lo stesso? Due indici, due tipi, una riga di commento:
 #     chi ha capito cosa cercavi? (Hai le funzioni `vicini_*`: usarle va
 #     bene, capirle è il punto.)
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 #
 # TUO CODICE:
-#
+
+# print("\nEsercizio 4\n")
+
+# query = "documento per la dichiarazione dei redditi"
+# near_tfidf = vicini_tfidf(query, 1)
+# near_minilm = vicini_minilm(query, modello_una_volta(MODELLO_ST), 1)
+# corpus = carica_note()
+
+# tipo_tfidf = corpus[corpus['id'] == near_tfidf[0][0] + 1]['tipo'].tolist()[0]
+# tipo_minilm = corpus[corpus['id'] == near_minilm[0][0] + 1]['tipo'].tolist()[0]
+
+
+
+# print(f"Tfidf -> Indice: {near_tfidf[0][0]} Coseno: {near_tfidf[0][1]}; Tipo: {tipo_tfidf}")
+# print(f"Minilm -> Indice: {near_minilm[0][0]} Coseno: {near_minilm[0][1]}; Tipo: {tipo_minilm}")
+
+# il tfidf ha dato come risposta un documento con tipo "altro", e un coseno relativamente basso. Il minilm invece ha risposto con un documento di tipo "busta_paga", segno questo che è riuscito a capito quello che cercavamo.
+
+
 #
 # E5  🎯 [COLLOQUIO] — «Cos'è un embedding?» in 4-6 righe, tono da
 #     colloquio (niente emoji). Deve entrare: vettore, vicinanza = senso
 #     simile, non è un conteggio di parole. Opzionale: differenza fra la
 #     mappa fatta in casa del 02a e un modello preaddestrato.
 #     📋 PUNTI: 3 (obbligatori) + 1 opzionale
-#     PUNTI CHE VEDO: ___
+#     PUNTI CHE VEDO: 3
 #
 # TUA RISPOSTA:
-#
+# Un embedding è un vettore di coordinate di uno spazio multidimensionale di significato. il principio, a differenza di quello che fa il conteggio delle parole, fa si che le parole e le frasi vicine semanticamente tra loro, avranno vettori di coordinate che puntano in zone vicine tra loro. Viceversa, parole e frasi molto distanti in termini di senso tra loro, si troveranno distanti su questa mappa. Ovviamente, rispetto a una mappa fatta in casa, addestrata su poche decine di note, un minilm ha degli enormi vantaggi in termini di funzionamento e precisione: Innazi tutto funziona a token e non a parole, quindi riduce il rischio di trovare termini che non conosce. Inoltre, essendo addestrato su milioni di documenti, produce vettori con 384 diverse dimensioni (rispetto alle sole 4 della mappa home made, la quale se provasse a metterne di più con i pochi esempi che ho produrrebbe solo rumore).
 #
 # E6  La funzione che manca alla torre: `cerca_note(query, E, testi, modello,
 #     k=3)` che restituisce i k INDICI più simili alla query usando i
@@ -1644,9 +1741,48 @@ def demo() -> None:
 #     fuori); la query sì, va embeddata; usa il trucco della Sezione 8.
 #     Test: cerca_note("rimborso spese", E, testi, modello). Guarda tu
 #     stesso se le note trovate c'entrano.
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 #
 # TUO CODICE:
+
+# modello = modello_una_volta(MODELLO_ST)
+# testi = carica_note()['testo'].tolist()
+# E = embedda(testi, modello)
+# q = "rimborso spese"
+
+# def cerca_note(
+#     query: str,
+#     E: np.ndarray,
+#     testi: list[str],
+#     modello,
+#     k: int = 3
+# ) -> list[int]:
+    
+#     E_1 = np.stack([
+#         e / np.linalg.norm(e) if np.linalg.norm(e) != 0 else e
+#         for e in E ])
+#     query_embs = embedda(query, modello)[0]
+#     query_embs_norm = query_embs / np.linalg.norm(query_embs)
+#     vicini = [(idx, float(value))for idx, value in enumerate(E_1 @ query_embs_norm)]
+#     top_3 = sorted(vicini, key=lambda x: x[1], reverse=True)[:k]
+#     top_3_idx = []
+#     for i, v in top_3:
+#         top_3_idx.append(i)
+    
+#     return top_3_idx  
+
+# prova = cerca_note(
+#     q,
+#     E,
+#     testi,
+#     modello,
+#     3
+# )
+
+# print(prova)
+# for i in prova:
+#     print(f"Nota: {testi[i]}")
+
 #
 #
 # E7  ⌨️ [PIPELINE A MEMORIA] — A libro CHIUSO (non scorrere le sezioni).
@@ -1663,13 +1799,41 @@ def demo() -> None:
 #       5. punteggi = prodotto scalare
 #       6. indici dei k più alti
 #       7. costruisci i dizionari
-#     📋 PUNTI: 7        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 7        PUNTI CHE VEDO: 7
 #     Test: pipeline_ricerca("elenco movimenti della banca")[0]["tipo"]
 #     deve essere "estratto_conto". Stampa il risultato in modo leggibile.
 #
 # TUO CODICE:
-#
-#
+
+# print("\nEsercizio 7 - Pipeline\n")
+
+# def pipeline_ricerca(query, k=3) -> list[dict[str, object]]:
+
+#     note = carica_note()
+#     tipi = note['tipo'].tolist()
+#     testi = note['testo'].tolist() 
+#     modello = modello_una_volta(MODELLO_ST)
+#     E = embedda(testi, modello, normalizza=True)
+#     q = embedda(query, modello, normalizza=True)[0]
+#     punteggi = E @ q
+#     k_migliori = _top_k(punteggi, k=k)
+#     k_mig_idx = [i for i, v in k_migliori]
+#     k_mig_testi = [testi[i] for i, _ in k_migliori]
+#     k_mig_tipi = [tipi[i] for i, _ in k_migliori]
+#     k_mig_score = [s for i, s in k_migliori]
+#     return [
+#         {
+#             "indice": idx,
+#             "tipo": tipe,
+#             "punteggio": score,
+#             "anteprima": view[:60],
+#         }
+#         for idx, tipe, score, view in zip(k_mig_idx, k_mig_tipi, k_mig_score, k_mig_testi)
+#     ]
+
+# prova = pipeline_ricerca("elenco movimenti della banca")[0]['tipo']
+# print(prova)
+
 # E8  🌐 [CROSS-CAPITOLO] — La mini-torre. Unisci TRE capitoli in una
 #     funzione sola: `cartellino(query, modello, E, pipe, mappa, k=3)`.
 #
@@ -1694,7 +1858,7 @@ def demo() -> None:
 #         "tipo_vicini"           (il tipo PIÙ FREQUENTE fra i k vicini,
 #                                  usa collections.Counter)
 #         "allineato"             (True se tipo_classificatore == tipo_vicini)
-#     📋 PUNTI: 7        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 7        PUNTI CHE VEDO: 7
 #     Poi PROVA su 4 query: una del BENCHMARK, "pizza margherita", una con
 #     CF e IBAN, e "remunerazione del lavoratore subordinato".
 #     Una riga finale per ogni query dove allineato è False: di chi ti
@@ -1703,6 +1867,60 @@ def demo() -> None:
 #     fai se i due segnali discordano?)
 #
 # TUO CODICE:
+
+# print("\nEsercizio 8 \n")
+
+# pipe = prepara_modello(PERCORSO_DATI)['pipe']
+# note = carica_note()
+# testi = note['testo'].tolist()
+# modello = modello_una_volta(MODELLO_ST)
+# mappa = carica_mappa()
+# E = embedda(testi, modello, normalizza=True)
+
+# def cartellino(query, modello, E, pipe, mappa, k=3) -> dict[str, object]:
+
+#     if isinstance(query, str):
+#         query = [query]
+#     tipo_q = pipe.predict(query)[0]
+#     prob_tipo_q = float(pipe.predict_proba(query)[0][list(pipe.named_steps['clf'].classes_).index(tipo_q)])
+#     presenti = copertura_query(query[0], mappa)
+#     corpus = carica_note()   
+#     q = embedda(query, modello)[0]
+#     vicini = _top_k(E @ q, k=k, )
+#     punteggio_max = vicini[0][1]
+#     tipo_vicini = [corpus['tipo'][i] for i, _  in vicini]
+#     conteggio = Counter(tipo_vicini).most_common(1)[0][0]
+#     allineato = tipo_q == conteggio
+    
+#     return {
+#             "tipo_classificatore": tipo_q,
+#             "prob_classificatore": prob_tipo_q,
+#             "copertura_mappa": presenti,
+#             "vicini": vicini,
+#             "punteggio_max": punteggio_max,
+#             "tipo_vicini": conteggio,
+#             "allineato": allineato            
+#             }
+
+# query = ["pizza margherita", BENCHMARK[0], "NNIVLR89E17H501N numero di iban IT47T0623003341000036085649", "remunerazione del lavoratore subordinato"]
+# prove = []
+# for q in query:
+#     prova = cartellino(
+#         q,
+#         modello,
+#         E,
+#         pipe,
+#         mappa
+#     )  
+#     prove.append(prova)
+
+# from pprint import pprint
+# for p in prove:
+#     pprint(p)
+#     print("\n")
+    
+# Non mi fido di tutte quelle query che hanno copertura mappa 0 e punteggio max 0, perchè di fatto è presumibile che il classificatore non stia dando una rispota attendibile, ma stia inventando.
+
 # TUA RISPOSTA:
 #
 #
@@ -1726,10 +1944,53 @@ def demo() -> None:
 #       - restituisce (a_nuovo, b_nuovo)
 #     Poi un ciclo di 100 giri su tutte le coppie e due righe di stampa:
 #     distanze delle coppie positive PRIMA e DOPO, idem per le negative.
-#     📋 PUNTI: 4        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 4        PUNTI CHE VEDO: 4
 #     Domanda finale (una riga): perché serve il margine?
-#
+#     Il margine dice “questa coppia negativa è già abbastanza lontana”: smetti di spingerla, altrimenti a ogni giro la allontaneresti ancora senza limite.
 # TUO CODICE:
+
+# frasi = ["cedolino di marzo", "busta paga di marzo", "estratto conto", "saldo del conto"]
+# positive = [(0, 1), (2, 3)]
+# negative = [(0, 2), (0, 3), (1, 2), (1, 3)]
+
+# def passo_contrastativo(a: NDArray[np.float64], b: NDArray[np.float64], vicini=True, passo: float = 0.1, margine: float = 2.0):
+#     d = b - a
+#     dist = np.linalg.norm(d)
+#     if vicini:
+#         new_a = a + passo * d
+#         new_b = b - passo * d
+#         return new_a, new_b
+#     if dist < margine:
+#         new_a = a - passo * d
+#         new_b = b + passo * d
+#         return new_a, new_b
+#     return a, b    
+
+# rng = np.random.default_rng(0)
+# pos = rng.uniform(-5, 5, size=(4, 2))
+
+# for y, (i, j) in enumerate(positive):
+#     print(f"Distanza iniziale coppia {y} positiva:{np.linalg.norm(pos[j] - pos[i])}")
+# for y, (i, j) in enumerate(negative):
+#     print(f"Distanza iniziale coppia {y} negativa:{np.linalg.norm(pos[j] - pos[i])}")
+    
+# for giro in range(100):
+#     for i, j in positive:
+#         a, b = pos[i].copy(), pos[j].copy()
+#         nuovo_a, nuovo_b = passo_contrastativo(a, b, vicini=True, passo=0.1, margine=2.0)
+#         pos[i] = nuovo_a
+#         pos[j] = nuovo_b
+#     for i, j in negative:
+#         a, b = pos[i].copy(), pos[j].copy()
+#         nuovo_a, nuovo_b = passo_contrastativo(a, b, vicini=False, passo=0.1, margine=2.0)
+#         pos[i] = nuovo_a
+#         pos[j] = nuovo_b
+        
+# for y, (i, j) in enumerate(positive):
+#     print(f"Distanza finale coppia {y} positiva:{np.linalg.norm(pos[j] - pos[i])}")
+# for y, (i, j) in enumerate(negative):
+#     print(f"Distanza finale coppia {y} negativa:{np.linalg.norm(pos[j] - pos[i])}")
+    
 # TUA RISPOSTA:
 #
 #
@@ -1746,7 +2007,7 @@ def demo() -> None:
 #         n_sottoparole(frase, modello)       -> quanti pezzi (senza speciali)
 #         ha_troncamento(n_pezzi, limite)     -> True se n_pezzi + 2 > limite
 #
-#     📋 PUNTI: 6        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 6        PUNTI CHE VEDO: 6
 #     Verifica con questi assert (devono passare in silenzio):
 #         M = np.array([[3.0, 4.0], [0.0, 5.0]])
 #         assert np.allclose(normalizza_righe(M), [[0.6, 0.8], [0.0, 1.0]])
@@ -1756,7 +2017,40 @@ def demo() -> None:
 #         assert ha_troncamento(127, 128) is True and ha_troncamento(126, 128) is False
 #
 # TUO CODICE:
-#
+
+# print("\nEsercizio 10\n")
+
+# M = np.array([
+#     [3.0, 4.0],
+#     [0.0, 5.0]
+#     ]
+# )
+
+# def pooling_medio(vettori_token: NDArray[np.float64]):
+#     return vettori_token.mean(axis=0)
+
+# def normalizza_righe(M):
+#     return np.array([m / np.linalg.norm(m) for m in M])
+    
+# def coseno_batch(q, E):
+#     return np.array([e @ q for e in E])
+
+# def precisione_a_k(indici: list, tipi: list, atteso: str) -> float:
+#     return float(len([i for i in indici if tipi[i] == atteso]) / len(indici))
+
+# def n_sottoparole(frase, modello) -> int:
+#     return int(len(modello.tokenizer.tokenize(frase)))
+
+# def ha_troncamento(n_pezzi: int, limite: int) -> bool:
+#     return n_pezzi + 2 > limite
+    
+# assert np.allclose(pooling_medio(np.array([[1.0, 3.0], [3.0, 5.0]])), [2.0, 4.0])
+# assert np.allclose(normalizza_righe(M), [[0.6, 0.8], [0.0, 1.0]])
+# assert np.allclose(coseno_batch(np.array([1.0, 0.0]), np.array([[1.0, 0.0], [0.0, 1.0]])), [1.0, 0.0])
+# assert precisione_a_k([0, 1, 2], ["cu", "cu", "busta_paga"], "cu") == 2 / 3
+# print(n_sottoparole("cedolino di marzo", modello_una_volta(MODELLO_ST)))
+# assert ha_troncamento(127, 128) is True and ha_troncamento(126, 128) is False
+
 #
 # E11 ⭐ 🛡️ [GUARDRAIL] — Nel contratto la dimensione e il nome del modello
 #     servono a QUALCOSA: a impedire che qualcuno confronti vettori che non
@@ -1768,12 +2062,42 @@ def demo() -> None:
 #     Messaggi di errore che DICONO cosa non torna (valori trovati e
 #     attesi). Test con tre contratti fasulli: giusto, dimensione sbagliata,
 #     nome sbagliato.
-#     📋 PUNTI: 3        PUNTI CHE VEDO: ___
+#     📋 PUNTI: 3        PUNTI CHE VEDO: 3
 #
 # TUO CODICE:
-#
-#
 
+rng = np.random.default_rng(0)
+E = rng.uniform(-5, 5, size=(5, 384))
+nome_ok = MODELLO_ST
+
+
+contratto_giusto = {
+    "modello_minilm": nome_ok,
+    "mappa_dim_minilm": E.shape[1],
+}
+
+contratto_dim_sbagliata = {
+    "modello_minilm": nome_ok,
+    "mappa_dim_minilm": 768,
+}
+
+contratto_nome_sbagliato = {
+    "modello_minilm": "all-MiniLM-L6-v2",
+    "mappa_dim_minilm": E.shape[1],
+}
+
+def verifica_compatibilita(E, contratto, nome_modello) -> None:
+    if E.shape[1] != contratto['mappa_dim_minilm']:
+        raise ValueError(f"La shape dei vettori in E {E.shape[1]} non corrisponde alla shape della mappa del Minilm {contratto['mappa_dim_minilm']} ")
+    if contratto["modello_minilm"] != nome_modello:
+        raise ValueError(f"Modello inserito: ({nome_modello}) - Modello atteso: ({contratto['modello_minilm']})")
+    
+for c in [contratto_giusto, contratto_dim_sbagliata, contratto_nome_sbagliato]:
+    try:
+        verifica_compatibilita(E, c, nome_ok)
+    except ValueError as e:
+        print(e)
+    
 
 # ==========================================================================
 # 🏗️ PROGETTO INCREMENTALE
@@ -1806,6 +2130,7 @@ def demo() -> None:
 #            sovrascrivere `mappa_dim = 4`. Una riga di commento: perché
 #            384 e 4 non si confrontano e perché il nome del modello va
 #            salvato.
+#           
 #   [ ] T3 — Porta `cerca_note` (E6) in `embed_utils.py` e aggiungi nel
 #            blocco `__main__` tre assert silenziosi nello stile del 02a:
 #            (a) la query uguale al testo della nota 5 la trova in cima;
@@ -1823,19 +2148,32 @@ def demo() -> None:
 # gli assert passano in silenzio; `testo_utils.py` non è stato toccato.
 # Non mischiare questi vettori con `mappa.pkl` del 02a.
 
+path_embed = QUI / "embed_utils.py"
+if path_embed.exists():
+    print(f"File già presente: {path_embed}")
+else:
+    path_embed.write_text(
+        '"""Embedding MiniLM — progetto incrementale 02b (T1–T5)."""\n\n'
+        "from __future__ import annotations\n\n"
+        "from pathlib import Path\n\n"
+        "QUI = Path(__file__).resolve().parent\n",
+        encoding="utf-8",
+    )
+    print(f"Creato: {path_embed}")
+
 
 # ==========================================================================
 # DEFINITION OF DONE
 # ==========================================================================
-# [ ] Quiz ingresso (Q1-Q8) e verifica (V1-V13, V8 Feynman compreso)
-# [ ] Micro #6 e Mini 0.1
-# [ ] Mini 1.1-1.2, 2.1-2.2, 3.1-3.2, 4.1, 5.1-5.2, 6.1-6.4, 7.1-7.2,
+# [v] Quiz ingresso (Q1-Q8) e verifica (V1-V13, V8 Feynman compreso)
+# [v] Micro #6 e Mini 0.1
+# [v] Mini 1.1-1.2, 2.1-2.2, 3.1-3.2, 4.1, 5.1-5.2, 6.1-6.4, 7.1-7.2,
 #     8.1-8.2, 9.1-9.2, 10.1, 11.1
-# [ ] E1-E8, E10
-# [ ] E9 e E11 (⭐ facoltativi)
-# [ ] T1-T5 progetto
-# [ ] demo() gira e i numeri tornano con quelli che vedi tu
-# [ ] Per ogni consegna a più punti hai scritto PUNTI CHE VEDO prima di
+# [v] E1-E8, E10
+# [v] E9 e E11 (⭐ facoltativi)
+# [v] T1-T5 progetto
+# [v] demo() gira e i numeri tornano con quelli che vedi tu
+# [v] Per ogni consegna a più punti hai scritto PUNTI CHE VEDO prima di
 #     rispondere (antidoto Pattern #6)
 
 
