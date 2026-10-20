@@ -123,6 +123,52 @@ _(nessuna ancora)_
 - **Media quiz ingresso intero (Q1–Q8):** **~9.1/10** (10+8+9+6+10+10+10+10)/8.
 - **#66** e **#68** ok a freddo; **#67** ok su precision@k, debole su token/sottoparola.
 
+### 2026-10-20 — Mini 1.1 (`03_similarita_coseno.py`) — **6.5/10**
+
+- **Ok:** diagonale ≈ 1 (assert + spiegazione); simmetria `S[0,1]≈S[1,0]`; idea di normalizzare prima del matmul.
+- **Problema serio:** `E = rng.uniform(...)` **sovrascrive** la mappa reale del setup. Da lì in poi il capitolo lavora su dati random, non su `note_minilm.pkl`. Usare l’`E` già caricato (norme già 1).
+- **TODO 4 sbagliato/incompleto:** ha fatto `argsort(coseni)` senza il meno; va `argsort(-s0)` vs `argsort(d0)` → coincidono. Senza meno ottieni l’ordine inverso. Risposta a parole vuota.
+- **Next:** togliere il random; `S = E @ E.T`; TODO 4 con il meno + frase «stessa classifica».
+
+### 2026-10-20 — Mini 1.1 post-feedback (`03_similarita_coseno.py`) — **9.5/10**
+
+- Non sostituisce l’esame **6.5/10**. Ora: `E` reale, `S = E @ E.T`, assert ok, `argsort(-(E@E[0]))` vs `argsort(distanze)`, risposta TODO 4: classifica identica.
+- Nit: `(s0 == d0).all()` al posto del for; typo «eucliedee». `carica_vettori()` ridondante (E già in setup) ma innocuo.
+
+### 2026-10-20 — Mini 1.2 rinforzo #66 (`03_similarita_coseno.py`) — **10/10**
+
+- TODO 1: `(1, 384)`, `(1, 384)`, `(3, 384)` — contratto matrice ok.
+- TODO 2: `q[0]` per passare a `(384,)`. **#66** consolidata nel capitolo.
+
+### 2026-10-20 — Sez. 2.2 `top_k` Regola 45 (`03_similarita_coseno.py`) — **9.5/10**
+
+- `argsort(-punteggi)[:k]` + list di `(idx, punteggio)`: ordine e firma ok. Verificato: `[0.5,0.9,0.7]` → `[(1,0.9),(2,0.7)]`.
+- Guardia `k > len` con `ValueError`: scelta valida e documentata.
+- Nit: `int(idx)` e `float(punteggi[idx])` per allineare al type hint (ora escono `np.int64`/`np.float64`); typo «lunghezze».
+
+### 2026-10-20 — Sez. 2.2 `top_k` post-feedback — **10/10**
+
+- Non ricalcola l’esame **9.5/10** (già altissimo). Ora: `int`/`float` + typo «lunghezza» sistemati. Firma e comportamento allineati.
+
+### 2026-10-20 — Mini 2.1 verifica `top_k` (`03_similarita_coseno.py`) — **9.5/10**
+
+- TODO 1–2: assert ok (verificati in esecuzione). TODO 3: `>=` corretto.
+- Nit: TODO 3 testa solo `todo_1` (2 elementi = un confronto); più robusto sugli score di `top_k(punteggi_guida, 3)`.
+
+### 2026-10-20 — Mini 2.2 query prospetto (`03_similarita_coseno.py`) — **9.5/10**
+
+- Output allineato ai valori attesi: 1/busta 0.612 · 24/altro 0.582 · 5/busta 0.570. Pipeline embedda→matmul→top_k ok.
+- Risposta: «vicino onesto» corretta (gap ~0.03, tema soldi).
+- Nit: `True` posizionale → meglio `normalizza=True`; `E`/`note` già in setup; `S` qui è vettore punteggi, non la matrice (30,30).
+
+### 2026-10-20 — Mini 2.3 rinforzo #68 (`03_similarita_coseno.py`) — **10/10**
+
+- TODO 1: id prima riga = 1. TODO 2: DataFrame vuoto. TODO 3: posizioni → `.iloc`. **#68** consolidata nel capitolo.
+
+### 2026-10-20 — Mini 2.4 contratto (`03_similarita_coseno.py`) — **10/10**
+
+- TODO 1: `modello_minilm` (chi ha prodotto E). TODO 2: `mappa_dim_minilm` == 384 == `E.shape[1]` (via `E[0].shape[0]`). TODO 3: forma ≠ spazio, serve lo stesso modello. joblib ok dopo il fix. Segnale positivo su #64.
+
 ---
 
 ## Lacune e dubbi ancora aperti

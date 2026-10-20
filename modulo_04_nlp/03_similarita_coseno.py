@@ -157,13 +157,13 @@
 # =============================================================================
 
 import os                                                      # percorsi file
-import pickle                                                  # per leggere il contratto (Mini 2.4)
+import joblib                                                  # per leggere il contratto (Mini 2.4; salvato con joblib.dump)
 import numpy as np                                             # vettori e matrici
 import pandas as pd                                            # tabella delle note
 
 from numpy.typing import NDArray                               # type hint vettori (come nel 02b)
 
-from embed_utils import carica_modello_frasi, embedda, carica_vettori  # utilities del 02b
+from embed_utils import PERCORSO_VETTORI, carica_modello_frasi, embedda, carica_vettori  # utilities del 02b
 
 # 🔁 RIPASSO PROPOSITIVO — `coseno(a, b)` (cap. 02a/02b, testo_utils)
 # ------------------------------------------------------------------
@@ -281,9 +281,28 @@ print("dist^2:", round(dist2_check, 6), "| 2 - 2*cos:", round(2 - 2 * cos_check,
 #         d0 = np.linalg.norm(E - E[0], axis=1); poi confronta np.argsort(-s0)
 #         e np.argsort(d0) con (... == ...).all(). Cosa scopri?
 #
+
+print("\nMini-esercizio 1.1\n")
+
+E = carica_vettori()
+S = E @ E.T
+assert np.allclose(S.diagonal(), 1), "Ops, qualcosa è andato storto con la diagonale!"
+assert S.shape == (30, 30), "Ops, la shape non corrisponde a quella attesa!"
+assert np.isclose(S[0, 1], S[1, 0]), "Ops, i coseni posti simmetricamente sulla tabella non coincidono!"
+print(S.shape)
+print(S.diagonal(), "\n")
+
+s0 = np.argsort(-(E @ E[0]))
+d0 = np.argsort(np.linalg.norm(E - E[0], axis=1))
+for s, d in zip(s0, d0):
+    print(f"s0: {s} -> d0: {d}")
+
 # RISPOSTE:
 # TODO 2 (a parole):
+# mi aspetto che sulla diagonale, ossia dove ci sono i coseni di un vettore con se stesso, ci siano tutti 1.
 # TODO 4 (a parole):
+# Che la classifica restituita dai coseni e distanze eucliedee è di fatto identica.
+# 
 #
 
 # -----------------------------------------------------------------------------
@@ -315,8 +334,10 @@ print("dist^2:", round(dist2_check, 6), "| 2 - 2*cos:", round(2 - 2 * cos_check,
 #         freccia (384,) scrivo ______________________"
 #
 # RISPOSTE TODO 1:
+# (1, 384), (1, 384), (3, 384)
 # RISPOSTA TODO 2:
-#
+# q[0]
+
 
 
 # =============================================================================
@@ -377,17 +398,38 @@ for i in primi3_guida:                                                # stampa i
 #
 # SCRIVILA QUI SOTTO:
 #
-# def top_k(...):
-#     ...
-#
-#
+def top_k(punteggi: NDArray[np.float64], k: int) -> list[tuple[int, float]]:
+    if k > len(punteggi):
+        raise ValueError(f"K non può essere maggiore della lunghezza di punteggi ({len(punteggi)})")
+    idx_sorted = np.argsort(-punteggi)[:k]
+    return [(int(idx), float(punteggi[idx])) for idx in idx_sorted]
+
+
 # MINI-ESERCIZIO 2.1 — verifica la tua top_k
-# -------------------------------------------
+# ------------------------------------------
 # TODO 1: top_k(np.array([0.5, 0.9, 0.7, 0.1]), 2) deve dare [(1, 0.9), (2, 0.7)]
 # TODO 2: top_k(punteggi_guida, 3) deve dare gli stessi indici di primi3_guida
 # TODO 3: scrivi un assert che controlla che i punteggi restituiti siano in
 #         ordine decrescente.
-#
+
+print("\nMini-esercizio 2.1\n")
+
+# TODO 1
+todo_1 = top_k(np.array([0.5, 0.9, 0.7, 0.1]), 2)
+assert np.allclose(todo_1, [(1, 0.9), (2, 0.7)]), "Ops, il todo 1 non è andata a buon fine!"
+print(todo_1, "\n")
+
+#TODO 2
+todo_2 = np.array([i for i, v in top_k(punteggi_guida, 3)])
+assert np.allclose(todo_2, primi3_guida), "Ops, il todo 2 non è andata a buon fine!"
+print(todo_2, primi3_guida)
+
+#TODO 3
+for j, (i, v) in enumerate(todo_1):
+    if j != len(todo_1) - 1:
+        assert todo_1[j][1] >= todo_1[j + 1][1], "Ops, i valori non sono in ordine decrescente!"
+
+
 # MINI-ESERCIZIO 2.2 — la query del prospetto
 # --------------------------------------------
 # TODO: embedda la query "prospetto paga di aprile" (normalizzata), calcola
@@ -403,6 +445,25 @@ for i in primi3_guida:                                                # stampa i
 # i punteggi, diresti che è "sbagliato di brutto" o "un vicino onesto"?
 #
 # RISPOSTA:
+# dal punteggio direi che è un vicino onesto
+
+print("\nMini-esercizio 2.2\n")
+
+q = embedda("prospetto paga di aprile", modello, True)[0]
+E = carica_vettori()
+S = E @ q
+tk = top_k(S, 3)
+tipi = pd.read_csv(PERCORSO_CSV)['tipo'].tolist()
+risultati = [
+    {
+    "indice": i,
+    "tipo": tipi[i],
+    "punteggio": round(float(S[i]), 4)
+    } for i in [i for i, v in tk]]
+import pprint
+for r in risultati:
+    pprint.pprint(r)
+
 #
 # -----------------------------------------------------------------------------
 # 🔁 RINFORZO MIRATO — lacuna #68 (E7 del 02b, lasciata in bianco)
@@ -434,7 +495,21 @@ for i in primi3_guida:                                                # stampa i
 #         ____________"
 #
 # RISPOSTA TODO 3:
-#
+# Risposta todo 1 -> L'id è 1
+# Risposta todo 2 -> Empty Dataframe
+# Risposta todo 3 -> posizioni, .iloc
+
+print("\nMini-esercizio 2.3\n")
+
+# TODO 1
+note = pd.read_csv(PERCORSO_CSV)
+print(note.iloc[0]['id'])
+print(note.iloc[0]['testo'][:40], "\n")
+
+# TODO 2
+print(note[note['id'] == 0])
+
+
 # -----------------------------------------------------------------------------
 # 🔁 RINFORZO MIRATO — Mini 11.1 del 02b (lasciata in bianco): il contratto
 # -----------------------------------------------------------------------------
@@ -450,16 +525,26 @@ for i in primi3_guida:                                                # stampa i
 #
 # MINI-ESERCIZIO 2.4 (rinforzo Mini 11.1)
 # ----------------------------------------
-# TODO 1: apri PERCORSO_CONTRATTO con pickle.load e stampa le chiavi del
-#         dizionario. Quale chiave ti dice CHI ha prodotto E?
+# TODO 1: apri PERCORSO_CONTRATTO con joblib.load (NON pickle: il file è stato
+#         salvato con joblib.dump in testo_utils/embed_utils) e stampa le chiavi
+#         del dizionario. Quale chiave ti dice CHI ha prodotto E?
 # TODO 2: stampa il valore della forma ("shape" o simile) e confrontalo con
 #         E.shape: coincidono?
 # TODO 3: in una riga — perché `shape` da sola non basta a garantire che una
 #         query codificata OGGI sia confrontabile con E?
 #
 # RISPOSTE:
-#
+# Risposta todo 1 -> modello_minilm
+# Risposta todo 3 -> Da sola non basta perchè due vettori di shape identica (es. 384 dimensioni), possono cmq descrivere spazi diversi. La vera chiave è di lettura corretta è il modello, che deve essere lo stesso di quello che ha fatto l'encode dei vettori che abbiamo salvati.
 
+print("\nMini-esercizio 2.4\n")
+
+contratto = joblib.load(PERCORSO_CONTRATTO)
+print(contratto.keys(), "\n")
+forma_contratto = contratto['mappa_dim_minilm']
+forma_vettori = E[0].shape[0]
+assert forma_contratto == forma_vettori, "Ops le dimensioni del vettore E e della dimensione riportata nel contratto non coincidono!"
+print(f"Dimensioni contratto: {forma_contratto} -> Dimensione vettori salvati: {forma_vettori}\n")
 
 # =============================================================================
 # SEZIONE 3 — La soglia: quando la risposta giusta è "non lo so"
@@ -1338,9 +1423,10 @@ print("precision@3 esempio:", round(precision_esempio, 3))      # 0.667
 # 1.2: (1, 384), (1, 384), (3, 384). Per la freccia singola: [0].
 # 2.3: la prima riga ha id 1; id==0 → DataFrame vuoto; "posizioni / .loc o
 #      .iloc con la posizione".
-# 2.4: chiavi: forma_minilm, modello_minilm, max_seq_length_minilm; chi decide
-#      la compatibilità è modello_minilm, la forma da sola non basta (stessa
-#      dimensione ≠ stesso spazio).
+# 2.4: caricare con joblib.load(PERCORSO_CONTRATTO) — NON pickle (file scritto
+#      con joblib.dump). Chiavi utili: forma_minilm / modello_minilm /
+#      max_seq_length_minilm; chi decide la compatibilità è modello_minilm,
+#      la forma da sola non basta (stessa dimensione ≠ stesso spazio).
 # 3.2: errori bloccati a 0.70: 2 su 6 (nota 18 a 0.475, nota 20 a 0.627);
 #      giusti persi: 7 su 24 (verificato 19/10/2026; tra cui nota 28 a 0.404,
 #      nota 3 ≈0.65, nota 5 ≈0.64, nota 14 ≈0.69, nota 27 ≈0.67).
