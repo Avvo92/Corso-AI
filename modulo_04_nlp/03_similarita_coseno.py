@@ -608,16 +608,78 @@ print("passa?", sopra_soglia_esempio)                       # True
 #
 # SCRIVILA QUI SOTTO:
 #
-# def decidi_con_soglia(...):
-#     ...
+
+def decidi_con_soglia(vicini: list[tuple[int, float]], soglia: float = 0.7) -> list[tuple[int, float]]:
+    return [(i, v) for i, v in vicini if v > soglia]
 #
 #
 # MINI-ESERCIZIO 3.1 — verifica la tua decidi_con_soglia
 # ------------------------------------------------------
+
+print("\nMini-esercizio 3.1\n")
+
 # TODO 1: decidi_con_soglia([(1, 0.9), (2, 0.69), (3, 0.4)], 0.70) → [(1, 0.9)]
+arr_todo_1 = [(1, 0.9), (2, 0.69), (3, 0.4)]
+result_1 = decidi_con_soglia(arr_todo_1, 0.7)
+controprova_1 = [(1, 0.9)]
+
+assert result_1 == controprova_1, "Ops, qualcosa non funziona con il todo 1!!"
+print(result_1, "\n")
+
 # TODO 2: decidi_con_soglia([(1, 0.5)], 0.70) → []  (il "non lo so")
+arr_todo_2 = [(1, 0.5)]
+result_2 = decidi_con_soglia(arr_todo_2, 0.7)
+controprova_2 = []
+
+assert result_2 == controprova_2, "Ops, qualcosa è andato storto con il todo 2!"
+print(result_2, "\n")
+
 # TODO 3: la soglia è inclusa? 0.70 con soglia 0.70 passa? (decidi e documenta
 #         la scelta in una riga: >= oppure >)
+# dalla prova fatta non cambia nulla nel risultato se usiamo < o <=. La funzione permette di variarlo
+
+
+# def valuta_query(benchmark: tuple[str, str], i: int, tipi: list[str], modello, E, soglia: float, k: int = 1):
+#     q = embedda(benchmark[0], modello, normalizza=True)[0]
+#     punteggi = E @ q
+#     punteggi[i] = -np.inf
+#     first = decidi_con_soglia(top_k(punteggi, k), soglia)
+#     first_tipo = [tipi[j] for j, _ in first]
+#     return ([v == benchmark[1] for v in first_tipo], first_tipo)
+
+# note = pd.read_csv(PERCORSO_CSV)
+# Q = note['testo'].tolist()
+# T = note['tipo'].tolist()
+
+# benchmarks = []
+# for q, t in zip(Q, T):
+#     benchmarks.append((q, t))
+
+# results = []
+# tipi_pred = []
+# for i, t in enumerate(benchmarks):
+#     a, b = valuta_query(t, i, T, modello, E, 0.7, 1)
+#     results.append(a)
+#     tipi_pred.append(b)    
+    
+# new_results = []
+# for r in results:
+#     ok = len(r) > 0 and r[0] is True
+#     new_results.append(ok)
+
+# giusti = [(t, b) for t, b in zip(T, new_results)]
+# buste_paga = [(t, b) for t, b in giusti if t == "busta_paga"]
+
+# tp_bp = sum(1 for _, ok in buste_paga if ok)
+# fn_bp = sum(1 for _, ok in buste_paga if not ok)
+# fp_bp = sum(1 for pred, vero in zip (tipi_pred, T) if len(pred) > 0 and pred[0] != vero and pred[0] == "busta_paga")
+
+# precision_bp = tp_bp / (tp_bp + fp_bp)
+# recall_bp = tp_bp / (tp_bp + fn_bp)
+
+# print(recall_bp, "\n")
+# print(precision_bp, "\n")
+
 #
 # 🌉 PONTE JS/PHP: il corpo della tua funzione è una FILTER con destrutturazione:
 #   vicini.filter(([i, p]) => p >= soglia)                  // JavaScript
@@ -637,7 +699,48 @@ print("passa?", sopra_soglia_esempio)                       # True
 #          poi lo VEDI nel grafico del Mini 3.5)
 #
 # RISPOSTE:
-#
+
+print("\nMini-esercizio 3.2\n")
+
+def f(soglia: float, magg_uguale: bool = False):
+    vicini_sempre = []
+    note = pd.read_csv(PERCORSO_CSV)
+    testi = note['testo'].tolist()
+    Q = embedda(testi, modello, normalizza=True)
+    for i, q in enumerate(Q):
+        punteggi = E @ q
+        punteggi[i] = -np.inf
+        vicino_sempre = decidi_con_soglia(top_k(punteggi, 1), 0.0)
+        vicino_sempre = vicino_sempre[0]
+        vicini_sempre.append((i, vicino_sempre))
+    
+    tipi = note['tipo'].tolist()
+
+    matches = []
+    scores = []
+
+    for v in vicini_sempre:
+        match = tipi[v[0]] == tipi[v[1][0]]
+        score = v[1][1]
+        matches.append(match)
+        scores.append(score)
+    errori = sum(1 for m in matches if (not m))
+    giusti = sum(1 for m in matches if m)
+    if magg_uguale:
+        errori_bloccati = sum(1 for m, s in zip(matches, scores) if (not m) and s <= soglia)
+        giusti_persi    = sum(1 for m, s in zip(matches, scores) if m and s <= soglia)
+        return errori_bloccati, giusti_persi, errori, giusti       
+    errori_bloccati = sum(1 for m, s in zip(matches, scores) if (not m) and s < soglia)
+    giusti_persi    = sum(1 for m, s in zip(matches, scores) if m and s < soglia)
+    return errori_bloccati, giusti_persi, errori, giusti
+
+
+for y in np.linspace(0.70, 0.85, 16):
+    a, b, c, d = f(y)
+    print(f"Soglia: {y}")
+    print(f"Errori Totali: {c}, Errori bloccati: {a}")
+    print(f"Giusti persi: {b}, Giusti Totali: {d}\n")
+
 # -----------------------------------------------------------------------------
 # 🔁 RINFORZO MIRATO — E8 del 02b (lasciata in bianco): due segnali che
 # discordano
@@ -665,6 +768,7 @@ print("passa?", sopra_soglia_esempio)                       # True
 # vincitore tra i due numeri.
 #
 # RISPOSTA:
+# All'operatore mostro entrambi i dati, sia la confidenza del classificatore, sia il coseno con il documento più simile. Entrami danno dei segnali unici, diversi e entrambi importanti. Il primo ci da la classe predetta e la relativa confidenza, l'altro ci riporta il documento più simile e il suo coseno. In pratica sono due modi di analizzare diversi ma entrambi producono segnali utili
 #
 # -----------------------------------------------------------------------------
 # 🔁 RINFORZO MIRATO — Mini 6.4 del 02b ("vantaggio di casa" del benchmark)
@@ -685,6 +789,7 @@ print("passa?", sopra_soglia_esempio)                       # True
 # CRITERIO esplicito.
 #
 # RISPOSTA:
+# Eliminare almeno la metà degli errori -> 0.73 -> Errori evitati = 3 e buon trade-off con giusti persi = 7. 
 #
 # 3.5 · IL GRAFICO: la soglia si VEDE (analogia → codice → GRAFICO → morale)
 # ---------------------------------------------------------------------------

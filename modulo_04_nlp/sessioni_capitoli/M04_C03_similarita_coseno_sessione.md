@@ -169,6 +169,27 @@ _(nessuna ancora)_
 
 - TODO 1: `modello_minilm` (chi ha prodotto E). TODO 2: `mappa_dim_minilm` == 384 == `E.shape[1]` (via `E[0].shape[0]`). TODO 3: forma ≠ spazio, serve lo stesso modello. joblib ok dopo il fix. Segnale positivo su #64.
 
+### 2026-10-21 — Mini 3.1 verifica `decidi_con_soglia` (`03_similarita_coseno.py`) — **8.5/10**
+
+- TODO 1–2: assert ok. `decidi_con_soglia` con `v > soglia`.
+- TODO 3: ha testato `<` vs `<=` sui *conteggi* corpus (stesso risultato) — utile ma non è la domanda. La domanda: «0.70 con soglia 0.70 passa?» → con il suo `>` **no**. Manca quella riga esplicita (opzionale: `decidi_con_soglia([(0, 0.70)], 0.70) == []`).
+- Il blocco `f()`/errori bloccati è già Mini **3.2** (anticipo), non valutato qui.
+
+### 2026-10-21 — Mini 3.2 soglia sul corpus (`03_similarita_coseno.py`) — **9/10**
+
+- TODO 2–3 numeri: 0.70 → bloccati **2**, persi **7**; 0.85 → **6** e **20** (attesi ok).
+- TODO 1: leave-one-out ok (`-np.inf` + top_k 1); consegna chiedeva `E[i]` + `top_k(..., 2)[1]` — equivalente.
+- Manca sotto RISPOSTE la riga a parole del TODO 3 (trade-off). Nit: typo «pesi»; `f()` rifà embedda 4 volte.
+
+### 2026-10-21 — Mini 3.3 rinforzo E8 (`03_similarita_coseno.py`) — **8.5/10**
+
+- Mostra entrambi i segnali, senza vincitore: ok. Distingue classe+confidenza vs documento+coseno.
+- Manca esplicito: entrambi sotto soglia → dichiarare «non lo so» / passa all’umano; i due strumenti misurano domande diverse (categoria vs vicinanza a un doc).
+
+### 2026-10-21 — Mini 3.4 benchmark onesto / scelta soglia (`03_similarita_coseno.py`) — **9.5/10**
+
+- Criterio esplicito: ≥ metà errori (3/6) → soglia **0.73** → bloccati 3, giusti persi 7. Numeri verificati. Ok.
+
 ---
 
 ## Lacune e dubbi ancora aperti
