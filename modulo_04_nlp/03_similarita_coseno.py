@@ -735,11 +735,11 @@ def f(soglia: float, magg_uguale: bool = False):
     return errori_bloccati, giusti_persi, errori, giusti
 
 
-for y in np.linspace(0.70, 0.85, 16):
-    a, b, c, d = f(y)
-    print(f"Soglia: {y}")
-    print(f"Errori Totali: {c}, Errori bloccati: {a}")
-    print(f"Giusti persi: {b}, Giusti Totali: {d}\n")
+# for y in np.linspace(0.70, 0.85, 16):
+#     a, b, c, d = f(y)
+#     print(f"Soglia: {y}")
+#     print(f"Errori Totali: {c}, Errori bloccati: {a}")
+#     print(f"Giusti persi: {b}, Giusti Totali: {d}\n")
 
 # -----------------------------------------------------------------------------
 # 🔁 RINFORZO MIRATO — E8 del 02b (lasciata in bianco): due segnali che
@@ -817,12 +817,12 @@ plt.hist([p for p, g in zip(punteggi_v1, giusti_v1) if g],          # i 24 giust
          bins=bins, alpha=0.7, color="green", label="vicino giusto")
 plt.hist([p for p, g in zip(punteggi_v1, giusti_v1) if not g],      # i 6 sbagliati in rosso
          bins=bins, alpha=0.7, color="red", label="vicino sbagliato")
-plt.axvline(0.70, color="black", linestyle="--", label="soglia 0.70")   # la manopola
+# plt.axvline(0.70, color="black", linestyle="--", label="soglia 0.70")   # la manopola
 plt.xlabel("coseno del vicino più simile")                          # asse x
 plt.ylabel("quante note")                                           # asse y
 plt.title("La soglia sposta il confine tra 'rispondo' e 'non lo so'")
 plt.legend()                                                        # legenda
-plt.show()                                                          # apri il grafico
+                                                        # apri il grafico
 
 # Cosa DEVI vedere: le barre rosse NON stanno tutte a sinistra della linea.
 # C'è una zona di MESCOLANZA (≈0.60–0.82) dove rosso e verde si sovrappongono:
@@ -832,14 +832,24 @@ plt.show()                                                          # apri il gr
 #
 # MINI-ESERCIZIO 3.5 — muovi la linea
 # ------------------------------------
+
+print("\nMini-esercizio 3.5\n")
+
 # TODO 1: riesegui il grafico con la linea a 0.85 (cambia solo axvline).
+plt.axvline(0.85, color="black", linestyle="--", label="soglia 0.85")
+# plt.show()  
+
 # TODO 2: conta sui TUOI array (non a occhio): a 0.85 quanti errori blocchi e
 #         quanti giusti perdi? (attesi verificati il 19/10/2026: 6/6 e 20/24)
+a, b, c, d = f(0.85)
+print(f"Verificati: {a}/{c} bloccati, {b}/{d} persi")
+
 # TODO 3: in una riga — perché "alzo la soglia finché non passa nessun errore"
 #         NON è una strategia?
 #
 # RISPOSTE:
 #
+# Non è una strategia per via dell'inevitabile trade-off che abbiamo nel cercare di bloccare gli errori. Il costo, come nel caso verificato sopra, dimostra che aver bloccato tutti gli errori ( 6 su 6) ha imposto un "sacrificio molto grande", ossia l'aver "buttato" quasi tutti i simili giusti che il modello aveva correttamente individuato. Dobbiamo non cercare di eliminare del tutto l'errore, ma trovare il compromesso più accettabile per il nostro dominio.
 
 
 # =============================================================================
@@ -905,55 +915,131 @@ print("precision@3 esempio:", round(precision_esempio, 3))      # 0.667
 #   def precision_su_k(tipi_vicini: list[str], tipo_atteso: str, k: int) -> float:
 #
 # SCRIVILA QUI SOTTO:
-#
-# def precision_su_k(...):
-#     ...
-#
+
+def precision_su_k(tipi_vicini: list[str], tipo_atteso: str, k: int) -> float:
+    return float(sum(1 for t in tipi_vicini[:k] if t == tipo_atteso) / k)
 #
 # MINI-ESERCIZIO 4.1 — verifica la tua precision_su_k
 # ----------------------------------------------------
+
+print("\nMini-esercizio 4.1\n")
+
 # TODO 1: precision_su_k(["cu", "cu", "altro"], "cu", 3) → 2/3 ≈ 0.667
+
+todo_1 = precision_su_k(["cu", "cu", "altro"], "cu", 3)
+assert np.isclose(todo_1, 0.667, atol= 1e-3)
+print(f"Risultato TODO 1: {round(todo_1, 3)}")
+
 # TODO 2: precision_su_k(["cu", "altro"], "cu", 3) → ? Se hai applicato la
 #         regola da manuale (denominatore SEMPRE k) viene 1/3 ≈ 0.333:
 #         il risultato "mancante" pesa come un errore. Rileggi la domanda
 #         d'ingaggio qui sopra e scrivi in una riga PERCHÉ non è 1/2.
+
+todo_2 = precision_su_k(["cu", "altro"], "cu", 3)
+assert np.isclose(todo_2, 0.333, atol=1e-3)
+print(f"Risultato TODO 2: {round(todo_2, 3)}")
+
+# Non è 1/2 perchè se facessimo in questo modo, premieremmo un modello che risponde poco, invece decidiamo a priori di considerare le "non risposte" come errori.
 #
 # MINI-ESERCIZIO 4.2 · 🔤 [GLOSSARIO IN CODICE] — i nomi giusti dentro il codice
 # ------------------------------------------------------------------------------
+
+print("\nMini-esercizio 4.2\n")
+
 # (Rinforzo #67: nel 02b hai confuso il nome della pagella chiamando
 #  "precision@k" una cosa che non c'entrava. Qui la usi DAVVERO, con il suo nome.)
+
 # TODO 1: con la query "prospetto paga di aprile" (Mini 2.2), prendi i tipi dei
 #         3 vicini con la tua top_k e calcola precision_su_k(tipi, "busta_paga", 1)
 #         e precision_su_k(tipi, "busta_paga", 3).
 #         Atteso (19/10/2026): precision@1 = 1.0, precision@3 = 2/3 ≈ 0.67
+
+frase = "prospetto paga di aprile"
+tipi = pd.read_csv(PERCORSO_CSV)['tipo'].tolist()
+q = embedda(frase, modello, normalizza=True)[0]
+S = E @ q
+K = [(1, 1.0), (3, 0.667)]
+print("Risultato TODO 1\n")
+for k, p in K:
+    vicini = top_k(S, k)
+    tipi_top = [tipi[i] for i, _ in vicini]
+    prec = precision_su_k(tipi_top, "busta_paga", k)
+    assert np.isclose(prec, p, atol=1e-3)
+    print(f"K: {k} -> Precision: {round(prec, 3)}")
+
 # TODO 2: in una riga, scrivi cosa misura precision_at_k senza usare la parola
 #         "precision" (come se la spiegassi a un collega).
 #
 # RISPOSTA TODO 2:
-#
+# Su k risultati restituiti, quanti di questi sono giusti?
+
+
 # MINI-ESERCIZIO 4.3 — recall@k sulle buste paga
 # ----------------------------------------------
+
+print("\nMini-esercizio 4.3\n")
+
 # TODO 1: quante note di tipo "busta_paga" ci sono nel corpus? (conta con pandas:
 #         atteso 9)
+
+tipi = pd.read_csv(PERCORSO_CSV)['tipo'].tolist()
+n_bp = sum(1 for t in tipi if t == "busta_paga")
+assert n_bp == 9
+print(f"Risultato TODO 1: {n_bp}")
+
 # TODO 2: query "prospetto paga di aprile": quante buste paga compaiono nei
 #         primi 3 vicini? (atteso: 2) → recall@3 = 2/9 ≈ 0.22
+
+frase = "prospetto paga di aprile"
+tipi = pd.read_csv(PERCORSO_CSV)['tipo'].tolist()
+q = embedda(frase, modello, normalizza=True)[0]
+S = E @ q
+k = 3
+vicini_top3 = top_k(S, k)
+n_bp_tipi_top3 = sum(1 for i, _ in vicini_top3 if tipi[i] == "busta_paga")
+recall_at_k = n_bp_tipi_top3 / n_bp
+assert np.isclose(recall_at_k, 0.222, atol=1e-3)
+print(f"Risultato TODO 2:\n")
+print(f"- Recall@3:        {round(recall_at_k, 3)}")
+print(f"- Max recall@3:    {round(k / n_bp, 3)}")
+print(f"- Rec@3 su base 1: {round(recall_at_k / (k / n_bp), 3)}")
+
 # TODO 3: in una riga — perché recall@3 è così bassa anche se il motore "funziona"?
 #
 # RISPOSTA TODO 3:
+# Perché abbiamo deciso che il modello, anche se le buste paga all'interno del corpus sono 9, lui può riportarne al massimo 3 in risposta. Dunque in questo caso la recall@k va rapportata al suo effettivo massimo raggiungibile, che è dato dalla divisione k / n_buste_nel_corpus.
 #
 # MINI-ESERCIZIO 4.4 — la pagella completa (vettorizzata)
 # -------------------------------------------------------
+
+print("\nMini-esercizio 4.4\n")
+
 # TODO 1: per OGNI nota i: q = E[i]; punteggi = E @ q; vicini = top_k(punteggi, 4)
 #         (k+1 perché il primo è se stessa); tipi_vicini = tipi dei vicini[1:4].
+#
 # TODO 2: media di precision_su_k(tipi_vicini, tipo_della_nota, 3) su tutte le
 #         30 note.
 #         Atteso (19/10/2026): precision@3 media ≈ 0.667; precision@1 = 24/30 = 0.80
 # TODO 3: confronta con la pagella del 02b (stessa metrica, fatta col ciclo):
 #         i numeri devono coincidere. Se non coincidono, chi mente?
-#
-# RISPOSTA TODO 3:
-#
 
+note = pd.read_csv(PERCORSO_CSV)
+tipi = note['tipo'].tolist()
+K = [1, 3]
+for k in K:
+    precision_totale = 0.0
+    for i in range(len(note)):
+        tipo_q = note.iloc[i]["tipo"]
+        s_i = E @ E[i]
+        top = top_k(s_i, k + 1)[1:k + 1]
+        tipi_top = [tipi[j] for j, _ in top]
+        precision_at_k = float(sum(1 for t in tipi_top if t == tipo_q) / k)
+        precision_totale += precision_at_k
+    precision_media = precision_totale / len(note)
+    print(f"Precisio@{k} -> {round(precision_media, 3)}")
+
+# RISPOSTA TODO 3:
+# Non coincidono ma nessuno mente. La formula è la stessa, ma è stata ottenuta da due esami diversi, quindi non confrontabili.
 
 # =============================================================================
 # SEZIONE 5 — Falsi amici: dove il coseno ti mente

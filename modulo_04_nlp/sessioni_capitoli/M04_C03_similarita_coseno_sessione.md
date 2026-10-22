@@ -190,6 +190,63 @@ _(nessuna ancora)_
 
 - Criterio esplicito: ≥ metà errori (3/6) → soglia **0.73** → bloccati 3, giusti persi 7. Numeri verificati. Ok.
 
+### 2026-10-22 — Mini 3.5 grafico soglia (`03_similarita_coseno.py`) — **9/10**
+
+- TODO 2: 6/6 bloccati, 20/24 persi — ok. TODO 3: trade-off chiaro, non azzerare l’errore a costo di buttare i giusti — ok.
+- TODO 1: solo `axvline(0.85)`+`show`; meglio rifare l’istogramma con la linea a 0.85 (o entrambe 0.70 e 0.85 sullo stesso plot).
+
+### 2026-10-22 — Mini 4.1 `precision_su_k` (`03_similarita_coseno.py`) — **8.5/10**
+
+- TODO 1–2 assert ok (2/3 e 1/3); spiegazione TODO 2: non-risposte come errori / non premiare chi risponde poco — ok, allineata al manuale.
+- Funzione: denominatore `k` corretto; manca `tipi_vicini[:k]` (conta tutta la lista). Nei mini con len≤k passa; con lista più lunga di k gonfia i giusti.
+- Next: slice `[:k]` prima del conteggio (poi Mini 4.2).
+
+### 2026-10-22 — Mini 4.1 `precision_su_k` — **post-feedback 10/10**
+
+- Fix applicato: `tipi_vicini[:k]` prima del conteggio; denominatore resta `k`. Firma Regola 45 ok.
+- Voto esame resta **8.5/10** (primo tentativo); questa voce è solo verifica del fix.
+
+### 2026-10-22 — Mini 4.2 glossario precision@k (`03_similarita_coseno.py`) — **6.5/10**
+
+- Pipeline query→top_k→tipi ok; precision@3 ≈ 0.667 assert ok.
+- Manca precision@1 (consegna: entrambi; atteso 1.0). Pattern **#6**.
+- Nome variabile `prec_su3`, non `precision_at_1` / `precision_at_3` (🔤 del mini).
+- TODO 2: idea ok ma «tra quelle restituite» suona come denom=mostrati; meglio «quanti dei primi k posti sono del tipo giusto / k».
+
+### 2026-10-22 — Mini 4.2 — **post-feedback 9/10**
+
+- TODO 1: loop k=1 e k=3 con assert 1.0 e 0.667 — ok (Pattern #6 chiuso sul pezzo).
+- Nit 🔤: variabile ancora `prec`, non `precision_at_1` / `precision_at_3`.
+- TODO 2: meglio; «su k risultati» implica denom=k. Nit: se ne mostri meno di k, i posti vuoti contano comunque (come Mini 4.1).
+- Voto esame resta **6.5/10**.
+
+### 2026-10-22 — Mini 4.3 recall@k (`03_similarita_coseno.py`) — **8.5/10**
+
+- TODO 1: n_bp=9 ok; nit: consegna «con pandas» → usato `sum` su lista (va `(df["tipo"]=="busta_paga").sum()`).
+- TODO 2: 2/9 ≈ 0.222 assert ok; stampa anche tetto k/n_bp e recall sul tetto — ottimo. Dipende da `S`/`k` del Mini 4.2 (dopo il for, k=3): funziona, meglio `k=3` esplicito nel blocco.
+- TODO 3: tetto k vs R=9 chiaro e corretto.
+
+### 2026-10-22 — Mini 4.3 — **post-feedback 9.5/10**
+
+- TODO 2: blocco autonomo (frase, S, k=3) — ok. TODO 3: refusi corretti.
+- Resta nit TODO 1: conteggio ancora con `sum` su lista, non pandas.
+- Voto esame resta **8.5/10**.
+
+### 2026-10-22 — Mini 4.4 pagella leave-one-out (`03_similarita_coseno.py`) — **7.5/10**
+
+- TODO 1–2: @1=0.8, @3≈0.667 — numeri ok; leave-one-out `top_k(k+1)[1:]` ok. Nit: non usa `precision_su_k`; `n_tipi` inutilizzato; nome `precision_at_3` anche per k=1.
+- TODO 3: giusto che 0.75 (02b) ≠ ~0.667 (qui). Motivo debole: non è «il benchmark è più affidabile»; protocolli diversi (8 query BENCHMARK vs 30 note LOO). In 02b il benchmark era proprio il pezzo fragile (piccolo / autore). Nessuno «mente».
+
+### 2026-10-22 — Mini 4.4 — **post-feedback 9.5/10**
+
+- TODO 3: «nessuno mente / stessa formula / due esami diversi» — ok.
+- Restano nit codice (precision_su_k, n_tipi morto). Voto esame resta **7.5/10**.
+
+### 2026-10-22 — Mini 4.4 — **post-feedback #2 10/10**
+
+- Tolto `n_tipi`; `precision_at_k` + `round(..., 3)`. Opzionale: chiamare `precision_su_k` (stesso risultato).
+- Voto esame resta **7.5/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti

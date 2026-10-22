@@ -84,7 +84,7 @@
 
 | # | Pattern | Stato | Note |
 |---|---------|-------|------|
-| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08–C10, M4 C01, M4 02a, M4 02b)** | **02b:** **Mini 2.1 (08/10) 7.5/10:** quattro parole, in stampa tre (`emolumenti` assente). **Mini 5.1 (13/10):** metodo richiesto diverso da quello usato. **Quiz V6 (13/10):** tre bullet; il «non guadagni» è solo la negazione, mancano le cifre (10%/90%). **E7 (16/10):** stampato solo il tipo, non l'output richiesto. **Mini 6.3 (12/10) → 9.5 post-rilettura; Mini 6.4 6.5/10** (benchmark autore vs vantaggio di casa). Antidoto `PUNTI CHE VEDO` efficace quando dichiarato (Mini 0.1 9.5/10): **va usato sempre**, non solo quando ricordato. Storico C01/C08–C10: tabella Pattern completa sotto |
+| 6 | **Lettura incompleta delle consegne** | 🔴 **Attivo (C08–C10, M4 C01, M4 02a, M4 02b, M4 C03)** | **C03 Mini 4.2 (22/10) 6.5/10:** chiesti precision@1 *e* @3; fatto solo @3. **02b:** Mini 2.1 7.5 (3/4 parole); Mini 5.1 metodo sbagliato; V6 senza cifre; E7 solo tipo. Antidoto `PUNTI CHE VEDO` efficace quando dichiarato: **va usato sempre**. Storico C01/C08–C10: tabella Pattern completa sotto |
 | 18 | Confusione Series vs DataFrame | 🟡 In miglioramento | Quiz cap.02 ok; consolidare su nuovi DataFrame |
 | 19 | `if var:` vs `is not None` per numeri opzionali | 🟡 In miglioramento | Rinforzo terminologico cap.02; evitare "null" in risposte |
 | 20 | Anti-pattern valutazione confuso con feature engineering | 🟡 In miglioramento | Rinforzato in cap.02 (blocco dedicato + quiz) |
@@ -117,8 +117,8 @@
 | 64 | **Ricostruire la mappa cambia gli assi, anche a parità di `dim`** | 🟢 | Q2 esame **8/10**, post-feedback **9.5/10**. Q4 esame **7/10**, post-feedback **8.5/10**. **V10 (13/10) a freddo:** la dimensione è la forma, il modello decide lo spazio; a 384 uguali gli spazi non coincidono. **19/10:** frase operativa (vettori salvati = modello vecchio, da ricalcolare) coperta dal rinforzo contratto Mini 2.4 del cap.03. |
 | 65 | **`is` è identità, `==` è uguaglianza di valore** | 🟡 | Mini 1.2 esame **7/10**. Post-feedback **8.5/10**. **19/10:** in `embed_utils` `carica_modello_frasi(nome=MODELLO_ST)` ha il default. Resta ridire `is`/`==` a freddo. |
 | 66 | **`embedda` su una stringa la mette in lista: l'uscita è sempre una matrice** | 🟡 | Quiz verifica 02b V9 (13/10): shape giuste, motivo parziale. **19/10: rinforzo inserito nel cap.03** (Sez. 1, blocco 🔁 + Mini 1.2: il contratto matrice e il `[0]` esplicito). Da verificare a freddo al quiz d'ingresso del cap.04. |
-| 67 | **Sottoparola e precision@k, non «token» e «pagella»** | 🟡 | Precision@k ok (bridge R02 + ingresso C03 Q6). **Definizione token/sottoparola ancora debole** (ingresso C03 Q4 6/10: token come «unità semantica»; «sottoparola non necessariamente token» — invertito). Rinforzo Sez. 5.2 / Mini 4.2. Da chiudere al quiz del cap.04. |
-| 68 | **L'indice di `vicini_*` è la riga, non la colonna `id`** | 🟡 | E4 02b (14/10) **6.5/10**: `corpus['id'] == indice`. **19/10: rinforzo inserito nel cap.03** (Sez. 2, blocco 🔁 + Mini 2.3: posizione vs colonna id, DataFrame vuoto a id==0; V9 del quiz di verifica lo ripropone). Da verificare al quiz del cap.04. |
+| 67 | **Sottoparola e precision@k, non «token» e «pagella»** | 🟡 | Precision@k ok in uso (Mini 4.1). **Mini 4.2 (22/10) 6.5:** @3 ok ma manca @1 + nome variabile non `precision_at_*`; TODO 2 formula a parole ancora ambigua (mostrati vs k). Sottoparola: ingresso C03 Q4 6/10. Da chiudere al quiz del cap.04. |
+| 68 | **L'indice di `vicini_*` è la riga, non la colonna `id`** | 🟡 | Rinforzo Mini 2.3 C03 (20/10) **10/10**: id prima riga=1, `id==0`→vuoto, argsort→posizioni→`.iloc`. Da chiudere formalmente al quiz ingresso cap.04. |
 | 69 | **Cifre e codici → match esatto, non coseno (`tokenizza` scarta i numeri)** | 🟡 | Quiz verifica 02b (13/10): il CF con 2 caratteri diversi ha coseno ~0.99. **19/10: rinforzo inserito nel cap.03** (Sez. 5.2 con numeri veri: CF 0.992, cifra 0.935; Mini 5.2 regola ibrida; Mini 5.3 `tokenizza` e le cifre; V7; progetto 🏗️ T1/T4: l'esatto vince). Da verificare al quiz del cap.04. |
 | 48 | **`eval` ≠ freeze ≠ `no_grad` (tre leve)** | 🟢 Chiusa (C10) | C09 soft → C10 Q1 7/10 → Mini 48.A 8.5 → **Mini 48.B 10/10** (`with torch.no_grad():`). Distinzione operativa ok; tenere a ripasso il phrasing Dropout in eval |
 | 49 | **Il `1` di `(1,28,28)` è il CANALE, non il batch** | 🟢 Superato (C09) | Q3 fix + Mini 3.2 9/10; Mini 3.1 `repeat` dopo 4/10. Consolidato PIL/`Grayscale` vs tensore `repeat` |
@@ -1236,7 +1236,7 @@ completezza del self-check e chiedere correzioni.
 | Batch | Molte frasi in una chiamata sola: costa meno di tante chiamate singole | M4-02b | 1/3 | 🔄 (T4: batch/None invece del dict per-frase, poi capito) |
 | Troncamento | Oltre N pezzi (128 per MiniLM) la coda sparisce **in silenzio**: coseno 1.000 con testo perso | M4-02b | 1/3 | 🔄 |
 | Top-k | I k vicini con il punteggio più alto, in ordine | M4-02b | 1/3 | 🔄 |
-| precision@k | Quota dei primi k risultati che sono davvero giusti (es. 2 su 3 = 0.67) | M4-02b | 0/3 | 🔴 (#67: detta «pagella» in V13; rinforzata in E10 fino a 9.5, da riverificare a freddo) |
+| precision@k | Quota dei primi k risultati che sono davvero giusti (es. 2 su 3 = 0.67) | M4-02b | 1/3 | 🟡 (#67: detta «pagella» in V13; Mini 4.1 22/10: denominatore `k` ok a freddo) |
 | Benchmark | Insieme piccolo di domande con risposta nota per dare un voto a un motore | M4-02b | 1/3 | 🔄 |
 | Apprendimento contrastivo | Training a coppie: avvicina i punti delle frasi che vanno insieme, allontana le altre | M4-02b | 1/3 | 🔄 (E9 toy → MiniLM reale) |
 | Proiezione | Buttare via dimensioni per disegnare: l'ombra 2D di un oggetto 384D (27% di varianza tenuta) | M4-02b | 1/3 | 🔄 |
