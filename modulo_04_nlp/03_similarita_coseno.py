@@ -171,7 +171,7 @@ from embed_utils import PERCORSO_VETTORI, carica_modello_frasi, embedda, carica_
 # guardia che restituisce 0.0 se una norma è zero. Vale per vettori 1D.
 # In questo capitolo la usiamo come RIFERIMENTO per verificare che la versione
 # veloce (matmul su vettori normalizzati) dia gli stessi numeri.
-from testo_utils import coseno                                  # la tua funzione del 02a/02b
+from testo_utils import coseno, tokenizza                               # la tua funzione del 02a/02b
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))          # cartella di questo file
 PERCORSO_CSV = os.path.join(BASE_DIR, "dati", "note_documenti.csv")        # i 30 testi
@@ -1084,6 +1084,9 @@ for k in K:
 #   c) la ricerca semantica vince invece quando ________________
 #
 # RISPOSTE:
+# a) il modello quasi non vedo il "non"
+# b) la ricerca full-text perchè in quei casi la parola esatta è il significato
+# c) ricerchiamo per senso generale e dominio di appartenenza. 
 #
 # 5.2 · CIFRE E CODICI: il coseno non sa contare
 # ----------------------------------------------
@@ -1119,17 +1122,32 @@ for k in K:
 #
 # MINI-ESERCIZIO 5.2 (rinforzo #69)
 # ----------------------------------
+
+print("\nMini-esercizio\n")
+
 # TODO 1: verifica tu stesso con 3 righe di codice: embedda le due coppie
 #         (netto 1850/1851 e i due CF) con normalizza=True e stampa i coseni.
 #         Attesi ≈ 0.93 e ≈ 0.99.
+
+coppie = [("netto 1850", "netto 1851"), ("RSSMRA80A01H501X", "RSSMRA80A01H501Y")]
+
+for c in coppie:
+    embs = embedda([c[0], c[1]], modello, normalizza=True)
+    cos = embs[0] @ embs[1]
+    print(f"Coseno: {round(cos, 3)}")
+
 # TODO 2: completa la regola ibrida della torre: "Per decidere se due documenti
 #         riguardano la stessa pratica confronto ________________ con il match
 #         esatto e ________________ con il coseno."
 #
 # RISPOSTA TODO 2:
+# i valori, il senso
 #
 # MINI-ESERCIZIO 5.3 — le cifre nella TUA tokenizza (ponte al cap. 01)
 # ---------------------------------------------------------------------
+
+print("\nMini-esercizio 5.3\n")
+
 # 🔁 RIPASSO PROPOSITIVO — `tokenizza` (cap. 01, testo_utils): spezza in parole
 # minuscole con RE_TOKEN = re.compile(r"[a-zàèéìòù<>]+") e toglie le stopword.
 # Nota il pattern: SOLO LETTERE. I numeri non ci sono.
@@ -1138,6 +1156,14 @@ for k in K:
 # TODO 2: quindi nella pipeline del cap. 01 (TF-IDF) le cifre ________________
 #
 # RISPOSTE:
+
+# TODO 1
+# ["netto", "euro"]
+print(tokenizza("netto 1850 euro"))
+
+# TODO 2
+# Vengono sostituite da un placeholder se sono in formato € (comprensivo di decimali), oppure vengono scartate.
+
 #
 # 5.3 · TESTI CORTI: poco contesto, poca bussola
 # ----------------------------------------------
@@ -1151,12 +1177,28 @@ for k in K:
 #
 # MINI-ESERCIZIO 5.4 — il corto contro il lungo
 # ----------------------------------------------
+
+print("\nMini-esercizio 5.4\n")
+
 # TODO 1: embedda "cedolino" e "il cedolino dello stipendio di ottobre con
 #         trattenute" e confronta i coseni con "busta paga". Quale delle due
 #         query si avvicina di più? (esegui e scrivi i due numeri)
 # TODO 2: in una riga — perché aggiungere contesto aiuta il pooling?
 #
 # RISPOSTE:
+
+frasi = ["cedolino", "il cedolino dello stipendio di ottobre con trattenute", "busta paga"]
+
+embs = embedda(frasi, modello, normalizza=True)
+corta, lunga, confronto = embs[0], embs[1], embs[2]
+coseno_corta = corta @ confronto
+coseno_lunga = lunga @ confronto
+print(f"Coseno frase corta: {coseno_corta}")
+print(f"Coseno frase lunga: {coseno_lunga}")
+
+
+# Perche il pooling fa la media di significato, quindi più parole del mondo "busta paga" sono presenti, maggiore sarà la tendenza del vettore, a seguito del pooling, di indirizzarsi verso quel mondo.
+
 #
 # 5.4 · QUASI DUPLICATI: il falso positivo che la soglia non salva
 # -----------------------------------------------------------------
@@ -1178,7 +1220,10 @@ for k in K:
 #
 # RISPOSTE:
 #
-
+# SEMANTICO
+# ESATTO
+# ESATTO
+# ENTRAMBI
 
 # =============================================================================
 # SEZIONE 6 — Scalabilità: da 30 note a un milione di documenti
@@ -1220,6 +1265,9 @@ for k in K:
 # TODO: quanta RAM occupano 10 milioni di documenti da 384 dimensioni in
 #       float32 (4 byte)? Fai il conto in Python e stampa in GB.
 #       (atteso: 10_000_000 × 384 × 4 byte ≈ 15,4 GB)
+
+print(round(float(4 * 384 / 100), 1))
+
 #
 # MINI-ESERCIZIO 6.2 — cosa resta, cosa cambia
 # ---------------------------------------------
@@ -1229,6 +1277,8 @@ for k in K:
 #   b) "Cambia invece: ________________ e ________________"
 #
 # RISPOSTE:
+# identici: top_k, precision@k, soglia, coseno
+# diversi: chi fa la matmul, numero di vettori confrontati
 #
 # -----------------------------------------------------------------------------
 # 📚 LETTURA PARALLELA (facoltativa, 15-20 min) — [ALAMMAR, Hands-On Large
@@ -1257,11 +1307,13 @@ for k in K:
 #      print(s.shape) e il significato di s[7]?
 #
 # RISPOSTA:
+# s.shape = (30, ), coseno di q e E[7] 
 #
 # V2 · Vero o Falso: "np.argsort(-punteggi)[:5] dà gli indici dei 5 punteggi
 #      più BASSI."
 #
 # RISPOSTA:
+# Falso. Da gli indici dei 5 punteggi più alti (-punteggi mette in ordine decrescente)
 #
 # V3 · Trova l'errore:
 #      def top_k(punteggi, k):
@@ -1269,20 +1321,28 @@ for k in K:
 #          return [(int(i), float(punteggi[i])) for i in ordine[:k]]
 #
 # RISPOSTA:
+# in questo modo restituiamo i k valori più bassi;
+# correzione -> ordine = np.argsort(-punteggi)
 #
 # V4 · Definizione: precision@k e recall@k — cosa cambia al DENOMINATORE?
 #
 # RISPOSTA:
+# Nel primo al denominatore mettiamo k (ossia n_vicini_restituiti), al secondo invece mettiamo len(note[note['tipo'] == "tipo_nota_in_esame"])
 #
 # V5 · Completa il codice della TUA decidi_con_soglia:
 #      return [v for v in vicini if ______________________]
+# [v for _, v in vicini if v > soglia]
 #
 # RISPOSTA:
-#
+# return [v for v in vicini if v > soglia]
+
 # V6 · Prevedi output: vicini con tipi ["cu", "cu", "altro", "cu"], tipo "cu".
 #      precision@2 = ?  precision@4 = ?
 #
 # RISPOSTA:
+# precision@2 = 1.00
+# precision@4 = 0.75
+
 #
 # V7 · Trova l'errore (è la regola del capitolo):
 #      cf_a, cf_b = "RSSMRA80A01H501X", "RSSMRA80A01H501Y"
@@ -1291,11 +1351,13 @@ for k in K:
 #      stessa_persona = coseno(v_a, v_b) > 0.95     # ← perché è sbagliato?
 #
 # RISPOSTA:
+# Fare un confronto di senso non funziona in questo caso per verificare se è la stessa persona. Va fatta una ricerca esatta.
 #
 # V8 · Vero o Falso: "Alzare la soglia di accettazione aumenta i casi in cui
 #      il motore risponde 'non lo so'."
 #
 # RISPOSTA:
+# Vero. E' il trade-off tipico per avere meno falsi positivi.
 #
 # V9 · Trova l'errore:
 #      indici = np.argsort(-punteggi)[:3]
@@ -1303,13 +1365,15 @@ for k in K:
 #          print(note[note['id'] == i]['testo'])     # corpus: id da 1 a 30
 #
 # RISPOSTA:
+# in questo modo spostiamo tutta la ricerca di 1 in avanti. 
+# versione corretta: print(note.iloc[i]['testo'])
 #
 # V10 · 💬 FEYNMAN — Spiega con parole tue (3-5 righe, niente codice):
 #      a un collega web dev: perché rispondere "non lo so" (lista vuota sotto
 #      soglia) è MEGLIO che mostrare comunque il vicino meno lontano?
 #
 # RISPOSTA:
-#
+# Il modello è impostato per fornire sempre un "vicino" per significato alla nostra query. Ma sotto una determinata soglia di somiglianza (coseno < soglia), fondamentalmente il modello da delle risposte che non sono utili, perchè troppo distanti per significato a quello che in effetti sitamo cercando. Dunque, per eliminare il rumore dalle risposte, decidiamo che se il modello non trova similitudini abbiastanza vicine, non risponde e ci restituisca una lista vuota, che di fatto significa "non lo so".
 
 
 # =============================================================================
@@ -1323,36 +1387,63 @@ for k in K:
 # alla volta, ciclo Python, niente vettorizzazione). Riscrivilo in MASSIMO
 # 4 righe usando E @ q e la TUA top_k, con stesso output.
 #
-#   def cerca_lento(query, E, testi, modello, k=3):
-#       q = embedda([query], modello, normalizza=True)[0]
-#       risultati = []
-#       for i in range(E.shape[0]):
-#           riga = E[i]
-#           punteggio = coseno(riga, q)
-#           risultati.append((i, punteggio))
-#       risultati_ordinati = sorted(risultati, key=lambda coppia: coppia[1], reverse=True)
-#       return risultati_ordinati[:k]
-#
+
+print("\nEsercizio 1\n")
+
+def cerca_lento(query, E, modello, k=3):
+    q = embedda([query], modello, normalizza=True)[0]
+    risultati = []
+    for i in range(E.shape[0]):
+        riga = E[i]
+        punteggio = coseno(riga, q)
+        risultati.append((i, punteggio))
+    risultati_ordinati = sorted(risultati, key=lambda coppia: coppia[1], reverse=True)
+    return risultati_ordinati[:k]
+
 # SCRIVI QUI LA TUA VERSIONE:
-#
-# def cerca_veloce(query, E, testi, modello, k=3):
-#     ...
-#
+
+def cerca_veloce(query, E, modello, k=3) -> list[tuple[int, float]]:
+    q = embedda(query, modello, normalizza=True)[0]
+    S = E @ q
+    return top_k(S, k)
+
 # Verifica: cerca_lento e cerca_veloce devono dare gli stessi indici su
 # "cedolino di ottobre" (a meno di pareggi).
+frase = "cedolino di ottobre"
+import time
+
+t_1 = time.perf_counter()
+lento = cerca_lento(frase, E, modello)
+t_2 = time.perf_counter()
+
+print(f"Tempo funzione lenta: {t_2 - t_1}")
+
+t_1 = time.perf_counter()
+veloce = cerca_veloce(frase, E, modello)
+t_2 = time.perf_counter()
+
+print(f"Tempo funzione veloce: {t_2 - t_1}\n")
+
+print(f"\nLento:   {lento}")
+print(f"Veloce:  {veloce}\n")
+
 
 # -----------------------------------------------------------------------------
 # E2 · 🔍 [DEBUG] — la ricerca impazzita (3 bug: prima il SILENZIO, poi il crash)
 # -----------------------------------------------------------------------------
 # ATTO 1 — il silenzio. Questo codice dovrebbe stampare le 3 note più simili
 # a "prospetto paga". Eseguilo: NON va in errore. Ed è proprio questo il guaio.
-#
-#   q = embedda(["prospetto paga"], modello)[0]              # bug nascosto qui
-#   punteggi = E @ q
-#   ordine = np.argsort(punteggi)[:3]                        # ...e qui
-#   for i in ordine:
-#       riga = note[note["id"] == int(i)]                    # ...e qui (id da 1 a 30!)
-#       print(riga["testo"].iloc[0], round(float(punteggi[i]), 3))
+
+print("\nEsercizio 2\n")
+
+q = embedda(["prospetto paga"], modello)[0]              # bug nascosto qui
+punteggi = E @ q
+ordine = np.argsort(punteggi)[:3]                        # ...e qui
+for i in ordine:
+    riga = note[note["id"] == int(i)]                    # ...e qui (id da 1 a 30!)
+    print(riga["testo"].iloc[0], round(float(punteggi[i]), 3))
+    
+print(punteggi.max())
 #
 # Output reale (misurato il 19/10/2026):
 #   ESTRATTO CONTO - data valuta 15/04/2026 - causale accredito emolumenti... 0.826
@@ -1365,6 +1456,14 @@ for k in K:
 #   ordine = np.argsort(punteggi)          # classifica completa, 30 righe
 # e riesegui il ciclo: dopo una quindicina di righe stampate esplode:
 #   IndexError: single positional indexer is out-of-bounds
+
+# q = embedda(["prospetto paga"], modello)[0]
+# punteggi = E @ q
+# ordine = np.argsort(punteggi)
+# for i in ordine:
+#     riga = note[note["id"] == int(i)]
+#     print(riga["testo"].iloc[0], round(float(punteggi[i]), 3))
+
 #
 # TRE bug: trovali e correggili SENZA riscrivere tutto. Intervento del mentor
 # solo dopo 2 tentativi (Regola 17). Suggerimento di metodo: risolvi prima
@@ -1372,9 +1471,21 @@ for k in K:
 # errore — i bug peggiori sono quelli silenziosi.
 #
 # Bug 1 (dove e perché):
+# embedda non normalizza. Il confronto di conseguenza sarà sbagliato.
 # Bug 2 (dove e perché):
+# np.argsort(punteggi)[:3] restituisce in ordine crescente i 3 coseni più piccoli.
 # Bug 3 (dove e perché):
+# confrontando indice e colonna "id" sfalsiamo il set a ogni riga il risultato della successiva. Si deve usare .iloc.
 # Codice corretto (riscrivi il blocco):
+
+print("\n\n")
+
+q = embedda(["prospetto paga"], modello, normalizza=True)[0]
+punteggi = E @ q
+ordine = np.argsort(-punteggi)[:3]
+for i in ordine:
+    riga = note.iloc[int(i)]
+    print(riga["testo"], round(float(punteggi[i]), 3))
 
 # -----------------------------------------------------------------------------
 # E3 · 🧠 [RETRIEVAL] — riscrivi `coseno(a, b)` da zero
@@ -1383,8 +1494,22 @@ for k in K:
 # con la guardia sulla norma zero. Poi confrontala con l'originale.
 # (Terza volta che la scrivi: è il cuore del capitolo, deve uscire a memoria.)
 #
-# def coseno_mio(a: NDArray[np.float64], b: NDArray[np.float64]) -> float:
-#     ...
+print("\nEsercizio 3\n")
+
+def coseno_mio(a: NDArray[np.float64], b: NDArray[np.float64]) -> float:
+    if a.shape != b.shape:
+        raise ValueError("Le shape dei due vettori non coincidono!")
+    if a.ndim != 1 or b.ndim != 1:
+        raise ValueError("Entrambi i vettori devo essere 1D!")
+    den = np.linalg.norm(a) * np.linalg.norm(b)
+    return float(a @ b / den) if den != 0.0 else 0.0
+
+vettore_vuoto = np.zeros(384)
+controllo = coseno(E[2], E[3])
+prova = coseno_mio(E[2], E[3])
+prova_denominatore0 = coseno_mio(E[2], vettore_vuoto)
+assert np.isclose(controllo, prova), "Ops, qualcosa è andato storto!"
+assert np.isclose(prova_denominatore0, 0.0), "Qualcosa è andato storto nella verifica del denominatore a 0!!"
 
 # -----------------------------------------------------------------------------
 # E4 · 🔀 [INTERLEAVING] — la tua top_k su TF-IDF (cap. 01)
@@ -1406,6 +1531,35 @@ for k in K:
 #         il semantico non trova (e viceversa)?
 #
 # RISPOSTE:
+
+print("\nEsercizio 4\n")
+
+# TODO 1
+from sklearn.feature_extraction.text import TfidfVectorizer
+vett = TfidfVectorizer()
+testi = pd.read_csv(PERCORSO_CSV)['testo'].tolist()
+X = vett.fit_transform(testi).toarray()
+
+# TODO 2
+query = "prospetto paga di aprile"
+q = vett.transform([query]).toarray().ravel()
+tops_tfidf = top_k(X @ q, 3)
+vicini_tfidf = [testi[i] for i, _ in tops_tfidf]
+for v in vicini_tfidf:
+    print(v)
+
+print("\n")
+
+# TODO 3
+q = embedda("prospetto paga di aprile", modello, True)[0]
+S = E @ q
+tops_mini = top_k(S, 3)
+vicini_mini = [testi[i] for i, _ in tops_mini]
+for v in vicini_mini:
+    print(v)
+    
+# Il Tfidf trova molto chiaramente la parola prospetto e aprile, ma non vede "busta", e il terzo risultato non è pertinente. Viceversa il minilm non da molto peso alla parola "aprile" e "prospetto"
+
 
 # -----------------------------------------------------------------------------
 # E5 · 🎯 [COLLOQUIO] — "Implementami una ricerca semantica"

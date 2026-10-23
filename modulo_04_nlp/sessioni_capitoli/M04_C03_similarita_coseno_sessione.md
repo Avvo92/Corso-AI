@@ -247,6 +247,122 @@ _(nessuna ancora)_
 - Tolto `n_tipi`; `precision_at_k` + `round(..., 3)`. Opzionale: chiamare `precision_su_k` (stesso risultato).
 - Voto esame resta **7.5/10**.
 
+### 2026-10-23 — Mini 5.1 rinforzo Micro #6 (`03_similarita_coseno.py`) — **8.5/10**
+
+- a) Idea ok («non» quasi invisibile); manca meccanismo esplicito (pooling/media); typo «vedo»→«vede».
+- b) Full-text + parola esatta = significato — ok (copre uso+perché).
+- c) Senso/tema/dominio — ok. Micro #6 rinforzo sostanzialmente chiuso in questo pezzo.
+
+### 2026-10-23 — Mini 5.2 rinforzo #69 (`03_similarita_coseno.py`) — **8/10**
+
+- TODO 1: pipeline ok (`embedda` lista + dot). CF ≈ 0.992 ok. Netto: usato `"netto 1850"` senza `"euro"` → ≈0.90 invece di ≈0.935 (testo teoria).
+- TODO 2: «valori» / «senso» — allineato alla regola ibrida (equiv. codici+cifre vs titoli/contenuti).
+- Nel file RISPOSTA TODO 2 risulta vuota: se l’hai solo in chat, rimettila.
+
+### 2026-10-23 — Mini 5.2 — **correzione voto → 9.5/10**
+
+- Contestazione studente: consegna TODO 1 dice «netto 1850/1851» (senza euro); «euro» è solo nella teoria. Deduzione ritirata — ha seguito la consegna. 0.90 è coerente con quelle stringhe; atteso 0.93 del capitolo è allineato alla versione con euro (incongruenza del file, non dello studente).
+- TODO 2 «valori, il senso» accettato; falso allarme «RISPOSTA vuota» (sync/lettura mentor).
+- Voto d’esame aggiornato a **9.5/10**.
+
+### 2026-10-23 — Mini 5.3 tokenizza/cifre (`03_similarita_coseno.py`) — **7/10**
+
+- TODO 1: previsto ed eseguito `["netto", "euro"]` — ok.
+- TODO 2: «placeholder se formato €, altrimenti scartate» — mezzo vero. Su `1850` plain: **scartate** (`RE_TOKEN` solo lettere). `<importo>` scatta solo se matcha `RE_IMPORTO` (es. `1.850,00` / `1850,00`), non il simbolo €. In TF-IDF: le cifre così **non sono feature**.
+
+### 2026-10-23 — Mini 5.4 corto vs lungo (`03_similarita_coseno.py`) — **9/10**
+
+- TODO 1: corta≈0.428, lunga≈0.658 vs «busta paga» — ok; vince la lunga.
+- TODO 2: pooling = media; più pezzi del mondo paghe tirano il vettore — ok. Nit: «media di significato» → media dei vettori/token; e scrivi i due numeri anche in commento RISPOSTE (ora solo print).
+
+### 2026-10-23 — Mini 5.5 strumento per caso (`03_similarita_coseno.py`) — **10/10**
+
+- a SEMANTICO, b ESATTO, c ESATTO, d ENTRAMBI — allineato alle soluzioni (c ammette anche ENTRAMBI: esatto sul «non» + semantico sul tema).
+
+### 2026-10-23 — Mini 6.1 RAM 10M×384 (`03_similarita_coseno.py`) — **6.5/10**
+
+- Risultato numerico ≈15.4 ok (`4*384/100` = scorciatoia di `10e6*384*4/1e9`).
+- Consegna: fare il conto in Python con i tre fattori. Manca `10_000_000` esplicito; formula opaca (da dove viene `/100`?). Meglio: `(10_000_000 * 384 * 4) / 1e9`.
+
+### 2026-10-23 — Mini 6.2 resta/cambia vector DB (`03_similarita_coseno.py`) — **9.5/10**
+
+- a) coseno, top-k, soglia, precision@k — ok.
+- b) chi fa la matmul + quanti vettori confronti — ok (ANN). Nit opzionale: anche *dove vivono* i vettori (servizio/indice vs NumPy in RAM).
+
+### 2026-10-23 — Quiz verifica V1 (`03_similarita_coseno.py`) — **10/10**
+
+- `s.shape = (30,)` e `s[7]` = coseno tra `q` e `E[7]` — ok (norme 1 → dot = coseno).
+
+### 2026-10-23 — Quiz verifica V2 (`03_similarita_coseno.py`) — **10/10**
+
+- Falso: `argsort(-punteggi)[:5]` → 5 punteggi più alti — ok.
+
+### 2026-10-23 — Quiz verifica V3 (`03_similarita_coseno.py`) — **10/10**
+
+- Bug: `argsort` senza meno → k peggiori; fix `argsort(-punteggi)` — ok.
+
+### 2026-10-23 — Quiz verifica V4 (`03_similarita_coseno.py`) — **9/10**
+
+- Precision → denom `k`; recall → n pertinenti del tipo — ok.
+- Nit: «n_vicini_restituiti» può suonare come len(lista); da manuale denom precision è **sempre k** (slot vuoti = errori).
+
+### 2026-10-23 — Quiz verifica V5 (`03_similarita_coseno.py`) — **4/10**
+
+- Blank: `[v for v in vicini if …]` → `v` è la **tupla** `(i, score)`, non il float. Serve `v[1] >= soglia` (o `v[1] > soglia` come nella sua fn con unpack).
+- `v > soglia` confronta tupla vs float → sbagliato in questo scheletro. Nella sua `decidi_con_soglia` con `for i, v in vicini` il `v > soglia` invece è coerente.
+
+### 2026-10-23 — Quiz verifica V5 — **post-feedback 9/10**
+
+- Seconda formulazione: confronto sullo **score** con unpack — concetto ok (allineato alla sua `decidi_con_soglia`).
+- Nit: `[v for _, v in vicini if v > soglia]` restituirebbe solo i float; per tenere le coppie serve `[(i, s) for i, s in vicini if s > soglia]` (o `v[1]` sullo scheletro originale).
+- Nit minore: capitolo dice `>=`, lui usa `>`. Voto esame resta **4/10** (blank originale); post-feedback **9/10**.
+
+### 2026-10-23 — Quiz verifica V6 (`03_similarita_coseno.py`) — **10/10**
+
+- precision@2 = 2/2 = 1.0; precision@4 = 3/4 = 0.75 — ok.
+
+### 2026-10-23 — Quiz verifica V7 (`03_similarita_coseno.py`) — **9.5/10**
+
+- CF → non coseno, match/confronto esatto — ok (#69). Nit: «ricerca esatta» → uguaglianza stringa (dopo normalizzazione), non retrieval.
+
+### 2026-10-23 — Quiz verifica V8 (`03_similarita_coseno.py`) — **10/10**
+
+- Vero: soglia ↑ → più «non lo so»; trade-off meno FP — ok (lato B: anche più giusti persi).
+
+### 2026-10-23 — Quiz verifica V9 (`03_similarita_coseno.py`) — **9.5/10**
+
+- Bug: `i` da argsort = posizione 0..29, non colonna `id` 1..30; fix `iloc[i]` — ok (#68).
+- Formulazione «sposta di 1» ok come effetto; più preciso: due indici diversi (riga vs id).
+
+### 2026-10-23 — Quiz verifica V10 Feynman soglia (`03_similarita_coseno.py`) — **8.5/10**
+
+- Idea ok: sotto soglia = rumore / non utile → lista vuota = «non lo so».
+- Manca esplicito per collega web: top-k *sempre* restituisce qualcuno (anche spazzatura); mostrarlo = falso positivo fiducioso. «Non lo so» passa la palla all’umano / altro tool.
+- Typo: sitamo→stiamo, abbiastanza→abbastanza.
+
+### 2026-10-23 — E1 refactoring cerca_veloce (`03_similarita_coseno.py`) — **10/10**
+
+- `embedda` + `E @ q` + `top_k` — ok, ≤4 righe, Regola 45. Indici identici: 28, 25, 15. Tempi ~uguali (domina encode).
+
+### 2026-10-23 — E2 debug 3 bug (`03_similarita_coseno.py`) — **9/10**
+
+- Bug1 normalizza, Bug2 `-argsort` top alti, Bug3 `iloc` non `id` — tutti trovati; fix ok.
+- Nit Bug3/Atto2: IndexError quando `id==0` → DataFrame vuoto → `.iloc[0]`; «sfasa di 1» è l’effetto, il crash è la riga vuota. Silenzio Atto1: tre bug insieme senza eccezione — ok se compreso.
+
+### 2026-10-23 — E3 retrieval coseno_mio (`03_similarita_coseno.py`) — **10/10**
+
+- Formula `a@b/(||a||||b||)`, guardia `den==0 → 0.0`, assert vs `coseno` e vs zero — ok. Extra: check shape/ndim (non richiesti, utili). Typo docstring ValueError «devo»→«devono».
+
+### 2026-10-23 — E4 interleaving TF-IDF vs MiniLM (`03_similarita_coseno.py`) — **8.5/10**
+
+- Pipeline TF-IDF + `top_k` e confronto MiniLM ok. Output: TF-IDF 2×«PROSPETTO PAGA» + residenza; MiniLM busta/ricevuta/LUL.
+- Confronto discorsivo nella direzione giusta (parole esatte vs senso/sinonimi).
+- Nit: `vicini_mini = vicini_tfidf = [...]` sovrascrive il nome; `E = carica_vettori()` riassegna la E globale. Preferibile `X @ q` come da consegna senza necessariamente densificare tutto subito.
+
+### 2026-10-23 — E4 — **post-feedback 9.5/10**
+
+- Tolti doppio assign e `carica_vettori` su `E`. Resta solo nit opzionale: `.toarray()` su tutta X (ok funzionalmente). Voto esame resta **8.5/10**.
+
 ---
 
 ## Lacune e dubbi ancora aperti
